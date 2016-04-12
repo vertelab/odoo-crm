@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="website" position="after">
+                <field name="product_ids" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+
+<!--
+    <record id="view_product_form" model="ir.ui.view">
+        <field name="name">product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <page string="Information" position="inside">
+                <field name="partner_id" widget="many2many_tags"/>
+            </page>
+        </field>
+    </record>
+-->
+
+    <template id="mobile_order_view" name="Mobile Order View">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <div class="container mt64 mb64" style="width: 100%; padding: 20px;">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="col-sm-12 text-center">
+                                <h1>Beställning</h1>
+                            </div>
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a data-toggle="tab" href="#butiks_sortiment">Butiks Sortiment</a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" href="#kedjans_sortiment">Kedjans Sortiment</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <!-- Butiks Sortiment -->
+                                <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="butiks_sortiment" style="padding: 20px;">
+                                    <div class="container mb64">
+                                        <h2 class="text-center mb32" t-esc="partner.name"/>
+                                        <div t-foreach="products" t-as="p">
+                                            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                                                <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/300x300' %p.id"/>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
+                                                <h3 class="text-center" t-field="p.product_tmpl_id"/>
+                                                <t t-if="len(p.attribute_value_ids)!=0">
+                                                    <h3 class="text-center">
+                                                        (<t t-foreach="p.attribute_value_ids" t-as="p_attr">
+                                                            <t t-esc="p_attr.name"/>
+                                                        </t>)
+                                                    </h3>
+                                                </t>
+                                                <div class="input-group oe_website_spinner" style="margin: auto;">
+                                                    <span class="input-group-addon">
+                                                        <a href="#" class="mb8">
+                                                            <i class="fa fa-minus"></i>
+                                                        </a>
+                                                    </span>
+                                                    <input class="form-control" data-min="1" name="add_qty" value="1" type="text"/>
+                                                    <span class="input-group-addon">
+                                                        <a href="#" class="mb8 float_left">
+                                                            <i class="fa fa-plus"></i>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label" for="radios"><span class="pull-right">Typ:</span></label>
+                                        <div class="col-md-4">
+                                            <label class="radio-inline" for="radios-0">
+                                                <input name="radios" id="radios-0" value="1" checked="checked" type="radio"/>
+                                                    typ 1
+                                                </label>
+                                                <label class="radio-inline" for="radios-1">
+                                                    <input name="radios" id="radios-1" value="2" type="radio"/>
+                                                    typ 2
+                                                </label>
+                                                <label class="radio-inline" for="radios-2">
+                                                    <input name="radios" id="radios-2" value="3" type="radio"/>
+                                                    typ 3
+                                                </label>
+                                                <label class="radio-inline" for="radios-3">
+                                                    <input name="radios" id="radios-3" value="4" type="radio"/>
+                                                    typ 4
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button id="spara" name="spara" class="btn btn-success btn-lg pull-right">Spara</button>
+                                    </div>
+                                </div>
+
+                                <!-- Kedjans Sortiment -->
+                                <div id="kedjans_sortiment" class="tab-pane fade in" style="box-shadow: 0px 0px 5px #FF6801; background-color: #fefefe; padding: 20px;">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    </data>
+</openerp>
