@@ -31,6 +31,18 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
+    #~ add_product = fields.Boolean(compute='_add_product')
+    #~ remove_product = fields.Boolean(compute='_remove_product')
+
+    #~ @api.one
+    #~ def _add_product(self, product_id):
+        #~ if product_id not in self.product_ids:
+            #~ self.product_ids.append(product_id)
+
+    #~ @api.one
+    #~ def _remove_product(self, product_id):
+        #~ if product_id in self.product_ids:
+            #~ self.product_ids.remove(product_id)
 
 #~ class product_product(models.Model):
     #~ _inherit = 'product.product'
@@ -42,5 +54,6 @@ class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):parter>/repord'], type='http', auth="public", website=True)
     def repord(self, parter=None, **post):
         products = request.env['res.partner'].sudo().search([('id', '=', parter.id)]).product_ids
-        return request.website.render("crm_repord.mobile_order_view", {'partner': parter, 'products': products,})
+        parent_products = request.env['res.partner'].sudo().search([('id', '=', parter.id)]).parent_id.product_ids
+        return request.website.render("crm_repord.mobile_order_view", {'partner': parter, 'products': products, 'parent_products': parent_products,})
 
