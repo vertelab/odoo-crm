@@ -30,17 +30,14 @@
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="oe_structure">
-                    <div class="container mt64 mb64" style="width: 100%; padding: 0px;">
+                    <div class="container mt16 mb64" style="width: 100%; padding: 0px;">
                         <div class="col-md-12 col-sm-12">
-                            <div class="col-sm-12 text-center">
-                                <h1>Beställning</h1>
-                            </div>
                             <ul class="nav nav-tabs">
                                 <li class="active">
                                     <a data-toggle="tab" href="#butiks_order">Butiksorder</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#kedjans_sortiment">Kedjans sortiment</a>
+                                    <a data-toggle="tab" href="#kedjans_sortiment">Sortiment</a>
                                 </li>
                                 <li>
                                     <a data-toggle="tab" href="#kund_kort">Kundkort</a>
@@ -63,16 +60,12 @@
                                                     <span class="text-center" t-field="p.product_tmpl_id"/>
                                                 </p>
                                                 <div class="input-group oe_website_spinner" style="margin: auto;">
-                                                    <span class="input-group-addon">
-                                                        <a href="#" class="mb8">
-                                                            <i class="fa fa-minus"></i>
-                                                        </a>
+                                                    <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;product_%s_value&quot;)' %p.id">
+                                                        <i class="fa fa-minus"></i>
                                                     </span>
-                                                    <input class="form-control" data-min="1" name="add_qty" value="1" type="text"/>
-                                                    <span class="input-group-addon">
-                                                        <a href="#" class="mb8 float_left">
-                                                            <i class="fa fa-plus"></i>
-                                                        </a>
+                                                    <input class="form-control" data-min="1" t-att-id="'product_%s_value' %p.id" name="add_qty" value="1" type="text"/>
+                                                    <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;product_%s_value&quot;)' %p.id">
+                                                        <i class="fa fa-plus"></i>
                                                     </span>
                                                 </div>
                                             </div>
@@ -173,6 +166,27 @@
                 </div>
             </div>
         </t>
+    </template>
+
+    <template id="crm_javascript" inherit_id="website.layout">
+        <xpath expr="//body" position="inside">
+            <script>
+                function minus(product_id)
+                {
+                    value = parseInt(document.getElementById(product_id).value)
+                    if(value &gt; 1){
+                        value --;
+                        document.getElementById(product_id).value = value;
+                    }
+                }
+
+                function plus(product_id)
+                {
+                    value = parseInt(document.getElementById(product_id).value) + 1;
+                    document.getElementById(product_id).value = value;
+                }
+            </script>
+        </xpath>
     </template>
 
     </data>
