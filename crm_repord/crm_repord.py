@@ -26,6 +26,15 @@ from openerp.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
+class rep_order(models.Model):
+    _name = "rep.order"
+    _inherit = "sale.order"
+    
+    order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount')],default='order',string="Order Type",)
+    
+    @api.one
+    def action_view_sale_order_line_make_invoice(self):
+        pass
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
