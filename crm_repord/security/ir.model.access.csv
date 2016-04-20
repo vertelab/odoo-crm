@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_rep_order,sale.order,model_rep_order,base.group_sale_salesman,1,1,1,0
+access_rep_order_manager,sale.order.manager,model_rep_order,base.group_sale_manager,1,1,1,1
+access_rep_order_accountant,sale.order.accountant,model_rep_order,account.group_account_user,1,1,0,0
+access_rep_order_line,sale.order.line,model_rep_order_line,base.group_sale_salesman,1,1,1,1
+access_rep_order_line_accountant,sale.order.line accountant,model_rep_order_line,account.group_account_user,1,1,0,0
