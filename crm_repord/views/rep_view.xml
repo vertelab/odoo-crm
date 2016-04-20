@@ -39,6 +39,7 @@
                 <tree string="Sales Orders" fonts="bold:message_unread==True" colors="grey:state=='cancel';blue:state in ('waiting_date','manual');red:state in ('invoice_except','shipping_except')">
                     <field name="message_unread" invisible="1"/>
                     <field name="name" string="Order Number"/>
+                    <field name="order_type"/>
                     <field name="date_order"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
@@ -56,6 +57,7 @@
                 <tree string="Quotation" fonts="bold:message_unread==True" colors="grey:state=='cancel';blue:state in ('waiting_date','manual');red:state in ('invoice_except','shipping_except')">
                     <field name="message_unread" invisible="1"/>
                     <field name="name" string="Quotation Number"/>
+                    <field name="order_type"/>
                     <field name="date_order"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
@@ -71,6 +73,7 @@
             <field name="arch" type="xml">
                 <form string="Sales Order">
                     <header>
+<!--
                         <button name="invoice_recreate" states="invoice_except" string="Recreate Invoice" groups="base.group_user"/>
                         <button name="invoice_corrected" states="invoice_except" string="Ignore Exception" groups="base.group_user"/>
                         <button name="action_quotation_send" string="Send by Email" type="object" states="draft" class="oe_highlight" groups="base.group_user"/>
@@ -85,6 +88,9 @@
                         <button name="cancel" states="draft,sent" string="Cancel Quotation" groups="base.group_user"/>
                         <button name="action_cancel" states="manual,progress" string="Cancel Order" type="object" groups="base.group_user"/>
                         <button name="invoice_cancel" states="invoice_except" string="Cancel Order" groups="base.group_user"/>
+-->
+                        
+                        <button name="action_convert_to_sale_order" string="Convert to Order" attr="{'visible':[('order_type', 'in' ['order'])]}" class="oe_highlight" type="object" groups="base.group_user"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,progress,done" statusbar_colors='{"invoice_except":"red","waiting_date":"blue"}'/>
                 </header>
                 <sheet>
@@ -95,6 +101,7 @@
                     </h1>
                     <group>
                         <group>
+                            <field name="order_type"/>
                             <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
                             <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}"/>
                             <field name="partner_shipping_id" on_change="onchange_delivery_id(company_id, partner_id, partner_shipping_id, fiscal_position)" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}"/>
@@ -113,7 +120,7 @@
                                 <form string="Sales Order Lines">
                                     <header groups="base.group_user">
 <!--
-                                        <button name="%(action_view_sale_order_line_make_invoice)d" states="confirmed" string="Invoice" type="action" icon="terp-document-new"/>
+                                        <button name="%(sale.action_view_sale_order_line_make_invoice)d" states="confirmed" string="Invoice" type="action" icon="terp-document-new"/>
 -->
                                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done" statusbar_colors='{"exception":"red","cancel":"red"}'/>
                                     </header>
@@ -378,9 +385,7 @@
             <field name="arch" type="xml">
                 <form string="Sales Order Lines" create="false">
                     <header>
-<!--
-                        <button name="%(action_view_sale_order_line_make_invoice)d" string="Create Invoice" type="action" attrs="{'invisible': ['|',('invoiced', '=', 1), ('state', 'not in', ('confirmed', 'draft'))]}" class="oe_highlight" groups="base.group_user"/>
--->
+                        <button name="%(sale.action_view_sale_order_line_make_invoice)d" string="Create Invoice" type="action" attrs="{'invisible': ['|',('invoiced', '=', 1), ('state', 'not in', ('confirmed', 'draft'))]}" class="oe_highlight" groups="base.group_user"/>
                         <button name="button_cancel" string="Cancel Line" type="object" states="confirmed,exception" groups="base.group_user"/>
                         <button name="button_done" string="Done" type="object"  attrs="{'invisible': ['|',('invoiced', '=', 0), ('state', 'not in', ('confirmed', 'exception'))]}" class="oe_highlight" groups="base.group_user"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done" statusbar_colors='{"exception":"red","cancel":"red"}'/>

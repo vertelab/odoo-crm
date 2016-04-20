@@ -30,7 +30,10 @@ CRM Repord for mobile device
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
     'depends': ['base', 'sale', 'product', 'website'],
-    'data': ['views/crm_repord_view.xml','views/rep_view.xml',
+    'data': [
+        'views/crm_repord_view.xml',
+        'views/rep_view.xml',
+        'security/ir.model.access.csv',
     ],
     'application': False,
     'installable': True,
