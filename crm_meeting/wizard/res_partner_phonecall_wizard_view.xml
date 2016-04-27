@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="res_partner_phonecall_wizard_form">
+            <field name="name">res.partner.phonecall.wizard.form</field>
+            <field name="model">res.partner.phonecall.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Add Attendees">
+                    <group>
+                        <field name="call_summary"/>
+                    </group>
+                    <footer>
+                        <button name="create_summary" string="Create" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_res_partner_phonecall_wizard_form"
+            name="Create Phone Call(s)"
+            src_model="res.partner"
+            res_model="res.partner.phonecall.wizard"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"/>
+            
+            
+                <record model="ir.actions.server" id="action_create_booking">
+            <field name="name">Create Meetings</field>
+            <field name="state">code</field>
+            <field name="condition" eval="True"/>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="code">for o in object.browse(context.get('active_ids', [])):
+    event = env['calendar.event'].create({
+    'name': o.name,
+    'start_datetime': '2000-01-01 00:00:00',
+    'stop_datetime': '2000-01-01 00:00:00',
+    'location': o.zip
+    })
+    #event.get_week_number()
+    
+            </field>
+        </record>
+
+        <record model="ir.values" id="action_create_booking_menu"> <!-- wizard: choose what location -->
+            <field name="name">Create Meetings</field>
+            <field name="model">res.partner</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%d' % action_create_booking"/>
+        </record>
+
+    </data>
+</openerp>
