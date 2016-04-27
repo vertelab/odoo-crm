@@ -48,6 +48,133 @@
                                 <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="butiks_order" style="padding: 0px;">
                                     <div class="container mb64">
                                         <h2 class="text-center mb32" t-esc="partner.name"/>
+
+                                        <ul class="nav nav-tabs">
+                                            <li class="active">
+                                                <a data-toggle="tab" style="border-width: 0px;" href="#paolos_categ"><img src="/logo.png" style="width: 100px;"/></a>
+                                            </li>
+                                            <li>
+                                                <a data-toggle="tab" style="border-width: 0px;" href="#unknown_categ"><img src="/logo.png" style="width: 100px;"/></a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <!-- Paolos -->
+                                            <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="paolos_categ" style="padding: 0px;">
+                                                <t t-set="p_categs" t-value="request.env['product.category'].search([('parent_id', '=', 3)])"/>
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active">
+                                                        <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;paolos_categ_%s' %p_categs[0].id"><span t-field="p_categs[0].name"/></a>
+                                                    </li>
+                                                    <t t-foreach="p_categs[1:]" t-as="p_c">
+                                                    <li>
+                                                        <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;paolos_categ_%s' %p_c.id"><span t-field="p_c.name"/></a>
+                                                    </li>
+                                                    </t>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <!-- Paolos category first table -->
+                                                    <div class="tab-pane fade in table-responsive active col-xs-12 col-md-12 col-lg-12" t-att-id="'paolos_categ_%s' %p_categs[0].id" style="padding: 0px;">
+                                                        <table class="table" style="background-color: #FFA62B;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-center" style="background-color: #000; color: #fff;">Products</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <t t-foreach="products" t-as="p">
+                                                                <tr>
+                                                                    <t t-if="p.categ_id in p_categs[0]">
+                                                                        <td>
+                                                                            <div class="col-md-12 mb8">
+                                                                                <div class="col-md-12">
+                                                                                    <h6 class="text-center">[<span t-field="p.default_code"/>]</h6>
+                                                                                </div>
+                                                                                <div class="col-md-12">
+                                                                                    <h4 class="text-center" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                </div>
+                                                                                <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                    <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                        <i class="fa fa-minus"></i>
+                                                                                    </span>
+                                                                                    <input class="form-control" data-min="1" t-att-id="'product_%s_value' %p.id" name="add_qty" value="0" type="text"/>
+                                                                                    <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                        <i class="fa fa-plus"></i>
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="talbe_cell" t-att-id="'product_cell_%s' %%p.id">
+                                                                                <ul style="list-style-type: none;">
+                                                                                    <li>Discount: <input name="discount"/></li>
+                                                                                    <li>KFP: 250</li>
+                                                                                    <li>DFP: 10</li>
+                                                                                    <li>PALL: 70</li>
+                                                                                    <li>NR: ?</li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </td>
+                                                                    </t>
+                                                                </tr>
+                                                                </t>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <!-- Paolos category rest table -->
+                                                    <t t-foreach="p_categs[1:]" t-as="p_c">
+                                                        <div class="tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12" t-att-id="'paolos_categ_%s' %p_c.id" style="padding: 0px;">
+                                                            <table class="table" style="background-color: #FFA62B;">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="text-center" style="background-color: #000; color: #fff;">Products</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <t t-foreach="products" t-as="p">
+                                                                    <tr>
+                                                                        <t t-if="p.categ_id in p_c">
+                                                                            <td>
+                                                                                <div class="col-md-12 mb8">
+                                                                                    <div class="col-md-12">
+                                                                                        <h6 class="text-center">[<span t-field="p.default_code"/>]</h6>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <h4 class="text-center" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                    </div>
+                                                                                    <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                            <i class="fa fa-minus"></i>
+                                                                                        </span>
+                                                                                        <input class="form-control" data-min="1" t-att-id="'product_%s_value' %p.id" name="add_qty" value="0" type="text"/>
+                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                            <i class="fa fa-plus"></i>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="talbe_cell" t-att-id="'product_cell_%s' %%p.id">
+                                                                                    <ul style="list-style-type: none;">
+                                                                                        <li>Discount: <input name="discount"/></li>
+                                                                                        <li>KFP: 250</li>
+                                                                                        <li>DFP: 10</li>
+                                                                                        <li>PALL: 70</li>
+                                                                                        <li>NR: ?</li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </td>
+                                                                        </t>
+                                                                    </tr>
+                                                                    </t>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                            <!-- Unknown -->
+                                            <div class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" id="unknown_categ" style="padding: 0px; border-width: 0px;">
+
+                                            </div>
+                                        </div>
+
+                                        <!--
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 0px;" t-foreach="products" t-as="p">
                                             <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7" style="padding-left: 0px;">
                                                 <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %p.id"/>
@@ -70,6 +197,8 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        -->
+
                                     </div>
                                     <hr style="width: 100%"/>
                                     <div class="form-group">
@@ -185,6 +314,40 @@
                     value = parseInt(document.getElementById(product_id).value) + 1;
                     document.getElementById(product_id).value = value;
                 }
+
+                $(".talbe_cell").hide();
+                function toggle_cell(product_id)
+                {
+                    var product = "product_cell_" + product_id;
+                    $("#" + product).slideToggle("slow");
+                }
+
+                /*
+                var Users = new openerp.Model('res.users');
+                Users.call('change_password', ['oldpassword', 'newpassword'],
+                  {context: some_context}).then(function (result) {
+                    // do something with change_password result
+                });
+                Users.query(['name', 'login', 'user_email', 'signature'])
+                     .filter([['active', '=', true], ['company_id', '=', main_company]])
+                     .limit(15)
+                     .all().then(function (users) {
+                    // do work with users records
+                });
+                */
+
+
+                /*
+                window.alert("Booooooooooom");
+                var Partners = new openerp.Model('res.partner');
+                window.alert(Partners.query);
+                Partners.search([])
+                 .filter([])
+                 .first().then(function (users) {
+                    console.log("Heeeeeeeeeeeeej " + users.name);
+                 });
+                 */
+
             </script>
         </xpath>
     </template>
