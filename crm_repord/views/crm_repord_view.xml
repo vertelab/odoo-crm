@@ -123,8 +123,68 @@
                                                 </div>
                                             </div>
                                             <!-- Unknown -->
-                                            <div class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" id="unknown_categ" style="padding: 0px; border-width: 0px;">
-
+                                            <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="unknown_categ" style="padding: 0px;">
+                                                <t t-set="u_categs" t-value="request.env['product.category'].search([('parent_id', '=', 4)])"/>
+                                                <ul class="nav nav-tabs">
+                                                    <t t-foreach="u_categs" t-as="u_c">
+                                                        <li t-att-class="'%s' %'active' if u_c == u_categs[0] else ''">
+                                                            <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;unknown_categ_%s' %u_c.id"><span t-field="u_c.name"/></a>
+                                                        </li>
+                                                    </t>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <!-- Unkown category table -->
+                                                    <t t-foreach="u_categs" t-as="u_c">
+                                                        <div t-att-class="'active tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'
+                                                            if u_c == u_categs[0] else
+                                                            'tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'"
+                                                            t-att-id="'unknown_categ_%s' %u_c.id" style="padding: 0px;">
+                                                            <table class="table" style="background-color: #FFA62B;">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="text-center" style="background-color: #000; color: #fff;">Products</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <t t-foreach="products" t-as="p">
+                                                                    <tr>
+                                                                        <t t-if="p.categ_id in u_c">
+                                                                            <td>
+                                                                                <div class="col-md-12 mb8">
+                                                                                    <div class="col-md-12">
+                                                                                        <h6 class="text-center">[<span t-field="p.default_code"/>]</h6>
+                                                                                    </div>
+                                                                                    <div class="col-md-12">
+                                                                                        <h4 class="text-center" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                    </div>
+                                                                                    <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                            <i class="fa fa-minus"></i>
+                                                                                        </span>
+                                                                                        <input class="form-control" data-min="1" t-att-id="'product_%s_value' %p.id" name="add_qty" value="0" type="text"/>
+                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                            <i class="fa fa-plus"></i>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="talbe_cell" t-att-id="'product_cell_%s' %%p.id">
+                                                                                    <ul style="list-style-type: none;">
+                                                                                        <li>Discount: <input name="discount"/></li>
+                                                                                        <li>KFP: 250</li>
+                                                                                        <li>DFP: 10</li>
+                                                                                        <li>PALL: 70</li>
+                                                                                        <li>NR: ?</li>
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </td>
+                                                                        </t>
+                                                                    </tr>
+                                                                    </t>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </t>
+                                                </div>
                                             </div>
                                         </div>
 
