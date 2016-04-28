@@ -29,16 +29,16 @@ _logger = logging.getLogger(__name__)
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
-    
+
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
     order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount')],default='order',string="Order Type",)
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
     sale_order_id = fields.Many2one('sale.order', 'Sale Order')
-    
+
     @api.one
     def action_view_sale_order_line_make_invoice(self):
         pass
-    
+
     @api.one
     def action_convert_to_sale_order(self):
         if self.order_type != 'order':
@@ -47,7 +47,7 @@ class rep_order(models.Model):
             'name': self.name,
             'rep_order_id': self.id,
             'partner_id': self.partner_id.id,
-            
+
             'order_line': [(0, 0, {
                 'name': l.name,
                 'product_id': l.product_id and l.product_id.id or None,
@@ -60,14 +60,14 @@ class rep_order(models.Model):
 class rep_order_line(models.Model):
     _name = "rep.order.line"
     _inherit = "sale.order.line"
-    
+
     order_id = fields.Many2one('rep.order', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True, states={'draft':[('readonly',False)]})
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
-    
+
     rep_order_id = fields.Many2one('rep.order', 'Rep Order Reference')
-    
+
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
