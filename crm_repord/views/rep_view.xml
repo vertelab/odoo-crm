@@ -7,8 +7,8 @@
             This menu item's purpose is to overwrite another one defined in
             the base module in order to set new groups.
         -->
- 
-    
+
+
 
         <record id="view_sale_order_calendar" model="ir.ui.view">
             <field name="name">rep.order.calendar</field>
@@ -89,7 +89,7 @@
                         <button name="action_cancel" states="manual,progress" string="Cancel Order" type="object" groups="base.group_user"/>
                         <button name="invoice_cancel" states="invoice_except" string="Cancel Order" groups="base.group_user"/>
 -->
-                        
+
                         <button name="action_convert_to_sale_order" string="Convert to Order" attr="{'visible':[('order_type', 'in' ['order'])]}" class="oe_highlight" type="object" groups="base.group_user"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,progress,done" statusbar_colors='{"invoice_except":"red","waiting_date":"blue"}'/>
                 </header>
@@ -503,6 +503,7 @@
             <field name="view_id" ref="view_order_line_tree"/>
             <field name="context">{'search_default_confirmed': 1}</field>
         </record>
+<!--
         <record model="ir.ui.view" id="product_form_view_sale_order_button">
             <field name="name">product.product.rep.order</field>
             <field name="model">product.product</field>
@@ -517,7 +518,9 @@
                 </xpath>
             </field>
         </record>
+-->
 
+<!--
         <record model="ir.ui.view" id="product_template_form_view_sale_order_button">
             <field name="name">product.template.rep.order.button</field>
             <field name="model">product.template</field>
@@ -525,13 +528,14 @@
             <field name="groups_id" eval="[(4, ref('base.group_sale_salesman'))]"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='buttons']" position="inside">
-                    <button class="oe_inline oe_stat_button" name="action_view_sales" 
+                    <button class="oe_inline oe_stat_button" name="action_view_sales"
                         type="object" icon="fa-strikethrough">
                         <field string="Sales" name="sales_count" widget="statinfo" />
                     </button>
                 </xpath>
             </field>
         </record>
+-->
 
 
         <record model="ir.ui.view" id="view_company_inherit_form2">

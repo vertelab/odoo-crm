@@ -62,6 +62,7 @@ class rep_order_line(models.Model):
     _inherit = "sale.order.line"
 
     order_id = fields.Many2one('rep.order', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True, states={'draft':[('readonly',False)]})
+    tax_id = fields.Many2many('account.tax', 'rep_order_tax', 'order_line_id', 'tax_id', string='Taxes', readonly=True, states={'draft': [('readonly', False)]})
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
@@ -98,3 +99,15 @@ class MobileSaleView(http.Controller):
         parent_products = request.env['res.partner'].sudo().search([('id', '=', parter.id)]).parent_id.product_ids
         return request.website.render("crm_repord.mobile_order_view", {'partner': parter, 'products': products, 'parent_products': parent_products,})
 
+    #~ @http.route(['/so/<model("sale.order"):order>/interest'], type='json', auth="user")
+    #~ def sale_order_interest(self, order = None, **post):
+        #~ if order:
+            #~ partner = request.env['res.users'].browse(request.context.get("uid")).partner_id
+            #~ request.env['mail.message'].create({
+                #~ 'body': _("Yes, I'm interested in %s" % order.name),
+                #~ 'subject': 'Interested',
+                #~ 'author_id': partner.id,
+                #~ 'res_id': order.id,
+                #~ 'model': order._name,
+                #~ 'type': 'notification',})
+        #~ return _('Thanks for shown interest.')
