@@ -21,7 +21,7 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
-
+import openerp.addons.decimal_precision as dp
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -29,12 +29,25 @@ _logger = logging.getLogger(__name__)
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
-
+    
+    @api.multi
+    @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
+    def _repord_amount_all_wrapper(self):
+        values = self._amount_all_wrapper(None, None)
+        _logger.warn(values)
+        for order in self:
+            order.amount_untaxed = values.get(order.id, {}).get('amount_untaxed', 0)
+            order.amount_tax = values.get(order.id, {}).get('amount_tax', 0)
+            order.amount_total = values.get(order.id, {}).get('amount_total', 0)
+    
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
     order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount')],default='order',string="Order Type",)
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
     sale_order_id = fields.Many2one('sale.order', 'Sale Order')
-
+    amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
+    amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
+    amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
+    
     @api.one
     def action_view_sale_order_line_make_invoice(self):
         pass
