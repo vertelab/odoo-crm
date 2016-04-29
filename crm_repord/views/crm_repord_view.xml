@@ -75,6 +75,8 @@
                                                             if p_c == p_categs[0] else
                                                             'tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'"
                                                             t-att-id="'paolos_categ_%s' %p_c.id" style="padding: 0px;">
+                                                            <t t-set="order" t-value="request.env['rep.order'].search([('partner_id', '=', partner.id)])"/>
+                                                            <t t-set="order_line" t-value="request.env['rep.order.line'].search([('order_id', '=', order[0].id)])"/>
                                                             <table class="table" style="background-color: #FFA62B;">
                                                                 <thead>
                                                                     <tr>
@@ -85,6 +87,12 @@
                                                                     <t t-foreach="products" t-as="p">
                                                                     <tr>
                                                                         <t t-if="p.categ_id in p_c">
+                                                                            <t t-set="order_line_qty" t-value="0"/>
+                                                                            <t t-foreach="order_line" t-as="ol">
+                                                                                <t t-if="ol.product_id.id == p.id">
+                                                                                    <t t-set="order_line_qty" t-value="ol.product_uom_qty"/>
+                                                                                </t>
+                                                                            </t>
                                                                             <td>
                                                                                 <div class="col-md-12 mb8">
                                                                                     <div class="col-md-12">
@@ -94,18 +102,18 @@
                                                                                         <h4 class="text-center" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                                     </div>
                                                                                     <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
-                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                             <i class="fa fa-minus"></i>
                                                                                         </span>
-                                                                                        <input class="form-control" data-min="1" t-att-id="'product_%s_value' %p.id" name="add_qty" value="0" type="text"/>
-                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                            <input class="form-control" data-min="0" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="order_line_qty" type="number"/>
+                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                             <i class="fa fa-plus"></i>
                                                                                         </span>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="talbe_cell" t-att-id="'product_cell_%s' %%p.id">
+                                                                                <div class="talbe_cell" t-att-id="'product_cell_%s' %p.id">
                                                                                     <ul style="list-style-type: none;">
-                                                                                        <li>Discount: <input name="discount"/></li>
+                                                                                        <li>Discount: <input t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" class="form-control" type="number" name="discount"/></li>
                                                                                         <li>KFP: 250</li>
                                                                                         <li>DFP: 10</li>
                                                                                         <li>PALL: 70</li>
@@ -158,18 +166,18 @@
                                                                                         <h4 class="text-center" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                                     </div>
                                                                                     <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
-                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;%s_qty_%s&quot;)' %(partner.id, p.id)">
                                                                                             <i class="fa fa-minus"></i>
                                                                                         </span>
-                                                                                        <input class="form-control" data-min="1" t-att-id="'product_%s_value' %p.id" name="add_qty" value="0" type="text"/>
-                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;product_%s_value&quot;)' %p.id">
+                                                                                        <input class="form-control" data-min="1" t-att-id="'%s_qty_%s' %(partner.id, p.id)" name="add_qty" value="0" type="text"/>
+                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;%s_qty_%s&quot;)' %(partner.id, p.id)">
                                                                                             <i class="fa fa-plus"></i>
                                                                                         </span>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="talbe_cell" t-att-id="'product_cell_%s' %%p.id">
+                                                                                <div class="talbe_cell" t-att-id="'product_cell_%s' %p.id">
                                                                                     <ul style="list-style-type: none;">
-                                                                                        <li>Discount: <input name="discount"/></li>
+                                                                                        <li>Discount: <input t-att-id="'%s_discount_%s' %(partner.id, p.id)" name="discount"/></li>
                                                                                         <li>KFP: 250</li>
                                                                                         <li>DFP: 10</li>
                                                                                         <li>PALL: 70</li>
@@ -187,32 +195,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <!--
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 0px;" t-foreach="products" t-as="p">
-                                            <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7" style="padding-left: 0px;">
-                                                <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %p.id"/>
-                                            </div>
-                                            <div class="col-xs-6 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                                                <p class="text-center">
-                                                    <t t-if="p.default_code">
-                                                        <span>[<t t-esc="p.default_code"/>] </span>
-                                                    </t>
-                                                    <span class="text-center" t-field="p.product_tmpl_id"/>
-                                                </p>
-                                                <div class="input-group oe_website_spinner" style="margin: auto;">
-                                                    <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;product_%s_value&quot;)' %p.id">
-                                                        <i class="fa fa-minus"></i>
-                                                    </span>
-                                                    <input class="form-control" data-min="1" t-att-id="'product_%s_value' %p.id" name="add_qty" value="0" type="text"/>
-                                                    <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;product_%s_value&quot;)' %p.id">
-                                                        <i class="fa fa-plus"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        -->
-
                                     </div>
                                     <hr style="width: 100%"/>
                                     <div class="form-group">
@@ -314,6 +296,7 @@
     <template id="crm_javascript" inherit_id="website.layout">
         <xpath expr="//body" position="inside">
             <script>
+
                 function minus(product_id)
                 {
                     value = parseInt(document.getElementById(product_id).value)
@@ -336,31 +319,20 @@
                     $("#" + product).slideToggle("slow");
                 }
 
-                /*
-                var Users = new openerp.Model('res.users');
-                Users.call('change_password', ['oldpassword', 'newpassword'],
-                  {context: some_context}).then(function (result) {
-                    // do something with change_password result
-                });
-                Users.query(['name', 'login', 'user_email', 'signature'])
-                     .filter([['active', '=', true], ['company_id', '=', main_company]])
-                     .limit(15)
-                     .all().then(function (users) {
-                    // do work with users records
-                });
-                */
-
-
-                /*
-                window.alert("Booooooooooom");
-                var Partners = new openerp.Model('res.partner');
-                window.alert(Partners.query);
-                Partners.search([])
-                 .filter([])
-                 .first().then(function (users) {
-                    console.log("Heeeeeeeeeeeeej " + users.name);
-                 });
-                 */
+                /* send rep.order */
+                function send_rep_order(res_partner, product_id){
+                    quantity = res_partner + "_qty_" +product_id;
+                    discount = res_partner + "_discount_" +product_id;
+                    document.getElementById(quantity).value
+                    openerp.jsonRpc("/crm/send/repord", 'call', {
+                        'res_partner': res_partner,
+                        'product_id': product_id,
+                        'product_uom_qty': document.getElementById(quantity).value,
+                        'discount': document.getElementById(discount).value
+                    }).then(function () {
+                        window.alert('Rep order sent');
+                    });
+                }
 
             </script>
         </xpath>

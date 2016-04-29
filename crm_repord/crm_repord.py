@@ -29,7 +29,7 @@ _logger = logging.getLogger(__name__)
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
-    
+
     @api.multi
     @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
     def _repord_amount_all_wrapper(self):
@@ -39,7 +39,7 @@ class rep_order(models.Model):
             order.amount_untaxed = values.get(order.id, {}).get('amount_untaxed', 0)
             order.amount_tax = values.get(order.id, {}).get('amount_tax', 0)
             order.amount_total = values.get(order.id, {}).get('amount_total', 0)
-    
+
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
     order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount')],default='order',string="Order Type",)
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
@@ -47,7 +47,7 @@ class rep_order(models.Model):
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
-    
+
     @api.one
     def action_view_sale_order_line_make_invoice(self):
         pass
@@ -112,15 +112,66 @@ class MobileSaleView(http.Controller):
         parent_products = request.env['res.partner'].sudo().search([('id', '=', parter.id)]).parent_id.product_ids
         return request.website.render("crm_repord.mobile_order_view", {'partner': parter, 'products': products, 'parent_products': parent_products,})
 
-    #~ @http.route(['/so/<model("sale.order"):order>/interest'], type='json', auth="user")
-    #~ def sale_order_interest(self, order = None, **post):
-        #~ if order:
-            #~ partner = request.env['res.users'].browse(request.context.get("uid")).partner_id
-            #~ request.env['mail.message'].create({
-                #~ 'body': _("Yes, I'm interested in %s" % order.name),
-                #~ 'subject': 'Interested',
-                #~ 'author_id': partner.id,
-                #~ 'res_id': order.id,
-                #~ 'model': order._name,
-                #~ 'type': 'notification',})
-        #~ return _('Thanks for shown interest.')
+    @http.route(['/crm/send/repord'], type='json', auth="public", methods=['POST'], website=True)
+    def send_rep_order(self, res_partner, product_id, product_uom_qty, discount, **kw):
+        rep_order_ids = request.env['rep.order'].search([('partner_id', '=', int(res_partner))])
+        order_line = False
+        product = request.env['product.product'].search([('id', '=', int(product_id))])
+        for line in rep_order_ids[0].order_line:
+            if line.product_id.id == int(product_id):
+                order_line = line
+        if order_line:
+            order_line = request.env['rep.order.line'].search([('product_id', '=', int(product_id))])
+            order_line.write({
+                'product_uom_qty': float(product_uom_qty),
+                'price_unit': product.lst_price,
+                'discount': float(discount) if discount != '' else 0.00,
+            })
+        else:
+            order_line = request.env['rep.order.line'].search([('order_id', '=', rep_order_ids[0].id)])
+            order_line.create({
+                'order_id': rep_order_ids[0].id,
+                'product_id': product_id,
+                'name': product.name,
+                'product_uom_qty': float(product_uom_qty),
+                'product_uom': product.uom_id.id,
+                'price_unit': product.lst_price,
+                'tax_id': [(6, 0, [tax_id.id for tax_id in product.taxes_id])],
+                'discount': float(discount) if discount != '' else 0.00,
+            })
+
+        #~ product_uos_qty = product_uom_qty
+        #~ ro = rep_order_ids[0]
+        #~ result = request.registry.get('rep.order.line').product_id_change(
+        #~ request.cr, request.uid, [],
+        #~ ro.pricelist_id,
+        #~ product_id,
+        #~ product_uom_qty,
+        #~ False,
+        #~ product_uos_qty,
+        #~ False,
+        #~ None,
+        #~ ro.partner_id.id,
+        #~ False,
+        #~ True,
+        #~ ro.date_order,
+        #~ False,
+        #~ ro.fiscal_position and ro.fiscal_position.id or None,
+        #~ False,
+        #~ context=None)
+
+        #~ _logger.warn('************* %s' %result['value']['tax_id'])
+        #~ request.env['rep.order.line'].search([('order_id', '=', rep_order_ids[0].id)]).create({
+            #~ 'order_id': rep_order_ids[0].id,
+            #~ 'product_id': product_id,
+            #~ 'name': result['value']['name'],
+            #~ 'product_uom_qty': float(product_uom_qty),
+            #~ 'product_uom': result['value']['product_uom'],
+            #~ 'price_unit': result['value']['price_unit'],
+            #~ 'tax_id': result['value']['tax_id'],
+            #~ 'discount': float(discount),
+        #~ })
+
+
+
+
