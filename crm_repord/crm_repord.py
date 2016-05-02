@@ -122,12 +122,15 @@ class MobileSaleView(http.Controller):
                 order_line = line
         if order_line:
             order_line = request.env['rep.order.line'].search([('product_id', '=', int(product_id))])
-            order_line.write({
-                'product_uom_qty': float(product_uom_qty),
-                'price_unit': product.lst_price,
-                'discount': float(discount) if discount != '' else 0.00,
-            })
-        else:
+            if order_line.product_uom_qty == 0.000:
+                order_line.unlink()
+            else:
+                order_line.write({
+                    'product_uom_qty': float(product_uom_qty),
+                    'price_unit': product.lst_price,
+                    'discount': float(discount) if discount != '' else 0.00,
+                })
+        elif product_uom_qty > 0.000:
             order_line = request.env['rep.order.line'].search([('order_id', '=', rep_order_ids[0].id)])
             order_line.create({
                 'order_id': rep_order_ids[0].id,

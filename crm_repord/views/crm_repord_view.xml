@@ -88,9 +88,11 @@
                                                                     <tr>
                                                                         <t t-if="p.categ_id in p_c">
                                                                             <t t-set="order_line_qty" t-value="0"/>
+                                                                            <t t-set="order_line_discount" t-value="0"/>
                                                                             <t t-foreach="order_line" t-as="ol">
                                                                                 <t t-if="ol.product_id.id == p.id">
                                                                                     <t t-set="order_line_qty" t-value="ol.product_uom_qty"/>
+                                                                                    <t t-set="order_line_discount" t-value="ol.discount"/>
                                                                                 </t>
                                                                             </t>
                                                                             <td>
@@ -99,21 +101,33 @@
                                                                                         <h6 class="text-center">[<span t-field="p.default_code"/>]</h6>
                                                                                     </div>
                                                                                     <div class="col-md-12">
-                                                                                        <h4 class="text-center" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                        <h4 class="text-center mb16" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                                     </div>
                                                                                     <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
-                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                            <i class="fa fa-minus"></i>
+                                                                                        <span class="input-group-addon" style="color: #fff; background-color: #f00;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-minus"/>
                                                                                         </span>
-                                                                                            <input class="form-control" data-min="0" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="order_line_qty" type="number"/>
-                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                            <i class="fa fa-plus"></i>
+                                                                                        <span class="input-group-addon">Quantity: </span>
+                                                                                        <input class="form-control" data-min="0" style="width: 50px;" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
+                                                                                        <span class="input-group-addon"><t t-esc="p.uom_id.name"/></span>
+                                                                                        <span class="input-group-addon float_left" style="color: #fff; background-color: #0f0;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-plus"/>
                                                                                         </span>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="talbe_cell" t-att-id="'product_cell_%s' %p.id">
+                                                                                    <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                        <span class="input-group-addon" style="color: #fff; background-color: #f00;" t-att-onclick="'minus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-minus"/>
+                                                                                        </span>
+                                                                                        <span class="input-group-addon">Discount: </span>
+                                                                                        <input class="form-control" style="width: 50px;" data-min="0" t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="discount" t-att-value="'0' if order_line_discount == 0.0 else order_line_discount" type="number"/>
+                                                                                        <span class="input-group-addon">%</span>
+                                                                                        <span class="input-group-addon float_left" style="color: #fff; background-color: #0f0;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-plus"/>
+                                                                                        </span>
+                                                                                    </div>
                                                                                     <ul style="list-style-type: none;">
-                                                                                        <li>Discount: <input t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" class="form-control" type="number" name="discount"/></li>
                                                                                         <li>KFP: 250</li>
                                                                                         <li>DFP: 10</li>
                                                                                         <li>PALL: 70</li>
@@ -147,6 +161,8 @@
                                                             if l_c == l_categs[0] else
                                                             'tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'"
                                                             t-att-id="'leroy_categ_%s' %l_c.id" style="padding: 0px;">
+                                                            <t t-set="order" t-value="request.env['rep.order'].search([('partner_id', '=', partner.id)])"/>
+                                                            <t t-set="order_line" t-value="request.env['rep.order.line'].search([('order_id', '=', order[0].id)])"/>
                                                             <table class="table" style="background-color: #FFA62B;">
                                                                 <thead>
                                                                     <tr>
@@ -156,6 +172,14 @@
                                                                 <tbody>
                                                                     <t t-foreach="products" t-as="p">
                                                                     <tr>
+                                                                        <t t-set="order_line_qty" t-value="0"/>
+                                                                        <t t-set="order_line_discount" t-value="0"/>
+                                                                        <t t-foreach="order_line" t-as="ol">
+                                                                            <t t-if="ol.product_id.id == p.id">
+                                                                                <t t-set="order_line_qty" t-value="ol.product_uom_qty"/>
+                                                                                <t t-set="order_line_discount" t-value="ol.discount"/>
+                                                                            </t>
+                                                                        </t>
                                                                         <t t-if="p.categ_id in l_c">
                                                                             <td>
                                                                                 <div class="col-md-12 mb8">
@@ -163,21 +187,33 @@
                                                                                         <h6 class="text-center">[<span t-field="p.default_code"/>]</h6>
                                                                                     </div>
                                                                                     <div class="col-md-12">
-                                                                                        <h4 class="text-center" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                        <h4 class="text-center mb16" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                                     </div>
                                                                                     <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
-                                                                                        <span class="input-group-addon mb8" t-att-onclick="'minus(&quot;%s_qty_%s&quot;)' %(partner.id, p.id)">
-                                                                                            <i class="fa fa-minus"></i>
+                                                                                        <span class="input-group-addon" style="color: #fff; background-color: #f00;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-minus"/>
                                                                                         </span>
-                                                                                        <input class="form-control" data-min="1" t-att-id="'%s_qty_%s' %(partner.id, p.id)" name="add_qty" value="0" type="text"/>
-                                                                                        <span class="input-group-addon mb8 float_left" t-att-onclick="'plus(&quot;%s_qty_%s&quot;)' %(partner.id, p.id)">
-                                                                                            <i class="fa fa-plus"></i>
+                                                                                        <span class="input-group-addon">Quantity: </span>
+                                                                                        <input style="width: 50px;" class="form-control" data-min="0" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
+                                                                                        <span class="input-group-addon"><t t-esc="p.uom_id.name"/></span>
+                                                                                        <span class="input-group-addon float_left" style="color: #fff; background-color: #0f0;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-plus"/>
                                                                                         </span>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="talbe_cell" t-att-id="'product_cell_%s' %p.id">
+                                                                                    <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                        <span class="input-group-addon" style="color: #fff; background-color: #f00;" t-att-onclick="'minus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-minus"/>
+                                                                                        </span>
+                                                                                        <span class="input-group-addon">Discount: </span>
+                                                                                        <input style="width: 50px;" class="form-control" data-min="0" t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="discount" t-att-value="'0' if order_line_discount == 0.0 else order_line_discount" type="number"/>
+                                                                                        <span class="input-group-addon">%</span>
+                                                                                        <span class="input-group-addon float_left" style="color: #fff; background-color: #0f0;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <i class="fa fa-plus"/>
+                                                                                        </span>
+                                                                                    </div>
                                                                                     <ul style="list-style-type: none;">
-                                                                                        <li>Discount: <input t-att-id="'%s_discount_%s' %(partner.id, p.id)" name="discount"/></li>
                                                                                         <li>KFP: 250</li>
                                                                                         <li>DFP: 10</li>
                                                                                         <li>PALL: 70</li>
@@ -202,6 +238,17 @@
                                             <label class="col-md-4 control-label" for="radios">
                                                 <span class="pull-right">Beställningstyp:</span>
                                             </label>
+<!--
+                                            <t t-set="order_type" t-value="request.env['ir.model.fields'].search([('name', '=', 'order_type')])[0]"/>
+                                            <span>Framför</span>
+                                            <span t-raw="order_type.readonly"/>
+                                            <span>Bakom</span>
+-->
+<!--
+                                            <t t-foreach="order_type.get_values()" t-as="ot">
+                                                <span t-field="ot.order_type"/>
+                                            </t>
+-->
                                             <div class="col-md-8 mb16">
                                                 <label class="radio-inline" for="radios-0">
                                                     <input name="radios" id="radios-0" value="1" checked="checked" type="radio"/> typ 1
@@ -293,6 +340,21 @@
         </t>
     </template>
 
+    <template id="crm_css" inherit_id="website.layout">
+        <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+            <style>
+                input[type=number]::-webkit-inner-spin-button,
+                input[type=number]::-webkit-outer-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+                input[type='number'] {
+                    -moz-appearance:textfield;
+                }
+            </style>
+        </xpath>
+    </template>
+
     <template id="crm_javascript" inherit_id="website.layout">
         <xpath expr="//body" position="inside">
             <script>
@@ -329,8 +391,6 @@
                         'product_id': product_id,
                         'product_uom_qty': document.getElementById(quantity).value,
                         'discount': document.getElementById(discount).value
-                    }).then(function () {
-                        window.alert('Rep order sent');
                     });
                 }
 
