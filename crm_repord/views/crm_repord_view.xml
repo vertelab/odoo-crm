@@ -54,7 +54,7 @@
                                                 <a data-toggle="tab" style="border-width: 0px;" href="#paolos_categ"><img src="/logo.png" style="width: 100px;"/></a>
                                             </li>
                                             <li>
-                                                <a data-toggle="tab" style="border-width: 0px;" href="#unknown_categ"><img src="/logo.png" style="width: 100px;"/></a>
+                                                <a data-toggle="tab" style="border-width: 0px;" href="#leroy_categ"><img src="/logo.png" style="width: 100px;"/></a>
                                             </li>
                                         </ul>
                                         <div class="tab-content">
@@ -130,23 +130,23 @@
                                                     </t>
                                                 </div>
                                             </div>
-                                            <!-- Unknown -->
-                                            <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="unknown_categ" style="padding: 0px;">
-                                                <t t-set="u_categs" t-value="request.env['product.category'].search([('parent_id', '=', 4)])"/>
+                                            <!-- Leröy -->
+                                            <div class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" id="leroy_categ" style="padding: 0px;">
+                                                <t t-set="l_categs" t-value="request.env['product.category'].search([('parent_id', '=', 4)])"/>
                                                 <ul class="nav nav-tabs">
-                                                    <t t-foreach="u_categs" t-as="u_c">
-                                                        <li t-att-class="'%s' %'active' if u_c == u_categs[0] else ''">
-                                                            <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;unknown_categ_%s' %u_c.id"><span t-field="u_c.name"/></a>
+                                                    <t t-foreach="l_categs" t-as="l_c">
+                                                        <li t-att-class="'%s' %'active' if l_c == l_categs[0] else ''">
+                                                            <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;leroy_categ_%s' %l_c.id"><span t-field="l_c.name"/></a>
                                                         </li>
                                                     </t>
                                                 </ul>
                                                 <div class="tab-content">
-                                                    <!-- Unkown category table -->
-                                                    <t t-foreach="u_categs" t-as="u_c">
+                                                    <!-- Leröy category table -->
+                                                    <t t-foreach="l_categs" t-as="l_c">
                                                         <div t-att-class="'active tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'
-                                                            if u_c == u_categs[0] else
+                                                            if l_c == l_categs[0] else
                                                             'tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'"
-                                                            t-att-id="'unknown_categ_%s' %u_c.id" style="padding: 0px;">
+                                                            t-att-id="'leroy_categ_%s' %l_c.id" style="padding: 0px;">
                                                             <table class="table" style="background-color: #FFA62B;">
                                                                 <thead>
                                                                     <tr>
@@ -156,7 +156,7 @@
                                                                 <tbody>
                                                                     <t t-foreach="products" t-as="p">
                                                                     <tr>
-                                                                        <t t-if="p.categ_id in u_c">
+                                                                        <t t-if="p.categ_id in l_c">
                                                                             <td>
                                                                                 <div class="col-md-12 mb8">
                                                                                     <div class="col-md-12">
