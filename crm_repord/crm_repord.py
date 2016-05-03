@@ -106,11 +106,18 @@ class res_partner(models.Model):
 
 
 class MobileSaleView(http.Controller):
-    @http.route(['/crm/<model("res.partner"):parter>/repord'], type='http', auth="public", website=True)
-    def repord(self, parter=None, **post):
-        products = request.env['res.partner'].sudo().search([('id', '=', parter.id)]).product_ids
-        parent_products = request.env['res.partner'].sudo().search([('id', '=', parter.id)]).parent_id.product_ids
-        return request.website.render("crm_repord.mobile_order_view", {'partner': parter, 'products': products, 'parent_products': parent_products,})
+    @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
+    def repord(self, partner=None, **post):
+        products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).product_ids
+        parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).parent_id.product_ids
+        rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id)])
+        if not rep_order:
+            rep_order = request.env['rep.order'].create({
+                'partner_id': partner.id
+            })
+        else:
+            rep_order = rep_order[0]
+        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
 
     @http.route(['/crm/send/repord'], type='json', auth="public", methods=['POST'], website=True)
     def send_rep_order(self, res_partner, product_id, product_uom_qty, discount, **kw):
@@ -122,7 +129,7 @@ class MobileSaleView(http.Controller):
                 order_line = line
         if order_line:
             order_line = request.env['rep.order.line'].search([('product_id', '=', int(product_id))])
-            if order_line.product_uom_qty == 0.000:
+            if float(product_uom_qty) == 0.000:
                 order_line.unlink()
             else:
                 order_line.write({
