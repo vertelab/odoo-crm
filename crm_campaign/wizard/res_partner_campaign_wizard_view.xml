@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="res_partner_note_wizard_form">
+            <field name="name">res.partner.note.wizard.form</field>
+            <field name="model">res.partner.note.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Create Note">
+                    <span style="color: #f00;">OBS: din första rad blir en titel</span>
+                    <group>
+                        <field name="memo"/>
+                    </group>
+                    <footer>
+                        <button name="create_note" string="Create" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_res_partner_note_wizard_form"
+            name="Create Note(s)"
+            src_model="res.partner"
+            res_model="res.partner.note.wizard"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"/>
+
+        <record model="ir.ui.view" id="res_partner_campaign_wizard_form">
+            <field name="name">res.partner.campaign.wizard.form</field>
+            <field name="model">res.partner.campaign.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Create Campaign">
+                    <group>
+                        <field name="name" colspan="2"/>
+                        <field name="campaign_id" colspan="2"/>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <footer>
+                        <button name="create_campaign" string="Create" type="object" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_res_partner_campaig_wizard_form"
+            name="Create Campaign(s)"
+            src_model="res.partner"
+            res_model="res.partner.campaign.wizard"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"/>
+
+    </data>
+</openerp>

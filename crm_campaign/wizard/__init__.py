@@ -1,0 +1,1 @@
+import res_partner_campaign_wizard
