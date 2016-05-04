@@ -232,6 +232,18 @@
                                             <p>Reference Nr: <t t-esc="partner.ref"/></p>
                                             <p>Address: <t t-esc="partner.street"/></p>
                                             <p><t t-esc="partner.zip"/>  <t t-esc="partner.city"/></p>
+                                            <t t-if="partner.child_ids">
+                                                <t t-foreach="partner.child_ids" t-as="c">
+                                                    <p><i class="fa fa-user"/> <t t-esc="c.name"/></p>
+                                                    <p><i class="fa fa-phone"/> <t t-esc="c.phone"/></p>
+                                                </t>
+                                            </t>
+                                            <t t-set="notes" t-value="request.env['note.note'].sudo().search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                                            <t t-foreach="notes" t-as="note">
+                                                <div t-att-id="'note_%s' %note.id" t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" class="mb8" style="border: 2px solid #369;">
+                                                    <p t-att-id="'note_%s_text' %note.id" t-field="note.name" style="padding: 5px; margin: 0px;"/>
+                                                </div>
+                                            </t>
                                         </div>
                                     </div>
                                 </div>
@@ -295,6 +307,15 @@
                         'product_uom_qty': document.getElementById(quantity).value,
                         'discount': document.getElementById(discount).value
                     });
+                }
+
+                /* change todo list to done */
+                function todo_done(note_id){
+                    note_text = "note_" + note_id + "_text";
+                    openerp.jsonRpc("/crm/todo/done", 'call', {
+                        'note_id': note_id,
+                    });
+                    $("#" + note_text).css("text-decoration", "line-through");
                 }
 
             </script>
