@@ -22,6 +22,7 @@ from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
 import openerp.addons.decimal_precision as dp
+import datetime
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -149,6 +150,15 @@ class MobileSaleView(http.Controller):
                 'tax_id': [(6, 0, [tax_id.id for tax_id in product.taxes_id])],
                 'discount': float(discount) if discount != '' else 0.00,
             })
+
+    @http.route(['/crm/todo/done'], type='json', auth="public", methods=['POST'], website=True)
+    def todo_done(self, note_id, **kw):
+        #~ note = request.env['note.note'].search([('id', '=', int(note_id))])
+        note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
+        note.write({
+            'open': False,
+            'date_done': datetime.date.today(),
+        })
 
         #~ product_uos_qty = product_uom_qty
         #~ ro = rep_order_ids[0]
