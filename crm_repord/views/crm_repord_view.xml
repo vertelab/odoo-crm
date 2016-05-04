@@ -143,26 +143,15 @@
                                     <hr style="width: 100%"/>
                                     <div class="form-group">
                                         <div class="col-md-8">
-                                            <label class="col-md-4 control-label" for="radios">
+                                            <label class="col-md-4 control-label" for="order_type">
                                                 <span class="pull-right">Beställningstyp:</span>
                                             </label>
-                                            <t t-set="order_type" t-value="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']"/>
-                                            <t t-foreach="order_type" t-as="ot">
-                                                <span t-raw="ot"/>
-                                            </t>
                                             <div class="col-md-8 mb16">
-                                                <label class="radio-inline" for="radios-0">
-                                                    <input name="radios" id="radios-0" value="1" checked="checked" type="radio"/> typ 1
-                                                </label>
-                                                <label class="radio-inline" for="radios-1">
-                                                    <input name="radios" id="radios-1" value="2" type="radio"/> typ 2
-                                                </label>
-                                                <label class="radio-inline" for="radios-2">
-                                                    <input name="radios" id="radios-2" value="3" type="radio"/> typ 3
-                                                </label>
-                                                <label class="radio-inline" for="radios-3">
-                                                    <input name="radios" id="radios-3" value="4" type="radio"/> typ 4
-                                                </label>
+                                                <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary">
+                                                    <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
+                                                        <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
+                                                    </t>
+                                                </select>
                                             </div>
                                             <label class="col-md-4 control-label" for="leveransvecka">
                                                 <span class="pull-right">Leveransvecka:</span>
