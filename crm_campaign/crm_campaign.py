@@ -29,9 +29,16 @@ class crm_lead(models.Model):
 
     campaign_id = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
 
+
 class marketing_campaign(models.Model):
     _inherit='marketing.campaign'
 
     campaign_type = fields.Selection([('local', 'Local'), ('central', 'Central')], string='Campaign type')
+
+
+class note_note(models.Model):
+    _inherit='note.note'
+
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

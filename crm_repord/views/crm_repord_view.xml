@@ -13,19 +13,6 @@
         </field>
     </record>
 
-<!--
-    <record id="view_product_form" model="ir.ui.view">
-        <field name="name">product.product.form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_template_form_view"/>
-        <field name="arch" type="xml">
-            <page string="Information" position="inside">
-                <field name="partner_id" widget="many2many_tags"/>
-            </page>
-        </field>
-    </record>
--->
-
     <template id="mobile_order_view" name="Mobile Order View">
         <t t-call="website.layout">
             <div id="wrap">
@@ -203,7 +190,7 @@
                                 </div>
 
                                 <!-- Kedjans sortiment -->
-                                <div id="kedjans_sortiment" class="tab-pane fade in" style="padding: 0px;">
+                                <div id="kedjans_sortiment" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container mb64">
                                         <h2 class="text-center mb32" t-esc="partner.parent_id.name"/>
                                         <t t-foreach="parent_products" t-as="pp">
@@ -248,8 +235,21 @@
                                 </div>
 
                                 <!-- Kundkort -->
-                                <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="kund_kort" style="padding: 0px;">
-                                    <!-- TODO: design kundkort -->
+                                <div id="kund_kort" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                                            <div class="col-xs-12 mb8">
+                                                <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/>
+                                            </div>
+                                            <h4 t-field="partner.name"/>
+                                            <p>GLN Nr: <t t-esc="partner.gs1_gln"/></p>
+                                            <p>Telephone: <t t-esc="partner.phone"/></p>
+                                            <p>Email: <t t-esc="partner.email"/></p>
+                                            <p>Reference Nr: <t t-esc="partner.ref"/></p>
+                                            <p>Address: <t t-esc="partner.street"/></p>
+                                            <p><t t-esc="partner.zip"/>  <t t-esc="partner.city"/></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

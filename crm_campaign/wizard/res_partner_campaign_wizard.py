@@ -16,6 +16,7 @@ class res_partner_note_wizard(models.TransientModel):
             for p in n.partner_ids:
                 n.env['note.note'].create({
                     'memo': n.memo,
+                    'partner_id': p.id,
                 })
 
 

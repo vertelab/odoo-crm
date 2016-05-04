@@ -33,6 +33,7 @@
     'depends': ['base','crm', 'note', 'edi_gs1', 'marketing_campaign'],
     'data': [
         'views/crm_campaign_view.xml',
+        'views/crm_campaign_data.xml',
         'wizard/res_partner_campaign_wizard_view.xml',
     ],
     'application': False,
