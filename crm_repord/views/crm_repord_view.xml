@@ -143,26 +143,15 @@
                                     <hr style="width: 100%"/>
                                     <div class="form-group">
                                         <div class="col-md-8">
-                                            <label class="col-md-4 control-label" for="radios">
+                                            <label class="col-md-4 control-label" for="order_type">
                                                 <span class="pull-right">Beställningstyp:</span>
                                             </label>
-                                            <t t-set="order_type" t-value="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']"/>
-                                            <t t-foreach="order_type" t-as="ot">
-                                                <span t-raw="ot"/>
-                                            </t>
                                             <div class="col-md-8 mb16">
-                                                <label class="radio-inline" for="radios-0">
-                                                    <input name="radios" id="radios-0" value="1" checked="checked" type="radio"/> typ 1
-                                                </label>
-                                                <label class="radio-inline" for="radios-1">
-                                                    <input name="radios" id="radios-1" value="2" type="radio"/> typ 2
-                                                </label>
-                                                <label class="radio-inline" for="radios-2">
-                                                    <input name="radios" id="radios-2" value="3" type="radio"/> typ 3
-                                                </label>
-                                                <label class="radio-inline" for="radios-3">
-                                                    <input name="radios" id="radios-3" value="4" type="radio"/> typ 4
-                                                </label>
+                                                <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary">
+                                                    <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
+                                                        <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
+                                                    </t>
+                                                </select>
                                             </div>
                                             <label class="col-md-4 control-label" for="leveransvecka">
                                                 <span class="pull-right">Leveransvecka:</span>
@@ -243,6 +232,26 @@
                                             <p>Reference Nr: <t t-esc="partner.ref"/></p>
                                             <p>Address: <t t-esc="partner.street"/></p>
                                             <p><t t-esc="partner.zip"/>  <t t-esc="partner.city"/></p>
+                                            <t t-if="partner.child_ids">
+                                                <t t-foreach="partner.child_ids" t-as="c">
+                                                    <p><i class="fa fa-user"/> <t t-esc="c.name"/></p>
+                                                    <p><i class="fa fa-phone"/> <t t-esc="c.phone"/></p>
+                                                </t>
+                                            </t>
+                                            <t t-set="notes" t-value="request.env['note.note'].sudo().search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                                            <t t-foreach="notes" t-as="note">
+                                                <div t-att-id="'note_%s' %note.id" t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" class="mb8" style="border: 2px solid #369;">
+                                                    <p t-att-id="'note_%s_text' %note.id" t-field="note.name" style="padding: 5px; margin: 0px;"/>
+                                                </div>
+                                            </t>
+                                            <t t-set="meetings" t-value="request.env['calendar.event'].search([])"/>
+                                            <t t-foreach="meetings" t-as="m">
+                                                <t t-if="partner in m.partner_ids">
+                                                    <t t-if="request.env.ref('crm_repord.categ_meet6') not in m.categ_ids">
+                                                        <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success">Customer Visited</button>
+                                                    </t>
+                                                </t>
+                                            </t>
                                         </div>
                                     </div>
                                 </div>
@@ -306,6 +315,24 @@
                         'product_uom_qty': document.getElementById(quantity).value,
                         'discount': document.getElementById(discount).value
                     });
+                }
+
+                /* change todo list to done */
+                function todo_done(note_id){
+                    note_text = "note_" + note_id + "_text";
+                    openerp.jsonRpc("/crm/todo/done", 'call', {
+                        'note_id': note_id,
+                    });
+                    $("#" + note_text).css("text-decoration", "line-through");
+                }
+
+                /* change status of meeting */
+                function customer_visited(partner_id){
+                    button = partner_id + "_meeting";
+                    openerp.jsonRpc("/crm/meeting/visited", 'call', {
+                        'partner_id': partner_id,
+                    });
+                    $("#" + button).addClass("hidden");
                 }
 
             </script>
