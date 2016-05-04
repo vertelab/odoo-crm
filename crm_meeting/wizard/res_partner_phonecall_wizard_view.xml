@@ -40,7 +40,7 @@
     'allday': False,
     'week_number': 'Undefied',
     'weekday': 'Friday',
-    'location': o.zip,
+    'location': o.city,
     'description': 'http://paolosfoodtruck.se/crm/%s/repord' %o.id,
     })
             </field>

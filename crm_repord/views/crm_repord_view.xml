@@ -146,15 +146,10 @@
                                             <label class="col-md-4 control-label" for="radios">
                                                 <span class="pull-right">Beställningstyp:</span>
                                             </label>
-<!--
-                                            <t t-set="order_type" t-value="request.env['ir.model.fields'].search([('name', '=', 'order_type')])[0]"/>
-                                            <span>Framför</span>
-                                            <span t-raw="order_type.readonly"/>
-                                            <span>Bakom</span>
-                                            <t t-foreach="order_type.get_values()" t-as="ot">
-                                                <span t-field="ot.order_type"/>
+                                            <t t-set="order_type" t-value="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']"/>
+                                            <t t-foreach="order_type" t-as="ot">
+                                                <span t-raw="ot"/>
                                             </t>
--->
                                             <div class="col-md-8 mb16">
                                                 <label class="radio-inline" for="radios-0">
                                                     <input name="radios" id="radios-0" value="1" checked="checked" type="radio"/> typ 1
