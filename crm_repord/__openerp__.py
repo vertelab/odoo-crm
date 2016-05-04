@@ -29,7 +29,7 @@ CRM Repord for mobile device
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['base', 'sale', 'product', 'website'],
+    'depends': ['base', 'sale', 'product', 'website', 'edi_gs1', 'crm_campaign'], #Maybe not campaign, but one of it's dependencies?
     'data': [
         'views/crm_repord_view.xml',
         'views/rep_view.xml',
