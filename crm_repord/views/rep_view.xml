@@ -43,6 +43,7 @@
                     <field name="date_order"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
+                    <field name="order_id"/>
                     <field name="amount_total" sum="Total Tax Included"/>
                     <field name="state"/>
                 </tree>
@@ -112,6 +113,7 @@
                             <field name="client_order_ref"/>
                             <field domain="[('type','=','sale')]" name="pricelist_id" groups="product.group_sale_pricelist" on_change="onchange_pricelist_id(pricelist_id,order_line)"/>
                             <field name="currency_id" invisible="1"/>
+                            <field name="order_id"/>                            
                         </group>
                     </group>
                     <notebook>

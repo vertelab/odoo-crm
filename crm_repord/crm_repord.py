@@ -43,7 +43,7 @@ class rep_order(models.Model):
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
     order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount')],default='order',string="Order Type",)
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
-    sale_order_id = fields.Many2one('sale.order', 'Sale Order')
+    order_id = fields.Many2one('sale.order', 'Sale Order')
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
@@ -56,8 +56,8 @@ class rep_order(models.Model):
     def action_convert_to_sale_order(self):
         if self.order_type != 'order':
             raise Warning("Rep order is not of type order.")
-        self.env['sale.order'].create({
-            'name': self.name,
+        order  = self.env['sale.order'].create({
+            'name': '/',
             'rep_order_id': self.id,
             'partner_id': self.partner_id.id,
 
@@ -69,6 +69,15 @@ class rep_order(models.Model):
                 'tax_id': l.tax_id and l.tax_id.id or None,
             }) for l in self.order_line],
         })
+        self.order_id = order.id
+        order.rep_order_id = self.id
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', '/') == '/':
+            vals['name'] = self.env['ir.sequence'].next_by_id(self.env.ref('crm_repord.sequence_repord').id) or '/'
+        new_id = super(rep_order, self).create(vals)
+        return new_id
 
 class rep_order_line(models.Model):
     _name = "rep.order.line"
@@ -121,10 +130,18 @@ class MobileSaleView(http.Controller):
 
     @http.route(['/crm/send/repord'], type='json', auth="public", methods=['POST'], website=True)
     def send_rep_order(self, res_partner, product_id, product_uom_qty, discount, **kw):
-        rep_order_ids = request.env['rep.order'].search([('partner_id', '=', int(res_partner))])
+        rep_order_ids = request.env['rep.order'].search([('partner_id', '=', int(res_partner)),('state','=','draft')])
+        if len(rep_order_ids)>0:
+            repord = rep_order_ids[0]
+        else:
+            repord = request.env['rep.order'].create({
+                'partner_id': int(res_partner),
+                'state': 'draft',
+            })
+        
         order_line = False
         product = request.env['product.product'].search([('id', '=', int(product_id))])
-        for line in rep_order_ids[0].order_line:
+        for line in repord.order_line:
             if line.product_id.id == int(product_id):
                 order_line = line
         if order_line:
@@ -138,7 +155,7 @@ class MobileSaleView(http.Controller):
                     'discount': float(discount) if discount != '' else 0.00,
                 })
         elif product_uom_qty > 0.000:
-            order_line = request.env['rep.order.line'].search([('order_id', '=', rep_order_ids[0].id)])
+            order_line = request.env['rep.order.line'].search([('order_id', '=', repord.id)])
             order_line.create({
                 'order_id': rep_order_ids[0].id,
                 'product_id': product_id,
