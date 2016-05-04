@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="calendar.event.type" id="categ_meet6">
+            <field name="name">Visited</field>
+        </record>
+
+    </data>
+</openerp>

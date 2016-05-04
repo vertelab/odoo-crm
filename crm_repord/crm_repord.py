@@ -153,12 +153,21 @@ class MobileSaleView(http.Controller):
 
     @http.route(['/crm/todo/done'], type='json', auth="public", methods=['POST'], website=True)
     def todo_done(self, note_id, **kw):
-        #~ note = request.env['note.note'].search([('id', '=', int(note_id))])
         note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
         note.write({
             'open': False,
             'date_done': datetime.date.today(),
         })
+
+    @http.route(['/crm/meeting/visited'], type='json', auth="public", methods=['POST'], website=True)
+    def customer_visited(self, partner_id, **kw):
+        meetings = request.env['calendar.event'].search([])
+        partner = request.env['res.partner'].search([('id', '=', int(partner_id))])
+        for m in meetings:
+            if partner in m.partner_ids:
+                m.write({
+                    'categ_ids': [(4, request.env.ref('crm_repord.categ_meet6').id, _)],
+                })
 
         #~ product_uos_qty = product_uom_qty
         #~ ro = rep_order_ids[0]
