@@ -34,13 +34,15 @@
                                 <!-- Butiksorder -->
                                 <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="butiks_order" style="padding: 0px;">
                                     <div class="container mb64">
-                                        <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', 2)])"/>
+                                        <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', 2)], order='id')"/>
                                         <h2 class="text-center mb32" t-esc="partner.name"/>
                                         <!-- navigator -->
                                         <ul class="nav nav-tabs">
                                             <t t-foreach="product_categories" t-as="brand_categs">
                                                 <li t-att-class="active if p_categs == product_categories[0] else ''">
-                                                    <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><img src="/logo.png" style="width: 100px;"/></a>
+                                                    <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id">
+                                                        <img itemprop="image" class="img img-responsive" style="margin: auto; width: 100px;" t-att-src="'/website/image/product.category/%s/website_image/150x150' %brand_categs.id"/>
+                                                    </a>
                                                 </li>
                                             </t>
                                         </ul>
