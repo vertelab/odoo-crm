@@ -157,14 +157,7 @@
                                                 <span class="pull-right">Leveransvecka:</span>
                                             </label>
                                             <div class="col-md-8 mb16">
-                                                <div class="">
-                                                    <select id="leveransvecka" name="leveransvecka" class="form-control selectpicker dropup" data-style="btn-primary">
-                                                        <option value="1">Vecka 1</option>
-                                                        <option value="2">Vecka 2</option>
-                                                        <option value="3">Vecka 3</option>
-                                                        <option value="4">Vecka 4</option>
-                                                    </select>
-                                                </div>
+                                                    <input id="delivery_date" name="Delivery Date" class="form-control" data-style="btn-primary">
                                             </div>
                                         </div>
                                     </div>
