@@ -119,13 +119,13 @@
                                                                                                 </span>
                                                                                             </div>
                                                                                             <ul class="mt16" style="list-style-type: none;">
+                                                                                                <li>KFP: <span t-field="p.weight"/></li>
                                                                                                 <t t-set="packaging_id" t-value="p.packaging_ids and p.packaging_ids[0]"/>
                                                                                                 <t t-if="packaging_id">
-                                                                                                    <li>KFP: <span t-field="p.weight"/></li>
                                                                                                     <li>DFP: <span t-field="packaging_id.qty"/></li>
                                                                                                     <li>PALL: <span t-field="packaging_id.ul_qty"/></li>
-                                                                                                    <li>NR: ?</li>
                                                                                                 </t>
+                                                                                                    <li>NR: <span t-esc="p.get_store_code(partner.id)"/></li>
                                                                                             </ul>
                                                                                         </div>
                                                                                     </td>
