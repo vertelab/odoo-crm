@@ -86,17 +86,6 @@ class rep_order_line(models.Model):
 
     order_id = fields.Many2one('rep.order', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True, states={'draft':[('readonly',False)]})
     tax_id = fields.Many2many('account.tax', 'rep_order_tax', 'order_line_id', 'tax_id', string='Taxes', readonly=True, states={'draft': [('readonly', False)]})
-    @api.one
-    def _store_code(self): # Check customer code in three levels
-        if self.env['product.customer.code'].search([('product_id','=',self.product_id.id),('partner_id','=',self.partner_id.id)]): 
-            self.store_code = self.env['product.customer.code'].search([('product_id','=',self.product_id.id),('partner_id','=',self.partner_id.id)])[0].product_code
-        elif self.partner_id.parent_id and self.env['product.customer.code'].search([('product_id','=',self.product_id.id),('partner_id','=',self.partner_id.parent_id.id)]): 
-            self.store_code = self.env['product.customer.code'].search([('product_id','=',self.product_id.id),('partner_id','=',self.partner_id.parent_id.id)])[0].product_code
-        elif self.partner_id.parent_id.parent_id and self.env['product.customer.code'].search([('product_id','=',self.product_id.id),('partner_id','=',self.partner_id.parent_id.parent_id.id)]): 
-            self.store_code = self.env['product.customer.code'].search([('product_id','=',self.product_id.id),('partner_id','=',self.partner_id.parent_id.parent_id.id)])[0].product_code
-        else:
-            self.store_code = ''
-    store_code = fields.Char(string="Store Code", compute="_store_code",help="Store or chain identification for a product")
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
