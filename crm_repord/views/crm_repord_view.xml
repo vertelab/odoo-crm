@@ -159,7 +159,7 @@
                                                 <span class="pull-right">Leveransvecka:</span>
                                             </label>
                                             <div class="col-md-8 mb16">
-                                                    <input id="delivery_date" name="Delivery Date" class="form-control" data-style="btn-primary">
+                                                <input id="delivery_date" name="Delivery Date" class="form-control" data-style="btn-primary"/>
                                             </div>
                                         </div>
                                     </div>
