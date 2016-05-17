@@ -156,7 +156,7 @@
                                                 </select>
                                             </div>
                                             <label class="col-md-4 control-label" for="leveransvecka">
-                                                <span class="pull-right">Leveransvecka:</span>
+                                                <span class="pull-right">Leveransdag:</span>
                                             </label>
                                             <div class="col-md-8 mb16">
                                                 <input id="delivery_date" name="Delivery Date" class="form-control" data-style="btn-primary"/>

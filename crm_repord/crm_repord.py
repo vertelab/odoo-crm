@@ -72,7 +72,7 @@ class rep_order(models.Model):
         })
         self.order_id = order.id
         order.rep_order_id = self.id
-    
+
     @api.model
     def create(self, vals):
         if vals.get('name', '/') == '/':
@@ -139,7 +139,7 @@ class MobileSaleView(http.Controller):
                 'partner_id': int(res_partner),
                 'state': 'draft',
             })
-        
+
         order_line = False
         product = request.env['product.product'].search([('id', '=', int(product_id))])
         for line in repord.order_line:
@@ -159,7 +159,7 @@ class MobileSaleView(http.Controller):
             order_line = request.env['rep.order.line'].search([('order_id', '=', repord.id)])
             order_line.create({
                 'order_id': rep_order_ids[0].id,
-                'product_id': product_id,
+                'product_id': int(product_id),
                 'name': product.name,
                 'product_uom_qty': float(product_uom_qty),
                 'product_uom': product.uom_id.id,

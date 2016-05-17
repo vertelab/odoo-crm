@@ -26,18 +26,18 @@ _logger = logging.getLogger(__name__)
 
 class product_product(models.Model):
     _inherit='product.product'
-    
-    @api.one
+
+    @api.multi
     def get_store_code(self,partner_id): # Check customer code in three levels
         partner = self.env['res.partner'].browse(partner_id)
-        if self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.id)]): 
-            self.store_code = self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.id)])[0].product_code
-        elif partner.parent_id and self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.id)]): 
-            self.store_code = self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.id)])[0].product_code
-        elif partner.parent_id.parent_id and self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.parent_id.id)]): 
-            self.store_code = self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.parent_id.id)])[0].product_code
+        if self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.id)]):
+            return self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.id)])[0].product_code
+        elif partner.parent_id and self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.id)]):
+            return self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.id)])[0].product_code
+        elif partner.parent_id.parent_id and self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.parent_id.id)]):
+            return self.env['product.customer.code'].search([('product_id','=',self.id),('partner_id','=',partner.parent_id.parent_id.id)])[0].product_code
         else:
-            self.store_code = ''
-    
+            return ''
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
