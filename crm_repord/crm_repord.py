@@ -66,8 +66,10 @@ class rep_order(models.Model):
                 'name': l.name,
                 'product_id': l.product_id and l.product_id.id or None,
                 'product_uom_qty': l.product_uom_qty,
+                'product_uom': l.product_uom.id,
                 'price_unit': l.price_unit,
-                'tax_id': l.tax_id and l.tax_id.id or None,
+                'tax_id': [(6, 0, [t.id for t in l.tax_id and l.tax_id or []])],
+                'discount': l.discount,
             }) for l in self.order_line],
         })
 
