@@ -32,7 +32,7 @@
                             </ul>
                             <div class="tab-content">
                                 <!-- Butiksorder -->
-                                <div class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" id="butiks_order" style="padding: 0px;">
+                                <div id="butiks_order" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container mb64">
                                         <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', 2)], order='id')"/>
                                         <h2 class="text-center mb32" t-esc="partner.name"/>
@@ -159,7 +159,7 @@
                                                 <span class="pull-right">Leveransdag:</span>
                                             </label>
                                             <div class="col-md-8 mb16">
-                                                <input id="delivery_date" name="Delivery Date" class="form-control" data-style="btn-primary"/>
+                                                <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary"/>
                                             </div>
                                         </div>
                                     </div>
@@ -174,7 +174,7 @@
                                         <h2 class="text-center mb32" t-esc="partner.parent_id.name"/>
                                         <t t-foreach="parent_products" t-as="pp">
                                             <t t-if="pp in partner.product_ids">
-                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px; background: #ddd;">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px; background: #FFD08F;">
                                                     <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
                                                         <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
                                                     </div>
@@ -186,13 +186,13 @@
                                                             <span class="text-center" t-field="pp.product_tmpl_id"/>
                                                         </p>
                                                         <div class="text-center" style="margin: auto;">
-                                                            <i style="font-size: 2em;" class="fa fa-check"></i>
+                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #f00;"/>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </t>
                                             <t t-if="pp not in partner.product_ids">
-                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px; background: #AAFCA9;">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px; background: #C2FFC2;">
                                                     <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
                                                         <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
                                                     </div>
@@ -204,7 +204,7 @@
                                                             <span class="text-center" t-field="pp.product_tmpl_id"/>
                                                         </p>
                                                         <div class="text-center" style="margin: auto;">
-                                                            <a href="#"><i class="fa fa-plus" style="font-size: 2em;"></i></a>
+                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #0f0;"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -310,6 +310,24 @@
                         'product_uom_qty': document.getElementById(quantity).value,
                         'discount': document.getElementById(discount).value
                     });
+                }
+
+                /* add product */
+                function add_product(res_partner, product_id){
+                    openerp.jsonRpc("/crm/add/product", 'call', {
+                        'res_partner': res_partner,
+                        'product_id': product_id,
+                    });
+                    window.location.reload(true);
+                }
+
+                /* remove product */
+                function remove_product(res_partner, product_id){
+                    openerp.jsonRpc("/crm/remove/product", 'call', {
+                        'res_partner': res_partner,
+                        'product_id': product_id,
+                    });
+                    window.location.reload(true);
                 }
 
                 /* change todo list to done */

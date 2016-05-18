@@ -168,6 +168,24 @@ class MobileSaleView(http.Controller):
                 'discount': float(discount) if discount != '' else 0.00,
             })
 
+    @http.route(['/crm/add/product'], type='json', auth="public", methods=['POST'], website=True)
+    def add_product(self, res_partner, product_id, **kw):
+        partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
+        for p in partner.product_ids:
+            if int(product_id) != p.id:
+                partner.write({
+                    'product_ids': [(4, int(product_id), 0)]
+                })
+
+    @http.route(['/crm/remove/product'], type='json', auth="public", methods=['POST'], website=True)
+    def remove_product(self, res_partner, product_id, **kw):
+        partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
+        for p in partner.product_ids:
+            if int(product_id) == p.id:
+                partner.write({
+                    'product_ids': [(3, int(product_id), 0)]
+                })
+
     @http.route(['/crm/todo/done'], type='json', auth="public", methods=['POST'], website=True)
     def todo_done(self, note_id, **kw):
         note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
