@@ -176,6 +176,7 @@ class MobileSaleView(http.Controller):
                 partner.write({
                     'product_ids': [(4, int(product_id), 0)]
                 })
+        return 'added'
 
     @http.route(['/crm/remove/product'], type='json', auth="public", methods=['POST'], website=True)
     def remove_product(self, res_partner, product_id, **kw):
@@ -185,6 +186,7 @@ class MobileSaleView(http.Controller):
                 partner.write({
                     'product_ids': [(3, int(product_id), 0)]
                 })
+        return 'removed'
 
     @http.route(['/crm/todo/done'], type='json', auth="public", methods=['POST'], website=True)
     def todo_done(self, note_id, **kw):
@@ -193,6 +195,7 @@ class MobileSaleView(http.Controller):
             'open': False,
             'date_done': datetime.date.today(),
         })
+        return 'note_done'
 
     @http.route(['/crm/meeting/visited'], type='json', auth="public", methods=['POST'], website=True)
     def customer_visited(self, partner_id, **kw):
@@ -203,6 +206,7 @@ class MobileSaleView(http.Controller):
                 m.write({
                     'categ_ids': [(4, request.env.ref('crm_repord.categ_meet6').id, _)],
                 })
+        return 'meeting_done'
 
         #~ product_uos_qty = product_uom_qty
         #~ ro = rep_order_ids[0]

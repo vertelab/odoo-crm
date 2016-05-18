@@ -174,7 +174,7 @@
                                         <h2 class="text-center mb32" t-esc="partner.parent_id.name"/>
                                         <t t-foreach="parent_products" t-as="pp">
                                             <t t-if="pp in partner.product_ids">
-                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px; background: #FFD08F;">
+                                                <div t-att-id="'ksp_%s' %pp.id" class="p_exist col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px;">
                                                     <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
                                                         <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
                                                     </div>
@@ -185,14 +185,17 @@
                                                             </t>
                                                             <span class="text-center" t-field="pp.product_tmpl_id"/>
                                                         </p>
-                                                        <div class="text-center" style="margin: auto;">
+                                                        <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center" style="margin: auto;">
                                                             <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #f00;"/>
+                                                        </div>
+                                                        <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center hidden" style="margin: auto;">
+                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #0f0;"/>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </t>
                                             <t t-if="pp not in partner.product_ids">
-                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px; background: #C2FFC2;">
+                                                <div t-att-id="'ksp_%s' %pp.id" class="p_not_exist col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px;">
                                                     <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
                                                         <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
                                                     </div>
@@ -203,7 +206,10 @@
                                                             </t>
                                                             <span class="text-center" t-field="pp.product_tmpl_id"/>
                                                         </p>
-                                                        <div class="text-center" style="margin: auto;">
+                                                        <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center hidden" style="margin: auto;">
+                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #f00;"/>
+                                                        </div>
+                                                        <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center" style="margin: auto;">
                                                             <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #0f0;"/>
                                                         </div>
                                                     </div>
@@ -221,29 +227,43 @@
                                                 <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/>
                                             </div>
                                             <h4 t-field="partner.name"/>
-                                            <p>GLN Nr: <t t-esc="partner.gs1_gln"/></p>
-                                            <p>Telephone: <t t-esc="partner.phone"/></p>
-                                            <p>Email: <t t-esc="partner.email"/></p>
-                                            <p>Reference Nr: <t t-esc="partner.ref"/></p>
-                                            <p>Address: <t t-esc="partner.street"/></p>
-                                            <p><t t-esc="partner.zip"/>  <t t-esc="partner.city"/></p>
+                                            <ul style="list-style-type: none;">
+                                                <li t-if="partner.gs1_gln">GLN Nr: <t t-esc="partner.gs1_gln"/></li>
+                                                <li t-if="partner.phone">Telephone: <t t-esc="partner.phone"/></li>
+                                                <li t-if="partner.email">Email: <t t-esc="partner.email"/></li>
+                                                <li t-if="partner.ref">Reference Nr: <t t-esc="partner.ref"/></li>
+                                                <li t-if="partner.street">Address: <t t-esc="partner.street"/></li>
+                                                <li t-if="partner.zip or partner.city"><t t-if="partner.zip"><t t-esc="partner.zip"/></t>  <t t-if="partner.city"><t t-esc="partner.city"/></t></li>
+                                            </ul>
                                             <t t-if="partner.child_ids">
                                                 <t t-foreach="partner.child_ids" t-as="c">
-                                                    <p><i class="fa fa-user"/> <t t-esc="c.name"/></p>
-                                                    <p><i class="fa fa-phone"/> <t t-esc="c.phone"/></p>
+                                                    <p t-if="c.name"><i class="fa fa-user"/> <t t-esc="c.name"/><t t-if="c.function">, <t t-esc="c.function"/></t></p>
+                                                    <ul style="list-style-type: none;">
+                                                        <li t-if="c.phone"><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.phone"/></a></li>
+                                                        <li t-if="c.mobile"><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.mobile"/></a></li>
+                                                    </ul>
                                                 </t>
                                             </t>
                                             <t t-set="notes" t-value="request.env['note.note'].sudo().search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
-                                            <t t-foreach="notes" t-as="note">
-                                                <div t-att-id="'note_%s' %note.id" t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" class="mb8" style="border: 2px solid #369;">
-                                                    <p t-att-id="'note_%s_text' %note.id" t-field="note.name" style="padding: 5px; margin: 0px;"/>
-                                                </div>
-                                            </t>
+                                            <div class="mt32">
+                                                <t t-if="notes">
+                                                    <p>TODO Notes:</p>
+                                                    <t t-foreach="notes" t-as="note">
+                                                        <div t-att-id="'note_%s' %note.id" t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" class="mb8" style="border: 1px solid rgba(255, 166, 43, 0.7);">
+                                                            <p t-att-id="'note_%s_text' %note.id" class="text-center" style="margin-top: 10px;">
+                                                                <span t-field="note.name" style="color: #000; padding: 5px; margin: 0px;"/>
+                                                            </p>
+                                                        </div>
+                                                    </t>
+                                                </t>
+                                            </div>
                                             <t t-set="meetings" t-value="request.env['calendar.event'].search([])"/>
                                             <t t-foreach="meetings" t-as="m">
                                                 <t t-if="partner in m.partner_ids">
                                                     <t t-if="request.env.ref('crm_repord.categ_meet6') not in m.categ_ids">
-                                                        <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success">Customer Visited</button>
+                                                        <div class="mt32">
+                                                            <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
+                                                        </div>
                                                     </t>
                                                 </t>
                                             </t>
@@ -269,6 +289,10 @@
                 input[type='number'] {
                     -moz-appearance:textfield;
                 }
+
+                .p_exist{ background: #FFD08F; }
+                .p_not_exist{ background: #C2FFC2; }
+
             </style>
         </xpath>
     </template>
@@ -317,8 +341,14 @@
                     openerp.jsonRpc("/crm/add/product", 'call', {
                         'res_partner': res_partner,
                         'product_id': product_id,
+                    }).done(function(data){
+                        if(data == "added"){
+                            $("#ksp_" + product_id).removeClass("p_not_exist");
+                            $("#ksp_" + product_id).addClass("p_exist");
+                            $("#ksp_" + product_id + "_plus").addClass("hidden");
+                            $("#ksp_" + product_id + "_minus").removeClass("hidden");
+                        }
                     });
-                    window.location.reload(true);
                 }
 
                 /* remove product */
@@ -326,8 +356,14 @@
                     openerp.jsonRpc("/crm/remove/product", 'call', {
                         'res_partner': res_partner,
                         'product_id': product_id,
+                    }).done(function(data){
+                        if(data == "removed"){
+                            $("#ksp_" + product_id).removeClass("p_exist");
+                            $("#ksp_" + product_id).addClass("p_not_exist");
+                            $("#ksp_" + product_id + "_minus").addClass("hidden");
+                            $("#ksp_" + product_id + "_plus").removeClass("hidden");
+                        }
                     });
-                    window.location.reload(true);
                 }
 
                 /* change todo list to done */
@@ -335,8 +371,15 @@
                     note_text = "note_" + note_id + "_text";
                     openerp.jsonRpc("/crm/todo/done", 'call', {
                         'note_id': note_id,
+                    }).done(function(data){
+                        if(data == "note_done"){
+                            $("#" + note_text).css({
+                                "text-decoration": "line-through",
+                                "color": "#f00;",
+                                "margin-top": 10 + "px;"
+                            });
+                        }
                     });
-                    $("#" + note_text).css("text-decoration", "line-through");
                 }
 
                 /* change status of meeting */
@@ -344,8 +387,11 @@
                     button = partner_id + "_meeting";
                     openerp.jsonRpc("/crm/meeting/visited", 'call', {
                         'partner_id': partner_id,
+                    }).done(function(data){
+                        if(data == "meeting_done"){
+                            $("#" + button).addClass("hidden");
+                        }
                     });
-                    $("#" + button).addClass("hidden");
                 }
 
             </script>
