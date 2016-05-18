@@ -51,14 +51,16 @@
                                             <t t-foreach="product_categories" t-as="brand_categories">
                                                 <div t-att-class="'tab-pane fade in active col-xs-12 col-md-12 col-lg-12' if brand_categories == product_categories[0] else 'tab-pane fade in col-xs-12 col-md-12 col-lg-12'"
                                                 t-att-id="'categs_%s' %brand_categories.id" style="padding: 0px;">
-                                                    <ul class="nav nav-tabs">
-                                                        <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
-                                                        <t t-foreach="brand_categs" t-as="p_categs">
-                                                            <li t-att-class="'%s' %'active' if b_c == brand_categs[0] else ''">
-                                                                <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %p_categs.id"><span t-field="p_categs.name" style="color: #FFA62B;"/></a>
-                                                            </li>
-                                                        </t>
-                                                    </ul>
+                                                    <div class="form-group">
+                                                        <div class="col-md-12 mt8 mb8">
+                                                            <select name="" id="" class="form-control selectpicker dropdown" data-style="btn-primary">
+                                                                <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
+                                                                <t t-foreach="brand_categs" t-as="p_categs">
+                                                                    <option data-toggle="tab" t-att-href="'&#35;product_categ_%s' %p_categs.id" t-att-value="p_categs.name" style="color: #FFA62B;"><t t-raw="p_categs.name"/></option>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                     <div class="tab-content">
                                                         <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
                                                         <t t-foreach="brand_categs" t-as="p_categs">
@@ -186,10 +188,10 @@
                                                             <span class="text-center" t-field="pp.product_tmpl_id"/>
                                                         </p>
                                                         <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center" style="margin: auto;">
-                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #f00;"/>
+                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
                                                         </div>
                                                         <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center hidden" style="margin: auto;">
-                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #0f0;"/>
+                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #0f0;"/>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -207,10 +209,10 @@
                                                             <span class="text-center" t-field="pp.product_tmpl_id"/>
                                                         </p>
                                                         <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center hidden" style="margin: auto;">
-                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #f00;"/>
+                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
                                                         </div>
                                                         <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center" style="margin: auto;">
-                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 2em; color: #0f0;"/>
+                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #0f0;"/>
                                                         </div>
                                                     </div>
                                                 </div>
