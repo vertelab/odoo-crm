@@ -21,73 +21,11 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
-import openerp.addons.decimal_precision as dp
 import datetime
-
 import logging
 _logger = logging.getLogger(__name__)
 
-class rep_order(models.Model):
-    _name = "rep.order"
-    _inherit = "sale.order"
-
-    @api.multi
-    @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
-    def _repord_amount_all_wrapper(self):
-        values = self._amount_all_wrapper(None, None)
-        _logger.warn(values)
-        for order in self:
-            order.amount_untaxed = values.get(order.id, {}).get('amount_untaxed', 0)
-            order.amount_tax = values.get(order.id, {}).get('amount_tax', 0)
-            order.amount_total = values.get(order.id, {}).get('amount_total', 0)
-
-    #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
-    order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount')],default='order',string="Order Type",)
-    order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
-    order_id = fields.Many2one('sale.order', 'Sale Order')
-    amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
-    amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
-    amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
-
-    @api.one
-    def action_view_sale_order_line_make_invoice(self):
-        pass
-
-    @api.one
-    def action_convert_to_sale_order(self):
-        if self.order_type != 'order':
-            raise Warning("Rep order is not of type order.")
-        order  = self.env['sale.order'].create({
-            'name': '/',
-            'rep_order_id': self.id,
-            'partner_id': self.partner_id.id,
-
-            'order_line': [(0, 0, {
-                'name': l.name,
-                'product_id': l.product_id and l.product_id.id or None,
-                'product_uom_qty': l.product_uom_qty,
-                'product_uom': l.product_uom.id,
-                'price_unit': l.price_unit,
-                'tax_id': [(6, 0, [t.id for t in l.tax_id and l.tax_id or []])],
-                'discount': l.discount,
-            }) for l in self.order_line],
-        })
-        self.order_id = order.id
-        order.rep_order_id = self.id
-
-    @api.model
-    def create(self, vals):
-        if vals.get('name', '/') == '/':
-            vals['name'] = self.env['ir.sequence'].next_by_id(self.env.ref('crm_repord.sequence_repord').id) or '/'
-        new_id = super(rep_order, self).create(vals)
-        return new_id
-
-class rep_order_line(models.Model):
-    _name = "rep.order.line"
-    _inherit = "sale.order.line"
-
-    order_id = fields.Many2one('rep.order', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True, states={'draft':[('readonly',False)]})
-    tax_id = fields.Many2many('account.tax', 'rep_order_tax', 'order_line_id', 'tax_id', string='Taxes', readonly=True, states={'draft': [('readonly', False)]})
+import openerp.addons.decimal_precision as dp
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
@@ -98,24 +36,6 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
-    #~ add_product = fields.Boolean(compute='_add_product')
-    #~ remove_product = fields.Boolean(compute='_remove_product')
-
-    #~ @api.one
-    #~ def _add_product(self, product_id):
-        #~ if product_id not in self.product_ids:
-            #~ self.product_ids.append(product_id)
-
-    #~ @api.one
-    #~ def _remove_product(self, product_id):
-        #~ if product_id in self.product_ids:
-            #~ self.product_ids.remove(product_id)
-
-#~ class product_product(models.Model):
-    #~ _inherit = 'product.product'
-
-    #~ partner_id = fields.Many2many(comodel_name='res.partner', string='Shop')
-
 
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
@@ -210,38 +130,75 @@ class MobileSaleView(http.Controller):
                 })
         return 'meeting_done'
 
-        #~ product_uos_qty = product_uom_qty
-        #~ ro = rep_order_ids[0]
-        #~ result = request.registry.get('rep.order.line').product_id_change(
-        #~ request.cr, request.uid, [],
-        #~ ro.pricelist_id,
-        #~ product_id,
-        #~ product_uom_qty,
-        #~ False,
-        #~ product_uos_qty,
-        #~ False,
-        #~ None,
-        #~ ro.partner_id.id,
-        #~ False,
-        #~ True,
-        #~ ro.date_order,
-        #~ False,
-        #~ ro.fiscal_position and ro.fiscal_position.id or None,
-        #~ False,
-        #~ context=None)
+class rep_order(models.Model):
+    _name = "rep.order"
+    _inherit = "sale.order"
 
-        #~ _logger.warn('************* %s' %result['value']['tax_id'])
-        #~ request.env['rep.order.line'].search([('order_id', '=', rep_order_ids[0].id)]).create({
-            #~ 'order_id': rep_order_ids[0].id,
-            #~ 'product_id': product_id,
-            #~ 'name': result['value']['name'],
-            #~ 'product_uom_qty': float(product_uom_qty),
-            #~ 'product_uom': result['value']['product_uom'],
-            #~ 'price_unit': result['value']['price_unit'],
-            #~ 'tax_id': result['value']['tax_id'],
-            #~ 'discount': float(discount),
-        #~ })
+    @api.multi
+    @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
+    def _repord_amount_all_wrapper(self):
+        values = self._amount_all_wrapper(None, None)
+        _logger.warn(values)
+        for order in self:
+            order.amount_untaxed = values.get(order.id, {}).get('amount_untaxed', 0)
+            order.amount_tax = values.get(order.id, {}).get('amount_tax', 0)
+            order.amount_total = values.get(order.id, {}).get('amount_total', 0)
 
+    #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
+    order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount')],default='order',string="Order Type",)
+    order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
+    order_id = fields.Many2one('sale.order', 'Sale Order')
+    amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
+    amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
+    amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
+    invoice_ids = fields.Many2many(related='order_id.invoice_ids')
+    invoice_ids = fields.Many2many(related='order_id.invoice_ids')
+    pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, help="Pricelist for current sales order.")
+    currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True, required=True)
+    procurement_group_id = None
+    
+    @api.one
+    def action_view_sale_order_line_make_invoice(self):
+        pass
 
+    @api.one
+    def action_convert_to_sale_order(self):
+        if self.order_type != 'order':
+            raise Warning("Rep order is not of type order.")
+        order  = self.env['sale.order'].create({
+            'name': '/',
+            'rep_order_id': self.id,
+            'partner_id': self.partner_id.id,
+            'order_line': [(0, 0, {
+                'name': l.name,
+                'product_id': l.product_id and l.product_id.id or None,
+                'product_uom_qty': l.product_uom_qty,
+                'product_uom': l.product_uom.id,
+                'price_unit': l.price_unit,
+                'tax_id': [(6, 0, [t.id for t in l.tax_id and l.tax_id or []])],
+                'discount': l.discount,
+            }) for l in self.order_line],
+        })
+        self.state = 'done'
+        self.order_id = order.id
+        order.action_button_confirm()
+    
+    @api.model
+    def create(self, vals):
+        if vals.get('name', '/') == '/':
+            vals['name'] = self.env['ir.sequence'].next_by_id(self.env.ref('crm_repord.sequence_repord').id) or '/'
+        new_id = super(rep_order, self).create(vals)
+        return new_id
 
+class rep_order_line(models.Model):
+    _name = "rep.order.line"
+    _inherit = "sale.order.line"
 
+    order_line_id = fields.Many2one('sale.order.line')
+    order_id = fields.Many2one('rep.order', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True, states={'draft':[('readonly',False)]})
+    tax_id = fields.Many2many('account.tax', 'rep_order_tax', 'order_line_id', 'tax_id', string='Taxes', readonly=True, states={'draft': [('readonly', False)]})
+    #Must overwrite invoice_lines, or invoice creation will cease to function!
+    #Could quite possibly be true for other fields
+    invoice_lines = fields.Many2many('account.invoice.line', related='order_line_id.invoice_lines')
+    #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
+    procurement_ids = fields.One2many('procurement.order', related='order_line_id.procurement_ids')
