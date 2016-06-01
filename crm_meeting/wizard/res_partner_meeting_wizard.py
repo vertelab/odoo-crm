@@ -6,7 +6,7 @@ class res_partner_meeting_wizard(models.TransientModel):
 
     description = fields.Text(string='Description')
     add_repord = fields.Boolean(string='Add link to repord')
-    
+
     partner_ids = fields.One2many(comodel_name='res.partner', compute='_get_partner_ids')
 
     def _get_partner_ids(self):
@@ -25,11 +25,14 @@ class res_partner_meeting_wizard(models.TransientModel):
                     'week_number': 'Undefied',
                     'weekday': 'Friday',
                     'location': p.city,
-                    'description': r.description + '\n' + add_repord,
+                    'description': r.description if r.description else '' + '\n' + add_repord,
                     })
         return{
             'type': 'ir.actions.act_window',
             'res_model': 'calendar.event',
-            'views': [(False, 'kanban')],
+            'view_type': 'kanban',
+            'view_mode': 'calendar,kanban,tree,form,gantt',
+            #~ 'views': [(False, 'kanban')],
+            #~ 'view_id': 'calendar_kanban.view_calendar_event_kanban',
             'target': 'current',
         }

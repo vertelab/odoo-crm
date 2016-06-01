@@ -26,32 +26,5 @@
             target="new"
             key2="client_action_multi"/>
 
-
-        <record model="ir.actions.server" id="action_create_booking">
-            <field name="name">Create Meeting(s)</field>
-            <field name="state">code</field>
-            <field name="condition" eval="True"/>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="code">for o in object.browse(context.get('active_ids', [])):
-    env['calendar.event'].create({
-    'name': o.name,
-    'start_datetime': '2010-01-01 00:00:00',
-    'stop_datetime': '2010-01-01 00:00:00',
-    'allday': False,
-    'week_number': 'Undefied',
-    'weekday': 'Friday',
-    'location': o.city,
-    'description': 'http://paolosfoodtruck.se/crm/%s/repord' %o.id,
-    })
-            </field>
-        </record>
-
-        <record model="ir.values" id="action_create_booking_menu"> <!-- wizard: choose what location -->
-            <field name="name">Create Meetings</field>
-            <field name="model">res.partner</field>
-            <field name="key2">client_action_multi</field>
-            <field name="value" eval="'ir.actions.server,%d' % action_create_booking"/>
-        </record>
-
     </data>
 </openerp>

@@ -20,14 +20,12 @@
         </record>
 
         <act_window id="launch_res_partner_meeting_wizard_form"
-            name="Create Meetings(s)"
+            name="Create Meeting(s)"
             src_model="res.partner"
             res_model="res.partner.meeting.wizard"
             view_mode="form"
             target="new"
             key2="client_action_multi"/>
-
-
 
     </data>
 </openerp>
