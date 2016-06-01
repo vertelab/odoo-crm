@@ -6,6 +6,7 @@ class res_partner_note_wizard(models.TransientModel):
 
     memo = fields.Html(string='Note Content')
     partner_ids = fields.One2many(comodel_name='res.partner', compute='_get_partner_ids')
+    stage_id = fields.Many2one(comodel_name='note.stage')
 
     def _get_partner_ids(self):
         self.partner_ids = self._context.get('active_ids', [])
