@@ -11,7 +11,9 @@
                     <span style="color: #f00;">OBS: din första rad blir en titel</span>
                     <group>
                         <field name="memo"/>
+<!--
                         <field name="stage_id"/>
+-->
                     </group>
                     <footer>
                         <button name="create_note" string="Create" type="object" class="oe_highlight"/>

@@ -13,7 +13,7 @@ class res_partner_meeting_wizard(models.TransientModel):
         self.partner_ids = self._context.get('active_ids', [])
 
     @api.multi
-    def create_summary(self):
+    def create_meeting_summary(self):
         for r in self:
             for p in r.partner_ids:
                 add_repord = r.add_repord and '%s/crm/%s/repord' % (self.env['ir.config_parameter'].get_param('web.base.url'),p.id) or ''

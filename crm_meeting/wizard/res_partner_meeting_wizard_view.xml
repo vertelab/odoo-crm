@@ -2,18 +2,18 @@
 <openerp>
     <data>
 
-        <record model="ir.ui.view" id="res_partner_phonecall_wizard_form">
+        <record model="ir.ui.view" id="res_partner_meeting_wizard_form">
             <field name="name">res.partner.meeting.wizard.form</field>
             <field name="model">res.partner.meeting.wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Add Attendees">
+                <form string="Add Meetings">
                     <group>
                         <field name="description"/>
                         <field name="add_repord"/>
                     </group>
                     <footer>
-                        <button name="create_summary" string="Create" type="object" class="oe_highlight"/>
+                        <button name="create_meeting_summary" string="Create" type="object" class="oe_highlight"/>
                     </footer>
                 </form>
             </field>

@@ -7,12 +7,12 @@
             <field name="model">res.partner.phonecall.wizard</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Add Attendees">
+                <form string="Add Calls">
                     <group>
                         <field name="call_summary"/>
                     </group>
                     <footer>
-                        <button name="create_summary" string="Create" type="object" class="oe_highlight"/>
+                        <button name="create_phonecall_summary" string="Create" type="object" class="oe_highlight"/>
                     </footer>
                 </form>
             </field>

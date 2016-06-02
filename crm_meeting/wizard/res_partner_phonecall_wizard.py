@@ -11,7 +11,7 @@ class res_partner_phonecall_wizard(models.TransientModel):
         self.partner_ids = self._context.get('active_ids', [])
 
     @api.multi
-    def create_summary(self):
+    def create_phonecall_summary(self):
         for r in self:
             for p in r.partner_ids:
                 r.env['crm.phonecall'].create({
