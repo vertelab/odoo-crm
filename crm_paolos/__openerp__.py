@@ -23,15 +23,21 @@
     'name': 'CRM Paolos',
     'version': '0.1',
     'category': '',
+    'summary': "Additional fields to partner; Create opportunities and notes",
     'description': """
 CRM Paolos
 ===================================
+    * Wizard create crm opportunities
+    * Wizard create internal notes
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['base', 'email_template'],
+    'depends': ['base', 'email_template','crm', 'note', 'edi_gs1', 'marketing_campaign'],
     'data': [
         'views/res_partner_view.xml',
+        'views/crm_campaign_view.xml',
+        'views/crm_campaign_data.xml',
+        'wizard/res_partner_campaign_wizard_view.xml',
     ],
     'application': False,
     'installable': True,

@@ -23,6 +23,7 @@ from openerp import http
 from openerp.http import request
 import datetime
 import logging
+import base64
 _logger = logging.getLogger(__name__)
 
 import openerp.addons.decimal_precision as dp
@@ -39,10 +40,19 @@ class res_partner(models.Model):
 
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
-    def repord(self, partner=None, **post):
+    def repord(self, ufile=None, partner=None, **post):
         products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).product_ids
         parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).parent_id.product_ids
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id)])
+        #~ if request.httprequest.method == 'POST':
+            #~ _logger.warn('******************** %s' %ufile)
+            #~ request.env['ir.attachment'].create({
+                #~ 'name': ufile,
+                #~ 'partner_id': partner.id,
+                #~ 'res_id': partner.id,
+                #~ 'type': 'binary',
+                #~ 'datas': base64.encodestring(ufile.read()),
+            #~ })
         if not rep_order:
             rep_order = request.env['rep.order'].create({
                 'partner_id': partner.id
@@ -130,6 +140,19 @@ class MobileSaleView(http.Controller):
                 })
         return 'meeting_done'
 
+    @http.route(['/crm/upload/photo'], type='json', auth="public", methods=['POST'], website=True)
+    def upload_photo(self, res_partner, ufile, **kw):
+        partner = request.env['res.partner'].search([('id', '=', res_partner)])
+        _logger.warn('******************** %s' %ufile)
+        request.env['ir.attachment'].create({
+            'name': 'google',
+            'partner_id': partner.id,
+            'res_id': partner.id,
+            'type': 'binary',
+            'datas': base64.encodestring(ufile.read()),
+        })
+        return 'complete'
+
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
@@ -156,7 +179,7 @@ class rep_order(models.Model):
     pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, help="Pricelist for current sales order.")
     currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True, required=True)
     procurement_group_id = None
-    
+
     @api.one
     def action_view_sale_order_line_make_invoice(self):
         pass
@@ -182,7 +205,7 @@ class rep_order(models.Model):
         self.state = 'done'
         self.order_id = order.id
         order.action_button_confirm()
-    
+
     @api.model
     def create(self, vals):
         if vals.get('name', '/') == '/':

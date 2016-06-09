@@ -20,21 +20,18 @@
 ##############################################################################
 
 {
-    'name': 'CRM Campaign',
+    'name': 'Sales Cycle',
     'version': '0.1',
-    'category': '',
-    'summary': "Create opportunities and notes",
+    'category': 'Sales',
     'description': """
-        * Wizard create crm opportunities
-        * Wizard create internal notes
+
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['base','crm', 'note', 'edi_gs1', 'marketing_campaign'],
+    'depends': ['crm_meeting', 'marketing_campaign'],
     'data': [
-        'views/crm_campaign_view.xml',
-        'views/crm_campaign_data.xml',
-        'wizard/res_partner_campaign_wizard_view.xml',
+        'sales_cycle.xml',
+        'security/ir.model.access.csv',
     ],
     'application': False,
     'installable': True,

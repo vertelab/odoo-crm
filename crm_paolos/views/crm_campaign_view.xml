@@ -8,7 +8,12 @@
             <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
             <field name="arch" type="xml">
                 <field name="categ_ids" position="after">
-                    <field name="campaign_id"/>
+                    <field name="campaign"/>
+                </field>
+                <field name="planned_revenue" position="replace">
+                    <field name="planned_revenue" class="oe_inline"/>
+                    <span style="margin-right: 0.5em"> </span>
+                    <field name="revenue_unit" class="oe_inline" nolabel="1" readonly="1"/>
                 </field>
             </field>
         </record>
@@ -20,6 +25,9 @@
             <field name="arch" type="xml">
                 <field name="fixed_cost" position="after">
                     <field name="campaign_type"/>
+                    <field name="distribution"/>
+                    <field name="campaign_budget"/>
+                    <field name="unit"/>
                 </field>
             </field>
         </record>
@@ -31,6 +39,9 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="campaign_type"/>
+                    <field name="distribution"/>
+                    <field name="campaign_budget"/>
+                    <field name="unit"/>
                 </field>
             </field>
         </record>

@@ -29,7 +29,7 @@ CRM Repord for mobile device
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['sale', 'product', 'website', 'edi_gs1', 'calendar_ics', 'calendar_kanban', 'crm_meeting', 'crm_campaign', 'product_customer_code','l10n_se'], # product_customer_code from oca-addons-vauxoo
+    'depends': ['sale', 'product', 'website', 'edi_gs1', 'calendar_ics', 'calendar_kanban', 'crm_meeting', 'product_customer_code','l10n_se'], # product_customer_code from oca-addons-vauxoo
     'data': [
         'views/crm_repord_view.xml',
         'views/crm_repord_data.xml',

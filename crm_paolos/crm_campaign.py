@@ -27,13 +27,17 @@ _logger = logging.getLogger(__name__)
 class crm_lead(models.Model):
     _inherit='crm.lead'
 
-    campaign_id = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
+    campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
+    revenue_unit = fields.Selection(related='campaign.unit')
 
 
 class marketing_campaign(models.Model):
     _inherit='marketing.campaign'
 
     campaign_type = fields.Selection([('local', 'Local'), ('central', 'Central')], string='Campaign type')
+    campaign_budget = fields.Float(string='Campaign Budget')
+    distribution = fields.Selection([('evenly', 'Evenly Distributed'), ('revenue', 'Revenue')], string='Distribution')
+    unit = fields.Selection([('DFP', 'DFP'), ('KFP', 'KFP'), ('kr', 'kr')], string='Unit')
 
 
 class note_note(models.Model):

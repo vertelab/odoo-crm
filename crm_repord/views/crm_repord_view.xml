@@ -29,6 +29,9 @@
                                 <li>
                                     <a data-toggle="tab" href="#kund_kort">Kundkort</a>
                                 </li>
+                                <li>
+                                    <a data-toggle="tab" href="#bilder">Bilder</a>
+                                </li>
                             </ul>
                             <div class="tab-content">
                                 <!-- Butiksorder -->
@@ -284,6 +287,27 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Bilder -->
+                                <div id="bilder" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                                            <t t-set="attachments" t-value="request.env['ir.attachment'].search([('partner_id', '=', partner.id)])"/>
+                                            <t t-foreach="attachments" t-as="att">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 2px 0px">
+                                                    <span t-field="att.datas" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img img-responsive&quot;}"/>
+                                                </div>
+                                            </t>
+                                            <form method="post">
+                                                <input id="upload_file" type="file" name="ufile" accept="image/*" capture="camera"/>
+                                                <button class="btn btn-success" t-att-onclick="'upload_photo(&quot;%s&quot;)' %partner.id">Click</button>
+<!--
+                                                <div><input type="submit" class="btn btn-success" value="Spara"/></div>
+-->
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -404,6 +428,19 @@
                     }).done(function(data){
                         if(data == "meeting_done"){
                             $("#" + button).addClass("hidden");
+                        }
+                    });
+                }
+
+                /* uploade photo */
+                function upload_photo(res_partner){
+                window.alert(document.getElementById("upload_file").files[0]).value;
+                    openerp.jsonRpc("/crm/upload/photo", 'call', {
+                        'res_partner': res_partner,
+                        'ufile': document.getElementById("upload_file").files[0],
+                    }).done(function(data){
+                        if(data == "complete"){
+                            window.alert("Upload completed");
                         }
                     });
                 }
