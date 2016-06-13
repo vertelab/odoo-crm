@@ -298,12 +298,9 @@
                                                     <span t-field="att.datas" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img img-responsive&quot;}"/>
                                                 </div>
                                             </t>
-                                            <form method="post">
+                                            <form method="post" enctype="multipart/form-data">
                                                 <input id="upload_file" type="file" name="ufile" accept="image/*" capture="camera"/>
-                                                <button class="btn btn-success" t-att-onclick="'upload_photo(&quot;%s&quot;)' %partner.id">Click</button>
-<!--
-                                                <div><input type="submit" class="btn btn-success" value="Spara"/></div>
--->
+                                                <button type="submit" class="btn btn-success">Spara</button>
                                             </form>
                                         </div>
                                     </div>
@@ -432,7 +429,7 @@
                     });
                 }
 
-                /* uploade photo */
+                /* uploade photo
                 function upload_photo(res_partner){
                 window.alert(document.getElementById("upload_file").files[0]).value;
                     openerp.jsonRpc("/crm/upload/photo", 'call', {
@@ -444,6 +441,7 @@
                         }
                     });
                 }
+                */
 
             </script>
         </xpath>

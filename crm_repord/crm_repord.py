@@ -40,19 +40,21 @@ class res_partner(models.Model):
 
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
-    def repord(self, ufile=None, partner=None, **post):
+    def repord(self, partner=None, **post):
         products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).product_ids
         parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).parent_id.product_ids
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id)])
-        #~ if request.httprequest.method == 'POST':
-            #~ _logger.warn('******************** %s' %ufile)
-            #~ request.env['ir.attachment'].create({
-                #~ 'name': ufile,
-                #~ 'partner_id': partner.id,
-                #~ 'res_id': partner.id,
-                #~ 'type': 'binary',
-                #~ 'datas': base64.encodestring(ufile.read()),
-            #~ })
+        if request.httprequest.method == 'POST':
+            request.env['ir.attachment'].create({
+                'name': post['ufile'].filename,
+                'res_model': 'res.partner',
+                'res_name': partner.name,
+                'partner_id': partner.id,
+                'res_id': partner.id,
+                'type': 'binary',
+                'datas': base64.encodestring(post['ufile'].read()),
+                'datas_fname': post['ufile'].filename,
+            })
         if not rep_order:
             rep_order = request.env['rep.order'].create({
                 'partner_id': partner.id
@@ -140,18 +142,6 @@ class MobileSaleView(http.Controller):
                 })
         return 'meeting_done'
 
-    @http.route(['/crm/upload/photo'], type='json', auth="public", methods=['POST'], website=True)
-    def upload_photo(self, res_partner, ufile, **kw):
-        partner = request.env['res.partner'].search([('id', '=', res_partner)])
-        _logger.warn('******************** %s' %ufile)
-        request.env['ir.attachment'].create({
-            'name': 'google',
-            'partner_id': partner.id,
-            'res_id': partner.id,
-            'type': 'binary',
-            'datas': base64.encodestring(ufile.read()),
-        })
-        return 'complete'
 
 class rep_order(models.Model):
     _name = "rep.order"
