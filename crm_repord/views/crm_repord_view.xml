@@ -340,7 +340,7 @@
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
                                             <t t-set="attachments" t-value="request.env['ir.attachment'].search([('partner_id', '=', partner.id)])"/>
                                             <t t-foreach="attachments" t-as="att">
-                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 2px 0px">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 8px 0px">
                                                     <span t-field="att.datas" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img img-responsive&quot;}"/>
                                                 </div>
                                             </t>
