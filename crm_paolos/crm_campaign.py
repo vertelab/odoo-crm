@@ -38,6 +38,7 @@ class marketing_campaign(models.Model):
     campaign_budget = fields.Float(string='Campaign Budget')
     distribution = fields.Selection([('evenly', 'Evenly Distributed'), ('revenue', 'Revenue')], string='Distribution')
     unit = fields.Selection([('DFP', 'DFP'), ('KFP', 'KFP'), ('kr', 'kr')], string='Unit')
+    account_id = fields.Many2one(comodel_name='account.analytic.account', string='Analytic Account')
 
 
 class note_note(models.Model):

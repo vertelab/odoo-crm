@@ -26,8 +26,14 @@
                 <field name="fixed_cost" position="after">
                     <field name="campaign_type"/>
                     <field name="distribution"/>
-                    <field name="campaign_budget"/>
-                    <field name="unit"/>
+                    <label for="campaign_budget"/>
+                    <group>
+                        <field name="campaign_budget" nolabel="1"/>
+                        <field name="unit" class="oe_inline" nolabel="1"/>
+                    </group>
+                </field>
+                <field name="unique_field_id" position="after">
+                    <field name="account_id"/>
                 </field>
             </field>
         </record>

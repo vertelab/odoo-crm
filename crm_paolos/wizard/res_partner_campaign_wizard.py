@@ -47,7 +47,7 @@ class res_partner_campaign_wizard(models.TransientModel):
     def create_campaign(self):
         for c in self:
             total_size = sum([p.size for p in c.partner_ids.filtered(lambda p: p.size > 0)])
-            average_size = total_size / len(c.partner_ids.filtered(lambda p: p.size > 0))
+            average_size = total_size / (len(c.partner_ids.filtered(lambda p: p.size > 0)) or 1)
             for p in c.partner_ids.filtered(lambda p: p.size == 0):
                 total_size += average_size
             for p in c.partner_ids:

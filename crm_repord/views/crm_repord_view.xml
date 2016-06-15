@@ -42,7 +42,7 @@
                                         <!-- navigator -->
                                         <ul class="nav nav-tabs">
                                             <t t-foreach="product_categories" t-as="brand_categs">
-                                                <li t-att-class="active if p_categs == product_categories[0] else ''">
+                                                <li t-att-class="active if brand_categs == product_categories[0] else ''">
                                                     <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id">
                                                         <img itemprop="image" class="img img-responsive" style="margin: auto; width: 100px;" t-att-src="'/website/image/product.category/%s/website_image/150x150' %brand_categs.id"/>
                                                     </a>
@@ -68,22 +68,22 @@
 -->
                                                     <ul class="nav nav-tabs">
                                                         <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
-                                                        <t t-foreach="brand_categs" t-as="p_categs">
+                                                        <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
                                                             <li t-att-class="'%s' %'active' if b_c == brand_categs[0] else ''">
-                                                                <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %p_categs.id">
-                                                                    <span t-field="p_categs.name" style="color: #FFA62B;"/>
+                                                                <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %b_c.id">
+                                                                    <span t-field="b_c.name" style="color: #FFA62B;"/>
                                                                 </a>
                                                             </li>
                                                         </t>
                                                     </ul>
                                                     <div class="tab-content">
                                                         <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
-                                                        <t t-foreach="brand_categs" t-as="p_categs">
+                                                        <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
                                                             <div t-att-class="'active tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'
-                                                                if p_categs == brand_categs[0] else
+                                                                if b_c == brand_categs[0] else
                                                                 'tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'"
-                                                                t-att-id="'product_categ_%s' %p_categs.id" style="padding: 0px;">
-                                                                <t t-foreach="p_categs" t-as="p_c">
+                                                                t-att-id="'product_categ_%s' %b_c.id" style="padding: 0px;">
+                                                                <t t-foreach="b_c" t-as="p_c">
                                                                     <t t-set="order_line" t-value="request.env['rep.order.line'].search([('order_id', '=', order.id)])"/>
                                                                     <table class="table" style="background-color: #FFA62B;">
                                                                         <thead>
@@ -172,6 +172,17 @@
                                                     </t>
                                                 </select>
                                             </div>
+                                            <label class="col-md-4 control-label" for="analytic_account">
+                                                <span class="pull-right">Kampanj:</span>
+                                            </label>
+                                            <div class="col-md-8 mb16">
+                                                <select name="analytic_account" id="analytic_account" class="form-control selectpicker dropup" data-style="btn-primary">
+                                                    <option value=""/>
+                                                    <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
+                                                        <option t-if="aa.campaign.account_id" t-att-value="aa.campaign.account_id.id"><t t-raw="aa.campaign.account_id.name"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
                                             <label class="col-md-4 control-label" for="leveransvecka">
                                                 <span class="pull-right">Leveransdag:</span>
                                             </label>
@@ -237,36 +248,60 @@
                                 </div>
 
                                 <!-- Kundkort -->
-                                <div id="kund_kort" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                <section id="kund_kort" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="row">
+                                        <!-- partner information -->
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                                            <div class="col-xs-12 mb8">
-                                                <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;}"/>
-                                            </div>
-                                            <h4 t-field="partner.name"/>
-                                            <ul style="list-style-type: none;">
-                                                <li t-if="partner.gs1_gln">GLN Nr: <t t-esc="partner.gs1_gln"/></li>
-                                                <li t-if="partner.phone">Telephone: <t t-esc="partner.phone"/></li>
-                                                <li t-if="partner.email">Email: <t t-esc="partner.email"/></li>
-                                                <li t-if="partner.ref">Reference Nr: <t t-esc="partner.ref"/></li>
-                                                <li t-if="partner.street">Address: <t t-esc="partner.street"/></li>
-                                                <li t-if="partner.zip or partner.city"><t t-if="partner.zip"><t t-esc="partner.zip"/></t>  <t t-if="partner.city"><t t-esc="partner.city"/></t></li>
-                                            </ul>
-                                            <t t-if="partner.child_ids">
-                                                <t t-foreach="partner.child_ids" t-as="c">
-                                                    <p t-if="c.name"><i class="fa fa-user"/> <t t-esc="c.name"/><t t-if="c.function">, <t t-esc="c.function"/></t></p>
-                                                    <ul style="list-style-type: none;">
-                                                        <li t-if="c.phone"><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.phone"/></a></li>
-                                                        <li t-if="c.mobile"><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.mobile"/></a></li>
-                                                    </ul>
+                                            <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto&quot;}"/>
+                                            <div class="col-xs-12" style="background-color: rgba(255, 148, 0, 0.2);">
+                                                <h4 class="text-center" style="color: rgba(190, 130, 40, 1); padding-top: 8px;" t-field="partner.name"/>
+                                                <ul style="list-style-type: none;">
+                                                    <li t-if="partner.gs1_gln">GLN Nr: <t t-esc="partner.gs1_gln"/></li>
+                                                    <li t-if="partner.phone">Telephone: <t t-esc="partner.phone"/></li>
+                                                    <li t-if="partner.email">Email: <t t-esc="partner.email"/></li>
+                                                    <li t-if="partner.ref">Reference Nr: <t t-esc="partner.ref"/></li>
+                                                    <li t-if="partner.street">Address: <t t-esc="partner.street"/></li>
+                                                    <li t-if="partner.zip or partner.city"><t t-if="partner.zip"><t t-esc="partner.zip"/></t>  <t t-if="partner.city"><t t-esc="partner.city"/></t></li>
+                                                </ul>
+                                                <t t-if="partner.child_ids">
+                                                    <t t-foreach="partner.child_ids" t-as="c">
+                                                        <p t-if="c.name"><i class="fa fa-user"/> <t t-esc="c.name"/><t t-if="c.function">, <t t-esc="c.function"/></t></p>
+                                                        <ul style="list-style-type: none;">
+                                                            <li t-if="c.phone"><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.phone"/></a></li>
+                                                            <li t-if="c.mobile"><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.mobile"/></a></li>
+                                                        </ul>
+                                                    </t>
                                                 </t>
-                                            </t>
-                                            <t t-set="notes" t-value="request.env['note.note'].sudo().search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
-                                            <div class="mt32">
+                                            </div>
+                                        </div>
+                                        <!-- partner opportunities -->
+                                        <t t-set="oppors" t-value="request.env['crm.lead'].sudo().search([('partner_id', '=', partner.id)])"/>
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                                            <div t-if="oppors" class="col-xs-12" style="background-color: rgba(0, 255, 0, 0.2);">
+                                                <h4 class="text-center" style="color: rgba(0, 123, 0, 1); padding-top: 8px;">Opportunity:</h4>
+                                                <t t-foreach="oppors" t-as="opp">
+                                                    <div class="mb8" style="padding: 10px; background-color: rgba(0, 0, 0, 0.2);">
+                                                        <strong>
+                                                            <span t-field="opp.name"/>
+                                                            <span><t t-esc="'%.0d' %opp.planned_revenue"/> <t t-esc="opp.revenue_unit"/></span>
+                                                            <span t-field="opp.campaign"/>
+                                                            <span t-if="opp.campaign.account_id" t-field="opp.campaign.account_id.name"/>
+                                                        </strong>
+                                                        <p t-if="opp.description">
+                                                            <span t-field="opp.description"/>
+                                                        </p>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <!-- partner todo list -->
+                                        <t t-set="notes" t-value="request.env['note.note'].sudo().search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                                            <div class="col-xs-12" style="background-color: rgba(0, 0, 255, 0.15);">
                                                 <t t-if="notes">
-                                                    <p>TODO Notes:</p>
+                                                    <h4 class="text-center" style="color: rgba(0, 0, 255, 1); padding-top: 8px;">TODO Notes:</h4>
                                                     <t t-foreach="notes" t-as="note">
-                                                        <div t-att-id="'note_%s' %note.id" t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" class="mb8" style="border: 1px solid rgba(255, 166, 43, 0.7);">
+                                                        <div t-att-id="'note_%s' %note.id" t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" class="mb8" style="padding: 10px; background-color: rgba(0, 0, 0, 0.2);">
                                                             <p t-att-id="'note_%s_text' %note.id" class="text-center" style="margin-top: 10px;">
                                                                 <span t-field="note.name" style="color: #000; padding: 5px; margin: 0px;"/>
                                                             </p>
@@ -274,6 +309,17 @@
                                                     </t>
                                                 </t>
                                             </div>
+                                        </div>
+                                        <!-- buttons for create log -->
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                                            <div class="mt32 mb32">
+                                                <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
+                                                <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-default mt16 mb16" style="margin: auto; display: block;">Paolos Frys</button>
+                                                <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary mt16 mb16" style="margin: auto; display: block;">Leröy Färsk</button>
+                                            </div>
+                                        </div>
+                                        <!-- buttons for mark meeting done -->
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
                                             <t t-set="meetings" t-value="request.env['calendar.event'].search([])"/>
                                             <t t-foreach="meetings" t-as="m">
                                                 <t t-if="partner in m.partner_ids">
@@ -286,7 +332,7 @@
                                             </t>
                                         </div>
                                     </div>
-                                </div>
+                                </section>
 
                                 <!-- Bilder -->
                                 <div id="bilder" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
@@ -298,9 +344,9 @@
                                                     <span t-field="att.datas" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img img-responsive&quot;}"/>
                                                 </div>
                                             </t>
-                                            <form method="post" enctype="multipart/form-data">
+                                            <form class="mt32" method="post" enctype="multipart/form-data">
                                                 <input id="upload_file" type="file" name="ufile" accept="image/*" capture="camera"/>
-                                                <button type="submit" class="btn btn-success">Spara</button>
+                                                <button type="submit" class="btn btn-success mt16">Spara</button>
                                             </form>
                                         </div>
                                     </div>
@@ -414,6 +460,30 @@
                                 "margin-top": 10 + "px;"
                             });
                         }
+                    });
+                }
+
+                /* presentation of Paolos färsk */
+                function paolos_farsk(partner_id, categ){
+                    openerp.jsonRpc("/crm/presentation/done", 'call', {
+                        'partner_id': partner_id,
+                        'categ': categ,
+                    });
+                }
+
+                /* presentation of Paolos frys */
+                function paolos_frys(partner_id, categ){
+                    openerp.jsonRpc("/crm/presentation/done", 'call', {
+                        'partner_id': partner_id,
+                        'categ': categ,
+                    });
+                }
+
+                /* presentation of Leröy färsk */
+                function leroy_farsk(partner_id, categ){
+                    openerp.jsonRpc("/crm/presentation/done", 'call', {
+                        'partner_id': partner_id,
+                        'categ': categ,
                     });
                 }
 

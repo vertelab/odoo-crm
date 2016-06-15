@@ -142,6 +142,19 @@ class MobileSaleView(http.Controller):
                 })
         return 'meeting_done'
 
+    @http.route(['/crm/presentation/done'], type='json', auth="public", methods=['POST'], website=True)
+    def presentation(self, partner_id, categ, **kw):
+        partner = request.env['res.partner'].browse(int(partner_id))
+        request.env['mail.message'].create({
+            'body': 'I am a message',   #TODO: change message body
+            'subject': 'Presentation to ' + categ + ' has done',
+            'author_id': request.env['res.users'].browse(request.env.uid).partner_id.id,
+            'model': partner._name,
+            'res_id': partner.id,
+            'type': 'notification',
+        })
+        return 'presentation_done'
+
 
 class rep_order(models.Model):
     _name = "rep.order"
