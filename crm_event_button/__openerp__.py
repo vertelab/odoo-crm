@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2004-2016 Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,23 +18,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
 
-import logging
-_logger = logging.getLogger(__name__)
-
-
-class res_partner(models.Model):
-    _inherit='res.partner'
-
-    @api.one
-    @api.depends('meeting_ids', 'meeting_ids.categ_ids')
-    def _last_meeting(self):
-        if self.meeting_ids:
-            self.last_meeting = self.meeting_ids.sorted(lambda m: m.start_date)[-1].start_date
-        else:
-            self.last_meeting = None
-    last_meeting = fields.Date(string="Last meeting",compute='_last_meeting',store=True,help="Last meeting with this partner", select=True)
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+{
+    'name': 'CRM Event Button',
+    'version': '0.1',
+    'category': '',
+    'description': """
+Adds an event tracking button to customer form.
+""",
+    'author': 'Vertel AB',
+    'website': 'http://www.vertel.se',
+    'depends': ['sale', 'event'], 
+    'data': [
+        'res_partner_view.xml',
+    ],
+    'application': False,
+    'installable': True,
+}
+# vim:expandtab:smartindent:tabstop=4s:softtabstop=4:shiftwidth=4:

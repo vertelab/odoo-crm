@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2004-2016 Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,22 +19,30 @@
 #
 ##############################################################################
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
 
 import logging
 _logger = logging.getLogger(__name__)
 
+import openerp.addons.decimal_precision as dp
 
 class res_partner(models.Model):
-    _inherit='res.partner'
-
+    _inherit = 'res.partner'
+    
     @api.one
-    @api.depends('meeting_ids', 'meeting_ids.categ_ids')
-    def _last_meeting(self):
-        if self.meeting_ids:
-            self.last_meeting = self.meeting_ids.sorted(lambda m: m.start_date)[-1].start_date
-        else:
-            self.last_meeting = None
-    last_meeting = fields.Date(string="Last meeting",compute='_last_meeting',store=True,help="Last meeting with this partner", select=True)
+    def _get_event_attendances(self):
+        self.event_attendances = len(self.env['event.registration'].search_read([('partner_id', '=', self.id), ('state', '=', 'done')], []))
+    
+    event_attendances = fields.Integer('Events', compute='_get_event_attendances') 
+    
+    @api.multi
+    def action_view_event_attendances(self):
+        self.ensure_one()
+        res = self.env['ir.actions.act_window'].for_xml_id('event', 'action_registration')
+        res['context'] = {
+            'search_default_partner_id': self.id,
+            'search_default_state': 'done',
+            'default_partner_id': self.id,
+        }
+        return res
+        
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
