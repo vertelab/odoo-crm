@@ -159,6 +159,7 @@ class MobileSaleView(http.Controller):
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
+    _description = "Representative Order"
 
     @api.multi
     @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
@@ -177,8 +178,7 @@ class rep_order(models.Model):
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
-    invoice_ids = fields.Many2many(related='order_id.invoice_ids')
-    invoice_ids = fields.Many2many(related='order_id.invoice_ids')
+    invoice_ids = None
     pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, help="Pricelist for current sales order.")
     currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True, required=True)
     procurement_group_id = None
@@ -219,12 +219,12 @@ class rep_order(models.Model):
 class rep_order_line(models.Model):
     _name = "rep.order.line"
     _inherit = "sale.order.line"
+    _description = "Representative Order Line"
 
-    order_line_id = fields.Many2one('sale.order.line')
     order_id = fields.Many2one('rep.order', 'Order Reference', required=True, ondelete='cascade', select=True, readonly=True, states={'draft':[('readonly',False)]})
     tax_id = fields.Many2many('account.tax', 'rep_order_tax', 'order_line_id', 'tax_id', string='Taxes', readonly=True, states={'draft': [('readonly', False)]})
     #Must overwrite invoice_lines, or invoice creation will cease to function!
     #Could quite possibly be true for other fields
-    invoice_lines = fields.Many2many('account.invoice.line', related='order_line_id.invoice_lines')
+    invoice_lines = None
     #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
-    procurement_ids = fields.One2many('procurement.order', related='order_line_id.procurement_ids')
+    procurement_ids = None

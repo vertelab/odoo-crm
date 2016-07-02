@@ -2,14 +2,6 @@
 <openerp>
     <data>
 
-        <!-- Top menu item -->
-        <!--
-            This menu item's purpose is to overwrite another one defined in
-            the base module in order to set new groups.
-        -->
-
-
-
         <record id="view_sale_order_calendar" model="ir.ui.view">
             <field name="name">rep.order.calendar</field>
             <field name="model">rep.order</field>
@@ -20,6 +12,7 @@
                 </calendar>
             </field>
         </record>
+        
         <record model="ir.ui.view" id="view_sale_order_graph">
             <field name="name">rep.order.graph</field>
             <field name="model">rep.order</field>
