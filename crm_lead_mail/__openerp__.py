@@ -37,7 +37,8 @@ list of users that should have a notification
 the mail-address to your catchall-address configured in Odoo
 
 Todo:
-* not send mail when leads are imported from csv-file or manually added
+* not send mail when leads are imported from csv-file or manually added (business opportunity)
+* do not trigger this if there are no email_from
 * the list of email_to could be fetched from group_sale_salesman or other group.
 
 """,
