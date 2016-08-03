@@ -25,6 +25,30 @@
     'category': '',
     'summary': "Google require a registred API-key for use of maps",
     'description': """
+    TODO:
+    * Lat, lng in res.company
+    * API-key, position, title in javascript
+    * Replace old map in contact page
+    ******
+    <div class="col-md-12" id="sa_location" style="max-width: 340px; width: 100%; height: 320px;"></div>
+    <script>
+      function initMap() {
+        var myLatLng = {lat: 59.3425931, lng: 18.038969};
+        var map = new google.maps.Map(document.getElementById('sa_location'), {
+          zoom: 16,
+          center: myLatLng
+        });
+        var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Salon André'
+        });
+      }
+    </script>
+    <script async="async" defer="defer"
+        src="https://maps.googleapis.com/maps/api/js?key=MY_API_KEY&amp;callback=initMap">
+    </script>
+    ******
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
