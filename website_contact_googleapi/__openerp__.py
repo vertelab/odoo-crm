@@ -28,8 +28,9 @@
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['website_contact',],
+    'depends': ['website_crm',],
     'data': [
+        'res_config.xml',
     ],
     'application': False,
     'installable': True,

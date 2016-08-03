@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_website_config_settings_inherit" model="ir.ui.view">
+            <field name="name">Website settings.inherit</field>
+            <field name="model">website.config.settings</field>
+            <field name="inherit_id" ref="website.view_website_config_settings"/>
+            <field name="arch" type="xml">
+                <div name="google_analytics_key" position="after">
+                    <label for="google_maps_key"/>
+                    <div name="google_maps_key">
+                        <div>
+                            <div name="google_maps_key" class="oe_inline">
+                                <field name="google_maps_key" placeholder="AIzaSyXXXXXXXXXXXXXXXX"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</openerp>
