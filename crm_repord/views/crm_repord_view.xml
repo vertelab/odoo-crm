@@ -9,7 +9,22 @@
         <field name="arch" type="xml">
             <field name="website" position="after">
                 <field name="product_ids" widget="many2many_tags"/>
+                <field name="listing_id"/>
             </field>
+        </field>
+    </record>
+
+    <record id="view_partner_listing_form" model="ir.ui.view">
+        <field name="name">res.partner.listing.form</field>
+        <field name="model">res.partner.listing</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <sheet string="Listing">
+                <h1>
+                    <field name="name" placeholder="ICA Supermarket" class="oe_inline"/>
+                </h1>
+                <field name="product_ids" widget="many2many_tags"/>
+            </sheet>
         </field>
     </record>
 
@@ -199,7 +214,7 @@
                                 <!-- Kedjans sortiment -->
                                 <div id="kedjans_sortiment" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container mb64">
-                                        <h2 class="text-center mb32" t-esc="partner.parent_id.name"/>
+                                        <h2 class="text-center mb32" t-esc="partner.listing_id.name"/>
                                         <t t-foreach="parent_products" t-as="pp">
                                             <t t-if="pp in partner.product_ids">
                                                 <div t-att-id="'ksp_%s' %pp.id" class="p_exist col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px;">

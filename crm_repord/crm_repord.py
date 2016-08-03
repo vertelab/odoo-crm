@@ -33,16 +33,26 @@ class sale_order(models.Model):
 
     rep_order_id = fields.Many2one('rep.order', 'Rep Order Reference')
 
+
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
+    listing_id = fields.Many2one(comodel_name='res.partner.listing', string='Listing')
+
+
+class res_partner_listing(models.Model):
+    _name = 'res.partner.listing'
+
+    name = fields.Char(string='Name')
+    product_ids = fields.Many2many(comodel_name='product.product', string='Products')
+
 
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
     def repord(self, partner=None, **post):
         products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).product_ids
-        parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).parent_id.product_ids
+        parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).listing_id.product_ids
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id)])
         if request.httprequest.method == 'POST':
             request.env['ir.attachment'].create({
@@ -105,7 +115,7 @@ class MobileSaleView(http.Controller):
     @http.route(['/crm/add/product'], type='json', auth="public", methods=['POST'], website=True)
     def add_product(self, res_partner, product_id, **kw):
         partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
-        for p in partner.product_ids:
+        for p in partner.listing_id.product_ids:
             if int(product_id) != p.id:
                 partner.write({
                     'product_ids': [(4, int(product_id), 0)]
@@ -115,7 +125,7 @@ class MobileSaleView(http.Controller):
     @http.route(['/crm/remove/product'], type='json', auth="public", methods=['POST'], website=True)
     def remove_product(self, res_partner, product_id, **kw):
         partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
-        for p in partner.product_ids:
+        for p in partner.listing_id.product_ids:
             if int(product_id) == p.id:
                 partner.write({
                     'product_ids': [(3, int(product_id), 0)]
@@ -216,6 +226,7 @@ class rep_order(models.Model):
         new_id = super(rep_order, self).create(vals)
         return new_id
 
+
 class rep_order_line(models.Model):
     _name = "rep.order.line"
     _inherit = "sale.order.line"
@@ -228,3 +239,5 @@ class rep_order_line(models.Model):
     invoice_lines = None
     #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
     procurement_ids = None
+
+
