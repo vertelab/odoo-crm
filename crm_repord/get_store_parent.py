@@ -30,6 +30,7 @@ listing = {
     'ICA Nära': odoo.env.ref('crm_repord.listing_ica_planogramlagt').id,
     'ICA Supermarket': odoo.env.ref('crm_repord.listing_ica_planogramlagt').id,
     'ICA Kvantum': odoo.env.ref('crm_repord.listing_ica_tillgangligt').id,
+    'ICA Maxi': odoo.env.ref('crm_repord.listing_ica_tillgangligt').id,
     'F01': odoo.env.ref('crm_repord.listing_coop_ti').id,
     'F02': odoo.env.ref('crm_repord.listing_coop_pt').id,
     'F03': odoo.env.ref('crm_repord.listing_coop_sa').id,
