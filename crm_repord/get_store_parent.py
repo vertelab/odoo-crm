@@ -41,6 +41,7 @@ listing = {
 
 for p in odoo.env['res.partner'].read(odoo.env['res.partner'].search([]),['id','name','role']):
     if listing.get(p.get('role')):
-        odoo.env['res.partner'].write(p['id'],{'listing_id': listing[p['role']]})print 'Partner %s updated' %p.get('name')
+        odoo.env['res.partner'].write(p['id'],{'listing_id': listing[p['role']]})
+        print 'Partner %s updated' %p.get('name')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
