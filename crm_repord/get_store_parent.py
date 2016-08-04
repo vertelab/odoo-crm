@@ -27,7 +27,7 @@ odoo = odoorpc.ODOO(params.get('host'),port=params.get('port'))
 odoo.login(params.get('database'),params.get('user'),params.get('passwd'))
 
 listing = {
-    'ICA Nära': odoo.env.ref('crm_repord.listing_ica_planogramlagt').id,
+    u'ICA Nära': odoo.env.ref('crm_repord.listing_ica_planogramlagt').id,
     'ICA Supermarket': odoo.env.ref('crm_repord.listing_ica_planogramlagt').id,
     'ICA Kvantum': odoo.env.ref('crm_repord.listing_ica_tillgangligt').id,
     'ICA Maxi': odoo.env.ref('crm_repord.listing_ica_tillgangligt').id,
