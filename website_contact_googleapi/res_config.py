@@ -27,3 +27,8 @@ class website_config_settings(models.TransientModel):
     google_maps_key = fields.Char(related='website_id.google_maps_key', string='Google Maps Key')
 
 
+class res_company(models.Model):
+    _inherit = 'res.company'
+
+    latitude = fields.Float(related='partner_id.partner_latitude', string='Latitude')
+    longitude = fields.Float(related='partner_id.partner_longitude', string='Longitude')

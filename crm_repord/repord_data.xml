@@ -9,48 +9,40 @@
             <field name="prefix">RO</field>
         </record>
 
-        <record id="listing_ica_nara" model="res.partner.listing">
-            <field name="name">ICA Nära</field>
+        <record id="listing_ica_planogramlagt" model="res.partner.listing">
+            <field name="name">ICA planogramlagt</field>
         </record>
 
-        <record id="listing_ica_kvantum" model="res.partner.listing">
-            <field name="name">ICA Kvantum</field>
+        <record id="listing_ica_tillgangligt" model="res.partner.listing">
+            <field name="name">ICA Tillgängligt</field>
         </record>
 
-        <record id="listing_ica_supermarket" model="res.partner.listing">
-            <field name="name">ICA Supermarket</field>
+        <record id="listing_coop_ti" model="res.partner.listing">
+            <field name="name">TI</field>
         </record>
 
-        <record id="listing_ica_maxi" model="res.partner.listing">
-            <field name="name">ICA Maxi</field>
+        <record id="listing_coop_pt" model="res.partner.listing">
+            <field name="name">PT</field>
         </record>
 
-        <record id="listing_f01" model="res.partner.listing">
-            <field name="name">F01</field>
+        <record id="listing_coop_sa" model="res.partner.listing">
+            <field name="name">SÄ</field>
         </record>
 
-        <record id="listing_f02" model="res.partner.listing">
-            <field name="name">F02</field>
+        <record id="listing_coop_gl" model="res.partner.listing">
+            <field name="name">GL</field>
         </record>
 
-        <record id="listing_f03" model="res.partner.listing">
-            <field name="name">F03</field>
+        <record id="listing_coop_ak" model="res.partner.listing">
+            <field name="name">AK</field>
         </record>
 
-        <record id="listing_f04" model="res.partner.listing">
-            <field name="name">F04</field>
+        <record id="listing_axfood_b" model="res.partner.listing">
+            <field name="name">B</field>
         </record>
 
-        <record id="listing_f05" model="res.partner.listing">
-            <field name="name">F05</field>
-        </record>
-
-        <record id="listing_f06" model="res.partner.listing">
-            <field name="name">F06</field>
-        </record>
-
-        <record id="listing_f07" model="res.partner.listing">
-            <field name="name">F07</field>
+        <record id="listing_axfood_c" model="res.partner.listing">
+            <field name="name">C</field>
         </record>
 
 

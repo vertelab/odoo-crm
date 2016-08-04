@@ -26,8 +26,21 @@ params = odoorpc.session.get('paolos')
 odoo = odoorpc.ODOO(params.get('host'),port=params.get('port'))
 odoo.login(params.get('database'),params.get('user'),params.get('passwd'))
 
-for p in odoo.env['res.partner'].read(odoo.env['res.partner'].search([('role', 'ilike', 'ICA'), ('role', '!=', False)]),['id','name','role']):
-    odoo.env['res.partner'].write(p['id'],{'listing_id': odoo.env['res.partner.listing'].search([('name', '=', p.get('role'))])[0]})
-    print 'Partner %s updated' %p.get('name')
+listing = {
+    'ICA Nära': odoo.env.ref('crm_repord.listing_ica_planogramlagt').id,
+    'ICA Supermarket': odoo.env.ref('crm_repord.listing_ica_planogramlagt').id,
+    'ICA Kvantum': odoo.env.ref('crm_repord.listing_ica_tillgangligt').id,
+    'F01': odoo.env.ref('crm_repord.listing_coop_ti').id,
+    'F02': odoo.env.ref('crm_repord.listing_coop_pt').id,
+    'F03': odoo.env.ref('crm_repord.listing_coop_sa').id,
+    'F04': odoo.env.ref('crm_repord.listing_coop_gl').id,
+    'F05': odoo.env.ref('crm_repord.listing_coop_ak').id,
+    'F06': odoo.env.ref('crm_repord.listing_coop_ak').id,
+    'F07': odoo.env.ref('crm_repord.listing_coop_ak').id,
+    }
+
+for p in odoo.env['res.partner'].read(odoo.env['res.partner'].search([]),['id','name','role']):
+    if listing.get(p.get('role')):
+        odoo.env['res.partner'].write(p['id'],{'listing_id': listing[p['role']]})print 'Partner %s updated' %p.get('name')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
