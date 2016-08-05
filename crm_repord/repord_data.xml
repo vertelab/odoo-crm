@@ -10,7 +10,7 @@
         </record>
 
         <record id="listing_ica_planogramlagt" model="res.partner.listing">
-            <field name="name">ICA planogramlagt</field>
+            <field name="name">ICA Planogramlagt</field>
         </record>
 
         <record id="listing_ica_tillgangligt" model="res.partner.listing">
