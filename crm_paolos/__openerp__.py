@@ -32,7 +32,7 @@ CRM Paolos
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['base', 'email_template','crm', 'note', 'edi_gs1', 'marketing_campaign', 'account'],
+    'depends': ['base', 'email_template','crm', 'note', 'marketing_campaign', 'account'],
     'data': [
         'views/res_partner_view.xml',
         'views/crm_campaign_view.xml',
