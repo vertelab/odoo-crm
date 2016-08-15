@@ -12,7 +12,7 @@
                 </calendar>
             </field>
         </record>
-        
+
         <record model="ir.ui.view" id="view_sale_order_graph">
             <field name="name">rep.order.graph</field>
             <field name="model">rep.order</field>
@@ -60,7 +60,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <record id="view_sale_order_form" model="ir.ui.view">
             <field name="name">sale.order.reporder.form</field>
             <field name="model">sale.order</field>
@@ -100,7 +100,7 @@
                             <field name="client_order_ref"/>
                             <field domain="[('type','=','sale')]" name="pricelist_id" groups="product.group_sale_pricelist" on_change="onchange_pricelist_id(pricelist_id,order_line)"/>
                             <field name="currency_id" invisible="1"/>
-                            <field name="order_id"/>                            
+                            <field name="order_id"/>
                         </group>
                     </group>
                     <notebook>
@@ -254,6 +254,7 @@
             </field>
         </record>
 
+<!--
         <record id="action_orders" model="ir.actions.act_window">
             <field name="name">Rep Orders</field>
             <field name="type">ir.actions.act_window</field>
@@ -278,6 +279,7 @@
         </record>
 
         <menuitem action="action_orders" id="menu_sale_order" parent="base.menu_sales" sequence="6" groups="base.group_sale_salesman,base.group_sale_manager"/>
+-->
 
         <record id="action_orders_exception" model="ir.actions.act_window">
             <field name="name">Sales in Exception</field>
@@ -302,7 +304,7 @@
 
 
         <record id="action_quotations" model="ir.actions.act_window">
-            <field name="name">Rep Quotations</field>
+            <field name="name">Rep Orders</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">rep.order</field>
             <field name="view_type">form</field>
