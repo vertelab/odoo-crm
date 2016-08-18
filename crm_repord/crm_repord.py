@@ -197,27 +197,52 @@ class rep_order(models.Model):
     def action_view_sale_order_line_make_invoice(self):
         pass
 
+    @api.v7
+    def onchange_partner_id(self, cr, uid, ids, part, context=None):
+        res = super(rep_order, self).onchange_partner_id(cr, uid, ids, part, context)
+        if not part:
+            return res
+        part = self.pool.get('res.partner').browse(cr, uid, part, context=context)
+        if part.property_product_pricelist and part.property_product_pricelist.id != self.pool.get('ir.model.data').get_object_reference(cr, uid, 'product', 'list0')[1]:
+            res['value']['pricelist_id'] = part.property_product_pricelist.id
+        else:
+            res['value']['pricelist_id'] = part.parent_id.property_product_pricelist.id
+        return res
+
     @api.one
     def action_convert_to_sale_order(self):
-        if self.order_type != 'order':
-            raise Warning("Rep order is not of type order.")
-        order  = self.env['sale.order'].create({
-            'name': '/',
-            'rep_order_id': self.id,
-            'partner_id': self.partner_id.id,
-            'order_line': [(0, 0, {
-                'name': l.name,
-                'product_id': l.product_id and l.product_id.id or None,
-                'product_uom_qty': l.product_uom_qty,
-                'product_uom': l.product_uom.id,
-                'price_unit': l.price_unit,
-                'tax_id': [(6, 0, [t.id for t in l.tax_id and l.tax_id or []])],
-                'discount': l.discount,
-            }) for l in self.order_line],
-        })
+        if self.order_type in ['order', 'direct']:
+            nad_by = self.env['res.partner'].search([('gs1_gln', '=', '7301005900009')]) #ICA centrallagret
+            #~ raise Warning("Rep order is not of type order.")
+            order  = self.env['sale.order'].create({
+                'name': '/',
+                'rep_order_id': self.id,
+                'partner_id': self.partner_id.id if self.order_type == 'direct' else self.partner_id.parent_id.id,
+                'pricelist_id': self.pricelist_id.id,
+                'route_id': self.env.ref('edi_gs1.route_esap20').id if self.order_type == 'order' else None,
+                'nad_by': nad_by.id if self.order_type == 'order' else None,
+                'nad_su': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
+                'unb_sender': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
+                'unb_recipient': self.partner_id.parent_id.id if self.order_type == 'order' else None,
+                'order_line': [(0, 0, {
+                    'name': l.name,
+                    'product_id': l.product_id and l.product_id.id or None,
+                    'product_uom_qty': l.product_uom_qty,
+                    'product_uom': l.product_uom.id,
+                    'price_unit': l.price_unit,
+                    'tax_id': [(6, 0, [t.id for t in l.tax_id and l.tax_id or []])],
+                    'discount': l.discount,
+                }) for l in self.order_line],
+            })
+            self.state = 'progress'
+            self.order_id = order.id
+            #~ order.action_button_confirm()
+        else:
+            self.state = 'sent'
+
+    @api.one
+    def action_repord_done(self):
         self.state = 'done'
-        self.order_id = order.id
-        order.action_button_confirm()
 
     @api.model
     def create(self, vals):

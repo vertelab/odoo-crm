@@ -80,7 +80,11 @@
             <field name="arch" type="xml">
                 <form string="Representative Order">
                     <header>
+<!--
                         <button name="action_convert_to_sale_order" string="Convert to Order" attrs="{'invisible':['|', ('order_type', 'not in', ('order')), ('state', '!=', 'draft')]}" class="oe_highlight" type="object" groups="base.group_user"/>
+-->
+                        <button name="action_convert_to_sale_order" string="Confirm" attrs="{'invisible':[('state', 'not in', ('draft'))]}" class="oe_highlight" type="object" groups="base.group_user"/>
+                        <button name="action_repord_done" string="Done" attrs="{'invisible':[('state', 'not in', ('sent', 'progress'))]}" class="oe_highlight" type="object" groups="base.group_user"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,sent,progress,done" statusbar_colors='{"invoice_except":"red","waiting_date":"blue"}'/>
                 </header>
                 <sheet>
