@@ -219,6 +219,7 @@ class rep_order(models.Model):
                 'rep_order_id': self.id,
                 'partner_id': self.partner_id.id if self.order_type == 'direct' else self.partner_id.parent_id.id,
                 'pricelist_id': self.pricelist_id.id,
+                'client_order_ref': self.name,
                 'route_id': self.env.ref('edi_gs1.route_esap20').id if self.order_type == 'order' else None,
                 'nad_by': nad_by.id if self.order_type == 'order' else None,
                 'nad_su': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
