@@ -53,7 +53,7 @@ class MobileSaleView(http.Controller):
     def repord(self, partner=None, **post):
         products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).product_ids
         parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).listing_id.product_ids
-        rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id)])
+        rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft')])
         if request.httprequest.method == 'POST':
             request.env['ir.attachment'].create({
                 'name': post['ufile'].filename,
@@ -83,7 +83,6 @@ class MobileSaleView(http.Controller):
                 'partner_id': int(res_partner),
                 'state': 'draft',
             })
-
         order_line = False
         product = request.env['product.product'].search([('id', '=', int(product_id))])
         for line in repord.order_line:
@@ -165,6 +164,18 @@ class MobileSaleView(http.Controller):
         })
         return 'presentation_done'
 
+    @http.route(['/crm/repord/type'], type='json', auth="public", methods=['POST'], website=True)
+    def change_order_type(self, order, order_type, **kw):
+        order = request.env['rep.order'].search([('id', '=', int(order))])
+        order.write({
+            'order_type': order_type,
+        })
+
+    @http.route(['/crm/repord/confirm'], type='json', auth="public", methods=['POST'], website=True)
+    def order_confirm(self, order, **kw):
+        order = request.env['rep.order'].search([('id', '=', int(order))])
+        order.action_convert_to_sale_order()
+        return 'repord_confirmed'
 
 class rep_order(models.Model):
     _name = "rep.order"
@@ -211,7 +222,7 @@ class rep_order(models.Model):
 
     @api.one
     def action_convert_to_sale_order(self):
-        if self.order_type in ['order', 'direct']:
+        if self.order_type in ['order', 'direct'] and self.state == 'draft':
             nad_by = self.env['res.partner'].search([('gs1_gln', '=', '7301005900009')]) #ICA centrallagret
             #~ raise Warning("Rep order is not of type order.")
             order  = self.env['sale.order'].create({

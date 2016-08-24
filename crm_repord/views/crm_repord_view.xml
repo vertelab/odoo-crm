@@ -201,42 +201,40 @@
                                         </div>
                                     </div>
                                     <hr style="width: 100%"/>
-                                    <form>
-                                        <div class="form-group">
-                                            <div class="col-md-8">
-                                                <label class="col-md-4 control-label" for="order_type">
-                                                    <span class="pull-right">Beställningstyp:</span>
-                                                </label>
-                                                <div class="col-md-8 mb16">
-                                                    <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary">
-                                                        <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
-                                                            <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
-                                                        </t>
-                                                    </select>
-                                                </div>
-                                                <label class="col-md-4 control-label" for="analytic_account">
-                                                    <span class="pull-right">Kampanj:</span>
-                                                </label>
-                                                <div class="col-md-8 mb16">
-                                                    <select name="analytic_account" id="analytic_account" class="form-control selectpicker dropup" data-style="btn-primary">
-                                                        <option value=""/>
-                                                        <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
-                                                            <option t-if="aa.campaign.account_id" t-att-value="aa.campaign.account_id.id"><t t-raw="aa.campaign.account_id.name"/></option>
-                                                        </t>
-                                                    </select>
-                                                </div>
-                                                <label class="col-md-4 control-label" for="leveransvecka">
-                                                    <span class="pull-right">Leveransdag:</span>
-                                                </label>
-                                                <div class="col-md-8 mb16">
-                                                    <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary"/>
-                                                </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8">
+                                            <label class="col-md-4 control-label" for="order_type">
+                                                <span class="pull-right">Beställningstyp:</span>
+                                            </label>
+                                            <div class="col-md-8 mb16">
+                                                <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
+                                                    <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
+                                                        <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <label class="col-md-4 control-label" for="analytic_account">
+                                                <span class="pull-right">Kampanj:</span>
+                                            </label>
+                                            <div class="col-md-8 mb16">
+                                                <select name="analytic_account" id="analytic_account" class="form-control selectpicker dropup" data-style="btn-primary">
+                                                    <option value=""/>
+                                                    <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
+                                                        <option t-if="aa.campaign.account_id" t-att-value="aa.campaign.account_id.id"><t t-raw="aa.campaign.account_id.name"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <label class="col-md-4 control-label" for="leveransvecka">
+                                                <span class="pull-right">Leveransdag:</span>
+                                            </label>
+                                            <div class="col-md-8 mb16">
+                                                <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary"/>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <button id="confirm" name="confirm" class="btn btn-success btn-lg pull-right">Bekräfta</button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button id="confirm" name="confirm" class="btn btn-success btn-lg pull-right" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Bekräfta</button>
+                                    </div>
                                 </div>
 
                                 <!-- Kedjans sortiment -->
@@ -424,7 +422,6 @@
     <template id="crm_javascript" inherit_id="website.layout">
         <xpath expr="//body" position="inside">
             <script>
-
                 function minus(product_id)
                 {
                     value = parseInt(document.getElementById(product_id).value)
@@ -449,6 +446,26 @@
                 {
                     var product = "product_cell_" + product_id;
                     $("#" + product).slideToggle("slow");
+                }
+
+                /* change rep order type */
+                function change_order_type(order){
+                    order_type = document.getElementById("order_type").value;
+                    openerp.jsonRpc("/crm/repord/type", 'call', {
+                        'order': order,
+                        'order_type': order_type,
+                    });
+                }
+
+                /* confirm rep order */
+                function order_confirm(order){
+                    openerp.jsonRpc("/crm/repord/confirm", 'call', {
+                        'order': order,
+                    }).done(function(data){
+                        if(data == "repord_confirmed"){
+                            $("#confirm").addClass("hidden");
+                        }
+                    });
                 }
 
                 /* send rep.order */
