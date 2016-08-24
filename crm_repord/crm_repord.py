@@ -170,6 +170,29 @@ class MobileSaleView(http.Controller):
         order.write({
             'order_type': order_type,
         })
+        return 'order_type_changed'
+
+    @http.route(['/crm/repord/campaign'], type='json', auth="public", methods=['POST'], website=True)
+    def change_campaign(self, order, campaign_id, **kw):
+        order = request.env['rep.order'].search([('id', '=', int(order))])
+        if campaign_id != '':
+            campaign = request.env['marketing.campaign'].search([('id', '=', int(campaign_id))])
+            order.write({
+                'campaign': campaign.id,
+            })
+        else:
+            order.write({
+                'campaign': None,
+            })
+        return 'campaign_changed'
+
+    @http.route(['/crm/repord/deliverydate'], type='json', auth="public", methods=['POST'], website=True)
+    def change_delivery_date(self, order, date_order, **kw):
+        order = request.env['rep.order'].search([('id', '=', int(order))])
+        order.write({
+            'date_order': date_order,
+        })
+        return 'delivery_date_changed'
 
     @http.route(['/crm/repord/confirm'], type='json', auth="public", methods=['POST'], website=True)
     def order_confirm(self, order, **kw):
@@ -203,6 +226,7 @@ class rep_order(models.Model):
     pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, help="Pricelist for current sales order.")
     currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True, required=True)
     procurement_group_id = None
+    campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
 
     @api.one
     def action_view_sale_order_line_make_invoice(self):
@@ -230,6 +254,8 @@ class rep_order(models.Model):
                 'rep_order_id': self.id,
                 'partner_id': self.partner_id.id if self.order_type == 'direct' else self.partner_id.parent_id.id,
                 'pricelist_id': self.pricelist_id.id,
+                'campaign': self.campaign.id,
+                'project_id': self.campaign.account_id.id if self.campaign.account_id else None,
                 'client_order_ref': self.name,
                 'route_id': self.env.ref('edi_gs1.route_esap20').id if self.order_type == 'order' else None,
                 'nad_by': nad_by.id if self.order_type == 'order' else None,

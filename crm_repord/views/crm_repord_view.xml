@@ -213,14 +213,14 @@
                                                     </t>
                                                 </select>
                                             </div>
-                                            <label class="col-md-4 control-label" for="analytic_account">
+                                            <label class="col-md-4 control-label" for="campaign">
                                                 <span class="pull-right">Kampanj:</span>
                                             </label>
                                             <div class="col-md-8 mb16">
-                                                <select name="analytic_account" id="analytic_account" class="form-control selectpicker dropup" data-style="btn-primary">
+                                                <select name="campaign" id="campaign" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
                                                     <option value=""/>
                                                     <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
-                                                        <option t-if="aa.campaign.account_id" t-att-value="aa.campaign.account_id.id"><t t-raw="aa.campaign.account_id.name"/></option>
+                                                        <option t-if="aa.campaign" t-att-value="aa.campaign.id"><t t-raw="aa.campaign.name"/></option>
                                                     </t>
                                                 </select>
                                             </div>
@@ -228,7 +228,7 @@
                                                 <span class="pull-right">Leveransdag:</span>
                                             </label>
                                             <div class="col-md-8 mb16">
-                                                <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary"/>
+                                                <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id"/>
                                             </div>
                                         </div>
                                     </div>
@@ -437,35 +437,11 @@
                     document.getElementById(product_id).value = value;
                 }
 
-                $("#analytic_account").on('change', function() {
-                    window.alert(this.value);
-                });
-
                 $(".table_cell").hide();
                 function toggle_cell(product_id)
                 {
                     var product = "product_cell_" + product_id;
                     $("#" + product).slideToggle("slow");
-                }
-
-                /* change rep order type */
-                function change_order_type(order){
-                    order_type = document.getElementById("order_type").value;
-                    openerp.jsonRpc("/crm/repord/type", 'call', {
-                        'order': order,
-                        'order_type': order_type,
-                    });
-                }
-
-                /* confirm rep order */
-                function order_confirm(order){
-                    openerp.jsonRpc("/crm/repord/confirm", 'call', {
-                        'order': order,
-                    }).done(function(data){
-                        if(data == "repord_confirmed"){
-                            $("#confirm").addClass("hidden");
-                        }
-                    });
                 }
 
                 /* send rep.order */
@@ -507,6 +483,56 @@
                             $("#ksp_" + product_id).addClass("p_not_exist");
                             $("#ksp_" + product_id + "_minus").addClass("hidden");
                             $("#ksp_" + product_id + "_plus").removeClass("hidden");
+                        }
+                    });
+                }
+
+                /* change rep order type */
+                function change_order_type(order){
+                    order_type = document.getElementById("order_type").value;
+                    openerp.jsonRpc("/crm/repord/type", 'call', {
+                        'order': order,
+                        'order_type': order_type,
+                    }).done(function(data){
+                        if(data != "order_type_changed"){
+                            window.alert('Something went wrong when changing order type');
+                        }
+                    });
+                }
+
+                /* change campaign */
+                function change_campaign(order){
+                    campaign_id = document.getElementById("campaign").value;
+                    openerp.jsonRpc("/crm/repord/campaign", 'call', {
+                        'order': order,
+                        'campaign_id': campaign_id,
+                    }).done(function(data){
+                        if(data != "campaign_changed"){
+                            window.alert('Something went wrong when changing campaign');
+                        }
+                    });
+                }
+
+                /* change delivery date */
+                function change_delivery_date(order){
+                    delivery_date = document.getElementById("delivery_date").value;
+                    openerp.jsonRpc("/crm/repord/deliverydate", 'call', {
+                        'order': order,
+                        'date_order': delivery_date,
+                    }).done(function(data){
+                        if(data != "delivery_date_changed"){
+                            window.alert('Something went wrong when changing delivery date');
+                        }
+                    });
+                }
+
+                /* confirm rep order */
+                function order_confirm(order){
+                    openerp.jsonRpc("/crm/repord/confirm", 'call', {
+                        'order': order,
+                    }).done(function(data){
+                        if(data == "repord_confirmed"){
+                            $("#confirm").addClass("hidden");
                         }
                     });
                 }
