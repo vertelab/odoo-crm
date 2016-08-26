@@ -247,18 +247,16 @@ class rep_order(models.Model):
     @api.one
     def action_convert_to_sale_order(self):
         if self.order_type in ['order', 'direct'] and self.state == 'draft':
-            nad_by = self.env['res.partner'].search([('gs1_gln', '=', '7301005900009')]) #ICA centrallagret
-            #~ raise Warning("Rep order is not of type order.")
             order  = self.env['sale.order'].create({
                 'name': '/',
                 'rep_order_id': self.id,
-                'partner_id': self.partner_id.id if self.order_type == 'direct' else self.partner_id.parent_id.id,
+                'partner_id': self.partner_id.id if self.order_type in ['order', 'direct'] else self.partner_id.parent_id.id,
                 'pricelist_id': self.pricelist_id.id,
                 'campaign': self.campaign.id,
                 'project_id': self.campaign.account_id.id if self.campaign.account_id else None,
                 'client_order_ref': self.name,
                 'route_id': self.env.ref('edi_gs1.route_esap20').id if self.order_type == 'order' else None,
-                'nad_by': nad_by.id if self.order_type == 'order' else None,
+                'nad_by': self.partner_id.id if self.order_type == 'order' else None,
                 'nad_su': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
                 'unb_sender': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
                 'unb_recipient': self.partner_id.parent_id.id if self.order_type == 'order' else None,
