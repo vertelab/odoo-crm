@@ -25,7 +25,7 @@ class res_partner_meeting_wizard(models.TransientModel):
                     'week_number': 'Undefied',
                     'weekday': 'Friday',
                     'location': p.city,
-                    'description': r.description if r.description else '' + '\n' + add_repord,
+                    'description': r.description + '\n' + add_repord if r.description else add_repord,
                     })
         return{
             'type': 'ir.actions.act_window',
