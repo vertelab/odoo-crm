@@ -27,5 +27,9 @@
             target="new"
             key2="client_action_multi"/>
 
+        <record id="calendar.action_calendar_event" model="ir.actions.act_window">
+            <field name="context">{"search_default_mymeetings": 1}</field>
+        </record>
+
     </data>
 </openerp>

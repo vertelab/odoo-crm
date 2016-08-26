@@ -32,7 +32,7 @@
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['crm', 'calendar_kanban'],
+    'depends': ['crm', 'calendar_kanban', 'calendar'],
     'data': [
         'res_partner_view.xml',
         'wizard/res_partner_phonecall_wizard_view.xml',

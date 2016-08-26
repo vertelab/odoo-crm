@@ -336,7 +336,7 @@
                                             </div>
                                         </div>
                                         <!-- partner todo list -->
-                                        <t t-set="notes" t-value="request.env['note.note'].sudo().search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                                        <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
                                             <div class="col-xs-12" style="background-color: rgba(0, 0, 255, 0.15);">
                                                 <t t-if="notes">
