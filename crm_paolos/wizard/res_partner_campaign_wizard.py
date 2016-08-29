@@ -20,6 +20,7 @@ class res_partner_note_wizard(models.TransientModel):
                 n.env['note.note'].create({
                     'memo': n.memo,
                     'partner_id': p.id,
+                    'message_follower_ids': [(4, p.user_id.partner_id.id, 0)],
                 })
 
 
