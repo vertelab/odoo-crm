@@ -361,16 +361,10 @@
                                         </div>
                                         <!-- buttons for mark meeting done -->
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                                            <t t-set="meetings" t-value="request.env['calendar.event'].search([])"/>
-                                            <t t-foreach="meetings" t-as="m">
-                                                <t t-if="partner in m.partner_ids">
-                                                    <t t-if="request.env.ref('crm_repord.categ_meet6') not in m.categ_ids">
-                                                        <div class="mt32">
-                                                            <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
-                                                        </div>
-                                                    </t>
-                                                </t>
-                                            </t>
+                                            <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
+                                            <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
+                                                <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </section>

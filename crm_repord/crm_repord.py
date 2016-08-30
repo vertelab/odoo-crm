@@ -37,6 +37,17 @@ class sale_order(models.Model):
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
+    def _get_meeting(self):
+        meetings = []
+        for m in self.meeting_ids:
+            if m.allday:
+                if m.start_date == datetime.date.today():
+                    meetings.append(m)
+            if not m.allday:
+                if m.start_datetime[0:10] == str(datetime.date.today()):
+                    meetings.append(m)
+        return meetings
+
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
     listing_id = fields.Many2one(comodel_name='res.partner.listing', string='Listing')
 
@@ -155,8 +166,8 @@ class MobileSaleView(http.Controller):
     def presentation(self, partner_id, categ, **kw):
         partner = request.env['res.partner'].browse(int(partner_id))
         request.env['mail.message'].create({
-            'body': 'I am a message',   #TODO: change message body
-            'subject': 'Presentation to ' + categ + ' has done',
+            'body': 'Presentation done.',   #TODO: change message body
+            'subject': 'Presentation to ' + categ + ' has be done',
             'author_id': request.env['res.users'].browse(request.env.uid).partner_id.id,
             'model': partner._name,
             'res_id': partner.id,
