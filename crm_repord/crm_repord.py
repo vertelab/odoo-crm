@@ -211,6 +211,20 @@ class MobileSaleView(http.Controller):
         order.action_convert_to_sale_order()
         return 'repord_confirmed'
 
+    # store list
+    #~ @http.route(['crm/mystores'], type='http', auth="public", website=True)
+    #~ def repord(self, partner=None, **post):
+        #~ request.env['res.partner'].search([('parent_id', '=', request.env.ref('edi_gs1_ica.ica_gruppen'), ('user_id', '=', request.env.uid)], order='store_class, name')
+
+        #~ return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
+
+    #~ @http.route(['crm/search/stores'], type='http', auth="public", website=True)
+    #~ def repord(self, partner=None, **post):
+        #~ request.env['res.partner'].search([('is_company', '=', True), ('is_customer', '=', True)], order='store_class, name')
+
+        #~ return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
+
+
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
