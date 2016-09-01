@@ -212,17 +212,39 @@ class MobileSaleView(http.Controller):
         return 'repord_confirmed'
 
     # store list
-    #~ @http.route(['crm/mystores'], type='http', auth="public", website=True)
-    #~ def repord(self, partner=None, **post):
-        #~ request.env['res.partner'].search([('parent_id', '=', request.env.ref('edi_gs1_ica.ica_gruppen'), ('user_id', '=', request.env.uid)], order='store_class, name')
+    @http.route(['/crm/mystores'], type='http', auth="public", website=True)
+    def mystores(self, **post):
+        my_stores = request.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True), ('user_id', '=', request.env.uid)], order='store_class, name')
+        return request.website.render("crm_repord.mystores", {'my_stores': my_stores,})
 
-        #~ return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
+    @http.route(['/crm/search/stores'], type='http', auth="public", website=True)
+    def search_stores(self, **post):
+        if request.httprequest.method == 'POST':
+            search_words = post.get('search_words').split(' ')
+            if len(search_words) > 0:
+                word = search_words[0]
+                partners = request.env['res.partner'].search(['|','|',('name','ilike', word),('street','ilike',word),('city','ilike',word)], order='store_class, name')
+                partners = partners.filtered(lambda p: p.is_company == True and p.customer == True)
+                for w in search_words[1:]:
+                    partners = partners.filtered(lambda p: (w.lower() in p.name.lower()) or (w.lower() in p.street.lower() if p.street else '') or (w.lower() in p.city.lower() if p.city else ''))
+                #~ partners.sorted(lambda p: p.name and p.store_class)
+                partners = partners.filtered(lambda p: not 'Maxi Special' in p.name)
+                return request.website.render("crm_repord.search_result", {'partners': partners, 'search_words': ' '.join(search_words)})
+            else:
+                return request.website.render("crm_repord.search_stores", {})
+        else:
+            return request.website.render("crm_repord.search_stores", {})
 
-    #~ @http.route(['crm/search/stores'], type='http', auth="public", website=True)
-    #~ def repord(self, partner=None, **post):
-        #~ request.env['res.partner'].search([('is_company', '=', True), ('is_customer', '=', True)], order='store_class, name')
 
-        #~ return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
+        #~ request.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True)], order='store_class, name')
+
+
+
+        #~ sstr = "hem bank antv"
+        #~ slist = sstr.split(' ')
+        #~ sfirst = slist.pop(0)
+        #~ partners = self.env['res.partner'].search(['|','|',('name','ilike', sfirst),('street','ilike',sfirst),('city','ilike',sfirst)])
+
 
 
 class rep_order(models.Model):
