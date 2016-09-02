@@ -215,7 +215,10 @@ class MobileSaleView(http.Controller):
     @http.route(['/crm/mystores'], type='http', auth="public", website=True)
     def mystores(self, **post):
         my_stores = request.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True), ('user_id', '=', request.env.uid)], order='store_class, name')
-        return request.website.render("crm_repord.mystores", {'my_stores': my_stores,})
+        my_coops = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_coop.coop'))
+        my_icas = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_ica.ica_gruppen'))
+        my_axfoods = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_axfood.axfood_group'))
+        return request.website.render("crm_repord.mystores", {'my_coops': my_coops, 'my_icas': my_icas, 'my_axfoods': my_axfoods,})
 
     @http.route(['/crm/search/stores'], type='http', auth="public", website=True)
     def search_stores(self, **post):
@@ -234,18 +237,6 @@ class MobileSaleView(http.Controller):
                 return request.website.render("crm_repord.search_stores", {})
         else:
             return request.website.render("crm_repord.search_stores", {})
-
-
-        #~ request.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True)], order='store_class, name')
-
-
-
-        #~ sstr = "hem bank antv"
-        #~ slist = sstr.split(' ')
-        #~ sfirst = slist.pop(0)
-        #~ partners = self.env['res.partner'].search(['|','|',('name','ilike', sfirst),('street','ilike',sfirst),('city','ilike',sfirst)])
-
-
 
 class rep_order(models.Model):
     _name = "rep.order"

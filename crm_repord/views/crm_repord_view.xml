@@ -404,7 +404,18 @@
                     <t t-call="crm_repord.search_stores"/>
                     <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
                         <t t-set="store_color" t-value="{'A': '#F00', 'B': '#FF7500', 'C': '#BBAA00', 'D': '#2CFF00', 'E': '#000BFF'}"/>
-                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_stores" t-as="ms">
+                        <h3>ICA</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_icas" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                        <h3>Coop</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_coops" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                        <h3>Axfood</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_axfoods" t-as="ms">
                             <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
                             <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
                         </div>
