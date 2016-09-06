@@ -27,13 +27,13 @@ import openerp.addons.decimal_precision as dp
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-    
+
     @api.one
     def _get_event_attendances(self):
         self.event_attendances = len(self.env['event.registration'].search_read([('partner_id', '=', self.id), ('state', '=', 'done')], []))
-    
-    event_attendances = fields.Integer('Events', compute='_get_event_attendances') 
-    
+
+    event_attendances = fields.Integer('Events', compute='_get_event_attendances')
+
     @api.multi
     def action_view_event_attendances(self):
         self.ensure_one()
@@ -44,5 +44,5 @@ class res_partner(models.Model):
             'default_partner_id': self.id,
         }
         return res
-        
+
 

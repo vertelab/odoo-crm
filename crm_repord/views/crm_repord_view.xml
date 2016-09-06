@@ -58,6 +58,7 @@
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="oe_structure">
+                    <t t-call="crm_repord.search_stores"/>
                     <div class="container mt16 mb64" style="width: 100%; padding: 0px;">
                         <div class="col-md-12 col-sm-12">
                             <ul class="nav nav-tabs">
@@ -201,42 +202,40 @@
                                         </div>
                                     </div>
                                     <hr style="width: 100%"/>
-                                    <form>
-                                        <div class="form-group">
-                                            <div class="col-md-8">
-                                                <label class="col-md-4 control-label" for="order_type">
-                                                    <span class="pull-right">Beställningstyp:</span>
-                                                </label>
-                                                <div class="col-md-8 mb16">
-                                                    <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary">
-                                                        <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
-                                                            <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
-                                                        </t>
-                                                    </select>
-                                                </div>
-                                                <label class="col-md-4 control-label" for="analytic_account">
-                                                    <span class="pull-right">Kampanj:</span>
-                                                </label>
-                                                <div class="col-md-8 mb16">
-                                                    <select name="analytic_account" id="analytic_account" class="form-control selectpicker dropup" data-style="btn-primary">
-                                                        <option value=""/>
-                                                        <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
-                                                            <option t-if="aa.campaign.account_id" t-att-value="aa.campaign.account_id.id"><t t-raw="aa.campaign.account_id.name"/></option>
-                                                        </t>
-                                                    </select>
-                                                </div>
-                                                <label class="col-md-4 control-label" for="leveransvecka">
-                                                    <span class="pull-right">Leveransdag:</span>
-                                                </label>
-                                                <div class="col-md-8 mb16">
-                                                    <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary"/>
-                                                </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8">
+                                            <label class="col-md-4 control-label" for="order_type">
+                                                <span class="pull-right">Beställningstyp:</span>
+                                            </label>
+                                            <div class="col-md-8 mb16">
+                                                <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
+                                                    <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
+                                                        <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <label class="col-md-4 control-label" for="campaign">
+                                                <span class="pull-right">Kampanj:</span>
+                                            </label>
+                                            <div class="col-md-8 mb16">
+                                                <select name="campaign" id="campaign" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
+                                                    <option value=""/>
+                                                    <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
+                                                        <option t-if="aa.campaign" t-att-value="aa.campaign.id"><t t-raw="aa.campaign.name"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <label class="col-md-4 control-label" for="leveransvecka">
+                                                <span class="pull-right">Leveransdag:</span>
+                                            </label>
+                                            <div class="col-md-8 mb16">
+                                                <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id"/>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <button id="confirm" name="confirm" class="btn btn-success btn-lg pull-right">Bekräfta</button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button id="confirm" name="confirm" class="btn btn-success btn-lg pull-right" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Bekräfta</button>
+                                    </div>
                                 </div>
 
                                 <!-- Kedjans sortiment -->
@@ -338,7 +337,7 @@
                                             </div>
                                         </div>
                                         <!-- partner todo list -->
-                                        <t t-set="notes" t-value="request.env['note.note'].sudo().search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                                        <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
                                             <div class="col-xs-12" style="background-color: rgba(0, 0, 255, 0.15);">
                                                 <t t-if="notes">
@@ -363,15 +362,11 @@
                                         </div>
                                         <!-- buttons for mark meeting done -->
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                                            <t t-set="meetings" t-value="request.env['calendar.event'].search([])"/>
-                                            <t t-foreach="meetings" t-as="m">
-                                                <t t-if="partner in m.partner_ids">
-                                                    <t t-if="request.env.ref('crm_repord.categ_meet6') not in m.categ_ids">
-                                                        <div class="mt32">
-                                                            <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
-                                                        </div>
-                                                    </t>
-                                                </t>
+                                            <t t-if="len(partner._get_meeting()) &gt; 0">
+                                                <t t-set="meeting" t-value="partner._get_meeting()[0])"/>
+                                                <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
+                                                    <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
+                                                </div>
                                             </t>
                                         </div>
                                     </div>
@@ -402,6 +397,78 @@
         </t>
     </template>
 
+    <template id="mystores" name="My Stores">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <t t-call="crm_repord.search_stores"/>
+                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
+                        <t t-set="store_color" t-value="{'A': '#F00', 'B': '#FF7500', 'C': '#BBAA00', 'D': '#2CFF00', 'E': '#000BFF'}"/>
+                        <h3>ICA</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_icas" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                        <h3>Coop</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_coops" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                        <h3>Axfood</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_axfoods" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="search_result" name="Search Result">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <t t-call="crm_repord.search_stores"/>
+                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
+                        <t t-set="store_color" t-value="{'A': '#F00', 'B': '#FF7500', 'C': '#BBAA00', 'D': '#2CFF00', 'E': '#000BFF'}"/>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="partners" t-as="p">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[p.store_class] if p.store_class else '#fff')"><span t-field="p.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %p.id"><span style="font-size: 1.5em;" t-field="p.name"/>, <span t-field="p.street"/> <span t-field="p.city"/></a>
+                        </div>
+                        <div t-if="len(partners) == 0" class="col-md-12 col-sm-12 mt8 mb8">
+                            <p class="text-center">Nothing found...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="search_stores" name="Search Stores">
+        <div class="container">
+            <div class="col-md-12 col-xs-12">
+                <div class="col-md-10 col-xs-10">
+                    <form action="/crm/search/stores" method="post" class="pagination form-inline">
+                        <div class="input-group">
+                            <input type="text" name="search_words" t-att-value="search_words" class="search-query form-control" placeholder="Search..."/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <a href="/crm/mystores">
+                        <span class="pagination input-group-btn">
+                            <button class="btn btn-warning">My stores</button>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <template id="crm_css" inherit_id="website.layout">
         <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
             <style>
@@ -424,7 +491,6 @@
     <template id="crm_javascript" inherit_id="website.layout">
         <xpath expr="//body" position="inside">
             <script>
-
                 function minus(product_id)
                 {
                     value = parseInt(document.getElementById(product_id).value)
@@ -439,10 +505,6 @@
                     value = parseInt(document.getElementById(product_id).value) + 1;
                     document.getElementById(product_id).value = value;
                 }
-
-                $("#analytic_account").on('change', function() {
-                    window.alert(this.value);
-                });
 
                 $(".table_cell").hide();
                 function toggle_cell(product_id)
@@ -490,6 +552,56 @@
                             $("#ksp_" + product_id).addClass("p_not_exist");
                             $("#ksp_" + product_id + "_minus").addClass("hidden");
                             $("#ksp_" + product_id + "_plus").removeClass("hidden");
+                        }
+                    });
+                }
+
+                /* change rep order type */
+                function change_order_type(order){
+                    order_type = document.getElementById("order_type").value;
+                    openerp.jsonRpc("/crm/repord/type", 'call', {
+                        'order': order,
+                        'order_type': order_type,
+                    }).done(function(data){
+                        if(data != "order_type_changed"){
+                            window.alert('Something went wrong when changing order type');
+                        }
+                    });
+                }
+
+                /* change campaign */
+                function change_campaign(order){
+                    campaign_id = document.getElementById("campaign").value;
+                    openerp.jsonRpc("/crm/repord/campaign", 'call', {
+                        'order': order,
+                        'campaign_id': campaign_id,
+                    }).done(function(data){
+                        if(data != "campaign_changed"){
+                            window.alert('Something went wrong when changing campaign');
+                        }
+                    });
+                }
+
+                /* change delivery date */
+                function change_delivery_date(order){
+                    delivery_date = document.getElementById("delivery_date").value;
+                    openerp.jsonRpc("/crm/repord/deliverydate", 'call', {
+                        'order': order,
+                        'date_order': delivery_date,
+                    }).done(function(data){
+                        if(data != "delivery_date_changed"){
+                            window.alert('Something went wrong when changing delivery date');
+                        }
+                    });
+                }
+
+                /* confirm rep order */
+                function order_confirm(order){
+                    openerp.jsonRpc("/crm/repord/confirm", 'call', {
+                        'order': order,
+                    }).done(function(data){
+                        if(data == "repord_confirmed"){
+                            $("#confirm").addClass("hidden");
                         }
                     });
                 }

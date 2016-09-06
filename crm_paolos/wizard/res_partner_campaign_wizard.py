@@ -20,6 +20,7 @@ class res_partner_note_wizard(models.TransientModel):
                 n.env['note.note'].create({
                     'memo': n.memo,
                     'partner_id': p.id,
+                    'message_follower_ids': [(4, p.user_id.partner_id.id, 0)],
                 })
 
 
@@ -58,6 +59,6 @@ class res_partner_campaign_wizard(models.TransientModel):
                     'partner_id': p.id,
                     'campaign': c.campaign_id.id,
                     'description': c.description,
-                    'planned_revenue': self._average_distribution(c.partner_ids, c.campaign_id.campaign_budget) if c.campaign_id.distribution == 'evenly' else self._procent_distribution(p.size, average_size, total_size, c.campaign_id.campaign_budget),
+                    'planned_revenue': self._average_distribution(c.partner_ids, c.campaign_id.campaign_budget) if c.campaign_id.distribution == 'evenly' or total_size == 0 else self._procent_distribution(p.size, average_size, total_size, c.campaign_id.campaign_budget),
                     'type': 'opportunity',
                 })

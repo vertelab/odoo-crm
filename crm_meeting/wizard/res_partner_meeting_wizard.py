@@ -25,7 +25,8 @@ class res_partner_meeting_wizard(models.TransientModel):
                     'week_number': 'Undefied',
                     'weekday': 'Friday',
                     'location': p.city,
-                    'description': r.description if r.description else '' + '\n' + add_repord,
+                    'description': r.description + '\n' + add_repord if r.description else add_repord,
+                    'partner_ids': [(6, 0, [p.user_id.partner_id.id if p.user_id else self.env['res.users'].browse(self.env.uid).partner_id.id, p.id])],
                     })
         return{
             'type': 'ir.actions.act_window',
