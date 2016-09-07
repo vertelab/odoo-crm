@@ -363,7 +363,7 @@
                                         <!-- buttons for mark meeting done -->
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
                                             <t t-if="len(partner._get_meeting()) &gt; 0">
-                                                <t t-set="meeting" t-value="partner._get_meeting()[0])"/>
+                                                <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
                                                 <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
                                                     <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
                                                 </div>
