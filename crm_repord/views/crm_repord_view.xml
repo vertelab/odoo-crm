@@ -58,6 +58,7 @@
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="oe_structure">
+                    <t t-call="crm_repord.search_stores"/>
                     <div class="container mt16 mb64" style="width: 100%; padding: 0px;">
                         <div class="col-md-12 col-sm-12">
                             <ul class="nav nav-tabs">
@@ -361,10 +362,12 @@
                                         </div>
                                         <!-- buttons for mark meeting done -->
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                                            <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
-                                            <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
-                                                <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
-                                            </div>
+                                            <t t-if="len(partner._get_meeting()) &gt; 0">
+                                                <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
+                                                <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
+                                                    <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
+                                                </div>
+                                            </t>
                                         </div>
                                     </div>
                                 </section>
@@ -392,6 +395,78 @@
                 </div>
             </div>
         </t>
+    </template>
+
+    <template id="mystores" name="My Stores">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <t t-call="crm_repord.search_stores"/>
+                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
+                        <t t-set="store_color" t-value="{'A': '#F00', 'B': '#FF7500', 'C': '#BBAA00', 'D': '#2CFF00', 'E': '#000BFF'}"/>
+                        <h3>ICA</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_icas" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                        <h3>Coop</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_coops" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                        <h3>Axfood</h3>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_axfoods" t-as="ms">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="search_result" name="Search Result">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <t t-call="crm_repord.search_stores"/>
+                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
+                        <t t-set="store_color" t-value="{'A': '#F00', 'B': '#FF7500', 'C': '#BBAA00', 'D': '#2CFF00', 'E': '#000BFF'}"/>
+                        <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="partners" t-as="p">
+                            <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[p.store_class] if p.store_class else '#fff')"><span t-field="p.store_class" style="padding: 5px;"/></span>
+                            <a t-att-href="'/crm/%s/repord' %p.id"><span style="font-size: 1.5em;" t-field="p.name"/>, <span t-field="p.street"/> <span t-field="p.city"/></a>
+                        </div>
+                        <div t-if="len(partners) == 0" class="col-md-12 col-sm-12 mt8 mb8">
+                            <p class="text-center">Nothing found...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="search_stores" name="Search Stores">
+        <div class="container">
+            <div class="col-md-12 col-xs-12">
+                <div class="col-md-10 col-xs-10">
+                    <form action="/crm/search/stores" method="post" class="pagination form-inline">
+                        <div class="input-group">
+                            <input type="text" name="search_words" t-att-value="search_words" class="search-query form-control" placeholder="Search..."/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <a href="/crm/mystores">
+                        <span class="pagination input-group-btn">
+                            <button class="btn btn-warning">My stores</button>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </template>
 
     <template id="crm_css" inherit_id="website.layout">
