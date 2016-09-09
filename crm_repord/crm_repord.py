@@ -227,7 +227,7 @@ class rep_order(models.Model):
             order.amount_total = values.get(order.id, {}).get('amount_total', 0)
 
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
-    order_type = fields.Selection([('scrap','Scrap'),('order','Order'),('reminder','Reminder'),('discount','Discount'),('direct','Direct')],default='order',string="Order Type",)
+    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('leroy', 'Lerøy')], default='order', string="Order Type")
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
     order_id = fields.Many2one('sale.order', 'Sale Order')
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
