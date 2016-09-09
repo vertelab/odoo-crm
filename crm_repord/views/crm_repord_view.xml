@@ -233,6 +233,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="checkbox">
+                                        <label for="send_mail">
+                                            <input name="send_mail" id="send_mail" value="send" type="checkbox"/>
+                                            Send mail at confirm
+                                        </label>
+                                    </div>
                                     <div class="col-md-4">
                                         <button id="confirm" name="confirm" class="btn btn-success btn-lg pull-right" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Bekräfta</button>
                                     </div>
@@ -597,10 +603,15 @@
 
                 /* confirm rep order */
                 function order_confirm(order){
+                    send_mail = $("#send_mail").is(":checked");
                     openerp.jsonRpc("/crm/repord/confirm", 'call', {
                         'order': order,
+                        'send_mail': send_mail
                     }).done(function(data){
-                        if(data == "repord_confirmed"){
+                        if(data == "no_email"){
+                            window.alert("This store has not a receive email");
+                        }
+                        else if(data == "repord_confirmed"){
                             $("#confirm").addClass("hidden");
                         }
                     });

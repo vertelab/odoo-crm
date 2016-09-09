@@ -33,6 +33,7 @@ CRM Repord for mobile device
     'data': [
         'views/crm_repord_view.xml',
         'views/crm_repord_data.xml',
+        'views/crm_repord_report.xml',
         'views/repord_view.xml',
         'repord_data.xml',
         'security/ir.model.access.csv',

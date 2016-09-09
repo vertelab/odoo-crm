@@ -206,8 +206,14 @@ class MobileSaleView(http.Controller):
         return 'delivery_date_changed'
 
     @http.route(['/crm/repord/confirm'], type='json', auth="public", methods=['POST'], website=True)
-    def order_confirm(self, order, **kw):
+    def order_confirm(self, order, send_mail, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
+        if send_mail == True:
+            if not order.partner_id.email:
+                return 'no_email'
+            else:
+                #TODO: send mail
+                pass
         order.action_convert_to_sale_order()
         return 'repord_confirmed'
 
@@ -324,6 +330,50 @@ class rep_order(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_id(self.env.ref('crm_repord.sequence_repord').id) or '/'
         new_id = super(rep_order, self).create(vals)
         return new_id
+
+    @api.v7
+    def action_quotation_send(self, cr, uid, ids, context=None):
+        '''
+        This function opens a window to compose an email, with the edi sale template message loaded by default
+        '''
+        assert len(ids) == 1, 'This option should only be used for a single id at a time.'
+        ir_model_data = self.pool.get('ir.model.data')
+        try:
+            template_id = ir_model_data.get_object_reference(cr, uid, 'crm_repord', 'email_template_edi_sale')[1]
+        except ValueError:
+            template_id = False
+        try:
+            compose_form_id = ir_model_data.get_object_reference(cr, uid, 'mail', 'email_compose_message_wizard_form')[1]
+        except ValueError:
+            compose_form_id = False
+        ctx = dict()
+        ctx.update({
+            'default_model': 'rep.order',
+            'default_res_id': ids[0],
+            'default_use_template': bool(template_id),
+            'default_template_id': template_id,
+            'default_composition_mode': 'comment',
+            'mark_so_as_sent': True
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form_id, 'form')],
+            'view_id': compose_form_id,
+            'target': 'new',
+            'context': ctx,
+        }
+
+    @api.v7
+    def print_quotation(self, cr, uid, ids, context=None):
+        '''
+        This function prints the sales order and mark it as sent, so that we can see more easily the next step of the workflow
+        '''
+        assert len(ids) == 1, 'This option should only be used for a single id at a time'
+        self.signal_workflow(cr, uid, ids, 'quotation_sent')
+        return self.pool['report'].get_action(cr, uid, ids, 'crm_repord.report_reporder', context=context)
 
 
 class rep_order_line(models.Model):
