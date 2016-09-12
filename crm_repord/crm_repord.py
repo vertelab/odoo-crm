@@ -211,33 +211,6 @@ class MobileSaleView(http.Controller):
         order.action_convert_to_sale_order()
         return 'repord_confirmed'
 
-    # store list
-    @http.route(['/crm/mystores'], type='http', auth="public", website=True)
-    def mystores(self, **post):
-        my_stores = request.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True), ('user_id', '=', request.env.uid)], order='store_class, name')
-        my_coops = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_coop.coop'))
-        my_icas = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_ica.ica_gruppen'))
-        my_axfoods = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_axfood.axfood_group'))
-        return request.website.render("crm_repord.mystores", {'my_coops': my_coops, 'my_icas': my_icas, 'my_axfoods': my_axfoods,})
-
-    @http.route(['/crm/search/stores'], type='http', auth="public", website=True)
-    def search_stores(self, **post):
-        if request.httprequest.method == 'POST':
-            search_words = post.get('search_words').split(' ')
-            if len(search_words) > 0:
-                word = search_words[0]
-                partners = request.env['res.partner'].search(['|','|',('name','ilike', word),('street','ilike',word),('city','ilike',word)], order='store_class, name')
-                partners = partners.filtered(lambda p: p.is_company == True and p.customer == True)
-                for w in search_words[1:]:
-                    partners = partners.filtered(lambda p: (w.lower() in p.name.lower()) or (w.lower() in p.street.lower() if p.street else '') or (w.lower() in p.city.lower() if p.city else ''))
-                #~ partners.sorted(lambda p: p.name and p.store_class)
-                partners = partners.filtered(lambda p: not 'Maxi Special' in p.name)
-                return request.website.render("crm_repord.search_result", {'partners': partners, 'search_words': ' '.join(search_words)})
-            else:
-                return request.website.render("crm_repord.search_stores", {})
-        else:
-            return request.website.render("crm_repord.search_stores", {})
-
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
@@ -254,7 +227,7 @@ class rep_order(models.Model):
             order.amount_total = values.get(order.id, {}).get('amount_total', 0)
 
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
-    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('leroy', 'Lerøy')], default='order', string="Order Type")
+    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct')], default='order', string="Order Type")
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
     order_id = fields.Many2one('sale.order', 'Sale Order')
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
