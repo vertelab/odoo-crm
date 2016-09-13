@@ -96,19 +96,19 @@
                                             <t t-foreach="product_categories" t-as="brand_categories">
                                                 <div t-att-class="'tab-pane fade in active col-xs-12 col-md-12 col-lg-12' if brand_categories == product_categories[0] else 'tab-pane fade in col-xs-12 col-md-12 col-lg-12'"
                                                 t-att-id="'categs_%s' %brand_categories.id" style="padding: 0px;">
-<!--
+                                                    <!-- selection for product category -->
                                                     <div class="form-group">
                                                         <div class="col-md-12 mt8 mb8">
-                                                            <select name="" id="" class="form-control selectpicker dropdown" data-style="btn-primary">
+                                                            <select name="" id="product_tab" class="form-control selectpicker dropdown" data-style="btn-primary" onchange="product_tab()">
                                                                 <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
-                                                                <t t-foreach="brand_categs" t-as="p_categs">
-                                                                    <option data-toggle="tab" t-att-href="'&#35;product_categ_%s' %p_categs.id" t-att-value="p_categs.name" style="color: #FFA62B;"><t t-raw="p_categs.name"/></option>
+                                                                <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
+                                                                    <option data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %b_c.id" t-att-value="'product_categ_%s' %b_c.id"><span t-field="b_c.name" style="color: #FFA62B;"/></option>
                                                                 </t>
                                                             </select>
                                                         </div>
                                                     </div>
--->
-                                                    <ul class="nav nav-tabs">
+<!--
+                                                    <ul class="dropdown-menu">
                                                         <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
                                                         <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
                                                             <li t-att-class="'%s' %'active' if b_c == brand_categs[0] else ''">
@@ -118,12 +118,13 @@
                                                             </li>
                                                         </t>
                                                     </ul>
+-->
                                                     <div class="tab-content">
                                                         <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
                                                         <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
-                                                            <div t-att-class="'active tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'
+                                                            <div t-att-class="'tab-pane product_tab fade table-responsive col-xs-12 col-md-12 col-lg-12 active in'
                                                                 if b_c == brand_categs[0] else
-                                                                'tab-pane fade in table-responsive col-xs-12 col-md-12 col-lg-12'"
+                                                                'tab-pane product_tab fade table-responsive col-xs-12 col-md-12 col-lg-12'"
                                                                 t-att-id="'product_categ_%s' %b_c.id" style="padding: 0px;">
                                                                 <t t-foreach="b_c" t-as="p_c">
                                                                     <t t-set="order_line" t-value="request.env['rep.order.line'].search([('order_id', '=', order.id)])"/>
@@ -497,6 +498,15 @@
     <template id="crm_javascript" inherit_id="website.layout">
         <xpath expr="//body" position="inside">
             <script>
+                function product_tab()
+                {
+                    tab_page_id = "#" + document.getElementById("product_tab").value;
+                    $(".product_tab").removeClass("active");
+                    $(".product_tab").removeClass("in");
+                    $(tab_page_id).addClass("active");
+                    $(tab_page_id).addClass("in");
+                }
+
                 function minus(product_id)
                 {
                     value = parseInt(document.getElementById(product_id).value)
