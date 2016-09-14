@@ -74,10 +74,10 @@
                                 </li>
                             </t>
                         </ul>
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%;">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; background-color: #fff;">
                             <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
-                                    <a data-toggle="tab" href="#butiks_order">Order</a>
+                                    <a data-toggle="tab" href="#butiksorder">Order</a>
                                 </li>
                                 <li>
                                     <a data-toggle="tab" href="#kedjans_sortiment">Sortiment</a>
@@ -91,7 +91,7 @@
                             </ul>
                             <div class="tab-content">
                                 <!-- Butiksorder -->
-                                <div id="butiks_order" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                <div id="butiksorder" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container mb64">
                                         <!-- content -->
                                         <div class="tab-content">
@@ -212,20 +212,16 @@
                                     <hr style="width: 100%"/>
                                     <div class="form-group">
                                         <div class="col-md-12 col-sm-12 col-xs-12">
-                                            <label class="col-md-2 col-sm-2 col-xs-2 control-label" for="order_type">
-                                                <span class="pull-right">Beställningstyp:</span>
-                                            </label>
-                                            <div class="col-md-10 col-sm-10 col-xs-10 mb16">
+                                            <label class="col-md-3 col-sm-3 col-xs-3 control-label" for="order_type"><span class="pull-right">Beställningstyp:</span></label>
+                                            <div class="col-md-9 col-sm-9 col-xs-9 mb16">
                                                 <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
                                                     <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
                                                         <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
                                                     </t>
                                                 </select>
                                             </div>
-                                            <label class="col-md-2 col-sm-2 col-xs-2 control-label" for="campaign">
-                                                <span class="pull-right">Kampanj:</span>
-                                            </label>
-                                            <div class="col-md-10 col-sm-10 col-xs-10 mb16">
+                                            <label class="col-md-3 col-sm-3 col-xs-3 control-label" for="campaign"><span class="pull-right">Kampanj:</span></label>
+                                            <div class="col-md-9 col-sm-9 col-xs-9 mb16">
                                                 <select name="campaign" id="campaign" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
                                                     <option value=""/>
                                                     <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
@@ -233,10 +229,8 @@
                                                     </t>
                                                 </select>
                                             </div>
-                                            <label class="col-md-2 col-sm-2 col-xs-2 control-label" for="leveransvecka">
-                                                <span class="pull-right">Leveransdag:</span>
-                                            </label>
-                                            <div class="col-md-10 col-sm-10 col-xs-10 mb16">
+                                            <label class="col-md-3 col-sm-3 col-xs-3 control-label" for="leveransvecka"><span class="pull-right">Leveransdag:</span></label>
+                                            <div class="col-md-9 col-sm-9 col-xs-9 mb16">
                                                 <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id"/>
                                             </div>
                                         </div>
@@ -244,7 +238,7 @@
                                     <div class="col-md-12 checkbox mt32 mb16 text-center">
                                         <label class="mt32" for="send_mail"><input name="send_mail" id="send_mail" value="send" type="checkbox"/>Skicka mail vid bekräfta</label>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 mb32">
                                         <button id="confirm" name="confirm" style="margin: auto; display: block" class="btn btn-success btn-lg" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Bekräfta</button>
                                     </div>
                                 </div>
@@ -457,24 +451,31 @@
     </template>
 
     <template id="search_stores" name="Search Stores">
-        <div class="container" style="width: 100%; background-color: #535353;">
+        <div class="container" style="width: 100%; background-color: #535353; height: 50px; padding: 0px;">
             <div class="col-md-12 col-xs-12">
-                <div class="col-md-10 col-xs-10">
-                    <form action="/crm/search/stores" method="post" class="pagination form-inline" style="width: 100%;">
-                        <div class="input-group" style="width: 100%;">
+                <div class="col-md-2 col-xs-2">
+                    <a href="/crm/mystores">
+                        <span class="pagination input-group-btn" style="margin: 6px 0px;">
+                            <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #fff;"><strong>Mina butiker</strong></button>
+                        </span>
+                    </a>
+                </div>
+                <div class="col-md-8 col-xs-8">
+                    <form action="/crm/search/stores" method="post" class="pagination form-inline" style="width: 100%; margin: 8px 0px;">
+                        <div id="search_text" class="input-group">
                             <input type="text" name="search_words" t-att-value="search_words" class="search-query form-control" placeholder="Sök..."/>
+<!--
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
                             </span>
+-->
                         </div>
                     </form>
                 </div>
                 <div class="col-md-2 col-xs-2">
-                    <a href="/crm/mystores">
-                        <span class="pagination input-group-btn">
-                            <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #fff;">Mina butiker</button>
-                        </span>
-                    </a>
+                    <span class="input-group-btn" style="height: 50px;">
+                        <button id="search_button" class="btn btn-default"><i class="fa fa-search"></i></button>
+                    </span>
                 </div>
             </div>
         </div>
@@ -496,9 +497,15 @@
                 .p_exist{ background: #FFD08F; }
                 .p_not_exist{ background: #C2FFC2; }
 
-                #wrap {
-                    font-family: 'Open Sans', sans-serif;
-                }
+                #wrap { font-family: 'Open Sans', sans-serif; background-color: #eee;}
+
+                .navbar-static-top { background-color: #FFD529; }
+
+                .navbar-toggle { border: none; }
+
+                .navbar-toggle:hover, .navbar-toggle:active, .navbar-toggle:focus { background: none; }
+
+                .navbar-default .navbar-toggle .icon-bar { background-color: #fff; }
 
                 header a.navbar-brand.logo {
                     display: block;
@@ -506,9 +513,7 @@
                     padding: 0px 65px; /* center in a iphone 6? */
                 }
 
-                .navbar-brand {
-                    float: none;
-                }
+                .navbar-brand { float: none; }
 
                 .nav-brand > li {
                     float: none;
@@ -531,9 +536,7 @@
                     font-size: 1.3em;
                 }
 
-                .nav-brand {
-                    text-align: center;
-                }
+                .nav-brand { text-align: center; }
 
                 .nav-categ > li.active > a, .nav-categ > li.active:hover > a, .nav-categ > li.active:focus > a{
                     background-color: #fff !important;
@@ -549,9 +552,9 @@
                     background-color: #fff;
                 }
 
-                .nav-tabs {
-                    border: none;
-                }
+                .nav-tabs { border: none; }
+
+                #butiksorder, #kedjans_sortiment, #kund_kort, #bilder { background-color: #fff; }
 
                 #product_tab {
                     color: #fff;
@@ -566,6 +569,21 @@
 
                 .table > tbody > tr > td { border: none; }
 
+                #search_text {
+                    width: 100%;
+                    max-width: 400px;
+                    margin: auto;
+                    display: table;
+                    display: none;
+                }
+
+                #search_button {
+                    background-color:#535353;
+                    color: #fff;
+                    border: none;
+                    font-size: 25px;
+                }
+
             </style>
         </xpath>
     </template>
@@ -573,6 +591,10 @@
     <template id="crm_javascript" inherit_id="website.layout">
         <xpath expr="//body" position="inside">
             <script>
+                $("#search_button").click(function(){
+                    $("#search_text").fadeToggle();
+                });
+
                 function product_tab()
                 {
                     tab_page_id = "#" + document.getElementById("product_tab").value;
