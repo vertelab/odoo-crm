@@ -407,19 +407,19 @@
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-call="crm_repord.search_stores"/>
-                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
+                    <div class="container" style="width: 100%; padding: 20px; background-color: #fff;">
                         <t t-set="store_color" t-value="{'A': '#F00', 'B': '#FF7500', 'C': '#BBAA00', 'D': '#2CFF00', 'E': '#000BFF'}"/>
-                        <h3>ICA</h3>
+                        <h3 class="text-center">ICA</h3>
                         <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_icas" t-as="ms">
                             <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
                             <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
                         </div>
-                        <h3>Coop</h3>
+                        <h3 class="text-center">Coop</h3>
                         <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_coops" t-as="ms">
                             <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
                             <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
                         </div>
-                        <h3>Axfood</h3>
+                        <h3 class="text-center">Axfood</h3>
                         <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="my_axfoods" t-as="ms">
                             <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[ms.store_class] if ms.store_class else '#fff')"><span t-field="ms.store_class" style="padding: 5px;"/></span>
                             <a t-att-href="'/crm/%s/repord' %ms.id"><span style="font-size: 1.5em;" t-field="ms.name"/>, <span t-field="ms.street"/> <span t-field="ms.city"/></a>
@@ -435,14 +435,14 @@
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-call="crm_repord.search_stores"/>
-                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
+                    <div class="container" style="width: 100%; padding: 20px; background-color: #fff;">
                         <t t-set="store_color" t-value="{'A': '#F00', 'B': '#FF7500', 'C': '#BBAA00', 'D': '#2CFF00', 'E': '#000BFF'}"/>
                         <div class="col-md-12 col-sm-12 mt8 mb8" t-foreach="partners" t-as="p">
                             <span t-att-style="'background-color: %s; color: #fff; margin-right: 5px;' %(store_color[p.store_class] if p.store_class else '#fff')"><span t-field="p.store_class" style="padding: 5px;"/></span>
                             <a t-att-href="'/crm/%s/repord' %p.id"><span style="font-size: 1.5em;" t-field="p.name"/>, <span t-field="p.street"/> <span t-field="p.city"/></a>
                         </div>
                         <div t-if="len(partners) == 0" class="col-md-12 col-sm-12 mt8 mb8">
-                            <p class="text-center">Nothing found...</p>
+                            <p class="text-center">Ingen butik har hittat...</p>
                         </div>
                     </div>
                 </div>
@@ -455,7 +455,7 @@
             <div class="col-md-12 col-xs-12">
                 <div class="col-md-2 col-xs-2">
                     <a href="/crm/mystores">
-                        <span class="pagination input-group-btn" style="margin: 6px 0px;">
+                        <span class="pagination input-group-btn" style="margin: 8px 0px;">
                             <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #fff;"><strong>Mina butiker</strong></button>
                         </span>
                     </a>
