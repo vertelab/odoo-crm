@@ -678,7 +678,7 @@
                         'send_mail': send_mail
                     }).done(function(data){
                         if(data == "no_email"){
-                            window.alert("This store has not a receive email");
+                            window.alert("Den butiken har ingen epost!");
                         }
                         else if(data == "repord_confirmed"){
                             $("#confirm").addClass("hidden");
