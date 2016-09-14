@@ -62,8 +62,8 @@
                     <div class="container mt16 mb64" style="width: 100%; padding: 0px;">
                         <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto&quot;}"/>
                         <h2 class="text-center mt16 mb16" style="" t-field="partner.name"/>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <ul class="nav nav-tabs nav-categ">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%;">
+                            <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
                                     <a data-toggle="tab" href="#butiks_order">Butiksorder</a>
                                 </li>
@@ -513,7 +513,7 @@
                     float: none;
                 }
 
-                .nav-categ > li, .nav-brand > li {
+                .nav-brand > li {
                     float: none;
                     display: inline-block;
                     *display:inline; /* ie7 fix */
@@ -521,21 +521,28 @@
                 }
 
                 .nav-categ > li {
-                    background-color: #ddd;
-                    border: 2px solid #fff;
+                    display: table-cell;
+                    width: 1%;
+                    margin-bottom: 0;
                 }
 
-                .nav-categ, .nav-brand {
+                .nav-categ > li > a {
+                    background-color: #ddd !important;
+                    border: 2px solid #fff;
+                    color: #333;
+                }
+
+                .nav-brand {
                     text-align: center;
                 }
 
                 .nav-categ > li.active > a, .nav-categ > li.active:hover > a, .nav-categ > li.active:focus > a{
-                    background: none;
+                    background-color: #fff !important;
                     color: #333;
                 }
 
-                .nav-categ > li > a, .nav-categ > li:hover > a, .nav-categ > li:focus > a{
-                    background: none;
+                .nav-categ > li:hover > a, .nav-categ > li:focus > a{
+                    background-color: none;
                     color: #333;
                 }
 
