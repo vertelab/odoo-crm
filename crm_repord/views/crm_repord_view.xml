@@ -74,16 +74,16 @@
                                 </li>
                             </t>
                         </ul>
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; background-color: #fff;">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; background-color: #fff; padding: 0px;">
                             <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
                                     <a data-toggle="tab" href="#butiksorder">Order</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#kedjans_sortiment">Sortiment</a>
+                                    <a data-toggle="tab" href="#kedjans_sortiment" style="border: 1px solid #CED2DB; border-top-style: none; border-bottom-style: none;">Sortiment</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#kund_kort">Kundkort</a>
+                                    <a data-toggle="tab" href="#kund_kort" style="border: 1px solid #CED2DB; border-top-style: none; border-bottom-style: none; border-left-style: none;">Kundkort</a>
                                 </li>
                                 <li>
                                     <a data-toggle="tab" href="#bilder">Bilder</a>
@@ -553,6 +553,14 @@
                 }
 
                 .nav-tabs { border: none; }
+
+                .nav-tabs.nav-justified > .active > a, .nav-tabs.nav-justified > .active > a:hover, .nav-tabs.nav-justified > .active > a:focus {
+                    border: none;
+                }
+
+                .nav-categ > li > a { border: none; }
+
+                .nav-tabs.nav-justified > li > a { border-radius: 0px; }
 
                 #butiksorder, #kedjans_sortiment, #kund_kort, #bilder { background-color: #fff; }
 
