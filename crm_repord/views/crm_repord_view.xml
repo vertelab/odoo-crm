@@ -59,13 +59,25 @@
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-call="crm_repord.search_stores"/>
-                    <div class="container mt16 mb64" style="width: 100%; padding: 0px;">
+                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
                         <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto&quot;}"/>
                         <h2 class="text-center mt16 mb16" style="" t-field="partner.name"/>
+                        <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', 2)], order='id')"/>
+                        <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
+                        <!-- navigator -->
+                        <ul class="nav nav-tabs nav-brand">
+                            <t t-foreach="product_categories" t-as="brand_categs">
+                                <li t-att-class="active if brand_categs == product_categories[0] else ''">
+                                    <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id">
+                                        <img itemprop="image" class="img img-responsive" style="margin: auto; width: 100px;" t-att-src="'/website/image/product.category/%s/website_image/150x150' %brand_categs.id"/>
+                                    </a>
+                                </li>
+                            </t>
+                        </ul>
                         <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%;">
                             <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
-                                    <a data-toggle="tab" href="#butiks_order">Butiksorder</a>
+                                    <a data-toggle="tab" href="#butiks_order">Order</a>
                                 </li>
                                 <li>
                                     <a data-toggle="tab" href="#kedjans_sortiment">Sortiment</a>
@@ -81,18 +93,6 @@
                                 <!-- Butiksorder -->
                                 <div id="butiks_order" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container mb64">
-                                        <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', 2)], order='id')"/>
-                                        <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
-                                        <!-- navigator -->
-                                        <ul class="nav nav-tabs nav-brand">
-                                            <t t-foreach="product_categories" t-as="brand_categs">
-                                                <li t-att-class="active if brand_categs == product_categories[0] else ''">
-                                                    <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id">
-                                                        <img itemprop="image" class="img img-responsive" style="margin: auto; width: 100px;" t-att-src="'/website/image/product.category/%s/website_image/150x150' %brand_categs.id"/>
-                                                    </a>
-                                                </li>
-                                            </t>
-                                        </ul>
                                         <!-- content -->
                                         <div class="tab-content">
                                             <t t-foreach="product_categories" t-as="brand_categories">
@@ -162,13 +162,13 @@
                                                                                                 <h4 class="text-center mb8">Kvantitet / <t t-esc="p.uom_id.name"/></h4>
                                                                                             </div>
                                                                                             <div class="col-md-12 input-group oe_website_spinner" style="height: 50px; margin: auto;">
-                                                                                                <span class="input-group-addon" style="color: #fff; background-color: #f00; width: 50px; font-size: 2em;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                                <span class="input-group-addon" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                                     <i class="fa fa-minus"/>
                                                                                                 </span>
                                                                                                 <!-- <span class="input-group-addon">Quantity: </span> -->
                                                                                                 <input class="form-control" data-min="0" style="width: 150px; height: 50px; font-size: 1.7em;" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
                                                                                                 <!-- <span class="input-group-addon"><t t-esc="p.uom_id.name"/></span> -->
-                                                                                                <span class="input-group-addon float_left" style="color: #fff; background-color: #0f0; width: 50px; font-size: 2em;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                                <span class="input-group-addon float_left" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                                     <i class="fa fa-plus"/>
                                                                                                 </span>
                                                                                             </div>
@@ -260,12 +260,12 @@
                                                         <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
                                                     </div>
                                                     <div class="col-xs-6 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                                                        <p class="text-center">
+                                                        <div class="text-center">
                                                             <t t-if="pp.default_code">
-                                                                <span>[<t t-esc="pp.default_code"/>] </span>
+                                                                <h4 t-esc="pp.default_code"/>
                                                             </t>
-                                                            <span class="text-center" t-field="pp.product_tmpl_id"/>
-                                                        </p>
+                                                            <h4 class="text-center" t-field="pp.product_tmpl_id"/>
+                                                        </div>
                                                         <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center" style="margin: auto;">
                                                             <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
                                                         </div>
@@ -281,12 +281,12 @@
                                                         <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
                                                     </div>
                                                     <div class="col-xs-6 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                                                        <p class="text-center">
+                                                        <div class="text-center">
                                                             <t t-if="pp.default_code">
-                                                                <span>[<t t-esc="pp.default_code"/>] </span>
+                                                                <h4 t-esc="pp.default_code"/>
                                                             </t>
-                                                            <span class="text-center" t-field="pp.product_tmpl_id"/>
-                                                        </p>
+                                                            <h4 class="text-center" t-field="pp.product_tmpl_id"/>
+                                                        </div>
                                                         <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center hidden" style="margin: auto;">
                                                             <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
                                                         </div>
@@ -457,7 +457,7 @@
     </template>
 
     <template id="search_stores" name="Search Stores">
-        <div class="container" style="width: 100%;">
+        <div class="container" style="width: 100%; background-color: #535353;">
             <div class="col-md-12 col-xs-12">
                 <div class="col-md-10 col-xs-10">
                     <form action="/crm/search/stores" method="post" class="pagination form-inline" style="width: 100%;">
@@ -472,7 +472,7 @@
                 <div class="col-md-2 col-xs-2">
                     <a href="/crm/mystores">
                         <span class="pagination input-group-btn">
-                            <button class="btn btn-warning">Mina butiker</button>
+                            <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #fff;">Mina butiker</button>
                         </span>
                     </a>
                 </div>
@@ -559,6 +559,12 @@
                     height: 60px;
                     font-size: 1.7em;
                 }
+
+                .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+                    background-color: #eee;
+                }
+
+                .table > tbody > tr > td { border: none; }
 
             </style>
         </xpath>
