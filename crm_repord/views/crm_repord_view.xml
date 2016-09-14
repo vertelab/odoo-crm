@@ -508,7 +508,6 @@
 
                 .navbar-brand {
                     float: none;
-                    background-color: #FED429;
                 }
 
                 .nav-brand > li {
