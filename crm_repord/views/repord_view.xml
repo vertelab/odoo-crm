@@ -112,7 +112,9 @@
                             <field domain="[('type','=','sale')]" name="pricelist_id" groups="product.group_sale_pricelist" on_change="onchange_pricelist_id(pricelist_id,order_line)"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="order_id"/>
+                            <field name="invoice_id"/>
                             <field name="campaign"/>
+                            <field name="amount_discount"/>
                         </group>
                     </group>
                     <notebook>
@@ -249,6 +251,7 @@
                     <field name="section_id" string="Sales Team" groups="base.group_multi_salesteams"/>
                     <field name="project_id"/>
                     <field name="product_id"/>
+                    <field name="state"/>
                     <filter string="My" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
                     <separator/>
                     <filter string="Quotations" name="draft" domain="[('state','in',('draft','sent'))]" help="Sales Order that haven't yet been confirmed"/>
@@ -261,6 +264,7 @@
                         <filter string="Salesperson" domain="[]" context="{'group_by':'user_id'}"/>
                         <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Order Month" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter string="State" domain="[]" context="{'group_by':'state'}"/>
                     </group>
                </search>
             </field>
