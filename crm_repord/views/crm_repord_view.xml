@@ -178,7 +178,7 @@
                                                                                                 <span class="input-group-addon" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'minus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                                     <i class="fa fa-minus"/>
                                                                                                 </span>
-                                                                                                <span class="input-group-addon" style="font-size: 1.7em;">Rabbat: </span>
+                                                                                                <span class="input-group-addon" style="font-size: 1.7em;">Rabatt: </span>
                                                                                                 <input class="form-control" style="width: 100px; height: 50px; font-size: 2em;" data-min="0" t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="discount" t-att-value="'0' if order_line_discount == 0.0 else order_line_discount" type="number"/>
                                                                                                 <span class="input-group-addon" style="font-size: 1.7em;">%</span>
                                                                                                 <span class="input-group-addon float_left" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
@@ -210,7 +210,7 @@
                                         </div>
                                     </div>
                                     <hr style="width: 100%"/>
-                                    <div class="form-group">
+                                    <div class="container form-group">
                                         <div class="col-md-12 col-sm-12 col-xs-12">
                                             <label class="col-md-3 col-sm-3 col-xs-3 control-label" for="order_type"><span class="pull-right">Beställningstyp:</span></label>
                                             <div class="col-md-9 col-sm-9 col-xs-9 mb16">
@@ -497,7 +497,7 @@
                 .p_exist{ background: #FFD08F; }
                 .p_not_exist{ background: #C2FFC2; }
 
-                #wrap { font-family: 'Open Sans', sans-serif; background-color: #eee;}
+                #wrap { font-family: 'Open Sans', sans-serif; background-color: #f8f8f8;}
 
                 .navbar-static-top { background-color: #FFD529; }
 
@@ -530,7 +530,6 @@
 
                 .nav-categ > li > a {
                     background-color: #ddd !important;
-                    border: 2px solid #fff;
                     color: #333;
                     height: 50px;
                     font-size: 1.3em;
