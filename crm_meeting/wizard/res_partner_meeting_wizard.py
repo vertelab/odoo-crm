@@ -22,7 +22,7 @@ class res_partner_meeting_wizard(models.TransientModel):
                     'start_datetime': '2010-01-01 00:00:00',
                     'stop_datetime': '2010-01-01 00:00:00',
                     'allday': False,
-                    'week_number': 'Undefied',
+                    'week_number': 'Undefined',
                     'weekday': 'Friday',
                     'location': p.city,
                     'description': r.description + '\n' + add_repord if r.description else add_repord,
