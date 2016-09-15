@@ -100,6 +100,7 @@
                     <group>
                         <group>
                             <field name="order_type"/>
+                            <field name="third_party_supplier" attrs="{'invisible': [('order_type', 'not in', ['3rd_party'])]}" domain="[('repord_3p_supplier', '=', True)]"/>
                             <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
                             <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}"/>
                             <field name="partner_shipping_id" on_change="onchange_delivery_id(company_id, partner_id, partner_shipping_id, fiscal_position)" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}"/>

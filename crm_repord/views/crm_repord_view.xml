@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+    
+    <record id="view_product_category_form" model="ir.ui.view">
+        <field name="name">product.category.form.3p.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <field name="type" position="after">
+                <field name="repord_3p_supplier"/>
+            </field>
+        </field>
+    </record>
 
     <record id="view_partner_form" model="ir.ui.view">
         <field name="name">res.partner.form</field>
@@ -10,6 +21,7 @@
             <field name="website" position="after">
                 <field name="product_ids" widget="many2many_tags"/>
                 <field name="listing_id"/>
+                <field name="repord_3p_supplier" groups="base.group_sale_manager"/>
             </field>
         </field>
     </record>

@@ -50,14 +50,13 @@ class res_partner(models.Model):
 
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
     listing_id = fields.Many2one(comodel_name='res.partner.listing', string='Listing')
-
+    repord_3p_supplier = fields.Boolean('Handle reporders for this partner')
 
 class res_partner_listing(models.Model):
     _name = 'res.partner.listing'
 
     name = fields.Char(string='Name')
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
-
 
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
@@ -260,7 +259,7 @@ class rep_order(models.Model):
             order.amount_total = values.get(order.id, {}).get('amount_total', 0)
 
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
-    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct')], default='order', string="Order Type")
+    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('3rd_party', 'Third Party Order')], default='order', string="Order Type")
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
     order_id = fields.Many2one('sale.order', 'Sale Order')
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
@@ -271,13 +270,25 @@ class rep_order(models.Model):
     currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True, required=True)
     procurement_group_id = None
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
-
+    
+    third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
+    
+    @api.one
+    @api.depends('order_type', 'order_line', 'order_line.product_id')
+    def repord_set_3p_supplier(self):
+        if self.order_type == '3rd_party':
+            for line in self.order_line:
+                if line.product_id and line.product_id.categ_id and line.product_id.categ_id.repord_3p_supplier:
+                    self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
+                    return
+        self.third_party_supplier = None
+    
     @api.one
     def action_view_sale_order_line_make_invoice(self):
         pass
 
     @api.v7
-    def onchange_partner_id(self, cr, uid, ids, part, context=None):
+    def onchange_partner_id(self, cr, uid, ids, part, order_type, context=None):
         res = super(rep_order, self).onchange_partner_id(cr, uid, ids, part, context)
         if not part:
             return res
@@ -286,25 +297,31 @@ class rep_order(models.Model):
             res['value']['pricelist_id'] = part.property_product_pricelist.id
         else:
             res['value']['pricelist_id'] = part.parent_id.property_product_pricelist.id
+        if order_type in ['order', '3rd_party'] and part.parent_id:
+            delivery = part.parent_id.address_get(['delivery'])
+            if delivery.get('delivery'):
+                res['value']['partner_shipping_id'] = delivery.get('delivery')
+            else:
+                res['value']['partner_shipping_id'] = delivery.get('default')
         return res
 
     @api.one
     def action_convert_to_sale_order(self):
-        if self.order_type in ['order', 'direct'] and self.state == 'draft':
+        #Fix line numbers
+        sequence = 1
+        for line in self.order_line:
+            line.sequence = sequence
+            sequence += 1
+        if self.order_type in ['direct'] and self.state == 'draft':
             order  = self.env['sale.order'].create({
                 'name': '/',
                 'rep_order_id': self.id,
-                'partner_id': self.partner_id.id if self.order_type in ['order', 'direct'] else self.partner_id.parent_id.id,
+                'partner_id': self.partner_id.id,
                 'pricelist_id': self.pricelist_id.id,
-                'campaign': self.campaign.id,
+                'campaign_id': self.campaign.id,
                 'project_id': self.campaign.account_id.id if self.campaign.account_id else None,
-                'client_order_ref': self.name,
-                'route_id': self.env.ref('edi_gs1.route_esap20').id if self.order_type == 'order' else None,
-                'nad_by': self.partner_id.id if self.order_type == 'order' else None,
-                'nad_su': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
-                'unb_sender': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
-                'unb_recipient': self.partner_id.parent_id.id if self.order_type == 'order' else None,
                 'order_line': [(0, 0, {
+                    'sequence': l.sequence,
                     'name': l.name,
                     'product_id': l.product_id and l.product_id.id or None,
                     'product_uom_qty': l.product_uom_qty,
@@ -389,4 +406,13 @@ class rep_order_line(models.Model):
     #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
     procurement_ids = None
 
+class product_category(models.Model):
+    _inherit = 'product.category'
+    
+    repord_3p_supplier = fields.Many2one('res.partner', 'Resell for', inverse='_repord_set_3p_supplier', readonly=False, domain=[('repord_3p_supplier', '=', True)])
+    
+    @api.one
+    def _repord_set_3p_supplier(self):
+        for category in self.child_id:
+            category.repord_3p_supplier = self.repord_3p_supplier
 
