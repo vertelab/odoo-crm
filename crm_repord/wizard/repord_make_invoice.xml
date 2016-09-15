@@ -11,13 +11,11 @@
             <field name="grouped" />
             <field name="invoice_date" />
           </group>
-<!--
           <footer>
             <button name="make_invoices" string="Create Invoices" type="object" class="oe_highlight" />
             or
             <button string="Cancel" class="oe_link" special="cancel" />
           </footer>
--->
         </form>
       </field>
     </record>

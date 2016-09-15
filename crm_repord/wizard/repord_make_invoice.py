@@ -37,16 +37,13 @@ class reporder_make_invoice(models.TransientModel):
         newinv = []
         for order in self.env['rep.order'].browse(self.env.context.get('active_ids', [])):
             if not order.invoice_id:
-                #~ raise Warning(self.env.context.get('active_ids', []), form.grouped, form.invoice_date)
                 order.action_invoice_create2(self.env.context.get('active_ids', []), form.grouped, date_invoice=form.invoice_date)
+                order.invoice_id.type = 'in_invoice'
                 newinv.append(order.invoice_id.id)
-        act_window = self.env['ir.model.data'].get_object_reference('account', 'action_invoice_tree1')
+        act_window = self.env['ir.model.data'].get_object_reference('account', 'action_invoice_tree2')
         act_window = self.env[act_window[0]].browse(act_window[1])
-        result = act_window.read()
-        #~ id = result and result[1] or False
-        #~ result = act_obj.read(cr, uid, [id], context=context)[0]
-        raise Warning(newinv)
-        result['domain'] = "[('id','in', [" + ','.join(map(str, newinv)) + "])]"
+        result = act_window.read()[0]
+        result['domain'] = "[('id','in', %s)]" %newinv
 
         return result
 

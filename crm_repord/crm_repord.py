@@ -22,8 +22,10 @@ from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
 import datetime
+import time
 import logging
 import base64
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 _logger = logging.getLogger(__name__)
 from openerp.exceptions import Warning
 
@@ -272,9 +274,9 @@ class rep_order(models.Model):
     amount_discount = fields.Float(compute='_amount_discount', string='Total Discount')
     procurement_group_id = None
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
-    
+
     third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
-    
+
     @api.one
     @api.depends('order_type', 'order_line', 'order_line.product_id')
     def repord_set_3p_supplier(self):
@@ -284,7 +286,7 @@ class rep_order(models.Model):
                     self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
                     return
         self.third_party_supplier = None
-    
+
     @api.one
     def action_view_sale_order_line_make_invoice(self):
         pass
@@ -399,7 +401,7 @@ class rep_order(models.Model):
         return self.pool['report'].get_action(cr, uid, ids, 'crm_repord.report_reporder', context=context)
 
     @api.model
-    def action_invoice_create2(self, orders, grouped=False, date_invoice=False):
+    def action_invoice_create(self, orders, grouped=False, date_invoice=False):
         invoices = {}
         partner_currency = {}
         res = False
@@ -420,93 +422,53 @@ class rep_order(models.Model):
                 invoices.setdefault(o.partner_invoice_id.id or o.partner_id.id, []).append((o, created_lines))
         for val in invoices.values():
             if grouped:
-                #~ raise Warning('var %s, reduce %s' %(val[0][0], reduce(lambda x, y: x + y, [l for o, l in val], [])))
-                res = self._make_invoice(val[0][0], reduce(lambda x, y: x + y, [l for o, l in val], []))
+                res = self.pool.get('rep.order')._make_invoice(self._cr, self._uid, val[0][0], reduce(lambda x, y: x + y, [l for o, l in val], []), context=self._context)
                 invoice_ref = ''
                 origin_ref = ''
-                raise Warning(res)
                 for o, l in val:
                     invoice_ref += (o.client_order_ref or o.name) + '|'
                     origin_ref += (o.origin or o.name) + '|'
-                    self.write(cr, uid, [o.id], {'state': 'progress'})
-                    cr.execute('insert into sale_order_invoice_rel (order_id,invoice_id) values (%s,%s)', (o.id, res))
-                    self.invalidate_cache(cr, uid, ['invoice_ids'], [o.id], context=context)
+                    self.write({'state': 'progress', 'invoice_id': res})
                 #remove last '|' in invoice_ref
                 if len(invoice_ref) >= 1:
                     invoice_ref = invoice_ref[:-1]
                 if len(origin_ref) >= 1:
                     origin_ref = origin_ref[:-1]
-                invoice.write(cr, uid, [res], {'origin': origin_ref, 'name': invoice_ref})
+                invoice = self.env['account.invoice'].browse(res)
+                invoice.write({'origin': origin_ref, 'name': invoice_ref})
             else:
                 for order, il in val:
-                    res = self._make_invoice(cr, uid, order, il, context=context)
+                    res = self._make_invoice(self._cr, self._uid, order, il, context=self._context)
                     invoice_ids.append(res)
-                    self.write(cr, uid, [order.id], {'state': 'progress'})
-                    cr.execute('insert into sale_order_invoice_rel (order_id,invoice_id) values (%s,%s)', (order.id, res))
-                    self.invalidate_cache(cr, uid, ['invoice_ids'], [order.id], context=context)
+                    order.state = 'progress'
+                    order.invoice_id = res
         return res
 
     @api.v7
-    def action_invoice_create(self, cr, uid, ids, grouped=False, states=None, date_invoice = False, context=None):
-        if states is None:
-            states = ['confirmed', 'done', 'exception']
-        res = False
-        invoices = {}
-        invoice_ids = []
-        invoice = self.pool.get('account.invoice')
-        obj_sale_order_line = self.pool.get('rep.order.line')
-        partner_currency = {}
-        # If date was specified, use it as date invoiced, usefull when invoices are generated this month and put the
-        # last day of the last month as invoice date
-        if date_invoice:
-            context = dict(context or {}, date_invoice=date_invoice)
-        for o in self.browse(cr, uid, ids, context=context):
-            currency_id = o.pricelist_id.currency_id.id
-            if (o.partner_id.id in partner_currency) and (partner_currency[o.partner_id.id] <> currency_id):
-                raise osv.except_osv(
-                    _('Error!'),
-                    _('You cannot group sales having different currencies for the same partner.'))
+    def _make_invoice(self, cr, uid, order, lines, context=None):
+        inv_obj = self.pool.get('account.invoice')
+        obj_invoice_line = self.pool.get('account.invoice.line')
+        if context is None:
+            context = {}
+        invoiced_sale_line_ids = self.pool.get('rep.order.line').search(cr, uid, [('order_id', '=', order.id), ('invoiced', '=', True)], context=context)
+        from_line_invoice_ids = []
+        for invoiced_sale_line_id in self.pool.get('rep.order.line').browse(cr, uid, invoiced_sale_line_ids, context=context):
+            for invoice_line_id in invoiced_sale_line_id.invoice_lines:
+                if invoice_line_id.invoice_id.id not in from_line_invoice_ids:
+                    from_line_invoice_ids.append(invoice_line_id.invoice_id.id)
+        #~ for preinv in order.invoice_ids:
+            #~ if preinv.state not in ('cancel',) and preinv.id not in from_line_invoice_ids:
+                #~ for preline in preinv.invoice_line:
+                    #~ inv_line_id = obj_invoice_line.copy(cr, uid, preline.id, {'invoice_id': False, 'price_unit': -preline.price_unit})
+                    #~ lines.append(inv_line_id)
+        inv = self._prepare_invoice(cr, uid, order, lines, context=context)
+        inv_id = inv_obj.create(cr, uid, inv, context=context)
+        data = inv_obj.onchange_payment_term_date_invoice(cr, uid, [inv_id], inv['payment_term'], time.strftime(DEFAULT_SERVER_DATE_FORMAT))
+        if data.get('value', False):
+            inv_obj.write(cr, uid, [inv_id], data['value'], context=context)
+        inv_obj.button_compute(cr, uid, [inv_id])
+        return inv_id
 
-            partner_currency[o.partner_id.id] = currency_id
-            lines = []
-            for line in o.order_line:
-                if line.invoiced:
-                    continue
-                elif (line.state in states):
-                    lines.append(line.id)
-            created_lines = obj_sale_order_line.invoice_line_create(cr, uid, lines, context=context)
-            if created_lines:
-                invoices.setdefault(o.partner_invoice_id.id or o.partner_id.id, []).append((o, created_lines))
-        if not invoices:
-            for o in self.browse(cr, uid, ids, context=context):
-                for i in o.invoice_ids:
-                    if i.state == 'draft':
-                        return i.id
-        for val in invoices.values():
-            if grouped:
-                res = self._make_invoice(cr, uid, val[0][0], reduce(lambda x, y: x + y, [l for o, l in val], []), context=context)
-                invoice_ref = ''
-                origin_ref = ''
-                for o, l in val:
-                    invoice_ref += (o.client_order_ref or o.name) + '|'
-                    origin_ref += (o.origin or o.name) + '|'
-                    self.write(cr, uid, [o.id], {'state': 'progress'})
-                    cr.execute('insert into sale_order_invoice_rel (order_id,invoice_id) values (%s,%s)', (o.id, res))
-                    self.invalidate_cache(cr, uid, ['invoice_ids'], [o.id], context=context)
-                #remove last '|' in invoice_ref
-                if len(invoice_ref) >= 1:
-                    invoice_ref = invoice_ref[:-1]
-                if len(origin_ref) >= 1:
-                    origin_ref = origin_ref[:-1]
-                invoice.write(cr, uid, [res], {'origin': origin_ref, 'name': invoice_ref})
-            else:
-                for order, il in val:
-                    res = self._make_invoice(cr, uid, order, il, context=context)
-                    invoice_ids.append(res)
-                    self.write(cr, uid, [order.id], {'state': 'progress'})
-                    cr.execute('insert into sale_order_invoice_rel (order_id,invoice_id) values (%s,%s)', (order.id, res))
-                    self.invalidate_cache(cr, uid, ['invoice_ids'], [order.id], context=context)
-        return res
 
 class rep_order_line(models.Model):
     _name = "rep.order.line"
@@ -523,9 +485,9 @@ class rep_order_line(models.Model):
 
 class product_category(models.Model):
     _inherit = 'product.category'
-    
+
     repord_3p_supplier = fields.Many2one('res.partner', 'Resell for', inverse='_repord_set_3p_supplier', readonly=False, domain=[('repord_3p_supplier', '=', True)])
-    
+
     @api.one
     def _repord_set_3p_supplier(self):
         for category in self.child_id:
