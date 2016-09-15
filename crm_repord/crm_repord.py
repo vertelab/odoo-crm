@@ -211,11 +211,10 @@ class MobileSaleView(http.Controller):
             if not order.partner_id.email:
                 return 'no_email'
             else:
-                #TODO: send mail
-                pass
+                order.force_quotation_send()
         order.action_convert_to_sale_order()
         return 'repord_confirmed'
-    
+
     # store list
     @http.route(['/crm/mystores'], type='http', auth="public", website=True)
     def mystores(self, **post):
@@ -242,7 +241,7 @@ class MobileSaleView(http.Controller):
                 return request.website.render("crm_repord.search_stores", {})
         else:
             return request.website.render("crm_repord.search_stores", {})
-    
+
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
