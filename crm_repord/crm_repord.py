@@ -296,7 +296,7 @@ class rep_order(models.Model):
         self.amount_discount = sum((l.price_unit - l.price_reduce) * l.product_uom_qty for l in self.order_line)
 
     @api.v7
-    def onchange_partner_id(self, cr, uid, ids, part, order_type, context=None):
+    def onchange_partner_id(self, cr, uid, ids, part, context=None):
         res = super(rep_order, self).onchange_partner_id(cr, uid, ids, part, context)
         if not part:
             return res
@@ -305,12 +305,6 @@ class rep_order(models.Model):
             res['value']['pricelist_id'] = part.property_product_pricelist.id
         else:
             res['value']['pricelist_id'] = part.parent_id.property_product_pricelist.id
-        if order_type in ['order', '3rd_party'] and part.parent_id:
-            delivery = part.parent_id.address_get(['delivery'])
-            if delivery.get('delivery'):
-                res['value']['partner_shipping_id'] = delivery.get('delivery')
-            else:
-                res['value']['partner_shipping_id'] = delivery.get('default')
         return res
 
     @api.one
