@@ -409,17 +409,34 @@ class rep_order(models.Model):
             currency_id = o.pricelist_id.currency_id.id
             if (o.partner_id.id in partner_currency) and (partner_currency[o.partner_id.id] <> currency_id):
                 raise Warning('Error! You cannot group sales having different currencies for the same partner.')
-
             partner_currency[o.partner_id.id] = currency_id
-            lines = []
-            for line in o.order_line:
-                if line.invoiced:
-                    continue
-                elif (line.state in ['draft', 'confirmed', 'done', 'exception']):
-                    lines.append(line.id)
-            created_lines = self.pool.get('rep.order.line').invoice_line_create(self._cr, self._uid, lines, context=self._context)
-            if created_lines:
-                invoices.setdefault(o.partner_invoice_id.id or o.partner_id.id, []).append((o, created_lines))
+            #if repord type is scrap or discount. make supplier invoices from each order line
+            if o.order_type in ['scrap', 'discount']:
+                lines = []
+                for line in o.order_line:
+                    if line.invoiced:
+                        continue
+                    elif (line.state in ['draft', 'confirmed', 'done', 'exception']):
+                        lines.append(line.id)
+                created_lines = self.pool.get('rep.order.line').invoice_line_create(self._cr, self._uid, lines, context=self._context)
+                if created_lines:
+                    invoices.setdefault(o.partner_invoice_id.id or o.partner_id.id, []).append((o, created_lines))
+            #if reporder type is order or reminder. make supplier invoices from order. order line will be total discount from the orders
+            elif o.order_type in ['order', 'reminder']:
+                discount_product = o.env.ref('crm_repord.discount_product')
+                created_lines = []
+                created_lines.append(self.env['account.invoice.line'].create({
+                    #~ 'product_id': discount_product.id or False,
+                    'name': discount_product.name % o.name,
+                    'quantity': 1,
+                    'account_id': discount_product.property_account_expense.id,
+                    'price_unit': o.amount_discount,
+                    'invoice_line_tax_id': [(6, 0, [discount_product.supplier_taxes_id.id])],
+                }).id)
+                if created_lines:
+                    invoices.setdefault(o.partner_invoice_id.id or o.partner_id.id, []).append((o, created_lines))
+            elif o.order_type in ['direct', '3rd_party']:
+                raise Warning('Error! You cannot create invoice for a direct order.')
         for val in invoices.values():
             if grouped:
                 res = self.pool.get('rep.order')._make_invoice(self._cr, self._uid, val[0][0], reduce(lambda x, y: x + y, [l for o, l in val], []), context=self._context)
@@ -428,20 +445,20 @@ class rep_order(models.Model):
                 for o, l in val:
                     invoice_ref += (o.client_order_ref or o.name) + '|'
                     origin_ref += (o.origin or o.name) + '|'
-                    self.write({'state': 'progress', 'invoice_id': res})
+                    o.write({'state': 'progress', 'invoice_id': res})
                 #remove last '|' in invoice_ref
                 if len(invoice_ref) >= 1:
                     invoice_ref = invoice_ref[:-1]
                 if len(origin_ref) >= 1:
                     origin_ref = origin_ref[:-1]
                 invoice = self.env['account.invoice'].browse(res)
-                invoice.write({'origin': origin_ref, 'name': invoice_ref})
+                invoice.write({'origin': origin_ref, 'name': invoice_ref, 'type': 'in_invoice'})
             else:
-                for order, il in val:
-                    res = self._make_invoice(self._cr, self._uid, order, il, context=self._context)
-                    invoice_ids.append(res)
-                    order.state = 'progress'
-                    order.invoice_id = res
+                for o, l in val:
+                    res = self.pool.get('rep.order')._make_invoice(self._cr, self._uid, o, l, context=self._context)
+                    o.write({'state': 'progress', 'invoice_id': res})
+                    invoice = self.env['account.invoice'].browse(res)
+                    invoice.write({'type': 'in_invoice'})
         return res
 
     @api.v7

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 
 
         <record id="sequence_repord" model="ir.sequence">
@@ -44,11 +44,20 @@
         <record id="listing_axfood_c" model="res.partner.listing">
             <field name="name">C</field>
         </record>
-        
+
         <record id="3rd_party_group" model="res.groups">
             <field name="name">Reporder 3rd Party Supplier</field>
         </record>
-        
+
+        <!-- discount product -->
+        <record id="discount_product" model="product.template">
+            <field name="name">Lämnade rabatter %s</field>
+            <field name="supplier_taxes_id" eval="[(6,0,[ref('l10n_se.bI12')])]"/>
+            <field name="categ_id" ref="product.product_category_1"/>
+            <field name="sale_ok" eval="True"/>
+            <field name="property_account_expense" ref="l10n_se.k2_3730"/>
+        </record>
+
         <record id="rule_rep_order" model="ir.rule">
             <field name="name">Reporder 3rd Party Reporder</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -59,7 +68,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        
+
         <record id="rule_rep_order_line" model="ir.rule">
             <field name="name">Reporder 3rd Party Reporder lines</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -70,7 +79,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        
+
         <record id="rule_product_template" model="ir.rule">
             <field name="name">Reporder 3rd Party Products</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -81,7 +90,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        
+
         <record id="rule_product_product" model="ir.rule">
             <field name="name">Reporder 3rd Party Variants</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -92,7 +101,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        
+
         <record id="rule_pricelist_item_empty" model="ir.rule">
             <field name="name">Reporder 3rd Party Pricelist Item Empty</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -103,7 +112,7 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
-        
+
         <record id="rule_pricelist_item" model="ir.rule">
             <field name="name">Reporder 3rd Party Pricelist Item</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -117,7 +126,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        
+
         <record id="rule_product_customer_code" model="ir.rule">
             <field name="name">Reporder 3rd Party Product Customer Codes</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -128,7 +137,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        
+
         <record id="rule_product_category" model="ir.rule">
             <field name="name">Reporder 3rd Party Product Category</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -139,7 +148,7 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
         </record>
-        
+
         <record id="rule_product_category_base" model="ir.rule">
             <field name="name">Reporder 3rd Party Product Category Base</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
@@ -150,7 +159,7 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
-        
+
         <record id="rule_account_Analytic_Account" model="ir.rule">
             <field name="name">Reporder 3rd Party Contract</field>
             <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>

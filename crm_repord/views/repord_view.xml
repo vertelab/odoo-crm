@@ -57,6 +57,7 @@
                     <field name="date_order"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
+                    <field name="amount_discount" sum="Total Discount"/>
                     <field name="amount_total" sum="Total Tax Included"/>
                     <field name="state"/>
                 </tree>

@@ -37,7 +37,7 @@ class reporder_make_invoice(models.TransientModel):
         newinv = []
         for order in self.env['rep.order'].browse(self.env.context.get('active_ids', [])):
             if not order.invoice_id:
-                order.action_invoice_create2(self.env.context.get('active_ids', []), form.grouped, date_invoice=form.invoice_date)
+                order.action_invoice_create(self.env.context.get('active_ids', []), form.grouped, date_invoice=form.invoice_date)
                 order.invoice_id.type = 'in_invoice'
                 newinv.append(order.invoice_id.id)
         act_window = self.env['ir.model.data'].get_object_reference('account', 'action_invoice_tree2')
