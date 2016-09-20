@@ -172,7 +172,7 @@
                                                                                                 <h4 class="text-center mt4 mb4" t-field="p.default_code"/>
                                                                                             </div>
                                                                                             <div class="col-md-12">
-                                                                                                <h3 class="text-center mt4 mb4 product_name" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                                <h3 class="text-center mt4 mb4 order_product_name cutable" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                                             </div>
                                                                                             <div class="col-md-12">
                                                                                                 <h4 class="text-center mt4 mb16">Kvantitet / <t t-esc="p.uom_id.name"/></h4>
@@ -270,48 +270,27 @@
                                     <div class="container mt8 mb64">
                                         <!-- <h2 class="text-center mb32" t-esc="partner.listing_id.name"/> -->
                                         <t t-foreach="parent_products" t-as="pp">
-                                            <t t-if="pp in partner.product_ids">
-                                                <div t-att-id="'ksp_%s' %pp.id" class="p_exist col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px;">
-                                                    <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
-                                                        <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
-                                                    </div>
-                                                    <div class="col-xs-6 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                                                        <div class="text-center">
-                                                            <t t-if="pp.default_code">
-                                                                <h4 t-esc="pp.default_code"/>
-                                                            </t>
-                                                            <h4 class="text-center" t-field="pp.product_tmpl_id"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center" style="margin: auto;">
-                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center hidden" style="margin: auto;">
-                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #0f0;"/>
-                                                        </div>
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="height: 250px;">
+                                                <div t-att-id="'ksp_%s_minus' %pp.id" t-att-class="'hidden' if pp not in partner.product_ids else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" style="background-color: #FF4F35; height: 100%; color: #fff;">
+                                                    <div class="text-center">
+                                                        <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; margin-top: 100px;　vertical-align: middle;"/>
                                                     </div>
                                                 </div>
-                                            </t>
-                                            <t t-if="pp not in partner.product_ids">
-                                                <div t-att-id="'ksp_%s' %pp.id" class="p_not_exist col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px;">
-                                                    <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
-                                                        <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
-                                                    </div>
-                                                    <div class="col-xs-6 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                                                        <div class="text-center">
-                                                            <t t-if="pp.default_code">
-                                                                <h4 t-esc="pp.default_code"/>
-                                                            </t>
-                                                            <h4 class="text-center" t-field="pp.product_tmpl_id"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center hidden" style="margin: auto;">
-                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center" style="margin: auto;">
-                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #0f0;"/>
-                                                        </div>
+                                                <div t-att-id="'ksp_%s_product' %pp.id" class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="height: 100%;">
+                                                    <img itemprop="image" class="img img-responsive" style="margin: auto; padding-top: 10px;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
+                                                    <div class="text-center">
+                                                        <t t-if="pp.default_code">
+                                                            <h4 t-esc="pp.default_code"/>
+                                                        </t>
+                                                        <h3 class="text-center sort_product_name cutable" t-field="pp.product_tmpl_id"/>
                                                     </div>
                                                 </div>
-                                            </t>
+                                                <div t-att-id="'ksp_%s_plus' %pp.id" t-att-class="'hidden' if pp in partner.product_ids else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" style="background-color: #FAC134; height: 100%; color: #fff;">
+                                                    <div class="text-center">
+                                                        <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; margin-top: 100px;　vertical-align: middle;"/>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </t>
                                     </div>
                                 </div>
@@ -666,12 +645,19 @@
                     border-radius: 10px !important;
                 }
 
-                .product_name {
+                .cutable {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
-                    max-width: 550px;
                     margin: auto;
+                }
+
+                .order_product_name {
+                    max-width: 550px;
+                }
+
+                .sort_product_name {
+                    max-width: 450px;
                 }
 
                 .quantity-button {
@@ -760,10 +746,13 @@
                         'product_id': product_id,
                     }).done(function(data){
                         if(data == "added"){
-                            $("#ksp_" + product_id).removeClass("p_not_exist");
-                            $("#ksp_" + product_id).addClass("p_exist");
+                            // $("#ksp_" + product_id + "_product").css({"background-color": "#fff"});
                             $("#ksp_" + product_id + "_plus").addClass("hidden");
                             $("#ksp_" + product_id + "_minus").removeClass("hidden");
+                            $("#ksp_" + product_id + "_minus").addClass("col-xs-3");
+                            $("#ksp_" + product_id + "_minus").addClass("col-sm-3");
+                            $("#ksp_" + product_id + "_minus").addClass("col-md-3");
+                            $("#ksp_" + product_id + "_minus").addClass("col-lg-3");
                         }
                     });
                 }
@@ -775,10 +764,13 @@
                         'product_id': product_id,
                     }).done(function(data){
                         if(data == "removed"){
-                            $("#ksp_" + product_id).removeClass("p_exist");
-                            $("#ksp_" + product_id).addClass("p_not_exist");
+                            // $("#ksp_" + product_id + "_product").css({"background-color": "#f4f4f4"});
                             $("#ksp_" + product_id + "_minus").addClass("hidden");
                             $("#ksp_" + product_id + "_plus").removeClass("hidden");
+                            $("#ksp_" + product_id + "_plus").addClass("col-xs-3");
+                            $("#ksp_" + product_id + "_plus").addClass("col-sm-3");
+                            $("#ksp_" + product_id + "_plus").addClass("col-md-3");
+                            $("#ksp_" + product_id + "_plus").addClass("col-lg-3");
                         }
                     });
                 }
