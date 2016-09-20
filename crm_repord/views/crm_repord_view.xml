@@ -534,11 +534,13 @@
                     -webkit-appearance: none;
                     margin: 0;
                 }
+
                 input[type='number'] {
                     -moz-appearance: textfield;
                 }
 
                 .p_exist{ background: #FFD08F; }
+
                 .p_not_exist{ background: #C2FFC2; }
 
                 #wrap { font-family: 'Open Sans', sans-serif; font-weight: 400; background-color: #f8f8f8;}
