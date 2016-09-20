@@ -73,7 +73,7 @@
                     <t t-call="crm_repord.search_stores"/>
                     <div class="container" style="width: 100%; padding: 0px;">
                         <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto; margin-top: 40px; max-height: 70px;&quot;}"/>
-                        <p class="text-center mt16 mb16" style="font-size: 3.3em; font-weight: 300; color: #6a6a6a;" t-field="partner.name"/>
+                        <p class="text-center mt16 mb16" style="font-size: 2.7em; font-weight: 300; color: #6a6a6a;" t-field="partner.name"/>
                         <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')"/>
                         <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
                         <!-- navigator -->
@@ -82,7 +82,7 @@
                                 <ul class="nav nav-tabs nav-justified nav-brand mt16 mb16 text-center" style="padding: 0px 15px 0px 15px; margin: auto;">
                                     <t t-foreach="product_categories" t-as="brand_categs">
                                         <li t-att-class="'active' if brand_categs == product_categories[0] else ''">
-                                            <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span t-field="brand_categs.name"/></a>
+                                            <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
                                         </li>
                                     </t>
                                 </ul>
@@ -91,16 +91,16 @@
                         <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; padding: 0px 15px;">
                             <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
-                                    <a data-toggle="tab" href="#butiksorder">Order</a>
+                                    <a data-toggle="tab" href="#butiksorder" style="border-bottom-style: none;">Order</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#kedjans_sortiment" style="border: 1px solid #CED2DB; border-top-style: none; border-bottom-style: none;">Sortiment</a>
+                                    <a data-toggle="tab" href="#kedjans_sortiment" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Sortiment</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#kund_kort" style="border: 1px solid #CED2DB; border-top-style: none; border-bottom-style: none; border-left-style: none;">Kundkort</a>
+                                    <a data-toggle="tab" href="#kund_kort" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Kundkort</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#bilder">Bilder</a>
+                                    <a data-toggle="tab" href="#bilder" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Bilder</a>
                                 </li>
                             </ul>
                             <div class="tab-content">
@@ -172,34 +172,32 @@
                                                                                                 <h4 class="text-center mt4 mb4" t-field="p.default_code"/>
                                                                                             </div>
                                                                                             <div class="col-md-12">
-                                                                                                <h3 class="text-center mt4 mb4" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                                <h3 class="text-center mt4 mb4 product_name" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                                             </div>
                                                                                             <div class="col-md-12">
                                                                                                 <h4 class="text-center mt4 mb16">Kvantitet / <t t-esc="p.uom_id.name"/></h4>
                                                                                             </div>
-                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="height: 60px; margin: auto;">
+                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
                                                                                                 <span class="input-group-addon quantity-button float_left" style="width: 60px; margin: 0px 7px;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                                    <i class="fa fa-plus"/>
+                                                                                                    <i class="fa fa-plus" style="width: 45px;"/>
                                                                                                 </span>
                                                                                                 <!-- <span class="input-group-addon">Quantity: </span> -->
                                                                                                 <input class="form-control input-style" style="width: 150px; margin: 0px 7px;" data-min="0" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
                                                                                                 <!-- <span class="input-group-addon"><t t-esc="p.uom_id.name"/></span> -->
-
                                                                                                 <span class="input-group-addon quantity-button" style="width: 60px;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                                    <i class="fa fa-minus"/>
+                                                                                                    <i class="fa fa-minus" style="width: 45px;"/>
                                                                                                 </span>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="table_cell" t-att-id="'product_cell_%s' %p.id">
-                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="height: 60px; margin: auto;">
-
-                                                                                                <span class="input-group-addon quantity-button float_left" style="width: 60px;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                                <span class="input-group-addon float_left" style="background-color: #9e9e9e; color: #fff;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                                     <i class="fa fa-plus"/>
                                                                                                 </span>
-                                                                                                <span class="input-group-addon" style="font-size: 2.3em; margin: 0px 0px 0px 7px;">Rabatt: </span>
-                                                                                                <input class="form-control input-style" style="width: 100px;" data-min="0" t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="discount" t-att-value="'0' if order_line_discount == 0.0 else order_line_discount" type="number"/>
-                                                                                                <span class="input-group-addon" style="font-size: 2.3em; margin: 0px 7px 0px 0px;">%</span>
-                                                                                                <span class="input-group-addon quantity-button" style="width: 60px;" t-att-onclick="'minus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                                <span class="input-group-addon" style="">Rabatt: </span>
+                                                                                                <input class="form-control" style="width: 100px;" data-min="0" t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="discount" t-att-value="'0' if order_line_discount == 0.0 else order_line_discount" type="number"/>
+                                                                                                <span class="input-group-addon" style="">%</span>
+                                                                                                <span class="input-group-addon" style="background-color: #9e9e9e; color: #fff;" t-att-onclick="'minus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                                     <i class="fa fa-minus"/>
                                                                                                 </span>
                                                                                             </div>
@@ -563,7 +561,7 @@
                     height: 60px;
                 }
 
-                .nav-tabs.nav-brand > li.active, .nav-tabs.nav-justified > li:hover, .nav-tabs.nav-justified > li:focus {
+                .nav-tabs.nav-brand > li.active, .nav-tabs.nav-justified > li:focus {
                     border: 0px solid #F6BB43;
                     background: #F6BB43;
                 }
@@ -668,14 +666,20 @@
                     border-radius: 10px !important;
                 }
 
+                .product_name {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 550px;
+                    margin: auto;
+                }
+
                 .quantity-button {
                     color: #fff;
                     background-color: #9E9E9E;
                     font-size: 1.3em;
                     border-radius: 10px !important;
                 }
-
-                .fa-minus, .fa-plus { width: 45px; }
 
                 #search_text {
                     width: 100%;
