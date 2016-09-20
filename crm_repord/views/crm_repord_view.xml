@@ -106,7 +106,7 @@
                             <div class="tab-content">
                                 <!-- Butiksorder -->
                                 <div id="butiksorder" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
-                                    <div class="container mb64">
+                                    <div class="container">
                                         <!-- content -->
                                         <div class="tab-content">
                                             <t t-foreach="product_categories" t-as="brand_categories">
@@ -225,7 +225,6 @@
                                             </t>
                                         </div>
                                     </div>
-                                    <hr style="width: 100%"/>
                                     <div class="container form-group">
                                         <div class="col-md-12 col-sm-12 col-xs-12">
 <!--
