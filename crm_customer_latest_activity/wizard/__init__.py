@@ -1,1 +1,0 @@
-#import res_partner_meeting_wizard
