@@ -11,7 +11,6 @@
         </field>
       </field>
     </record>
-
     <record id="view_partner_tree" model="ir.ui.view">
       <field name="name">res.partner.tree.inherit.latest_activity</field>
       <field name="model">res.partner</field>
@@ -22,22 +21,31 @@
         </field>
       </field>
     </record>
-<!--
     <record id="view_res_partner_filter" model="ir.ui.view">
       <field name="name">res.partner.select.inherit.latest_activity</field>
       <field name="model">res.partner</field>
       <field name="inherit_id" ref="base.view_res_partner_filter" />
       <field name="arch" type="xml">
-        <filter string="Country" position="after">
-           <filter string="Zip" context="{'group_by': 'zip'}"/>
-           <filter string="City" context="{'group_by': 'city'}"/>
-           <filter string="Last meeting" context="{'group_by': 'last_meeting'}"/>
+        <filter name="supplier" position="after">
+          <filter string="Inactive" name="active" domain="[('active','=',0)]" help="Inactive partners" />
         </filter>
       </field>
     </record>
--->
-    
-    
-    
+    <record model="ir.actions.server" id="inactivate_partners">
+      <field name="name">Inactivate Partners</field>
+      <field name="state">code</field>
+      <field name="condition" eval="True" />
+      <field name="model_id" ref="account.model_res_partner" />
+      <field name="code">
+for o in object.browse(context.get('active_ids', [])):
+    o.write({'active': False})
+      </field>
+    </record>
+    <record model="ir.values" id="inactovate_partners_action_menu">
+      <field name="name">Inactivate Partners XXX</field>
+      <field name="model">res.partner</field>
+      <field name="key2">client_action_multi</field>
+      <field name="value" eval="'ir.actions.server,%d' % inactivate_partners" />
+    </record>
   </data>
 </openerp>
