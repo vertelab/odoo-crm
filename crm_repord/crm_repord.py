@@ -22,9 +22,12 @@ from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
 import datetime
+import time
 import logging
 import base64
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 _logger = logging.getLogger(__name__)
+from openerp.exceptions import Warning
 
 import openerp.addons.decimal_precision as dp
 
@@ -50,14 +53,13 @@ class res_partner(models.Model):
 
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
     listing_id = fields.Many2one(comodel_name='res.partner.listing', string='Listing')
-
+    repord_3p_supplier = fields.Boolean('Handle reporders for this partner')
 
 class res_partner_listing(models.Model):
     _name = 'res.partner.listing'
 
     name = fields.Char(string='Name')
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
-
 
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
@@ -212,8 +214,7 @@ class MobileSaleView(http.Controller):
             if not order.partner_id.email:
                 return 'no_email'
             else:
-                #TODO: send mail
-                pass
+                order.force_quotation_send()
         order.action_convert_to_sale_order()
         return 'repord_confirmed'
 
@@ -260,21 +261,39 @@ class rep_order(models.Model):
             order.amount_total = values.get(order.id, {}).get('amount_total', 0)
 
     #state = fields.Selection(selection_add = [('reminder', 'Reminder')])
-    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('leroy', 'Lerøy')], default='order', string="Order Type")
+    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('3rd_party', 'Third Party Order')], default='order', string="Order Type")
     order_line = fields.One2many('rep.order.line', 'order_id', 'Order Lines', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=True)
     order_id = fields.Many2one('sale.order', 'Sale Order')
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
+    invoice_id = fields.Many2one(comodel_name='account.invoice', string='Invoice')
     invoice_ids = None
     pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, help="Pricelist for current sales order.")
     currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True, required=True)
+    amount_discount = fields.Float(compute='_amount_discount', string='Total Discount')
     procurement_group_id = None
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
+
+    third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
+
+    @api.one
+    @api.depends('order_type', 'order_line', 'order_line.product_id')
+    def repord_set_3p_supplier(self):
+        if self.order_type == '3rd_party':
+            for line in self.order_line:
+                if line.product_id and line.product_id.categ_id and line.product_id.categ_id.repord_3p_supplier:
+                    self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
+                    return
+        self.third_party_supplier = None
 
     @api.one
     def action_view_sale_order_line_make_invoice(self):
         pass
+
+    @api.one
+    def _amount_discount(self):
+        self.amount_discount = sum((l.price_unit - l.price_reduce) * l.product_uom_qty for l in self.order_line)
 
     @api.v7
     def onchange_partner_id(self, cr, uid, ids, part, context=None):
@@ -290,21 +309,21 @@ class rep_order(models.Model):
 
     @api.one
     def action_convert_to_sale_order(self):
-        if self.order_type in ['order', 'direct'] and self.state == 'draft':
+        #Fix line numbers
+        sequence = 1
+        for line in self.order_line:
+            line.sequence = sequence
+            sequence += 1
+        if self.order_type in ['direct'] and self.state == 'draft':
             order  = self.env['sale.order'].create({
                 'name': '/',
                 'rep_order_id': self.id,
-                'partner_id': self.partner_id.id if self.order_type in ['order', 'direct'] else self.partner_id.parent_id.id,
+                'partner_id': self.partner_id.id,
                 'pricelist_id': self.pricelist_id.id,
-                'campaign': self.campaign.id,
+                'campaign_id': self.campaign.id,
                 'project_id': self.campaign.account_id.id if self.campaign.account_id else None,
-                'client_order_ref': self.name,
-                'route_id': self.env.ref('edi_gs1.route_esap20').id if self.order_type == 'order' else None,
-                'nad_by': self.partner_id.id if self.order_type == 'order' else None,
-                'nad_su': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
-                'unb_sender': self.env.ref('base.main_partner').id if self.order_type == 'order' else None,
-                'unb_recipient': self.partner_id.parent_id.id if self.order_type == 'order' else None,
                 'order_line': [(0, 0, {
+                    'sequence': l.sequence,
                     'name': l.name,
                     'product_id': l.product_id and l.product_id.id or None,
                     'product_uom_qty': l.product_uom_qty,
@@ -375,6 +394,92 @@ class rep_order(models.Model):
         self.signal_workflow(cr, uid, ids, 'quotation_sent')
         return self.pool['report'].get_action(cr, uid, ids, 'crm_repord.report_reporder', context=context)
 
+    @api.model
+    def action_invoice_create(self, orders, grouped=False, date_invoice=False):
+        invoices = {}
+        partner_currency = {}
+        res = False
+        for o in self.browse(orders):
+            currency_id = o.pricelist_id.currency_id.id
+            if (o.partner_id.id in partner_currency) and (partner_currency[o.partner_id.id] <> currency_id):
+                raise Warning('Error! You cannot group sales having different currencies for the same partner.')
+            partner_currency[o.partner_id.id] = currency_id
+            #if repord type is scrap or discount. make supplier invoices from each order line
+            if o.order_type in ['scrap', 'discount']:
+                lines = []
+                for line in o.order_line:
+                    if line.invoiced:
+                        continue
+                    elif (line.state in ['draft', 'confirmed', 'done', 'exception']):
+                        lines.append(line.id)
+                created_lines = self.pool.get('rep.order.line').invoice_line_create(self._cr, self._uid, lines, context=self._context)
+                if created_lines:
+                    invoices.setdefault(o.partner_invoice_id.id or o.partner_id.id, []).append((o, created_lines))
+            #if reporder type is order or reminder. make supplier invoices from order. order line will be total discount from the orders
+            elif o.order_type in ['order', 'reminder']:
+                discount_product = o.env.ref('crm_repord.discount_product')
+                created_lines = []
+                created_lines.append(self.env['account.invoice.line'].create({
+                    #~ 'product_id': discount_product.id or False,
+                    'name': discount_product.name % o.name,
+                    'quantity': 1,
+                    'account_id': discount_product.property_account_expense.id,
+                    'price_unit': o.amount_discount,
+                    'invoice_line_tax_id': [(6, 0, [discount_product.supplier_taxes_id.id])],
+                }).id)
+                if created_lines:
+                    invoices.setdefault(o.partner_invoice_id.id or o.partner_id.id, []).append((o, created_lines))
+            elif o.order_type in ['direct', '3rd_party']:
+                raise Warning('Error! You cannot create invoice for a direct order.')
+        for val in invoices.values():
+            if grouped:
+                res = self.pool.get('rep.order')._make_invoice(self._cr, self._uid, val[0][0], reduce(lambda x, y: x + y, [l for o, l in val], []), context=self._context)
+                invoice_ref = ''
+                origin_ref = ''
+                for o, l in val:
+                    invoice_ref += (o.client_order_ref or o.name) + '|'
+                    origin_ref += (o.origin or o.name) + '|'
+                    o.write({'state': 'progress', 'invoice_id': res})
+                #remove last '|' in invoice_ref
+                if len(invoice_ref) >= 1:
+                    invoice_ref = invoice_ref[:-1]
+                if len(origin_ref) >= 1:
+                    origin_ref = origin_ref[:-1]
+                invoice = self.env['account.invoice'].browse(res)
+                invoice.write({'origin': origin_ref, 'name': invoice_ref, 'type': 'in_invoice'})
+            else:
+                for o, l in val:
+                    res = self.pool.get('rep.order')._make_invoice(self._cr, self._uid, o, l, context=self._context)
+                    o.write({'state': 'progress', 'invoice_id': res})
+                    invoice = self.env['account.invoice'].browse(res)
+                    invoice.write({'type': 'in_invoice'})
+        return res
+
+    @api.v7
+    def _make_invoice(self, cr, uid, order, lines, context=None):
+        inv_obj = self.pool.get('account.invoice')
+        obj_invoice_line = self.pool.get('account.invoice.line')
+        if context is None:
+            context = {}
+        invoiced_sale_line_ids = self.pool.get('rep.order.line').search(cr, uid, [('order_id', '=', order.id), ('invoiced', '=', True)], context=context)
+        from_line_invoice_ids = []
+        for invoiced_sale_line_id in self.pool.get('rep.order.line').browse(cr, uid, invoiced_sale_line_ids, context=context):
+            for invoice_line_id in invoiced_sale_line_id.invoice_lines:
+                if invoice_line_id.invoice_id.id not in from_line_invoice_ids:
+                    from_line_invoice_ids.append(invoice_line_id.invoice_id.id)
+        #~ for preinv in order.invoice_ids:
+            #~ if preinv.state not in ('cancel',) and preinv.id not in from_line_invoice_ids:
+                #~ for preline in preinv.invoice_line:
+                    #~ inv_line_id = obj_invoice_line.copy(cr, uid, preline.id, {'invoice_id': False, 'price_unit': -preline.price_unit})
+                    #~ lines.append(inv_line_id)
+        inv = self._prepare_invoice(cr, uid, order, lines, context=context)
+        inv_id = inv_obj.create(cr, uid, inv, context=context)
+        data = inv_obj.onchange_payment_term_date_invoice(cr, uid, [inv_id], inv['payment_term'], time.strftime(DEFAULT_SERVER_DATE_FORMAT))
+        if data.get('value', False):
+            inv_obj.write(cr, uid, [inv_id], data['value'], context=context)
+        inv_obj.button_compute(cr, uid, [inv_id])
+        return inv_id
+
 
 class rep_order_line(models.Model):
     _name = "rep.order.line"
@@ -389,4 +494,13 @@ class rep_order_line(models.Model):
     #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
     procurement_ids = None
 
+class product_category(models.Model):
+    _inherit = 'product.category'
+
+    repord_3p_supplier = fields.Many2one('res.partner', 'Resell for', inverse='_repord_set_3p_supplier', readonly=False, domain=[('repord_3p_supplier', '=', True)])
+
+    @api.one
+    def _repord_set_3p_supplier(self):
+        for category in self.child_id:
+            category.repord_3p_supplier = self.repord_3p_supplier
 

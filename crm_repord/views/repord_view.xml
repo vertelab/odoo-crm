@@ -57,6 +57,7 @@
                     <field name="date_order"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
+                    <field name="amount_discount" sum="Total Discount"/>
                     <field name="amount_total" sum="Total Tax Included"/>
                     <field name="state"/>
                 </tree>
@@ -100,6 +101,7 @@
                     <group>
                         <group>
                             <field name="order_type"/>
+                            <field name="third_party_supplier" attrs="{'invisible': [('order_type', 'not in', ['3rd_party'])]}" domain="[('repord_3p_supplier', '=', True)]"/>
                             <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
                             <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}"/>
                             <field name="partner_shipping_id" on_change="onchange_delivery_id(company_id, partner_id, partner_shipping_id, fiscal_position)" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}"/>
@@ -111,7 +113,9 @@
                             <field domain="[('type','=','sale')]" name="pricelist_id" groups="product.group_sale_pricelist" on_change="onchange_pricelist_id(pricelist_id,order_line)"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="order_id"/>
+                            <field name="invoice_id"/>
                             <field name="campaign"/>
+                            <field name="amount_discount"/>
                         </group>
                     </group>
                     <notebook>
@@ -248,6 +252,7 @@
                     <field name="section_id" string="Sales Team" groups="base.group_multi_salesteams"/>
                     <field name="project_id"/>
                     <field name="product_id"/>
+                    <field name="state"/>
                     <filter string="My" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
                     <separator/>
                     <filter string="Quotations" name="draft" domain="[('state','in',('draft','sent'))]" help="Sales Order that haven't yet been confirmed"/>
@@ -260,6 +265,7 @@
                         <filter string="Salesperson" domain="[]" context="{'group_by':'user_id'}"/>
                         <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Order Month" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter string="State" domain="[]" context="{'group_by':'state'}"/>
                     </group>
                </search>
             </field>
