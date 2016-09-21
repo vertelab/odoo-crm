@@ -25,6 +25,7 @@ import datetime
 import time
 import logging
 import base64
+import werkzeug
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 _logger = logging.getLogger(__name__)
 from openerp.exceptions import Warning
@@ -67,17 +68,6 @@ class MobileSaleView(http.Controller):
         products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).product_ids
         parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).listing_id.product_ids
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft')])
-        if request.httprequest.method == 'POST':
-            request.env['ir.attachment'].create({
-                'name': post['ufile'].filename,
-                'res_model': 'res.partner',
-                'res_name': partner.name,
-                'partner_id': partner.id,
-                'res_id': partner.id,
-                'type': 'binary',
-                'datas': base64.encodestring(post['ufile'].read()),
-                'datas_fname': post['ufile'].filename,
-            })
         if not rep_order:
             rep_order = request.env['rep.order'].create({
                 'partner_id': partner.id
@@ -85,6 +75,22 @@ class MobileSaleView(http.Controller):
         else:
             rep_order = rep_order[0]
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
+
+    @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="public", website=True)
+    def image_upload(self, partner=None, **post):
+        if request.httprequest.method == 'POST':
+            if post['ufile']:
+                request.env['ir.attachment'].create({
+                    'name': post['ufile'].filename,
+                    'res_model': 'res.partner',
+                    'res_name': partner.name,
+                    'partner_id': partner.id,
+                    'res_id': partner.id,
+                    'type': 'binary',
+                    'datas': base64.encodestring(post['ufile'].read()),
+                    'datas_fname': post['ufile'].filename,
+                })
+        return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
 
     @http.route(['/crm/send/repord'], type='json', auth="public", methods=['POST'], website=True)
     def send_rep_order(self, res_partner, product_id, product_uom_qty, discount, **kw):
