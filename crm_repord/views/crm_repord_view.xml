@@ -521,7 +521,7 @@
 
                 .p_not_exist{ background: #C2FFC2; }
 
-                #top_menu { background-color: #F6BB43; }
+                #top_menu { background-color: #FFD529; }
 
                 #wrap { font-family: 'Open Sans', sans-serif; font-weight: 400; background-color: #f8f8f8;}
 
