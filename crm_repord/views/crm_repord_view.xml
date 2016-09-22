@@ -454,8 +454,8 @@
 
     <template id="search_stores" name="Search Stores">
         <div class="container" style="width: 100%; background-color: #535353; height: 50px; padding: 0px;">
-            <div class="col-md-12 col-xs-12">
-                <div class="col-md-2 col-xs-2">
+            <div class="col-md-12 col-xs-12" style="padding: 0px;">
+                <div class="col-md-2 col-xs-2 text-left">
                     <a href="/crm/mystores">
                         <span class="pagination input-group-btn" style="margin: 8px 0px;">
                             <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #a4a4a4; text-decoration: underline;"><strong>Mina butiker</strong></button>
@@ -474,8 +474,8 @@
                         </div>
                     </form>
                 </div>
-                <div class="col-md-2 col-xs-2">
-                    <span class="input-group-btn text-center" style="height: 50px;">
+                <div class="col-md-2 col-xs-2 text-right">
+                    <span class="input-group-btn text-right" style="height: 50px;">
                         <button id="search_button" class="btn btn-default" style="color: #a4a4a4;"><i class="fa fa-search"></i></button>
                     </span>
                 </div>
@@ -517,9 +517,11 @@
                     -moz-appearance: textfield;
                 }
 
-                .p_exist{ background: #FFD08F; }
+                .p_exist{ background: #FFD529; }
 
                 .p_not_exist{ background: #C2FFC2; }
+
+                #top_menu { background-color: #F6BB43; }
 
                 #wrap { font-family: 'Open Sans', sans-serif; font-weight: 400; background-color: #f8f8f8;}
 
