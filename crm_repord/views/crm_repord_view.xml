@@ -389,7 +389,7 @@
                                                 <t t-set="attachments" t-value="request.env['ir.attachment'].search([('partner_id', '=', partner.id)])"/>
                                                 <t t-foreach="attachments" t-as="att">
                                                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding: 8px;">
-                                                        <img itemprop="image" t-att-src="website.imagemagick_url(att, 'datas', 2)" style="margin: auto; display: block; width: 100%;"/>
+                                                        <img itemprop="image" t-att-src="website.imagemagick_url(att, 'datas', 'crm_repord.product_image')" style="margin: auto; display: block; width: 100%;"/>
                                                     </div>
                                                 </t>
                                             </div>
