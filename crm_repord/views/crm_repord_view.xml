@@ -73,7 +73,7 @@
                     <t t-call="crm_repord.search_stores"/>
                     <div class="container" style="width: 100%; padding: 0px;">
                         <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto; margin-top: 40px; max-height: 70px;&quot;}"/>
-                        <p class="text-center mt16 mb16" style="font-size: 2.7em; font-weight: 300; color: #6a6a6a;" t-field="partner.name"/>
+                        <p class="text-center mt16 mb16" style="font-size: 2.3em; font-weight: 300; color: #6a6a6a;" t-field="partner.name"/>
                         <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')"/>
                         <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
                         <!-- navigator -->
@@ -179,13 +179,13 @@
                                                                                             </div>
                                                                                             <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
                                                                                                 <span class="input-group-addon quantity-button float_left" style="width: 60px; margin: 0px 7px;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                                    <i class="fa fa-plus" style="width: 45px;"/>
+                                                                                                    <i class="fa fa-plus" style="width: 40px;"/>
                                                                                                 </span>
                                                                                                 <!-- <span class="input-group-addon">Quantity: </span> -->
-                                                                                                <input class="form-control input-style" style="width: 150px; margin: 0px 7px;" data-min="0" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
+                                                                                                <input class="form-control input-style" style="width: 100px; margin: 0px 7px;" data-min="0" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
                                                                                                 <!-- <span class="input-group-addon"><t t-esc="p.uom_id.name"/></span> -->
                                                                                                 <span class="input-group-addon quantity-button" style="width: 60px;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                                    <i class="fa fa-minus" style="width: 45px;"/>
+                                                                                                    <i class="fa fa-minus" style="width: 40px;"/>
                                                                                                 </span>
                                                                                             </div>
                                                                                         </div>
@@ -261,13 +261,13 @@
                                         <label class="" for="send_mail"><input name="send_mail" id="send_mail" value="send" type="checkbox"/>Kopia till epost</label>
                                     </div>
                                     <div class="col-md-12 mb32">
-                                        <button id="confirm" name="confirm" style="margin: auto; display: block; background-color: #9e9e9e; color: #fff; padding: 20px 40px; font-size: 2.7em; " class="btn btn-lg" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Skicka order</button>
+                                        <button id="confirm" name="confirm" style="margin: auto; display: block; background-color: #9e9e9e; color: #fff; padding: 20px 40px; font-size: 2.3em; " class="btn btn-lg" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Skicka order</button>
                                     </div>
                                 </div>
 
                                 <!-- Kedjans sortiment -->
                                 <div id="kedjans_sortiment" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
-                                    <div class="container mt8 mb8" style="padding: 0px 30px;">
+                                    <div class="container mt8 mb8" style="padding: 0px;">
                                         <!-- <h2 class="text-center mb32" t-esc="partner.listing_id.name"/> -->
                                         <t t-foreach="parent_products" t-as="pp">
                                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8 sort_products">
@@ -572,8 +572,9 @@
                 .nav-categ > li > a {
                     background-color: #E6E9EE;
                     color: #6c6c6c;
-                    height: 50px;
-                    font-size: 1.3em;
+                    height: 40px;
+                    font-size: 1.0em;
+                    vertical-algin: middle;
                 }
 
                 .nav-tabs.nav-categ > li.active > a, .nav-tabs.nav-categ > li.active > a:hover, .nav-tabs.nav-categ > li.active > a:focus {
@@ -642,7 +643,7 @@
 
                 .input-style {
                     height: 60px;
-                    font-size: 2.3em;
+                    font-size: 2.0em;
                     border-radius: 10px !important;
                 }
 
