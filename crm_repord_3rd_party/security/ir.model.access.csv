@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_rep_order_partner_pricelist,rep.order.partner.pricelist,model_rep_order_partner_pricelist,base.group_sale_salesman,1,1,1,0
-access_rep_order_partner_pricelist_manager,rep.order.partner.pricelist.manager,model_rep_order_partner_pricelist,base.group_sale_manager,1,1,1,1
-access_rep_order_partner_pricelist_accountant,rep.order.partner.pricelist.accountant,model_rep_order_partner_pricelist,account.group_account_user,1,0,0,0
