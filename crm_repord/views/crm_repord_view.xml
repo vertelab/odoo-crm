@@ -71,40 +71,42 @@
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-call="crm_repord.search_stores"/>
-                    <div class="container mt32 mb64" style="width: 100%; padding: 0px;">
-                        <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto&quot;}"/>
-                        <h2 class="text-center mt16 mb16" style="" t-field="partner.name"/>
-                        <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', 2)], order='id')"/>
+                    <div class="container" style="width: 100%; padding: 0px;">
+                        <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto; margin-top: 40px; max-height: 70px;&quot;}"/>
+                        <p class="text-center mt16 mb16" style="font-size: 2.3em; font-weight: 300; color: #6a6a6a;" t-field="partner.name"/>
+                        <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')"/>
                         <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
                         <!-- navigator -->
-                        <ul class="nav nav-tabs nav-brand">
-                            <t t-foreach="product_categories" t-as="brand_categs">
-                                <li t-att-class="active if brand_categs == product_categories[0] else ''">
-                                    <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id">
-                                        <img itemprop="image" class="img img-responsive" style="margin: auto; width: 100px;" t-att-src="'/website/image/product.category/%s/website_image/150x150' %brand_categs.id"/>
-                                    </a>
-                                </li>
-                            </t>
-                        </ul>
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; background-color: #fff; padding: 0px;">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <ul class="nav nav-tabs nav-justified nav-brand mt16 mb16 text-center" style="padding: 0px 15px 0px 15px; margin: auto;">
+                                    <t t-foreach="product_categories" t-as="brand_categs">
+                                        <li t-att-class="'active' if brand_categs == product_categories[0] else ''">
+                                            <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; padding: 0px 15px;">
                             <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
-                                    <a data-toggle="tab" href="#butiksorder">Order</a>
+                                    <a data-toggle="tab" href="#butiksorder" style="border-bottom-style: none;">Order</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#kedjans_sortiment" style="border: 1px solid #CED2DB; border-top-style: none; border-bottom-style: none;">Sortiment</a>
+                                    <a data-toggle="tab" href="#kedjans_sortiment" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Sortiment</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#kund_kort" style="border: 1px solid #CED2DB; border-top-style: none; border-bottom-style: none; border-left-style: none;">Kundkort</a>
+                                    <a data-toggle="tab" href="#kund_kort" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Kundkort</a>
                                 </li>
                                 <li>
-                                    <a data-toggle="tab" href="#bilder">Bilder</a>
+                                    <a data-toggle="tab" href="#bilder" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Bilder</a>
                                 </li>
                             </ul>
                             <div class="tab-content">
                                 <!-- Butiksorder -->
                                 <div id="butiksorder" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
-                                    <div class="container mb64">
+                                    <div class="container">
                                         <!-- content -->
                                         <div class="tab-content">
                                             <t t-foreach="product_categories" t-as="brand_categories">
@@ -112,13 +114,15 @@
                                                 t-att-id="'categs_%s' %brand_categories.id" style="padding: 0px;">
                                                     <!-- selection for product category -->
                                                     <div class="form-group">
-                                                        <div class="col-md-12 mt8 mb8">
-                                                            <select name="" id="product_tab" class="form-control selectpicker dropdown text-center" data-style="btn-primary" onchange="product_tab()">
-                                                                <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
-                                                                <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
-                                                                    <option data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %b_c.id" t-att-value="'product_categ_%s' %b_c.id"><span t-field="b_c.name" style="color: #FFA62B;"/></option>
-                                                                </t>
-                                                            </select>
+                                                        <div class="col-md-12 col-sm-12 col-xs-12 mt16 mb16">
+                                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                <select name="" id="product_tab" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" onchange="product_tab()">
+                                                                    <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
+                                                                    <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
+                                                                        <option data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %b_c.id" t-att-value="'product_categ_%s' %b_c.id"><span t-field="b_c.name" style="color: #FFA62B;"/></option>
+                                                                    </t>
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
 <!--
@@ -165,36 +169,36 @@
                                                                                     <td>
                                                                                         <div class="col-md-12 mb16">
                                                                                             <div class="col-md-12">
-                                                                                                <h4 class="text-center" t-field="p.default_code"/>
+                                                                                                <h4 class="text-center mt4 mb4" t-field="p.default_code"/>
                                                                                             </div>
                                                                                             <div class="col-md-12">
-                                                                                                <h3 class="text-center mb8" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                                                <h3 class="text-center mt4 mb4 order_product_name cutable" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                                             </div>
                                                                                             <div class="col-md-12">
-                                                                                                <h4 class="text-center mb8">Kvantitet / <t t-esc="p.uom_id.name"/></h4>
+                                                                                                <h4 class="text-center mt4 mb16">Kvantitet / <t t-esc="p.uom_id.name"/></h4>
                                                                                             </div>
-                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="height: 50px; margin: auto;">
-                                                                                                <span class="input-group-addon" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                                    <i class="fa fa-minus"/>
+                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                                <span class="input-group-addon quantity-button float_left" style="width: 60px; margin: 0px 7px;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                                    <i class="fa fa-plus" style="width: 40px;"/>
                                                                                                 </span>
                                                                                                 <!-- <span class="input-group-addon">Quantity: </span> -->
-                                                                                                <input class="form-control" data-min="0" style="width: 150px; height: 50px; font-size: 1.7em;" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
+                                                                                                <input class="form-control input-style" style="width: 100px; margin: 0px 7px;" data-min="0" t-att-id="'%s_qty_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="add_qty" t-att-value="'0' if order_line_qty == 0.0 else order_line_qty" type="number"/>
                                                                                                 <!-- <span class="input-group-addon"><t t-esc="p.uom_id.name"/></span> -->
-                                                                                                <span class="input-group-addon float_left" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                                    <i class="fa fa-plus"/>
+                                                                                                <span class="input-group-addon quantity-button" style="width: 60px;" t-att-onclick="'minus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                                    <i class="fa fa-minus" style="width: 40px;"/>
                                                                                                 </span>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div class="table_cell" t-att-id="'product_cell_%s' %p.id">
-                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="height: 50px; margin: auto;">
-                                                                                                <span class="input-group-addon" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'minus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
-                                                                                                    <i class="fa fa-minus"/>
-                                                                                                </span>
-                                                                                                <span class="input-group-addon" style="font-size: 1.7em;">Rabatt: </span>
-                                                                                                <input class="form-control" style="width: 100px; height: 50px; font-size: 2em;" data-min="0" t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="discount" t-att-value="'0' if order_line_discount == 0.0 else order_line_discount" type="number"/>
-                                                                                                <span class="input-group-addon" style="font-size: 1.7em;">%</span>
-                                                                                                <span class="input-group-addon float_left" style="color: #fff; background-color: #9E9E9E; width: 50px; font-size: 2em;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                            <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                                                <span class="input-group-addon float_left" style="background-color: #9e9e9e; color: #fff;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                                     <i class="fa fa-plus"/>
+                                                                                                </span>
+                                                                                                <span class="input-group-addon" style="">Rabatt: </span>
+                                                                                                <input class="form-control" style="width: 100px;" data-min="0" t-att-id="'%s_discount_%s' %(partner.id, p.id)" t-att-onchange="'send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id)" name="discount" t-att-value="'0' if order_line_discount == 0.0 else order_line_discount" type="number"/>
+                                                                                                <span class="input-group-addon" style="">%</span>
+                                                                                                <span class="input-group-addon" style="background-color: #9e9e9e; color: #fff;" t-att-onclick="'minus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
+                                                                                                    <i class="fa fa-minus"/>
                                                                                                 </span>
                                                                                             </div>
                                                                                             <ul class="mt16 text-center" style="list-style-type: none; padding: 0px;">
@@ -221,87 +225,72 @@
                                             </t>
                                         </div>
                                     </div>
-                                    <hr style="width: 100%"/>
                                     <div class="container form-group">
                                         <div class="col-md-12 col-sm-12 col-xs-12">
+<!--
                                             <label class="col-md-3 col-sm-3 col-xs-3 control-label" for="order_type"><span class="pull-right">Beställningstyp:</span></label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9 mb16">
-                                                <select name="order_type" id="order_type" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
+-->
+                                            <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                                <select name="order_type" id="order_type" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
                                                     <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
                                                         <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
                                                     </t>
                                                 </select>
                                             </div>
+<!--
                                             <label class="col-md-3 col-sm-3 col-xs-3 control-label" for="campaign"><span class="pull-right">Kampanj:</span></label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9 mb16">
-                                                <select name="campaign" id="campaign" class="form-control selectpicker dropup" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
-                                                    <option value=""/>
+-->
+                                            <div class="col-md-12 col-sm-12 col-xs-12 mb16">
+                                                <select name="campaign" id="campaign" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
+                                                    <option value="">Kampanj</option>
                                                     <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
                                                         <option t-if="aa.campaign" t-att-value="aa.campaign.id"><t t-raw="aa.campaign.name"/></option>
                                                     </t>
                                                 </select>
                                             </div>
+<!--
                                             <label class="col-md-3 col-sm-3 col-xs-3 control-label" for="leveransvecka"><span class="pull-right">Leveransdag:</span></label>
-                                            <div class="col-md-9 col-sm-9 col-xs-9 mb16">
-                                                <input id="delivery_date" type="date" name="Delivery Date" class="form-control" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id"/>
+-->
+                                            <div class="input-group col-md-12 col-sm-12 col-xs-12 mb16" style="padding: 0px 15px 0px 15px; margin: auto;">
+                                                <input id="delivery_date" type="date" name="Delivery Date" class="form-control selection_dropdown" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id" placeholder="Leveransdatum"/>
+                                                <span id="calendar-icon" class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 checkbox mt32 mb16 text-center">
-                                        <label class="mt32" for="send_mail"><input name="send_mail" id="send_mail" value="send" type="checkbox"/>Skicka mail vid bekräfta</label>
+                                    <div class="col-md-12 checkbox mb16 text-center">
+                                        <label class="" for="send_mail"><input name="send_mail" id="send_mail" value="send" type="checkbox"/>Kopia till epost</label>
                                     </div>
                                     <div class="col-md-12 mb32">
-                                        <button id="confirm" name="confirm" style="margin: auto; display: block" class="btn btn-success btn-lg" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Bekräfta</button>
+                                        <button id="confirm" name="confirm" style="margin: auto; display: block; background-color: #9e9e9e; color: #fff; padding: 20px 40px; font-size: 2.3em; " class="btn btn-lg" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Skicka order</button>
                                     </div>
                                 </div>
 
                                 <!-- Kedjans sortiment -->
                                 <div id="kedjans_sortiment" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
-                                    <div class="container mt8 mb64">
+                                    <div class="container mt8 mb8" style="padding: 0px;">
                                         <!-- <h2 class="text-center mb32" t-esc="partner.listing_id.name"/> -->
                                         <t t-foreach="parent_products" t-as="pp">
-                                            <t t-if="pp in partner.product_ids">
-                                                <div t-att-id="'ksp_%s' %pp.id" class="p_exist col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px;">
-                                                    <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
-                                                        <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
-                                                    </div>
-                                                    <div class="col-xs-6 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                                                        <div class="text-center">
-                                                            <t t-if="pp.default_code">
-                                                                <h4 t-esc="pp.default_code"/>
-                                                            </t>
-                                                            <h4 class="text-center" t-field="pp.product_tmpl_id"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center" style="margin: auto;">
-                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center hidden" style="margin: auto;">
-                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #0f0;"/>
-                                                        </div>
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8 sort_products">
+                                                <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if pp not in partner.product_ids else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" style="background-color: #FF4F35; height: 100%; color: #fff;">
+                                                    <div class="text-center">
+                                                        <i class="fa fa-minus" style="font-size: 3.3em; margin-top: 100px;　vertical-align: middle;"/>
                                                     </div>
                                                 </div>
-                                            </t>
-                                            <t t-if="pp not in partner.product_ids">
-                                                <div t-att-id="'ksp_%s' %pp.id" class="p_not_exist col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8" style="padding: 10px 0px;">
-                                                    <div class="col-xs-6 col-sm-7 col-md-7 col-lg-7">
-                                                        <img itemprop="image" class="img img-responsive" style="margin: auto;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
-                                                    </div>
-                                                    <div class="col-xs-6 col-sm-5 col-md-5 col-lg-4 col-lg-offset-1">
-                                                        <div class="text-center">
-                                                            <t t-if="pp.default_code">
-                                                                <h4 t-esc="pp.default_code"/>
-                                                            </t>
-                                                            <h4 class="text-center" t-field="pp.product_tmpl_id"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_minus' %pp.id" class="text-center hidden" style="margin: auto;">
-                                                            <i class="fa fa-minus" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #f00;"/>
-                                                        </div>
-                                                        <div t-att-id="'ksp_%s_plus' %pp.id" class="text-center" style="margin: auto;">
-                                                            <i class="fa fa-plus" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" style="font-size: 3.3em; color: #0f0;"/>
-                                                        </div>
+                                                <div t-att-id="'ksp_%s_product' %pp.id" class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="height: 100%;">
+                                                    <img itemprop="image" class="img img-responsive" style="margin: auto; padding-top: 10px;" t-att-src="'/website/image/product.product/%s/image/150x150' %pp.id"/>
+                                                    <div class="text-center">
+                                                        <t t-if="pp.default_code">
+                                                            <h4 t-esc="pp.default_code"/>
+                                                        </t>
+                                                        <h3 class="text-center sort_product_name cutable" t-field="pp.product_tmpl_id"/>
                                                     </div>
                                                 </div>
-                                            </t>
+                                                <div t-att-id="'ksp_%s_plus' %pp.id" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if pp in partner.product_ids else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" style="background-color: #FAC134; height: 100%; color: #fff;">
+                                                    <div class="text-center">
+                                                        <i class="fa fa-plus" style="font-size: 3.3em; margin-top: 100px;　vertical-align: middle;"/>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </t>
                                     </div>
                                 </div>
@@ -389,20 +378,21 @@
 
                                 <!-- Bilder -->
                                 <div id="bilder" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                                            <t t-set="attachments" t-value="request.env['ir.attachment'].search([('partner_id', '=', partner.id)])"/>
-                                            <t t-foreach="attachments" t-as="att">
-                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding: 8px">
-                                                    <span t-field="att.datas" class="" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;class&quot;: &quot;img img-responsive&quot;}"/>
-                                                </div>
-                                            </t>
-                                        </div>
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt32">
-                                            <form class="mt32" method="post" enctype="multipart/form-data">
-                                                <input id="upload_file" type="file" name="ufile" accept="image/*" capture="camera" style="margin: auto;"/>
-                                                <button type="submit" class="btn btn-success mt16" style="margin: auto; display: block;">Spara</button>
-                                            </form>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt32 mb32">
+                                                <form id="photo_form" t-att-action="'/crm/%s/image_upload' % partner.id" class="" method="post" enctype="multipart/form-data">
+                                                    <input id="upload_file" type="file" name="ufile" accept="image/*" capture="camera" style="margin: auto;"/>
+                                                </form>
+                                            </div>
+                                            <div id="image_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mb8">
+                                                <t t-set="attachments" t-value="request.env['ir.attachment'].search([('partner_id', '=', partner.id)])"/>
+                                                <t t-foreach="attachments" t-as="att">
+                                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding: 8px;">
+                                                        <img itemprop="image" t-att-src="website.imagemagick_url(att, 'datas', 'crm_repord.product_image')" style="margin: auto; display: block; width: 100%;"/>
+                                                    </div>
+                                                </t>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -468,7 +458,7 @@
                 <div class="col-md-2 col-xs-2">
                     <a href="/crm/mystores">
                         <span class="pagination input-group-btn" style="margin: 8px 0px;">
-                            <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #fff;"><strong>Mina butiker</strong></button>
+                            <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #a4a4a4; text-decoration: underline;"><strong>Mina butiker</strong></button>
                         </span>
                     </a>
                 </div>
@@ -486,7 +476,7 @@
                 </div>
                 <div class="col-md-2 col-xs-2">
                     <span class="input-group-btn text-center" style="height: 50px;">
-                        <button id="search_button" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        <button id="search_button" class="btn btn-default" style="color: #a4a4a4;"><i class="fa fa-search"></i></button>
                     </span>
                 </div>
             </div>
@@ -495,21 +485,43 @@
 
     <template id="crm_css" inherit_id="website.layout">
         <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
-            <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"/>
+            <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
             <style>
+                .navbar-static-top > .container {
+                    height: 100px;
+                }
+
+                .navbar-static-top > .container > .navbar-header {
+                    padding-top: 25px;
+                }
+
+                .navbar-static-top > .navbar-header > .navbar-toggle > span.icon-bar {
+                    width: 30px;
+                }
+
+                .navbar-static-top > .navbar-header > .navbar-toggle > span.icon-bar:first-child {
+                    margin-bottom: 7px;
+                }
+
+                .navbar-static-top > .navbar-header > .navbar-toggle > span.icon-bar:last-child {
+                    margin-top: 7px;
+                }
+
                 input[type=number]::-webkit-inner-spin-button,
                 input[type=number]::-webkit-outer-spin-button {
                     -webkit-appearance: none;
                     margin: 0;
                 }
+
                 input[type='number'] {
-                    -moz-appearance:textfield;
+                    -moz-appearance: textfield;
                 }
 
                 .p_exist{ background: #FFD08F; }
+
                 .p_not_exist{ background: #C2FFC2; }
 
-                #wrap { font-family: 'Open Sans', sans-serif; background-color: #f8f8f8;}
+                #wrap { font-family: 'Open Sans', sans-serif; font-weight: 400; background-color: #f8f8f8;}
 
                 .navbar-static-top { background-color: #FFD529; }
 
@@ -519,35 +531,55 @@
 
                 .navbar-default .navbar-toggle .icon-bar { background-color: #fff; }
 
-                header a.navbar-brand.logo {
-                    display: block;
-                    text-align: center;
-                    padding: 0px 65px; /* center in a iphone 6? */
-                }
-
-                .navbar-brand { float: none; }
+                .navbar-brand > img { padding-top: 10px; }
 
                 .nav-brand > li {
                     float: none;
                     display: inline-block;
                     *display:inline; /* ie7 fix */
                     zoom:1; /* hasLayout ie7 trigger */
+                    height: 60px;
                 }
 
-                .nav-categ > li {
+                .nav-tabs.nav-brand > li.active, .nav-tabs.nav-justified > li:focus {
+                    border: 0px solid #F6BB43;
+                    background: #F6BB43;
+                }
+
+                ul.nav-brand > li > a {
+                    color: #A0A0A0;
+                    background-color: #E6E9EE;
+                    height: 60px;
+                }
+
+                .nav-brand > li > a > span {
+                    border-width: 0px;
+                    height: 60px;
+                    font-size: 1.7em;
+                }
+
+                .nav-tabs.nav-brand > li.active > a, .nav-tabs.nav-brand > li.active > a:hover, .nav-tabs.nav-brand > li.active > a:focus {
+                    background: none;
+                    color: #fff;
+                }
+
+                .nav-categ > li, .nav-brand > li {
                     display: table-cell;
                     width: 1%;
                     margin-bottom: 0;
                 }
 
                 .nav-categ > li > a {
-                    background-color: #ddd !important;
-                    color: #333;
-                    height: 50px;
-                    font-size: 1.3em;
+                    background-color: #E6E9EE;
+                    color: #6c6c6c;
+                    height: 40px;
+                    font-size: 1.0em;
+                    vertical-algin: middle;
                 }
 
-                .nav-brand { text-align: center; }
+                .nav-tabs.nav-categ > li.active > a, .nav-tabs.nav-categ > li.active > a:hover, .nav-tabs.nav-categ > li.active > a:focus {
+                    background: none;
+                }
 
                 .nav-categ > li.active > a, .nav-categ > li.active:hover > a, .nav-categ > li.active:focus > a{
                     background-color: #fff !important;
@@ -571,15 +603,36 @@
 
                 .nav-categ > li > a { border: none; }
 
-                .nav-tabs.nav-justified > li > a { border-radius: 0px; }
+                .nav-tabs.nav-justified > li > a {
+                    border-radius: 0px;
+                    margin: 0px;
+                }
+
+                .nav-brand > li > a, {
+                    color: #fff;
+                    background-color: #F6BB43;
+                    height: 60px;
+                }
 
                 #butiksorder, #kedjans_sortiment, #kund_kort, #bilder { background-color: #fff; }
 
-                #product_tab {
+                .selection_dropdown {
                     color: #fff;
                     background-color: #F6BB43;
                     height: 60px;
                     font-size: 1.7em;
+                    border: 0px solid #F6BB43;
+                    border-radius: 10px;
+                }
+
+                #calendar-icon {
+                    width: 60px;
+                    background-color: #F6BB43;
+                    color: #fff;
+                    font-size: 1.7em;
+                    border: 0px solid #F6BB43;
+                    background-color: #F6BB43;
+                    border-radius: 0px 10px 10px 0px;
                 }
 
                 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
@@ -587,6 +640,40 @@
                 }
 
                 .table > tbody > tr > td { border: none; }
+
+                .input-style {
+                    height: 60px;
+                    font-size: 2.0em;
+                    border-radius: 10px !important;
+                }
+
+                .cutable {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    margin: auto;
+                }
+
+                .order_product_name {
+                    max-width: 550px;
+                }
+
+                .sort_product_name {
+                    max-width: 400px;
+                }
+
+                .sort_products {
+                    box-shadow: 1px 2px #d8d8d8;
+                    height: 250px;
+                    padding: 0px;
+                }
+
+                .quantity-button {
+                    color: #fff;
+                    background-color: #9E9E9E;
+                    font-size: 1.3em;
+                    border-radius: 10px !important;
+                }
 
                 #search_text {
                     width: 100%;
@@ -603,6 +690,7 @@
                     font-size: 25px;
                 }
 
+
             </style>
         </xpath>
     </template>
@@ -610,6 +698,8 @@
     <template id="crm_javascript" inherit_id="website.layout">
         <xpath expr="//body" position="inside">
             <script>
+                $("#oe_main_menu_navbar").addClass("hidden-xs");
+
                 $("#search_button").click(function(){
                     $("#search_text").fadeToggle();
                 });
@@ -665,10 +755,13 @@
                         'product_id': product_id,
                     }).done(function(data){
                         if(data == "added"){
-                            $("#ksp_" + product_id).removeClass("p_not_exist");
-                            $("#ksp_" + product_id).addClass("p_exist");
+                            // $("#ksp_" + product_id + "_product").css({"background-color": "#fff"});
                             $("#ksp_" + product_id + "_plus").addClass("hidden");
                             $("#ksp_" + product_id + "_minus").removeClass("hidden");
+                            $("#ksp_" + product_id + "_minus").addClass("col-xs-3");
+                            $("#ksp_" + product_id + "_minus").addClass("col-sm-3");
+                            $("#ksp_" + product_id + "_minus").addClass("col-md-3");
+                            $("#ksp_" + product_id + "_minus").addClass("col-lg-3");
                         }
                     });
                 }
@@ -680,10 +773,13 @@
                         'product_id': product_id,
                     }).done(function(data){
                         if(data == "removed"){
-                            $("#ksp_" + product_id).removeClass("p_exist");
-                            $("#ksp_" + product_id).addClass("p_not_exist");
+                            // $("#ksp_" + product_id + "_product").css({"background-color": "#f4f4f4"});
                             $("#ksp_" + product_id + "_minus").addClass("hidden");
                             $("#ksp_" + product_id + "_plus").removeClass("hidden");
+                            $("#ksp_" + product_id + "_plus").addClass("col-xs-3");
+                            $("#ksp_" + product_id + "_plus").addClass("col-sm-3");
+                            $("#ksp_" + product_id + "_plus").addClass("col-md-3");
+                            $("#ksp_" + product_id + "_plus").addClass("col-lg-3");
                         }
                     });
                 }
@@ -795,7 +891,18 @@
                     });
                 }
 
-                /* uploade photo
+                /* submit file automatically */
+                /* option 1 */
+                $("#upload_file").live("change", function(){
+                    $("#photo_form").submit();
+                });
+
+                /* option 2 */
+                function upload_photo(){
+                    $("#photo_form").submit();
+                }
+
+                /* upload photo
                 function upload_photo(res_partner){
                 window.alert(document.getElementById("upload_file").files[0]).value;
                     openerp.jsonRpc("/crm/upload/photo", 'call', {

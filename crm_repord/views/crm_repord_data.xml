@@ -107,6 +107,25 @@
             ]]></field>
         </record>
 
+        <!--  product image -->
+        <record id="product_image" model="image.recipe">
+            <field name="name">product_image</field>
+            <field name="recipe">image.transform(resize=max_width_height+'x>')
+image.crop(width=int(cropped_size), height=int(cropped_size), gravity='center')
+            </field>
+        </record>
+
+        <record id="product_image_param_one" model="image.recipe.param">
+            <field name="name">max_width_height</field>
+            <field name="value">700</field>
+            <field name="recipe_id" ref="product_image"/>
+        </record>
+
+        <record id="product_image_param_two" model="image.recipe.param">
+            <field name="name">cropped_size</field>
+            <field name="value">350</field>
+            <field name="recipe_id" ref="product_image"/>
+        </record>
 
     </data>
 </openerp>
