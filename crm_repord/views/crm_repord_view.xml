@@ -457,7 +457,7 @@
             <div class="col-md-12 col-xs-12" style="padding: 0px;">
                 <div class="col-md-2 col-xs-2 text-left">
                     <a href="/crm/mystores">
-                        <span class="pagination input-group-btn" style="margin: 8px 0px;">
+                        <span id="my_stores" class="pagination input-group-btn" style="margin: 8px 0px;">
                             <button class="btn btn-default" style="background-color: #535353; border-color: #535353; color: #a4a4a4; text-decoration: underline;"><strong>Mina butiker</strong></button>
                         </span>
                     </a>
@@ -704,6 +704,7 @@
 
                 $("#search_button").click(function(){
                     $("#search_text").fadeToggle();
+                    $("#my_stores").fadeToggle();
                 });
 
                 function product_tab()
