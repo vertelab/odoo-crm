@@ -318,7 +318,7 @@
                                                     <li t-if="partner.ref">Referens Nr: <t t-esc="partner.ref"/></li>
                                                     <li t-if="partner.street">Adress: <t t-esc="partner.street"/></li>
                                                     <li t-if="partner.zip or partner.city"><t t-if="partner.zip"><t t-esc="partner.zip"/></t>  <t t-if="partner.city"><t t-esc="partner.city"/></t></li>
-                                                    <li t-if="partner.size">Omsättning: <t t-esc="partner.store_class"/></li>
+                                                    <li t-if="partner.size">Omsättning: <t t-esc="partner.size"/></li>
                                                     <li t-if="partner.store_class">Butikklass: <t t-esc="partner.store_class"/></li>
                                                 </ul>
                                                 <t t-if="partner.child_ids">
