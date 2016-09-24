@@ -251,6 +251,14 @@ class MobileSaleView(http.Controller):
         else:
             return request.website.render("crm_repord.search_stores", {})
 
+    @http.route(['/crm/<model("res.partner"):partner>/store_info_update'], type='http', auth="public", website=True)
+    def store_info_update(self, partner_id, **post):
+        if request.httprequest.method == 'POST':
+            partner_id.sudo().write({
+                'size': post.get('size'),
+            })
+        return request.website.render("crm_repord.store_info_update", {'partner': partner_id})
+
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"

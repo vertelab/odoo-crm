@@ -77,17 +77,25 @@
                         <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')"/>
                         <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
                         <!-- navigator -->
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <ul class="nav nav-tabs nav-justified nav-brand mt16 mb16 text-center" style="padding: 0px 15px 0px 15px; margin: auto;">
-                                    <t t-foreach="product_categories" t-as="brand_categs">
-                                        <li t-att-class="'active' if brand_categs == product_categories[0] else ''">
-                                            <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
-                                        </li>
-                                    </t>
-                                </ul>
-                            </div>
-                        </div>
+                        <ul class="nav nav-tabs nav-brand mt16 mb16 text-center" style="padding: 0px 15px 0px 15px; margin: auto;">
+                            <t t-foreach="product_categories" t-as="brand_categs">
+                                <t t-if="brand_categs == product_categories[0]">
+                                    <li class="active">
+                                        <a data-toggle="tab" class="pull-left" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
+                                    </li>
+                                </t>
+                                <t t-if="brand_categs != product_categories[0] and brand_categs != product_categories[-1]">
+                                    <li>
+                                        <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
+                                    </li>
+                                </t>
+                                <t t-if="brand_categs == product_categories[-1]">
+                                    <li>
+                                        <a data-toggle="tab" class="pull-right" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
+                                    </li>
+                                </t>
+                            </t>
+                        </ul>
                         <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; padding: 0px 15px;">
                             <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
@@ -258,11 +266,12 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12 checkbox mb16 text-center">
-                                        <label class="" for="send_mail"><input name="send_mail" id="send_mail" value="send" type="checkbox"/>Kopia till epost</label>
+                                        <label for="send_mail"><input name="send_mail" id="send_mail" value="send" type="checkbox"/>Kopia till epost</label>
                                     </div>
                                     <div class="col-md-12 mb32">
                                         <button id="confirm" name="confirm" style="margin: auto; display: block; background-color: #9e9e9e; color: #fff; padding: 20px 40px; font-size: 2.3em; " class="btn btn-lg" t-att-onclick="'order_confirm(&quot;%s&quot;)' %order.id">Skicka order</button>
                                     </div>
+                                    <h4 class="text-center" id="confirm_message"/>
                                 </div>
 
                                 <!-- Kedjans sortiment -->
@@ -303,18 +312,21 @@
                                             <div class="col-xs-12" style="background-color: rgba(255, 148, 0, 0.2); padding: 16px 0px;">
                                                 <ul style="list-style-type: none;">
                                                     <li t-if="partner.gs1_gln">GLN Nr: <t t-esc="partner.gs1_gln"/></li>
-                                                    <li t-if="partner.phone">Telephone: <t t-esc="partner.phone"/></li>
-                                                    <li t-if="partner.email">Email: <t t-esc="partner.email"/></li>
+                                                    <li t-if="partner.phone">Telephone: <t t-esc="partner.phone" t-att-href="'tel:%s' %partner.phone"/></li>
+                                                    <li t-if="partner.email">Email: <t t-esc="partner.email" t-att-href="'mailto:%s' %partner.email"/></li>
                                                     <li t-if="partner.ref">Reference Nr: <t t-esc="partner.ref"/></li>
                                                     <li t-if="partner.street">Address: <t t-esc="partner.street"/></li>
                                                     <li t-if="partner.zip or partner.city"><t t-if="partner.zip"><t t-esc="partner.zip"/></t>  <t t-if="partner.city"><t t-esc="partner.city"/></t></li>
+                                                    <li t-if="partner.store_class">Butikklass: <t t-esc="partner.store_class"/></li>
+                                                    <li t-if="partner.size">Omsättning: <t t-esc="partner.store_class"/></li>
                                                 </ul>
                                                 <t t-if="partner.child_ids">
                                                     <t t-foreach="partner.child_ids" t-as="c">
                                                         <p t-if="c.name"><i class="fa fa-user"/> <t t-esc="c.name"/><t t-if="c.function">, <t t-esc="c.function"/></t></p>
                                                         <ul style="list-style-type: none;">
-                                                            <li t-if="c.phone"><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.phone"/></a></li>
-                                                            <li t-if="c.mobile"><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.mobile"/></a></li>
+                                                            <li><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.phone"/></a></li>
+                                                            <li><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.mobile"/></a></li>
+                                                            <li><i class="fa fa-email"/> <a t-att-href="'mailto:%s' %c.phone"><t t-esc="c.email"/></a></li>
                                                         </ul>
                                                     </t>
                                                 </t>
@@ -360,8 +372,11 @@
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
                                             <div class="mt32 mb32">
                                                 <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
+                                                <h4 class="text-center" id="p_fa_message"/>
                                                 <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-default mt16 mb16" style="margin: auto; display: block;">Paolos Frys</button>
+                                                <h4 class="text-center" id="p_fr_message"/>
                                                 <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary mt16 mb16" style="margin: auto; display: block;">Leröy Färsk</button>
+                                                <h4 class="text-center" id="l_fa_message"/>
                                             </div>
                                         </div>
                                         <!-- buttons for mark meeting done -->
@@ -373,6 +388,12 @@
                                                 </div>
                                             </t>
                                         </div>
+                                        <!-- update store info -->
+<!--
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                                            <a t-att-href="'/crm/%s/store_info_update' %partner.id"><button t-att-id="'%s_store_info_update' %partner.id" t-att-onclick="'store_info_update(&quot;%s&quot;)' %partner.id" class="btn btn-default" style="margin: auto; display: block;">Uppdatera butiksinfo</button></a>
+                                        </div>
+-->
                                     </div>
                                 </section>
 
@@ -483,6 +504,20 @@
         </div>
     </template>
 
+    <template id="store_info_update" name="Update Store Info" page="True">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container">
+                    <form class="mt32" method="post">
+                        <input name="name"><t t-esc="partner.name"/></input>
+                        <input name="size"><t t-esc="partner.size"/></input>
+                        <div><input type="submit" class="btn btn-success" value="Spara"/></div>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
     <template id="crm_css" inherit_id="website.layout">
         <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
@@ -543,26 +578,23 @@
                     height: 60px;
                 }
 
-                .nav-tabs.nav-brand > li.active, .nav-tabs.nav-justified > li:focus {
-                    border: 0px solid #F6BB43;
-                    background: #F6BB43;
-                }
-
                 ul.nav-brand > li > a {
                     color: #A0A0A0;
                     background-color: #E6E9EE;
                     height: 60px;
+                    border-radius: 10px;
+                }
+
+                .nav-tabs.nav-brand > li.active > a, .nav-tabs.nav-brand > li:active > a, .nav-tabs.nav-brand > li:focus > a {
+                    border: 0px solid #F6BB43;
+                    background: #F6BB43;
+                    color: #fff;
                 }
 
                 .nav-brand > li > a > span {
                     border-width: 0px;
                     height: 60px;
                     font-size: 1.7em;
-                }
-
-                .nav-tabs.nav-brand > li.active > a, .nav-tabs.nav-brand > li.active > a:hover, .nav-tabs.nav-brand > li.active > a:focus {
-                    background: none;
-                    color: #fff;
                 }
 
                 .nav-categ > li, .nav-brand > li {
@@ -828,18 +860,24 @@
 
                 /* confirm rep order */
                 function order_confirm(order){
-                    send_mail = $("#send_mail").is(":checked");
-                    openerp.jsonRpc("/crm/repord/confirm", 'call', {
-                        'order': order,
-                        'send_mail': send_mail
-                    }).done(function(data){
-                        if(data == "no_email"){
-                            window.alert("Den butiken har ingen epost!");
-                        }
-                        else if(data == "repord_confirmed"){
-                            $("#confirm").addClass("hidden");
-                        }
-                    });
+                    var confirm_validate = "";
+                    if (confirm("Vill du skicka denna repord?") == true) {
+                        send_mail = $("#send_mail").is(":checked");
+                        openerp.jsonRpc("/crm/repord/confirm", 'call', {
+                            'order': order,
+                            'send_mail': send_mail
+                        }).done(function(data){
+                            if(data == "no_email"){
+                                window.alert("Den butiken har ingen epost!");
+                            }
+                            else if(data == "repord_confirmed"){
+                                $("#send_mail").addClass("hidden");
+                                $("#confirm").addClass("hidden");
+                            }
+                        });
+                        confirm_validate = "Reporden har skickat!";
+                    }
+                    document.getElementById("confirm_message").innerHTML = confirm_validate;
                 }
 
                 /* change todo list to done */
@@ -860,26 +898,53 @@
 
                 /* presentation of Paolos färsk */
                 function paolos_farsk(partner_id, categ){
-                    openerp.jsonRpc("/crm/presentation/done", 'call', {
-                        'partner_id': partner_id,
-                        'categ': categ,
-                    });
+                    var p_fa = "";
+                    if (confirm("Vill du registrera denna presentation?") == true) {
+                        openerp.jsonRpc("/crm/presentation/done", 'call', {
+                            'partner_id': partner_id,
+                            'categ': categ,
+                        }).done(function(data){
+                            if(data == "presentation_done"){
+                                $("#" + partner_id + "_p_fa").addClass("hidden");
+                            }
+                        });
+                        p_fa = "Du har registrerat presentation för Paolos Färsk!";
+                    }
+                    document.getElementById("p_fa_message").innerHTML = p_fa;
                 }
 
                 /* presentation of Paolos frys */
                 function paolos_frys(partner_id, categ){
-                    openerp.jsonRpc("/crm/presentation/done", 'call', {
-                        'partner_id': partner_id,
-                        'categ': categ,
-                    });
+                    var p_fr = "";
+                    if (confirm("Vill du registrera denna presentation?") == true) {
+                        openerp.jsonRpc("/crm/presentation/done", 'call', {
+                            'partner_id': partner_id,
+                            'categ': categ,
+                        }).done(function(data){
+                            if(data == "presentation_done"){
+                                $("#" + partner_id + "_p_fr").addClass("hidden");
+                            }
+                        });
+                        p_fr = "Du har registrerat presentation för Paolos Frys!";
+                    }
+                    document.getElementById("p_fr_message").innerHTML = p_fr;
                 }
 
                 /* presentation of Leröy färsk */
                 function leroy_farsk(partner_id, categ){
-                    openerp.jsonRpc("/crm/presentation/done", 'call', {
-                        'partner_id': partner_id,
-                        'categ': categ,
-                    });
+                    var l_fa = "";
+                    if (confirm("Vill du registrera denna presentation?") == true) {
+                        openerp.jsonRpc("/crm/presentation/done", 'call', {
+                            'partner_id': partner_id,
+                            'categ': categ,
+                        }).done(function(data){
+                            if(data == "presentation_done"){
+                                $("#" + partner_id + "_l_fa").addClass("hidden");
+                            }
+                        });
+                        l_fa = "Du har registrerat presentation för Lerøy Färsk!";
+                    }
+                    document.getElementById("l_fa_message").innerHTML = l_fa;
                 }
 
                 /* change status of meeting */
@@ -903,6 +968,13 @@
                 /* option 2 */
                 function upload_photo(){
                     $("#photo_form").submit();
+                }
+
+                /* store info update */
+                function store_info_update(res_partner){
+                    openerp.jsonRpc("/crm/" + res_partner + "/store_info_update", 'call', {
+                        'res_partner': res_partner,
+                    });
                 }
 
                 /* upload photo
