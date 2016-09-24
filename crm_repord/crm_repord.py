@@ -252,12 +252,23 @@ class MobileSaleView(http.Controller):
             return request.website.render("crm_repord.search_stores", {})
 
     @http.route(['/crm/<model("res.partner"):partner>/store_info_update'], type='http', auth="public", website=True)
-    def store_info_update(self, partner_id, **post):
+    def store_info_update(self, partner=None, **post):
         if request.httprequest.method == 'POST':
-            partner_id.sudo().write({
-                'size': post.get('size'),
+            partner.write({
+                'name': post['name'],
+                'gs1_gln': post['gs1_gln'],
+                'phone': post['phone'],
+                'mobile': post['mobile'],
+                'email': post['email'],
+                'ref': post['ref'],
+                'street': post['street'],
+                'zip': post['zip'],
+                'city': post['city'],
+                #~ 'store_class': partner.store_class[post['store_class']],
+                'size': post['size'],
             })
-        return request.website.render("crm_repord.store_info_update", {'partner': partner_id})
+            return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
+        return request.website.render("crm_repord.store_info_update", {'partner': partner})
 
 class rep_order(models.Model):
     _name = "rep.order"

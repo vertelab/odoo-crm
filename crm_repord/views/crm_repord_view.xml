@@ -112,7 +112,7 @@
                                 </li>
                             </ul>
                             <div class="tab-content">
-                                <!-- Butiksorder -->
+                                <!-- Order -->
                                 <div id="butiksorder" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container">
                                         <!-- content -->
@@ -274,7 +274,7 @@
                                     <h4 class="text-center" id="confirm_message"/>
                                 </div>
 
-                                <!-- Kedjans sortiment -->
+                                <!-- Chain sortiment -->
                                 <div id="kedjans_sortiment" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container mt8 mb8" style="padding: 0px;">
                                         <!-- <h2 class="text-center mb32" t-esc="partner.listing_id.name"/> -->
@@ -304,7 +304,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Kundkort -->
+                                <!-- customer card -->
                                 <section id="kund_kort" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="row">
                                         <!-- partner information -->
@@ -312,13 +312,14 @@
                                             <div class="col-xs-12" style="background-color: rgba(255, 148, 0, 0.2); padding: 16px 0px;">
                                                 <ul style="list-style-type: none;">
                                                     <li t-if="partner.gs1_gln">GLN Nr: <t t-esc="partner.gs1_gln"/></li>
-                                                    <li t-if="partner.phone">Telephone: <t t-esc="partner.phone" t-att-href="'tel:%s' %partner.phone"/></li>
-                                                    <li t-if="partner.email">Email: <t t-esc="partner.email" t-att-href="'mailto:%s' %partner.email"/></li>
-                                                    <li t-if="partner.ref">Reference Nr: <t t-esc="partner.ref"/></li>
-                                                    <li t-if="partner.street">Address: <t t-esc="partner.street"/></li>
+                                                    <li t-if="partner.phone">Telefon: <a t-att-href="'tel:%s' %partner.phone"><t t-esc="partner.phone"/></a></li>
+                                                    <li t-if="partner.mobile">Mobil: <a t-att-href="'tel:%s' %partner.mobile"><t t-esc="partner.mobile"/></a></li>
+                                                    <li t-if="partner.email">Epost: <a t-att-href="'mailto:%s' %partner.email"><t t-esc="partner.email"/></a></li>
+                                                    <li t-if="partner.ref">Referens Nr: <t t-esc="partner.ref"/></li>
+                                                    <li t-if="partner.street">Adress: <t t-esc="partner.street"/></li>
                                                     <li t-if="partner.zip or partner.city"><t t-if="partner.zip"><t t-esc="partner.zip"/></t>  <t t-if="partner.city"><t t-esc="partner.city"/></t></li>
-                                                    <li t-if="partner.store_class">Butikklass: <t t-esc="partner.store_class"/></li>
                                                     <li t-if="partner.size">Omsättning: <t t-esc="partner.store_class"/></li>
+                                                    <li t-if="partner.store_class">Butikklass: <t t-esc="partner.store_class"/></li>
                                                 </ul>
                                                 <t t-if="partner.child_ids">
                                                     <t t-foreach="partner.child_ids" t-as="c">
@@ -389,15 +390,13 @@
                                             </t>
                                         </div>
                                         <!-- update store info -->
-<!--
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                                            <a t-att-href="'/crm/%s/store_info_update' %partner.id"><button t-att-id="'%s_store_info_update' %partner.id" t-att-onclick="'store_info_update(&quot;%s&quot;)' %partner.id" class="btn btn-default" style="margin: auto; display: block;">Uppdatera butiksinfo</button></a>
+                                            <a t-att-href="'/crm/%s/store_info_update' %partner.id" t-att-onclick="'store_info_update(&quot;%s&quot;)' %partner.id" class="btn btn-default" role="button" style="margin: auto; display: block;">Uppdatera butiksinfo</a>
                                         </div>
--->
                                     </div>
                                 </section>
 
-                                <!-- Bilder -->
+                                <!-- images -->
                                 <div id="bilder" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                                     <div class="container">
                                         <div class="row">
@@ -508,10 +507,65 @@
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="container">
-                    <form class="mt32" method="post">
-                        <input name="name"><t t-esc="partner.name"/></input>
-                        <input name="size"><t t-esc="partner.size"/></input>
-                        <div><input type="submit" class="btn btn-success" value="Spara"/></div>
+                    <legend class="text-center">Uppdaterar butik information</legend>
+                    <form class="mt32 mb32" method="post">
+                        <div class="form-group">
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="name">Namn</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="name" t-att-value="partner.name" class="form-control input-xs mb16" type="text" placeholder="Namn"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="gs1_gln">GLN nummer</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="gs1_gln" t-att-value="partner.gs1_gln" class="form-control input-xs mb16" type="number" placeholder="7301234567890"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="phone">Telefon</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="phone" t-att-value="partner.phone" class="form-control input-xs mb16" type="number" placeholder="0131234567"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="mobile">Mobil</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="mobile" t-att-value="partner.mobile" class="form-control input-xs mb16" type="number" placeholder="0701234567"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="email">Epost</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="email" t-att-value="partner.email" class="form-control input-xs mb16" type="email" placeholder="kalle.pettersson@exempel.se"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="ref">Reference Nr</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="ref" t-att-value="partner.ref" class="form-control input-xs mb16" type="number" placeholder="Referens nummer"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="street">Gata</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="street" t-att-value="partner.street" class="form-control input-xs mb16" type="text" placeholder="Kungsgatan 123"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="zip">PostNr</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="zip" t-att-value="partner.zip" class="form-control input-xs mb16" type="number" placeholder="12345"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="city">Ort</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="city" t-att-value="partner.city" class="form-control input-xs mb16" type="text" placeholder="Stockholm"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="size">Omsättning</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <input name="size" t-att-value="partner.size" class="form-control input-xs mb16" type="number" placeholder="1000000"/>
+                            </div>
+                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="store_class">Butikklass</label>
+                            <div class="col-md-8 col-sm-8 col-xs-8">
+                                <select class="selectpicker">
+                                    <option><t t-esc="partner.store_class if partner.store_class else 'Ej angett'"/> (nuvarande)</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="pull-left"><a t-att-href="'/crm/%s/repord' %partner.id" class="btn btn-default" role="button">Avbryt</a></div>
+                            <div class="pull-right"><input type="submit" class="btn btn-warning" value="Uppdatera"/></div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -724,6 +778,7 @@
                     font-size: 25px;
                 }
 
+                .control-label { padding-top: 7px; }
 
             </style>
         </xpath>
@@ -971,9 +1026,9 @@
                 }
 
                 /* store info update */
-                function store_info_update(res_partner){
-                    openerp.jsonRpc("/crm/" + res_partner + "/store_info_update", 'call', {
-                        'res_partner': res_partner,
+                function store_info_update(partner){
+                    openerp.jsonRpc("/crm/" + partner_id + "/store_info_update", 'call', {
+                        'partner': partner,
                     });
                 }
 
