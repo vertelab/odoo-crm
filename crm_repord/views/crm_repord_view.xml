@@ -312,8 +312,8 @@
                                             <div class="col-xs-12" style="background-color: rgba(255, 148, 0, 0.2); padding: 16px 0px;">
                                                 <ul style="list-style-type: none;">
                                                     <li t-if="partner.gs1_gln">GLN Nr: <t t-esc="partner.gs1_gln"/></li>
-                                                    <li t-if="partner.phone">Telefon: <a t-att-href="'tel:%s' %partner.phone"><t t-esc="partner.phone"/></a></li>
-                                                    <li t-if="partner.mobile">Mobil: <a t-att-href="'tel:%s' %partner.mobile"><t t-esc="partner.mobile"/></a></li>
+                                                    <li t-if="partner.phone">Telefon: <a t-att-href="'tel:%s' %('+46{}'.format(str(partner.phone)[1:] if str(partner.phone).startswith('0') else partner.phone))"><t t-esc="partner.phone"/></a></li>
+                                                    <li t-if="partner.mobile">Mobil: <a t-att-href="'tel:%s' %('+46{}'.format(str(partner.mobile)[1:] if str(partner.mobile).startswith('0') else partner.mobile))"><t t-esc="partner.mobile"/></a></li>
                                                     <li t-if="partner.email">Epost: <a t-att-href="'mailto:%s' %partner.email"><t t-esc="partner.email"/></a></li>
                                                     <li t-if="partner.ref">Referens Nr: <t t-esc="partner.ref"/></li>
                                                     <li t-if="partner.street">Adress: <t t-esc="partner.street"/></li>
@@ -325,9 +325,9 @@
                                                     <t t-foreach="partner.child_ids" t-as="c">
                                                         <p t-if="c.name"><i class="fa fa-user"/> <t t-esc="c.name"/><t t-if="c.function">, <t t-esc="c.function"/></t></p>
                                                         <ul style="list-style-type: none;">
-                                                            <li><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.phone"/></a></li>
-                                                            <li><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %c.phone"><t t-esc="c.mobile"/></a></li>
-                                                            <li><i class="fa fa-email"/> <a t-att-href="'mailto:%s' %c.phone"><t t-esc="c.email"/></a></li>
+                                                            <li><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %('+46{}'.format(str(c.phone)[1:] if str(c.phone).startswith('0') else c.phone))"><t t-esc="c.phone"/></a></li>
+                                                            <li><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %('+46{}'.format(str(c.mobile)[1:] if str(c.mobile).startswith('0') else c.mobile))"><t t-esc="c.mobile"/></a></li>
+                                                            <li><i class="fa fa-email"/> <a t-att-href="'mailto:%s' %c.email"><t t-esc="c.email"/></a></li>
                                                         </ul>
                                                     </t>
                                                 </t>
