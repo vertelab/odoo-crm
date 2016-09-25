@@ -409,7 +409,9 @@
                                                 <t t-set="attachments" t-value="request.env['ir.attachment'].search([('partner_id', '=', partner.id)])"/>
                                                 <t t-foreach="attachments" t-as="att">
                                                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding: 8px;">
-                                                        <img itemprop="image" t-att-src="website.imagemagick_url(att, 'datas', 'crm_repord.product_image')" style="margin: auto; display: block; width: 100%;"/>
+                                                        <img itemprop="image" t-att-src="website.imagemagick_url(att, 'datas', 'crm_repord.product_image')" class="product_image">
+                                                            <i class="fa fa-trash-o product_image_delete" t-att-onclick="'delete_image(&quot;%s&quot;)' %att.id"/>
+                                                        </img>
                                                     </div>
                                                 </t>
                                             </div>
@@ -778,6 +780,21 @@
                     font-size: 25px;
                 }
 
+                .product_image {
+                    margin: auto;
+                    display: block;
+                    width: 100%;
+                    position: relative;
+                }
+
+                .product_image_delete {
+                    right: 10px;
+                    top: 10px;
+                    font-size: 2.0em;
+                    color: #f00;
+                    position: absolute;
+                }
+
                 .control-label { padding-top: 7px; }
 
             </style>
@@ -1025,26 +1042,25 @@
                     $("#photo_form").submit();
                 }
 
+                /* delete image */
+                function delete_image(attachment_id){
+                    if (confirm("Vill du radera den bilden?") == true) {
+                        openerp.jsonRpc("/crm/delete/image", 'call', {
+                            'attachment_id': attachment_id,
+                        }).done(function(data){
+                            if(data == "image_deleted"){
+                                $("#image_div").load(document.URL +  " #image_div");
+                            }
+                        });
+                    }
+                }
+
                 /* store info update */
                 function store_info_update(partner){
                     openerp.jsonRpc("/crm/" + partner_id + "/store_info_update", 'call', {
                         'partner': partner,
                     });
                 }
-
-                /* upload photo
-                function upload_photo(res_partner){
-                window.alert(document.getElementById("upload_file").files[0]).value;
-                    openerp.jsonRpc("/crm/upload/photo", 'call', {
-                        'res_partner': res_partner,
-                        'ufile': document.getElementById("upload_file").files[0],
-                    }).done(function(data){
-                        if(data == "complete"){
-                            window.alert("Upload completed");
-                        }
-                    });
-                }
-                */
 
             </script>
         </xpath>

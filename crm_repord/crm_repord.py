@@ -65,8 +65,8 @@ class res_partner_listing(models.Model):
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
     def repord(self, partner=None, **post):
-        products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).product_ids
-        parent_products = request.env['res.partner'].sudo().search([('id', '=', partner.id)]).listing_id.product_ids
+        products = request.env['res.partner'].browse(partner.id).product_ids
+        parent_products = request.env['res.partner'].browse(partner.id).listing_id.product_ids
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft')])
         if not rep_order:
             rep_order = request.env['rep.order'].create({
@@ -90,7 +90,13 @@ class MobileSaleView(http.Controller):
                     'datas': base64.encodestring(post['ufile'].read()),
                     'datas_fname': post['ufile'].filename,
                 })
-        return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
+        return werkzeug.utils.redirect('/crm/%s/repord' %partner.id, 302)
+
+    @http.route(['/crm/delete/image'], type='json', auth="public", website=True)
+    def image_delete(self, attachment_id=None, **kw):
+        image = request.env['ir.attachment'].browse(int(attachment_id))
+        image.unlink()
+        return 'image_deleted'
 
     @http.route(['/crm/send/repord'], type='json', auth="public", methods=['POST'], website=True)
     def send_rep_order(self, res_partner, product_id, product_uom_qty, discount, **kw):
