@@ -325,9 +325,9 @@
                                                     <t t-foreach="partner.child_ids" t-as="c">
                                                         <p t-if="c.name"><i class="fa fa-user"/> <t t-esc="c.name"/><t t-if="c.function">, <t t-esc="c.function"/></t></p>
                                                         <ul style="list-style-type: none;">
-                                                            <li><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %('+46{}'.format(str(c.phone)[1:] if str(c.phone).startswith('0') else c.phone))"><t t-esc="c.phone"/></a></li>
-                                                            <li><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %('+46{}'.format(str(c.mobile)[1:] if str(c.mobile).startswith('0') else c.mobile))"><t t-esc="c.mobile"/></a></li>
-                                                            <li><i class="fa fa-email"/> <a t-att-href="'mailto:%s' %c.email"><t t-esc="c.email"/></a></li>
+                                                            <li t-if="c.phone"><i class="fa fa-phone"/> <a t-att-href="'tel:%s' %('+46{}'.format(str(c.phone)[1:] if str(c.phone).startswith('0') else c.phone))"><t t-esc="c.phone"/></a></li>
+                                                            <li t-if="c.mobile"><i class="fa fa-mobile"/> <a t-att-href="'tel:%s' %('+46{}'.format(str(c.mobile)[1:] if str(c.mobile).startswith('0') else c.mobile))"><t t-esc="c.mobile"/></a></li>
+                                                            <li t-if="c.email"><i class="fa fa-email"/> <a t-att-href="'mailto:%s' %c.email"><t t-esc="c.email"/></a></li>
                                                         </ul>
                                                     </t>
                                                 </t>
