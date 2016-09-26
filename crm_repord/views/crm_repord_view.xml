@@ -420,7 +420,7 @@
     </template>
 
     <template id="bilder" inherit_id="mobile_order_view">
-        <xpath expr="//div[@id='bilder']">
+        <xpath expr="//div[@id='bilder']" position="replace">
             <div id="bilder" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                 <div class="container">
                     <div class="row">
@@ -1097,3 +1097,4 @@
 
     </data>
 </openerp>
+
