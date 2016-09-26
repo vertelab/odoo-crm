@@ -77,25 +77,17 @@
                         <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')"/>
                         <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
                         <!-- navigator -->
-                        <ul class="nav nav-tabs nav-brand mt16 mb16 text-center" style="padding: 0px 15px 0px 15px; margin: auto;">
-                            <t t-foreach="product_categories" t-as="brand_categs">
-                                <t t-if="brand_categs == product_categories[0]">
-                                    <li class="active">
-                                        <a data-toggle="tab" class="pull-left" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
-                                    </li>
-                                </t>
-                                <t t-if="brand_categs != product_categories[0] and brand_categs != product_categories[-1]">
-                                    <li>
-                                        <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
-                                    </li>
-                                </t>
-                                <t t-if="brand_categs == product_categories[-1]">
-                                    <li>
-                                        <a data-toggle="tab" class="pull-right" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
-                                    </li>
-                                </t>
-                            </t>
-                        </ul>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <ul class="nav nav-tabs nav-justified nav-brand mt16 mb16 text-center" style="padding: 0px 15px 0px 15px; margin: auto;">
+                                    <t t-foreach="product_categories" t-as="brand_categs">
+                                        <li t-att-class="'active' if brand_categs == product_categories[0] else ''">
+                                            <a data-toggle="tab" style="border-width: 0px;" t-att-href="'&#35;categs_%s' %brand_categs.id"><span style="vertical-align: middle;" t-field="brand_categs.name"/></a>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
                         <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; padding: 0px 15px;">
                             <ul class="nav nav-tabs nav-justified nav-categ">
                                 <li class="active">
@@ -390,9 +382,11 @@
                                             </t>
                                         </div>
                                         <!-- update store info -->
+<!--
                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
                                             <a t-att-href="'/crm/%s/store_info_update' %partner.id" t-att-onclick="'store_info_update(&quot;%s&quot;)' %partner.id" class="btn btn-default" role="button" style="margin: auto; display: block;">Uppdatera butiksinfo</a>
                                         </div>
+-->
                                     </div>
                                 </section>
 
@@ -640,6 +634,10 @@
                     height: 60px;
                     border-radius: 10px;
                 }
+
+                ul.nav-brand > li:first-child > a { border-radius: 10px 0px 0px 10px; }
+
+                ul.nav-brand > li:last-child > a { border-radius: 0px 10px 10px 0px; }
 
                 .nav-tabs.nav-brand > li.active > a, .nav-tabs.nav-brand > li:active > a, .nav-tabs.nav-brand > li:focus > a {
                     border: 0px solid #F6BB43;
@@ -1063,6 +1061,12 @@
                 }
 
             </script>
+        </xpath>
+    </template>
+
+    <template id="crm_user_menu" inherit_id="website.layout">
+        <xpath expr="//ul[@class='dropdown-menu js_usermenu']/*[1]" position="after">
+            <li><a href="/crm/mystores" role="menuitem">Mobilappen</a></li>
         </xpath>
     </template>
 
