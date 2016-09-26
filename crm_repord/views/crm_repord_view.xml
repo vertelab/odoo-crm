@@ -312,6 +312,7 @@
                                                     <li t-if="partner.zip or partner.city"><t t-if="partner.zip"><t t-esc="partner.zip"/></t>  <t t-if="partner.city"><t t-esc="partner.city"/></t></li>
                                                     <li t-if="partner.size">Omsättning: <t t-esc="partner.size"/></li>
                                                     <li t-if="partner.store_class">Butikklass: <t t-esc="partner.store_class"/></li>
+                                                    <li t-if="partner.rangebox">Sortimentsbox: <t t-esc="partner.rangebox"/></li>
                                                 </ul>
                                                 <t t-if="partner.child_ids">
                                                     <t t-foreach="partner.child_ids" t-as="c">
@@ -549,7 +550,7 @@
                             <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="store_class">Butikklass</label>
                             <div class="col-md-8 col-sm-8 col-xs-8">
                                 <select name="store_class" class="selectpicker">
-                                    <option><t t-esc="partner.store_class if partner.store_class else 'Ej angett'"/> (nuvarande)</option>
+                                    <option t-att-value="partner.store_class if partner.store_class else None"><t t-esc="partner.store_class if partner.store_class else 'Ej angett'"/> (nuvarande)</option>
                                     <option value="A">A</option>
                                     <option value="B">B</option>
                                     <option value="C">C</option>
