@@ -161,6 +161,7 @@ class MobileSaleView(http.Controller):
         note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
         note.write({
             'open': False,
+            'stage_id': request.env.ref('note.note_stage_04').id,
             'date_done': datetime.date.today(),
         })
         return 'note_done'
