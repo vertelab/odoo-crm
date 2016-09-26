@@ -548,7 +548,7 @@
                             </div>
                             <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="store_class">Butikklass</label>
                             <div class="col-md-8 col-sm-8 col-xs-8">
-                                <select class="selectpicker">
+                                <select name="store_class" class="selectpicker">
                                     <option><t t-esc="partner.store_class if partner.store_class else 'Ej angett'"/> (nuvarande)</option>
                                     <option value="A">A</option>
                                     <option value="B">B</option>

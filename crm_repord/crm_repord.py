@@ -270,7 +270,7 @@ class MobileSaleView(http.Controller):
                 'street': post['street'],
                 'zip': post['zip'],
                 'city': post['city'],
-                #~ 'store_class': partner.store_class[post['store_class']],
+                'store_class': post['store_class'],
                 'size': post['size'],
             })
             return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
