@@ -33,9 +33,10 @@
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['account', 'stock','sale'],
+    'depends': ['account', 'stock','sale', 'server_action_permissions'],
     'data': [
         'res_partner_view.xml',
+        'res_partner_data.xml',
         #'wizard/res_partner_phonecall_wizard_view.xml',
     ],
     'application': False,
