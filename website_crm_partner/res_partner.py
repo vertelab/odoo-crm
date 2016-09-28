@@ -27,21 +27,36 @@ from openerp.http import request
 import logging
 _logger = logging.getLogger(__name__)
 
-MODULE_BASE_PATH = '/mobile/sample/'
+MODULE_BASE_PATH = '/mobile/crm/'
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
 
-
 class website_crm_partner(http.Controller):
 
-    @http.route(['/crm/partner/<model("res.partner"):partner>','/crm/partner' ], type='http', auth="user", website=True)
-    def get_partners(self, partner=False, **post):
-        cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        return request.render('website_crm_partner.partner_list', {'partners': request.env['res.partner'].sudo().search([], order='name',limit=25),            'root': MODULE_BASE_PATH,
-            'db': request.db,})
-    
+    @http.route(['/mobile/crm/partner'], type='http', auth="user", website=True)
+    def get_partners(self, **post):
+        partners = request.env['res.partner'].sudo().search([], order='name',limit=25)
+        if request.httprequest.method == 'POST':
+            partners = request.env['res.partner'].search([('name', 'ilike', post['search_words'])])
+        return request.render('website_crm_partner.partner_list', {'partners': partners, 'root': MODULE_BASE_PATH, 'db': request.db,})
+
+    @http.route(['/mobile/crm/partner/<model("res.partner"):partner>'], type='http', auth="user", website=True)
+    def get_partner(self, partner=False, **post):
+        return request.render('website_crm_partner.partner_detail', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db,})
+
+    @http.route(['/mobile/crm/partner/add'], type='http', auth="user", website=True)
+    def add_partner(self, **post):
+        if request.httprequest.method == 'POST':
+            request.env['res.partner'].create({
+                'name': request['name'],
+                'description': request['description'],
+            })
+            return werkzeug.utils.redirect('/mobile/crm/partner', 302)
+        return request.render('website_crm_partner.partner_add', {'root': MODULE_BASE_PATH, 'db': request.db,})
+
+
     #~ @http.route(['/allcategory/<model("product.category"):category>', ], type='http', auth="public", website=True)
     #~ def get_category(self, parent_id=1, **post):
         #~ cr, uid, context, pool = request.cr, request.uid, request.context, request.registry

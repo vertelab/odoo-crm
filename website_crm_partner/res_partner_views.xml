@@ -1,120 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-  <data>
-    <template id="partner_list" name="Partner List">
-      <t t-set="title">Contacts</t>
-      <div>
-        <!-- Top Bar -->
-        <header class="bar bar-nav">
-          <h1 class="title">Search Contacts</h1>
-          <a class="icon icon-close pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
-        </header>
-        <!-- Content Zone -->
-        <div class="content">
-           
-          <!-- Search Form -->
-          <form t-attf-action="#{ root }contacts/" method="post">
-            <input type="search" placeholder="Customer name" name="searchtx" />
-            <button class="btn btn-block btn-outlined" type="submit">
-              <span class="icon icon-search" />
-              Search
-            </button>
-          </form>
-          <!-- List Contacts -->
-          <ul t-if="partners" class="table-view">
-            <li t-foreach="partners" t-as="cust" class="table-view-cell">
-              <a class="navigate-right" t-attf-href="#{ root }contacts/#{ cust.id }" data-transition="slide-in">
-                <h3>
-                  <span t-esc="cust.name" />
-                </h3>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </template>
-    <!-- Change Favicon Template -->
-    <template id="layout" inherit_id="mobile.layout" name="App Favicon">
-      <xpath expr="//link[@rel='icon']" position="replace">
-        <link rel="icon" href="/mobile_sample/static/img/favicon.ico" />
-      </xpath>
-      <xpath expr="//link[@rel='apple-touch-icon-precomposed']" position="replace">
-        <link rel="apple-touch-icon-precomposed" href="/mobile_sample/static/img/favicon.ico" />
-      </xpath>
-    </template>
-    <!-- Loading Module Assets -->
-    <template id="assets_frontend" inherit_id="mobile.assets_frontend" name="mobile assets">
-      <xpath expr="." position="inside">
-        <script type="text/javascript" src="/mobile_sample/static/src/js/mobile_sample.js" />
-      </xpath>
-    </template>
-    <!-- Customer Search Form -->
-    <template id="searchform" name="Partner List">
-      <t t-call="mobile.layout">
-        <t t-set="title">Customers List</t>
-        <div>
-          <!-- Top Bar -->
-          <header class="bar bar-nav">
-            <h1 class="title">Search Customers</h1>
-            <a class="icon icon-close pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
-          </header>
-          <!-- Content Zone -->
-          <div class="content">
-            <!-- Search Form -->
-            <form t-attf-action="#{ root }contacts/" method="post">
-              <input type="search" placeholder="Customer name" name="searchtx" />
-              <button class="btn btn-block btn-outlined" type="submit">
-                <span class="icon icon-search" />
-                Search
-              </button>
-            </form>
-            <!-- List Contacts -->
-            <ul t-if="customers" class="table-view">
-              <li t-foreach="customers" t-as="cust" class="table-view-cell">
-                <a class="navigate-right" t-attf-href="#{ root }contacts/#{ cust.id }" data-transition="slide-in">
-                  <h3>
-                    <span t-esc="cust.name" />
-                  </h3>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </t>
-    </template>
-    <!-- Customer Information-->
-    <template id="customer" name="Customer Information">
-      <t t-call="mobile.layout">
-        <t t-set="title">Customer</t>
-        <div>
-          <!-- Top Bar -->
-          <header class="bar bar-nav">
-            <a class="control-item icon icon-left-nav pull-left" t-attf-href="#{ root }contacts/" />
-            <h1 class="title">Customer Info</h1>
-          </header>
-          <!-- Content Zone -->
-          <div class="content">
-            <!-- Customer Info -->
-            <div class="content-padded">
-              <h3>
-                <span t-esc="customer.name" />
-              </h3>
-              <h6>Phone:</h6>
-              <p>
-                <span t-esc="customer.phone" />
-              </p>
-              <h6>Mobile:</h6>
-              <p>
-                <span t-esc="customer.mobile" />
-              </p>
-              <h6>Email:</h6>
-              <p>
-                <span t-esc="customer.email" />
-              </p>
-            </div>
-          </div>
-        </div>
-      </t>
-    </template>
-  </data>
+    <data>
+        <!-- mobile layout extend -->
+        <template id="layout_extend_partner" name="Main layout Extend">
+            <t t-call="mobile.layout">
+                <header>
+                    <div class="navbar navbar-default navbar-static-top">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar" />
+                                    <span class="icon-bar" />
+                                    <span class="icon-bar" />
+                                </button>
+                                <a class="navbar-brand" href="/" t-field="res_company.name" />
+                            </div>
+                            <div class="collapse navbar-collapse navbar-top-collapse">
+                                <ul class="nav navbar-nav navbar-right" id="top_menu">
+                                    <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                                        <t t-call="website.submenu" />
+                                    </t>
+                                    <li class="divider" t-ignore="true" t-if="website.user_id != user_id" />
+                                    <li class="dropdown" t-ignore="true" t-if="website.user_id != user_id">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <b>
+                                                <span t-esc="user_id.name" />
+                                                <span class="caret" />
+                                            </b>
+                                        </a>
+                                        <ul class="dropdown-menu js_usermenu" role="menu">
+                                            <li>
+                                                <a href="/web" role="menuitem">My Account</a>
+                                            </li>
+                                            <li class="divider" />
+                                            <li>
+                                                <a t-attf-href="/web/session/logout?redirect=/" role="menuitem">Logout</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <t t-raw="0" />
+                <nav class="bar bar-tab">
+                    <a class="tab-item active" href="#">
+                        <span class="icon icon-home" />
+                        <span class="tab-label">Home</span>
+                    </a>
+                    <a class="tab-item" href="#">
+                        <span class="icon icon-person" />
+                        <span class="tab-label">Profile</span>
+                    </a>
+                    <a class="tab-item" href="#">
+                        <span class="icon icon-star-filled" />
+                        <span class="tab-label">Favorites</span>
+                    </a>
+                    <a class="tab-item" href="#">
+                        <span class="icon icon-search" />
+                        <span class="tab-label">Search</span>
+                    </a>
+                    <a class="tab-item" href="#">
+                        <span class="icon icon-gear" />
+                        <span class="tab-label">Settings</span>
+                    </a>
+                </nav>
+            </t>
+        </template>
+        <template id="partner_list" name="Partner List">
+            <t t-call="website_crm_partner.layout_extend_partner">
+                <t t-set="title">Partner List</t>
+                <div>
+                    <!-- Top Bar -->
+                    <header class="bar bar-nav">
+                        <h1 class="title">Search Contacts</h1>
+                        <a class="icon icon-close pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
+                        <a class="icon icon-plus pull-right" t-attf-href="/mobile/crm/partner/add" />
+                    </header>
+                    <!-- Content Zone -->
+                    <div class="content">
+                        <!-- Search Form -->
+                        <form t-attf-action="#{ root }partner/" method="post">
+                            <input type="search" placeholder="Customer name" name="search_words" />
+                            <button class="btn btn-block btn-outlined" type="submit">
+                                <span class="icon icon-search" />
+                                Search
+                            </button>
+                        </form>
+                        <!-- List Contacts -->
+                        <ul t-if="partners" class="table-view">
+                            <li t-foreach="partners" t-as="partner" class="table-view-cell">
+                                <a class="navigate-right" t-attf-href="#{ root }partner/#{ partner.id }" data-transition="slide-in">
+                                    <h3>
+                                        <span t-esc="partner.name" />
+                                    </h3>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <!-- Customer Information-->
+        <template id="partner_detail" name="Partner Detail Information">
+            <t t-call="website_crm_partner.layout_extend_partner">
+                <t t-set="title">Partner Info</t>
+                <div>
+                    <!-- Top Bar -->
+                    <header class="bar bar-nav">
+                        <a class="control-item icon icon-left-nav pull-left" t-attf-href="#{ root }partner/" />
+                        <h1 class="title">Partner Info</h1>
+                    </header>
+                    <!-- Content Zone -->
+                    <div class="content">
+                        <!-- Customer Info -->
+                        <div class="content-padded">
+                            <h3>
+                                <span t-esc="partner.name" />
+                            </h3>
+                            <h6>Phone:</h6>
+                            <p>
+                                <span t-esc="partner.phone" />
+                            </p>
+                            <h6>Mobile:</h6>
+                            <p>
+                                <span t-esc="partner.mobile" />
+                            </p>
+                            <h6>Email:</h6>
+                            <p>
+                                <span t-esc="partner.email" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <!-- Partner add -->
+        <template id="partner_add" name="Partner Add">
+            <t t-call="website_crm_partner.layout_extend_partner">
+                <t t-set="title">Add Partner</t>
+                <div>
+                    <!-- Top Bar -->
+                    <header class="bar bar-nav">
+                        <h1 class="title">Add Partner</h1>
+                        <a class="icon icon-left-nav pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
+                    </header>
+                    <!-- Content Zone -->
+                    <div class="content">
+                        <!-- Add Form -->
+                        <form t-attf-action="#{ root }partner/add/" method="post">
+                            <input type="text" name="name" placeholder="Full name" />
+                            <textarea name="description" rows="5" />
+                            <button class="btn btn-positive btn-block">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <!-- Loading Module Assets -->
+        <template id="assets_frontend" inherit_id="mobile.assets_frontend" name="mobile assets">
+            <xpath expr="." position="inside">
+            </xpath>
+        </template>
+    </data>
 </openerp>
