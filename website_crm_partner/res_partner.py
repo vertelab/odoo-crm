@@ -23,6 +23,7 @@ from openerp import api, models, fields, _
 from openerp.exceptions import except_orm, Warning, RedirectWarning
 from openerp import http
 from openerp.http import request
+import werkzeug
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -35,26 +36,39 @@ class res_partner(models.Model):
 
 class website_crm_partner(http.Controller):
 
-    @http.route(['/mobile/crm/partner'], type='http', auth="user", website=True)
-    def get_partners(self, **post):
-        partners = request.env['res.partner'].sudo().search([], order='name',limit=25)
-        if request.httprequest.method == 'POST':
-            partners = request.env['res.partner'].search([('name', 'ilike', post['search_words'])])
-        return request.render('website_crm_partner.partner_list', {'partners': partners, 'root': MODULE_BASE_PATH, 'db': request.db,})
-
-    @http.route(['/mobile/crm/partner/<model("res.partner"):partner>'], type='http', auth="user", website=True)
+    @http.route(['/mobile/crm/partner/<model("res.partner"):partner>', '/mobile/crm/partner/', '/mobile/crm/partner/add', '/mobile/crm/partner/<model("res.partner"):partner>/edit'], type='http', auth="public", website=True)
     def get_partner(self, partner=False, **post):
-        return request.render('website_crm_partner.partner_detail', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db,})
-
-    @http.route(['/mobile/crm/partner/add'], type='http', auth="user", website=True)
-    def add_partner(self, **post):
+        _logger.warn('create', post.get('name'))
         if request.httprequest.method == 'POST':
-            request.env['res.partner'].create({
-                'name': request['name'],
-                'description': request['description'],
-            })
-            return werkzeug.utils.redirect('/mobile/crm/partner', 302)
-        return request.render('website_crm_partner.partner_add', {'root': MODULE_BASE_PATH, 'db': request.db,})
+            if post.get('search'): #search
+                partners = request.env['res.partner'].search(['&', ('name', 'ilike', post['search_words']), ('type', '=', 'contact')], order='name',limit=25)
+                return request.render('website_crm_partner.partner_list', {'partners': partners, 'root': MODULE_BASE_PATH, 'db': request.db,})
+            else:
+                if partner: #edit
+                    request.env['res.partner'].write({
+                        'name': post.get('name'),
+                        'comment': post.get('comment', ''),
+                    })
+                elif post.get('save'): #create
+                    request.env['res.partner'].create({
+                        'name': post.get('name'),
+                        'type': post.get('type'),
+                        'comment': post.get('comment', ''),
+                    })
+                return werkzeug.utils.redirect('/mobile/crm/partner', 302)
+        else: #read
+            if partner:
+                if request.httprequest.url[-4:] == 'edit':
+                    return request.render('website_crm_partner.partner_edit', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db,})
+                else:
+                    return request.render('website_crm_partner.partner_detail', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db,})
+            else:
+                if request.httprequest.url[-3:] == 'add':
+                    return request.render('website_crm_partner.partner_edit', {'partner': None, 'root': MODULE_BASE_PATH, 'db': request.db,})
+                else:
+                    partners = request.env['res.partner'].search([('type', '=', 'contact')], order='name',limit=25)
+                    return request.render('website_crm_partner.partner_list', {'partners': partners, 'root': MODULE_BASE_PATH, 'db': request.db,})
+
 
 
     #~ @http.route(['/allcategory/<model("product.category"):category>', ], type='http', auth="public", website=True)

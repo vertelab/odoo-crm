@@ -77,14 +77,14 @@
                     <header class="bar bar-nav">
                         <h1 class="title">Search Contacts</h1>
                         <a class="icon icon-close pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
-                        <a class="icon icon-plus pull-right" t-attf-href="/mobile/crm/partner/add" />
+                        <a class="icon icon-plus pull-right" t-attf-href="/mobile/crm/partner" />
                     </header>
                     <!-- Content Zone -->
                     <div class="content">
                         <!-- Search Form -->
                         <form t-attf-action="#{ root }partner/" method="post">
                             <input type="search" placeholder="Customer name" name="search_words" />
-                            <button class="btn btn-block btn-outlined" type="submit">
+                            <button class="btn btn-block btn-outlined" name="search" type="submit">
                                 <span class="icon icon-search" />
                                 Search
                             </button>
@@ -134,26 +134,31 @@
                             </p>
                         </div>
                     </div>
+                    <div class="bar bar-standard">
+                        <a class="icon icon-trash pull-left" />
+                        <a class="icon icon-compose pull-right" />
+                    </div>
                 </div>
             </t>
         </template>
-        <!-- Partner add -->
-        <template id="partner_add" name="Partner Add">
+        <!-- Partner edit -->
+        <template id="partner_edit" name="Partner Edit">
             <t t-call="website_crm_partner.layout_extend_partner">
-                <t t-set="title">Add Partner</t>
+                <t t-set="title">Edit Partner</t>
                 <div>
                     <!-- Top Bar -->
                     <header class="bar bar-nav">
-                        <h1 class="title">Add Partner</h1>
+                        <h1 class="title">Edit Partner</h1>
                         <a class="icon icon-left-nav pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
                     </header>
                     <!-- Content Zone -->
                     <div class="content">
-                        <!-- Add Form -->
-                        <form t-attf-action="#{ root }partner/add/" method="post">
-                            <input type="text" name="name" placeholder="Full name" />
-                            <textarea name="description" rows="5" />
-                            <button class="btn btn-positive btn-block">Save</button>
+                        <!-- Edit Form -->
+                        <form action="/mobile/crm/partner/" method="post">
+                            <input type="text" name="name" t-att-value="partner.name if partner else ''" placeholder="Full name" />
+                            <input type="hidden" name="type" value="contact"/>
+                            <textarea name="comment" rows="5" ><t t-esc="partner.comment if partner else ''"/></textarea>
+                            <button class="btn btn-positive btn-block" name="save" type="submit">Save</button>
                         </form>
                     </div>
                 </div>
@@ -161,8 +166,7 @@
         </template>
         <!-- Loading Module Assets -->
         <template id="assets_frontend" inherit_id="mobile.assets_frontend" name="mobile assets">
-            <xpath expr="." position="inside">
-            </xpath>
+            <xpath expr="." position="inside" />
         </template>
     </data>
 </openerp>
