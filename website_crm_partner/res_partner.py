@@ -28,29 +28,31 @@ import werkzeug
 import logging
 _logger = logging.getLogger(__name__)
 
-MODULE_BASE_PATH = '/mobile/crm/'
+MODULE_BASE_PATH = '/mobile/contact/'
+MODULE_TITLE = _('Contact')
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
 
 class website_crm_partner(http.Controller):
+
     @http.route([
-    '/mobile/crm/partner/<model("res.partner"):partner>',
-    '/mobile/crm/partner/',
-    '/mobile/crm/partner/add',
-    '/mobile/crm/partner/delete',
-    '/mobile/crm/partner/<model("res.partner"):partner>/edit',
-    '/mobile/crm/partner/set_login',
+    MODULE_BASE_PATH + '<model("res.partner"):partner>',
+    MODULE_BASE_PATH,
+    MODULE_BASE_PATH + 'add',
+    MODULE_BASE_PATH + 'delete',
+    MODULE_BASE_PATH + '<model("res.partner"):partner>/edit',
+    MODULE_BASE_PATH + 'set_login',
     ], type='http', auth="public", website=True)
     def get_partner(self, partner=False, **post):
         if request.httprequest.url[-4:] == 'edit': #edit form
-            return request.render('website_crm_partner.partner_edit', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db,})
+            return request.render('website_crm_partner.partner_edit', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db, 'mode': 'edit'})
         if request.httprequest.url[-3:] == 'add': #add form
             return request.render('website_crm_partner.partner_edit', {'partner': None, 'root': MODULE_BASE_PATH, 'db': request.db,})
         if request.httprequest.url[-9:] == 'set_login': #set login form
             if request.httprequest.method == 'POST':
-                return werkzeug.utils.redirect('/mobile/crm/partner', 302)
+                return werkzeug.utils.redirect(MODULE_BASE_PATH, 302)
             return request.render('website_crm_partner.set_login', {'partner': None, 'root': MODULE_BASE_PATH, 'db': request.db,})
         if request.httprequest.method == 'POST':
             if post.get('id') == '' and post.get('btn-save') == 'btn-save': #new partner
@@ -70,17 +72,21 @@ class website_crm_partner(http.Controller):
             elif post.get('search_words') != '' and post.get('btn-search') == 'btn-search': #search
                 partners = request.env['res.partner'].search(['&', ('name', 'ilike', post['search_words']), ('type', '=', 'contact')], order='name',limit=25)
                 return request.render('website_crm_partner.partner_list', {'partners': partners, 'root': MODULE_BASE_PATH, 'db': request.db,})
-            return werkzeug.utils.redirect('/mobile/crm/partner', 302)
+            return werkzeug.utils.redirect(MODULE_BASE_PATH, 302)
         else:
             if partner:
                 if partner and post.get('btn-delete') == 'btn-delete': #delete
                     partner.unlink()
-                    return werkzeug.utils.redirect('/mobile/crm/partner', 302)
-                return request.render('website_crm_partner.partner_detail', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db,})
+                    return werkzeug.utils.redirect(MODULE_BASE_PATH, 302)
+                return request.render('website_crm_partner.partner_edit', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db, 'mode': 'view'})
             else:
                 partners = request.env['res.partner'].search([('type', '=', 'contact')], order='name',limit=25)
                 return request.render('website_crm_partner.partner_list', {'partners': partners, 'root': MODULE_BASE_PATH, 'db': request.db,})
 
+    @http.route(['/mobile/security/<model("res.partner"):partner>', '/mobile/security'], type='http', auth="user", website=True)
+    def mobile_security(self, partner=False, **post):
+        partners = request.env['res.partner'].search([('type', '=', 'contact')], order='name',limit=25)
+        return request.render('website_crm_partner.partner_list', {'partners': partners, 'root': MODULE_BASE_PATH, 'db': request.db,})
 
     #~ @http.route(['/allcategory/<model("product.category"):category>', ], type='http', auth="public", website=True)
     #~ def get_category(self, parent_id=1, **post):

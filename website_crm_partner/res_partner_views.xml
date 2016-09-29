@@ -116,18 +116,47 @@
                     <!-- Content Zone -->
                     <div class="content">
                         <!-- Edit Form -->
-                        <form action="/mobile/crm/partner/" method="post">
-                            <input type="text" name="name" t-att-value="partner.name if partner else ''" placeholder="Full name" required="1" />
-                            <input type="hidden" name="id" t-att-value="partner.id if partner else False" />
-                            <input type="hidden" name="type" value="contact" />
-                            <textarea name="comment" rows="5">
-                                <t t-esc="partner.comment if partner else ''" />
-                            </textarea>
-                            <button class="btn btn-positive btn-block" name="btn-save" value="btn-save" type="submit">Save</button>
-                        </form>
+                        <div class="bar bar-standard">
+                            <form action="/mobile/crm/partner/" method="post">
+                                <div class="input-row">
+                                    <label>
+                                        <t t-esc="request.env['res.partner'].fields_get(['name'])['name']['string']" />
+                                    </label>
+                                    <input t-if="mode=='edit'" type="text" t-att-value="partner.name if partner else ''" placeholder="Mister Ratchet" />
+                                    <span t-if="mode=='view'" t-field="partner.name" />
+                                </div>
+                                <div class="input-row">
+                                    <label>Email</label>
+                                    <input type="email" placeholder="ratchetframework@gmail.com" />
+                                </div>
+                                <div class="input-row">
+                                    <label>Username</label>
+                                    <input type="text" placeholder="goRatchet" />
+                                </div>
+                                <input type="text" name="name" t-att-value="partner.name if partner else ''" placeholder="Full name" required="1" />
+                                <input type="hidden" name="id" t-att-value="partner.id if partner else False" />
+                                <input type="hidden" name="type" value="contact" />
+                                <textarea name="comment" rows="5">
+                                    <t t-esc="partner.comment if partner else ''" />
+                                </textarea>
+                                <button class="btn btn-positive btn-block" name="btn-save" value="btn-save" type="submit">Save</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </t>
+        </template>
+        <template id="form_fields">
+            <!-- model, field, mode, -->
+            <form>
+                <div class="input-row">
+                    <label>
+                        <t t-esc="request.env['res.partner'].fields_get(['name'])['name']['string']" />
+                    </label>
+                    <input t-if="mode=='edit'" type="text" t-att-value="partner.name if partner else ''" placeholder="Mister Ratchet" />
+                    <span t-if="mode=='view'" t-field="partner.name" />
+                </div>
+            </form>
         </template>
         <!-- set login -->
         <template id="set_login" name="Set Login">
@@ -157,15 +186,15 @@
             <xpath expr="." position="inside">
                 <script>
                     $(document).ready(function() {
-                        document.getElementById("database").value = localStorage.getItem("database");
-                        document.getElementById("username").value = localStorage.getItem("username");
-                        document.getElementById("password").value = localStorage.getItem("password");
+                    document.getElementById("database").value = localStorage.getItem("database");
+                    document.getElementById("username").value = localStorage.getItem("username");
+                    document.getElementById("password").value = localStorage.getItem("password");
                     });
 
                     function set_login(){
-                        localStorage.setItem("database", document.getElementById("database").value);
-                        localStorage.setItem("username", document.getElementById("username").value);
-                        localStorage.setItem("password", document.getElementById("password").value);
+                    localStorage.setItem("database", document.getElementById("database").value);
+                    localStorage.setItem("username", document.getElementById("username").value);
+                    localStorage.setItem("password", document.getElementById("password").value);
                     }
                 </script>
             </xpath>
