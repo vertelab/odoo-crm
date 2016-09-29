@@ -75,7 +75,7 @@
                 <div>
                     <!-- Top Bar -->
                     <header class="bar bar-nav">
-                        <h1 class="title">Search Partner</h1>
+                        <h1 class="title">Partners</h1>
                         <a class="icon icon-close pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
                         <a class="icon icon-plus pull-right" href="/mobile/crm/partner/add" />
                     </header>
@@ -138,7 +138,7 @@
                         <form a-attf-href="#{ root }partner/#{ partner.id }/delete" method="get">
                             <button class="btn btn-negative pull-left" name="btn-delete" value="btn-delete" type="submit">Delete</button>
                         </form>
-                        <a class="icon icon-compose pull-right" a-attf-href="#{ root }partner/#{ partner.id }/edit"/>
+                        <a class="icon icon-compose pull-right" t-attf-href="#{ root }partner/#{ partner.id }/edit"/>
                     </div>
                 </div>
             </t>
