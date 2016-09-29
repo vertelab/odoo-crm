@@ -35,16 +35,23 @@ class res_partner(models.Model):
 
 
 class website_crm_partner(http.Controller):
-    @http.route(['/mobile/crm/partner/<model("res.partner"):partner>',
+    @http.route([
+    '/mobile/crm/partner/<model("res.partner"):partner>',
     '/mobile/crm/partner/',
     '/mobile/crm/partner/add',
     '/mobile/crm/partner/delete',
-    '/mobile/crm/partner/<model("res.partner"):partner>/edit'], type='http', auth="public", website=True)
+    '/mobile/crm/partner/<model("res.partner"):partner>/edit',
+    '/mobile/crm/partner/set_login',
+    ], type='http', auth="public", website=True)
     def get_partner(self, partner=False, **post):
         if request.httprequest.url[-4:] == 'edit': #edit form
             return request.render('website_crm_partner.partner_edit', {'partner': partner, 'root': MODULE_BASE_PATH, 'db': request.db,})
         if request.httprequest.url[-3:] == 'add': #add form
             return request.render('website_crm_partner.partner_edit', {'partner': None, 'root': MODULE_BASE_PATH, 'db': request.db,})
+        if request.httprequest.url[-9:] == 'set_login': #set login form
+            if request.httprequest.method == 'POST':
+                return werkzeug.utils.redirect('/mobile/crm/partner', 302)
+            return request.render('website_crm_partner.set_login', {'partner': None, 'root': MODULE_BASE_PATH, 'db': request.db,})
         if request.httprequest.method == 'POST':
             if post.get('id') == '' and post.get('btn-save') == 'btn-save': #new partner
                 partner = request.env['res.partner'].create({
