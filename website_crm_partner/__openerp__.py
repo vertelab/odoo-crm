@@ -29,7 +29,7 @@ Mobile listing of contacts
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['mobile'],
+    'depends': ['website_mobile'],
     'data': [
         'res_partner_views.xml',
     ],

@@ -3,26 +3,63 @@
     <data>
         <!-- mobile layout extend -->
         <template id="layout_extend_partner" name="Main layout Extend">
-            <t t-call="website_mobile.mobile_layout">
-                <!-- Search Form -->
-                <div id="search-box" class="container">
-                    <form method="post" t-attf-action="#{ root }search" class="pagination col-xs-12">
-                        <div t-attf-action="#{ root }search" class="input-group">
-                            <input type="text" class="search-query form-control" placeholder="partner name" name="search_words" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" name="btn-search" value="btn-search" type="submit"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
-                <t t-raw="0"/>
+            <t t-call="mobile.layout">
+                <t t-raw="0" />
+                <nav class="bar bar-tab">
+                    <a class="tab-item active" href="#">
+                        <span class="icon icon-home" />
+                        <span class="tab-label">Home</span>
+                    </a>
+                    <a class="tab-item" href="#">
+                        <span class="icon icon-person" />
+                        <span class="tab-label">Profile</span>
+                    </a>
+                    <a class="tab-item" href="#">
+                        <span class="icon icon-star-filled" />
+                        <span class="tab-label">Favorites</span>
+                    </a>
+                    <a class="tab-item" href="#">
+                        <span class="icon icon-search" />
+                        <span class="tab-label">Search</span>
+                    </a>
+                    <a class="tab-item" href="/mobile/crm/partner/set_login">
+                        <span class="icon icon-gear" />
+                        <span class="tab-label">Settings</span>
+                    </a>
+                </nav>
             </t>
         </template>
         <template id="object_list" name="Object List">
             <t t-call="website_crm_partner.layout_extend_partner">
                 <div>
+                    <!-- Top Bar -->
+                    <header class="bar bar-nav">
+                        <h1 class="title" t-esc="title"/>
+                        <a class="icon icon-close pull-left" t-attf-href="#{ root }" />
+                        <a class="icon icon-plus pull-right" t-attf-href="#{ root }add" />
+                    </header>
                     <!-- Content Zone -->
                     <div class="content">
+                        <!-- Search Form -->
+                        <form t-attf-action="#{ root }search" method="post">
+<!--
+                            <input type="search" placeholder="Partner name" name="search_words" />
+-->
+                            <ul class="table-view">
+                                <li class="table-view-cell"><input type="text" placeholder="Partner name" name="search_words" />
+                                    <button class="btn btn-block btn-outlined" name="btn-search" value="btn-search" type="submit">
+                                        <span class="icon icon-search" />
+                                    </button>
+                                </li>
+                            </ul>
+
+<!--
+                            <button class="btn btn-block btn-outlined" name="btn-search" value="btn-search" type="submit">
+                                <span class="icon icon-search" />
+                                Search
+                            </button>
+-->
+                        </form>
                         <!-- List Contacts -->
                         <ul t-if="objects" class="table-view">
                             <li t-foreach="objects" t-as="object" class="table-view-cell">
@@ -40,19 +77,35 @@
         <!-- Customer Information-->
         <template id="object_detail" name="Object Detail Information">
             <t t-call="website_crm_partner.layout_extend_partner">
-                <!-- Content Zone -->
-                <div class="container mt32 mb32">
-                    <!-- Customer Info -->
+                <div>
+                    <!-- Top Bar -->
+                    <header class="bar bar-nav">
+                        <a class="control-item icon icon-left-nav pull-left" t-attf-href="#{ root }" />
+                        <h1 class="title" t-esc="title"/>
+                    </header>
+                    <!-- Content Zone -->
+                    <div class="content">
+                        <!-- Customer Info -->
+                        <div class="content-padded">
+                            <div class="">
 <!--
-                    <t t-set="ttype" t-value="request.env[model].fields_get(['name'])"/>
-                    <span t-esc="ttype"/>
+                                <t t-set="ttype" t-value="request.env[model].fields_get(['name'])"/>
+                                <span t-esc="ttype"/>
 -->
-                    <t t-call="website_crm_partner.form_fields"/>
-                    <div class="container">
-                        <t t-if="object">
-                            <h2><a t-if="mode=='view'" class="fa fa-trash pull-left" t-attf-href="#{ root }#{ object.id }/delete" onclick="return confirm('Are you sure?')" ontouchend="return confirm('Are you sure?')" /></h2>
-                            <h2><a t-if="mode=='view'" class="fa fa-pencil-square-o pull-right" t-attf-href="#{ root }#{ object.id }/edit" /></h2>
-                        </t>
+                                <t t-call="website_crm_partner.form_fields"/>
+                                <div class="bar bar-standard">
+                                    <t t-if="object">
+<!--
+                                        <form t-if="mode=='view'" t-attf-action="#{ root }#{ partner.id }/delete" method="get">
+                                            <button class="btn btn-negative pull-left" name="" value="" type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
+-->
+                                        <a t-if="mode=='view'" class="icon icon-trash pull-left" t-attf-href="#{ root }#{ object.id }/delete" onclick="return confirm('Are you sure?')" ontouchend="return confirm('Are you sure?')" />
+                                        <a t-if="mode=='view'" class="icon icon-compose pull-right" t-attf-href="#{ root }#{ object.id }/edit" />
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </t>
@@ -60,7 +113,7 @@
         <!-- form fileds -->
         <template id="form_fields">
             <form t-attf-action="" method="post">
-                <div t-foreach="fields" t-as="field" class="form-group">
+                <div t-foreach="fields" t-as="field" class="input-row">
                     <t t-set="ttype" t-value="request.env[model].fields_get([field])[field]['type']"/>
 
                     <t t-set="type" t-value="text"/>
@@ -71,13 +124,13 @@
                         <t t-esc="request.env[model].fields_get([field])[field]['string']" />
                     </label>
                     <!-- text -->
-                    <input t-if="mode == 'edit' and ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
+                    <input t-if="mode == 'edit' and ttype in ['char', 'date', 'datetime', 'float', 'integer']" t-att-name="field" t-att-type="type"
                         t-att-value="object.read([field])[0][field] if object else ''"
                         t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
                         t-att-required="request.env[model].fields_get([field])[field]['required']"
                         t-att-help="request.env[model].fields_get([field])[field]['help']" />
                     <!-- textarea -->
-                    <textarea t-if="mode == 'edit' and ttype == 'text'" class="form-control" t-att-name="field"
+                    <textarea t-if="mode == 'edit' and ttype == 'text'" t-att-name="field"
                         t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
                         t-att-required="request.env[model].fields_get([field])[field]['required']"
                         t-att-help="request.env[model].fields_get([field])[field]['help']"><t t-esc="object.read([field])[0][field] if object else ''"/></textarea>
@@ -94,7 +147,7 @@
                     </div>
                     <t t-if="mode == 'view'" t-esc="object.read([field])[0][field] if object else ''" />
                 </div>
-                <button t-if="mode == 'edit'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
+                <button t-if="mode == 'edit'" class="btn btn-positive btn-block" name="btn-save" value="btn-save" type="submit">Save</button>
             </form>
         </template>
         <!-- set login -->
@@ -120,67 +173,20 @@
                 </div>
             </t>
         </template>
-        <!-- inherit bottom menu -->
-        <template id="bottom_menu" inherit_id="website_mobile.mobile_layout">
-            <xpath expr="//div[@id='footer_container']/ul" position="inside">
-                <li><h3><a t-attf-href="/mobile/security"><i class="fa fa-gear"/></a></h3></li>
-                <li><h3><a t-attf-href="#{ root }add"><i class="fa fa-plus"/></a></h3></li>
-                <li><h3><a><i id="search_button" class="fa fa-search"/></a></h3></li>
-            </xpath>
-        </template>
-        <!-- css -->
-        <template id="crm_partner_css" inherit_id="website_mobile.mobile_layout">
-            <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
-                <style>
-                    #search-box {
-                        position: fixed;
-                        height: 50px;
-                        bottom: 0px;
-                        left: 0px;
-                        right: 0px;
-                        margin-bottom: 70px;
-                        display: none;
-                    }
-
-                    #search-box form { padding-left: 15px; }
-
-                    .btn-lg {
-                        margin: auto;
-                        display: block;
-                    }
-
-                </style>
-            </xpath>
-        </template>
-        <!-- javascript -->
-        <template id="crm_partner_javascript" inherit_id="website_mobile.mobile_layout">
-            <xpath expr="//body" position="inside">
+        <!-- Loading Module Assets -->
+        <template id="assets_frontend" inherit_id="mobile.assets_frontend" name="mobile assets">
+            <xpath expr="." position="inside">
                 <script>
-                    $("#search_button").click(function(){
-                        $("#search-box").fadeToggle();
-                    });
-
-                    $("main").click(function(evt){
-                        if(evt.target.id == "search-box")
-                            return;
-                        if(!$(evt.target).closest("#search-box").length){
-                            if($("#search-box").is(":visible")){
-                                $("#search-box").fadeOut();
-                            }
-                        }
-
-                    });
-
                     $(document).ready(function() {
-                        document.getElementById("database").value = localStorage.getItem("database");
-                        document.getElementById("username").value = localStorage.getItem("username");
-                        document.getElementById("password").value = localStorage.getItem("password");
+                    document.getElementById("database").value = localStorage.getItem("database");
+                    document.getElementById("username").value = localStorage.getItem("username");
+                    document.getElementById("password").value = localStorage.getItem("password");
                     });
 
                     function set_login(){
-                        localStorage.setItem("database", document.getElementById("database").value);
-                        localStorage.setItem("username", document.getElementById("username").value);
-                        localStorage.setItem("password", document.getElementById("password").value);
+                    localStorage.setItem("database", document.getElementById("database").value);
+                    localStorage.setItem("username", document.getElementById("username").value);
+                    localStorage.setItem("password", document.getElementById("password").value);
                     }
                 </script>
             </xpath>
