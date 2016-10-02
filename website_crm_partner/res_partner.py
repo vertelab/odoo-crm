@@ -53,7 +53,6 @@ class website_crm_partner(http.Controller):
         fields =  ['name','phone','email']
         template = {'list': 'website_crm_partner.object_list', 'detail': 'website_crm_partner.object_detail'}
 
-
         if request.httprequest.url[-4:] == 'edit': #Edit
             if request.httprequest.method == 'GET':
                 return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'edit'})
@@ -62,7 +61,6 @@ class website_crm_partner(http.Controller):
                     f: post.get(f) for f in fields
                 })
                 return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
-
         elif request.httprequest.url[-3:] == 'add': #Add
             if request.httprequest.method == 'GET':
                 return request.render(template['detail'], {'model': model, 'object': None, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': 'Add User', 'db': request.db,'mode': 'edit'})
@@ -74,6 +72,7 @@ class website_crm_partner(http.Controller):
         elif request.httprequest.url[-6:] == 'delete': #Delete
             if partner:
                 partner.unlink()
+                return werkzeug.utils.redirect(MODULE_BASE_PATH, 302)
         elif request.httprequest.url[-6:] == 'search': #Search
             if request.httprequest.method == 'POST':
                 search = post.get('search_words')

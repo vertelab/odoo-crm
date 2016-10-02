@@ -62,37 +62,39 @@
             <form t-attf-action="" method="post">
                 <div t-foreach="fields" t-as="field" class="form-group">
                     <t t-set="ttype" t-value="request.env[model].fields_get([field])[field]['type']"/>
-
                     <t t-set="type" t-value="text"/>
                     <t t-if="'mail' in field" t-set="type" t-value="email"/>
                     <t t-if="ttype in ['date', 'datetime']" t-set="type" t-value="date"/>
                     <t t-if="ttype in ['integer', 'float']" t-set="type" t-value="number"/>
-                    <label>
-                        <t t-esc="request.env[model].fields_get([field])[field]['string']" />
-                    </label>
-                    <!-- text -->
-                    <input t-if="mode == 'edit' and ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
-                        t-att-value="object.read([field])[0][field] if object else ''"
-                        t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                        t-att-required="request.env[model].fields_get([field])[field]['required']"
-                        t-att-help="request.env[model].fields_get([field])[field]['help']" />
-                    <!-- textarea -->
-                    <textarea t-if="mode == 'edit' and ttype == 'text'" class="form-control" t-att-name="field"
-                        t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                        t-att-required="request.env[model].fields_get([field])[field]['required']"
-                        t-att-help="request.env[model].fields_get([field])[field]['help']"><t t-esc="object.read([field])[0][field] if object else ''"/></textarea>
-                    <!-- selection -->
-                    <select t-if="mode == 'edit' and ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
-                        <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
-                            <option t-att-value="option[0]" t-att="{'selected': 'checked'} if option[0] == object.read([field])[0][field] else {}"><t t-raw="option[1]"/></option>
-                        </t>
-                    </select>
-                    <!-- boolean -->
-                    <div t-if="mode == 'edit' and ttype == 'boolean'" t-att-name="field" t-att-type="type" class="toggle active">
-                        <div class="toggle-handle"></div>
-                        <input class="toggle-handle" type="hidden" t-att-value="object.read([field])[0][field] if object else False"/>
-                    </div>
-                    <t t-if="mode == 'view'" t-esc="object.read([field])[0][field] if object else ''" />
+                    <!-- field label -->
+                    <label><t t-esc="request.env[model].fields_get([field])[field]['string']" /></label>
+                    <t t-if="mode == 'edit'">
+                        <!-- text -->
+                        <input t-if="ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
+                            t-att-value="object.read([field])[0][field] if object else ''"
+                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
+                            t-att-required="request.env[model].fields_get([field])[field]['required']"
+                            t-att-help="request.env[model].fields_get([field])[field]['help']" />
+                        <!-- textarea -->
+                        <textarea t-if="ttype == 'text'" class="form-control" t-att-name="field"
+                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
+                            t-att-required="request.env[model].fields_get([field])[field]['required']"
+                            t-att-help="request.env[model].fields_get([field])[field]['help']"><t t-esc="object.read([field])[0][field] if object else ''"/></textarea>
+                        <!-- selection -->
+                        <select t-if="ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
+                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
+                                <option t-att-value="option[0]" t-att="{'selected': 'checked'} if option[0] == object.read([field])[0][field] else {}"><t t-raw="option[1]"/></option>
+                            </t>
+                        </select>
+                        <!-- boolean -->
+                        <div t-if="mode == 'edit' and ttype == 'boolean'" t-att-name="field" t-att-type="type" class="toggle active">
+                            <div class="toggle-handle"></div>
+                            <input class="toggle-handle" type="hidden" t-att-value="object.read([field])[0][field] if object else False"/>
+                        </div>
+                    </t>
+                    <t t-if="mode == 'view'">
+                        <span t-esc="object.read([field])[0][field] if object else ''" />
+                    </t>
                 </div>
                 <button t-if="mode == 'edit'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
             </form>
