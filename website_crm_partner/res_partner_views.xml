@@ -89,6 +89,26 @@
                         <!-- boolean -->
                         <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" class="switch-checkbox" t-att-checked="1 if object.read([field])[0][field] else 0"/>
                     </t>
+                    <t t-if="mode == 'add'">
+                        <!-- text -->
+                        <input t-if="ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
+                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
+                            t-att-required="request.env[model].fields_get([field])[field]['required']"
+                            t-att-help="request.env[model].fields_get([field])[field]['help']" />
+                        <!-- textarea -->
+                        <textarea t-if="ttype == 'text'" class="form-control" t-att-name="field"
+                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
+                            t-att-required="request.env[model].fields_get([field])[field]['required']"
+                            t-att-help="request.env[model].fields_get([field])[field]['help']"></textarea>
+                        <!-- selection -->
+                        <select t-if="ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
+                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
+                                <option t-att-value="option[0]"><t t-raw="option[1]"/></option>
+                            </t>
+                        </select>
+                        <!-- boolean -->
+                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" class="switch-checkbox" checked="0"/>
+                    </t>
                     <t t-if="mode == 'view' and ttype != 'boolean'">
                         <span t-esc="object.read([field])[0][field] if object else ''" />
                     </t>
@@ -96,7 +116,7 @@
                         <span t-esc="'Yes' if object.read([field])[0][field] else 'No'" />
                     </t>
                 </div>
-                <button t-if="mode == 'edit'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
+                <button t-if="mode == 'edit' or mode == 'add'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
             </form>
         </template>
         <!-- set login -->
@@ -140,7 +160,7 @@
                         top: 0px;
                         left: 0px;
                         right: 0px;
-                        margin-top: 70px;
+                        margin-top: 50px;
                         display: none;
                     }
 
@@ -158,14 +178,7 @@
         <template id="crm_partner_javascript" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//body" position="inside">
                 <script>
-                    $(".switch-checkbox").live("change", function(){
-                        if (this).checked) {
-                            $(this).prop("value", true);
-                        }
-                        else{
-                            $(this).prop("value", falese);
-                        }
-                    });
+                    $(".switch-checkbox").bootstrapSwitch();
 
                     $("#search_button").click(function(){
                         $("#search-box").fadeToggle();
@@ -179,6 +192,7 @@
                                 $("#search-box").fadeOut();
                             }
                         }
+
                     });
 
                     $(document).ready(function() {
@@ -192,8 +206,6 @@
                         localStorage.setItem("username", document.getElementById("username").value);
                         localStorage.setItem("password", document.getElementById("password").value);
                     }
-
-                    $(".switch-checkbox").bootstrapSwitch();
                 </script>
             </xpath>
         </template>

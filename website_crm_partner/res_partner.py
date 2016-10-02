@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# # -*- coding: utf-8 -*-
 ##############################################################################
 #
 # OpenERP, Open Source Management Solution, third party addon
@@ -30,41 +30,45 @@ _logger = logging.getLogger(__name__)
 
 MODULE_BASE_PATH = '/mobile/contact/'
 MODULE_TITLE = _('Contact')
-MODEL = 'res.partner'
-TEMPLATE = {'list': 'website_crm_partner.object_list', 'detail': 'website_crm_partner.object_detail'}
+
+class res_partner(models.Model):
+    _inherit = 'res.partner'
+
 
 class website_crm_partner(http.Controller):
 
     @http.route([
-    MODULE_BASE_PATH + '<model(%s):partner>' %MODEL,
+    MODULE_BASE_PATH + '<model("res.partner"):partner>',
     MODULE_BASE_PATH,
     MODULE_BASE_PATH + 'add',
-    MODULE_BASE_PATH + '<model(%s):partner>/delete' %MODEL,
-    MODULE_BASE_PATH + '<model(%s):partner>/edit' %MODEL,
+    MODULE_BASE_PATH + '<model("res.partner"):partner>/delete',
+    MODULE_BASE_PATH + '<model("res.partner"):partner>/edit',
     MODULE_BASE_PATH + 'search',
     MODULE_BASE_PATH + 'set_login',
     ], type='http', auth="public", website=True)
     def get_partner(self, partner=None, search='',**post):
 
         search_domain = [('type','=','contact')]
+        model = 'res.partner'
         fields =  ['name','is_company','phone','email','type']
+        template = {'list': 'website_crm_partner.object_list', 'detail': 'website_crm_partner.object_detail'}
 
         if request.httprequest.url[-4:] == 'edit': #Edit
             if request.httprequest.method == 'GET':
-                return request.render(TEMPLATE['detail'], {'model': MODEL, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'edit'})
+                return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'edit'})
             else:
                 partner.write({
                     f: post.get(f) for f in fields
                 })
-                return request.render(TEMPLATE['detail'], {'model': MODEL, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
+                return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
         elif request.httprequest.url[-3:] == 'add': #Add
             if request.httprequest.method == 'GET':
-                return request.render(TEMPLATE['detail'], {'model': MODEL, 'object': None, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': 'Add User', 'db': request.db,'mode': 'edit'})
+                return request.render(template['detail'], {'model': model, 'object': None, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': 'Add User', 'db': request.db,'mode': 'add'})
             else:
                 record = { f: post.get(f) for f in fields }
                 record['type'] = 'contact'
                 partner = request.env['res.partner'].create(record)
-                return request.render(TEMPLATE['detail'], {'model': MODEL, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
+                return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
         elif request.httprequest.url[-6:] == 'delete': #Delete
             if partner:
                 partner.unlink()
@@ -76,26 +80,25 @@ class website_crm_partner(http.Controller):
         elif request.httprequest.url[-9:] == 'set_login': #set login form
             if request.httprequest.method == 'POST':
                 return werkzeug.utils.redirect(MODULE_BASE_PATH, 302)
-            return request.render(TEMPLATE['list'], {'partner': None, 'root': MODULE_BASE_PATH, 'title': MODULE_TITLE, 'db': request.db,})
+            return request.render(template['list'], {'object': None, 'root': MODULE_BASE_PATH, 'title': MODULE_TITLE, 'db': request.db,})
         elif partner:  # Detail
-            return request.render(TEMPLATE['detail'], {'model': MODEL, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
-        return request.render(TEMPLATE['list'], {
+            return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
+        return request.render(template['list'], {
             'objects': request.env['res.partner'].search(search_domain, order='name'),
             'title': MODULE_TITLE,
             'root': MODULE_BASE_PATH,
             'db': request.db,
         })
 
-    @http.route(['/mobile/security/<model(%s):partner>' %MODEL, '/mobile/security'], type='http', auth="user", website=True)
+    @http.route(['/mobile/security/<model("res.partner"):partner>', '/mobile/security'], type='http', auth="user", website=True)
     def mobile_security(self, partner=False, **post):
-        return request.render(TEMPLATE['list'], {
-            'model': MODEL,
+        return request.render('website_crm_partner.object_list', {
+            'model': 'res.partner',
             'objects': request.env['res.partner'].search([('type','=','contact')], order='name'),
             'title': MODULE_TITLE,
             'root': MODULE_BASE_PATH,
             'db': request.db,
-        })
-
+})
     #~ @http.route(['/allcategory/<model("product.category"):category>', ], type='http', auth="public", website=True)
     #~ def get_category(self, parent_id=1, **post):
         #~ cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
