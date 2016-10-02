@@ -50,7 +50,7 @@ class website_crm_partner(http.Controller):
 
         search_domain = [('type','=','contact')]
         model = 'res.partner'
-        fields =  ['name','phone','email']
+        fields =  ['name','is_company','phone','email','type']
         template = {'list': 'website_crm_partner.object_list', 'detail': 'website_crm_partner.object_detail'}
 
         if request.httprequest.url[-4:] == 'edit': #Edit

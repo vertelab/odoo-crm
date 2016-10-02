@@ -87,13 +87,13 @@
                             </t>
                         </select>
                         <!-- boolean -->
-                        <div t-if="mode == 'edit' and ttype == 'boolean'" t-att-name="field" t-att-type="type" class="toggle active">
-                            <div class="toggle-handle"></div>
-                            <input class="toggle-handle" type="hidden" t-att-value="object.read([field])[0][field] if object else False"/>
-                        </div>
+                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" class="switch-checkbox" t-att-checked="1 if object.read([field])[0][field] else 0"/>
                     </t>
-                    <t t-if="mode == 'view'">
+                    <t t-if="mode == 'view' and ttype != 'boolean'">
                         <span t-esc="object.read([field])[0][field] if object else ''" />
+                    </t>
+                    <t t-if="mode == 'view' and ttype == 'boolean'">
+                        <span t-esc="'Yes' if object.read([field])[0][field] else 'No'" />
                     </t>
                 </div>
                 <button t-if="mode == 'edit'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
@@ -137,10 +137,10 @@
                     #search-box {
                         position: fixed;
                         height: 50px;
-                        bottom: 0px;
+                        top: 0px;
                         left: 0px;
                         right: 0px;
-                        margin-bottom: 70px;
+                        margin-top: 70px;
                         display: none;
                     }
 
@@ -158,6 +158,15 @@
         <template id="crm_partner_javascript" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//body" position="inside">
                 <script>
+                    $(".switch-checkbox").live("change", function(){
+                        if (this).checked) {
+                            $(this).prop("value", true);
+                        }
+                        else{
+                            $(this).prop("value", falese);
+                        }
+                    });
+
                     $("#search_button").click(function(){
                         $("#search-box").fadeToggle();
                     });
@@ -170,7 +179,6 @@
                                 $("#search-box").fadeOut();
                             }
                         }
-
                     });
 
                     $(document).ready(function() {
@@ -184,6 +192,8 @@
                         localStorage.setItem("username", document.getElementById("username").value);
                         localStorage.setItem("password", document.getElementById("password").value);
                     }
+
+                    $(".switch-checkbox").bootstrapSwitch();
                 </script>
             </xpath>
         </template>
