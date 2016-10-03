@@ -45,9 +45,8 @@ class website_crm_partner(http.Controller):
     MODULE_BASE_PATH + '<model("res.partner"):partner>/edit',
     MODULE_BASE_PATH + 'search',
     MODULE_BASE_PATH + 'set_login',
-    ], type='http', auth="public", website=True)
+    ], type='http', auth="user", website=True)
     def get_partner(self, partner=None, search='',**post):
-
         search_domain = [('type','=','contact')]
         model = 'res.partner'
         fields =  ['name','is_company','phone','email','type']

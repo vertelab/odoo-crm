@@ -107,7 +107,7 @@
                             </t>
                         </select>
                         <!-- boolean -->
-                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" class="switch-checkbox" checked="0"/>
+                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" class="switch-checkbox"/>
                     </t>
                     <t t-if="mode == 'view' and ttype != 'boolean'">
                         <span t-esc="object.read([field])[0][field] if object else ''" />
@@ -192,7 +192,6 @@
                                 $("#search-box").fadeOut();
                             }
                         }
-
                     });
 
                     $(document).ready(function() {
