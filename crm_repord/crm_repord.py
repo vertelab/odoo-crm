@@ -63,7 +63,7 @@ class res_partner_listing(models.Model):
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
 
 class MobileSaleView(http.Controller):
-    @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="public", website=True)
+    @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="user", website=True)
     def repord(self, partner=None, **post):
         products = request.env['res.partner'].browse(partner.id).product_ids
         parent_products = request.env['res.partner'].browse(partner.id).listing_id.product_ids
@@ -76,7 +76,7 @@ class MobileSaleView(http.Controller):
             rep_order = rep_order[0]
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
 
-    @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="public", website=True)
+    @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
     def image_upload(self, partner=None, **post):
         if request.httprequest.method == 'POST':
             if post['ufile']:
@@ -92,13 +92,13 @@ class MobileSaleView(http.Controller):
                 })
         return werkzeug.utils.redirect('/crm/%s/repord' %partner.id, 302)
 
-    @http.route(['/crm/delete/image'], type='json', auth="public", website=True)
+    @http.route(['/crm/delete/image'], type='json', auth="user", website=True)
     def image_delete(self, attachment_id=None, **kw):
         image = request.env['ir.attachment'].browse(int(attachment_id))
         image.unlink()
         return 'image_deleted'
 
-    @http.route(['/crm/send/repord'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/send/repord'], type='json', auth="user", methods=['POST'], website=True)
     def send_rep_order(self, res_partner, product_id, product_uom_qty, discount, **kw):
         rep_order_ids = request.env['rep.order'].search([('partner_id', '=', int(res_partner)),('state','=','draft')])
         if len(rep_order_ids)>0:
@@ -136,7 +136,7 @@ class MobileSaleView(http.Controller):
                 'discount': float(discount) if discount != '' else 0.00,
             })
 
-    @http.route(['/crm/add/product'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/add/product'], type='json', auth="user", methods=['POST'], website=True)
     def add_product(self, res_partner, product_id, **kw):
         partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
         for p in partner.listing_id.product_ids:
@@ -146,7 +146,7 @@ class MobileSaleView(http.Controller):
                 })
         return 'added'
 
-    @http.route(['/crm/remove/product'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/remove/product'], type='json', auth="user", methods=['POST'], website=True)
     def remove_product(self, res_partner, product_id, **kw):
         partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
         for p in partner.listing_id.product_ids:
@@ -156,7 +156,7 @@ class MobileSaleView(http.Controller):
                 })
         return 'removed'
 
-    @http.route(['/crm/todo/done'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
     def todo_done(self, note_id, **kw):
         note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
         note.write({
@@ -166,7 +166,7 @@ class MobileSaleView(http.Controller):
         })
         return 'note_done'
 
-    @http.route(['/crm/meeting/visited'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/meeting/visited'], type='json', auth="user", methods=['POST'], website=True)
     def customer_visited(self, partner_id, **kw):
         meetings = request.env['calendar.event'].search([])
         partner = request.env['res.partner'].search([('id', '=', int(partner_id))])
@@ -177,7 +177,7 @@ class MobileSaleView(http.Controller):
                 })
         return 'meeting_done'
 
-    @http.route(['/crm/presentation/done'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/presentation/done'], type='json', auth="user", methods=['POST'], website=True)
     def presentation(self, partner_id, categ, **kw):
         partner = request.env['res.partner'].browse(int(partner_id))
         request.env['mail.message'].create({
@@ -190,7 +190,7 @@ class MobileSaleView(http.Controller):
         })
         return 'presentation_done'
 
-    @http.route(['/crm/repord/type'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/repord/type'], type='json', auth="user", methods=['POST'], website=True)
     def change_order_type(self, order, order_type, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
         order.write({
@@ -198,7 +198,7 @@ class MobileSaleView(http.Controller):
         })
         return 'order_type_changed'
 
-    @http.route(['/crm/repord/campaign'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/repord/campaign'], type='json', auth="user", methods=['POST'], website=True)
     def change_campaign(self, order, campaign_id, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
         if campaign_id != '':
@@ -212,7 +212,7 @@ class MobileSaleView(http.Controller):
             })
         return 'campaign_changed'
 
-    @http.route(['/crm/repord/deliverydate'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/repord/deliverydate'], type='json', auth="user", methods=['POST'], website=True)
     def change_delivery_date(self, order, date_order, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
         order.write({
@@ -220,7 +220,7 @@ class MobileSaleView(http.Controller):
         })
         return 'delivery_date_changed'
 
-    @http.route(['/crm/repord/confirm'], type='json', auth="public", methods=['POST'], website=True)
+    @http.route(['/crm/repord/confirm'], type='json', auth="user", methods=['POST'], website=True)
     def order_confirm(self, order, send_mail, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
         if send_mail == True:
@@ -232,7 +232,7 @@ class MobileSaleView(http.Controller):
         return 'repord_confirmed'
 
     # store list
-    @http.route(['/crm/mystores'], type='http', auth="public", website=True)
+    @http.route(['/crm/mystores'], type='http', auth="user", website=True)
     def mystores(self, **post):
         my_stores = request.env['res.partner'].search([('is_company', '=', True), ('customer', '=', True), ('user_id', '=', request.env.uid)], order='store_class, name')
         my_coops = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_coop.coop'))
@@ -240,7 +240,7 @@ class MobileSaleView(http.Controller):
         my_axfoods = my_stores.filtered(lambda s: s.parent_id == request.env.ref('edi_gs1_axfood.axfood_group'))
         return request.website.render("crm_repord.mystores", {'my_coops': my_coops, 'my_icas': my_icas, 'my_axfoods': my_axfoods,})
 
-    @http.route(['/crm/search/stores'], type='http', auth="public", website=True)
+    @http.route(['/crm/search/stores'], type='http', auth="user", website=True)
     def search_stores(self, **post):
         if request.httprequest.method == 'POST':
             search_words = post.get('search_words').split(' ')
@@ -258,7 +258,7 @@ class MobileSaleView(http.Controller):
         else:
             return request.website.render("crm_repord.search_stores", {})
 
-    @http.route(['/crm/<model("res.partner"):partner>/store_info_update'], type='http', auth="public", website=True)
+    @http.route(['/crm/<model("res.partner"):partner>/store_info_update'], type='http', auth="user", website=True)
     def store_info_update(self, partner=None, **post):
         if request.httprequest.method == 'POST':
             partner.write({
@@ -276,6 +276,49 @@ class MobileSaleView(http.Controller):
             })
             return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
         return request.website.render("crm_repord.store_info_update", {'partner': partner})
+
+    @http.route([
+        '/crm/<model("res.partner"):partner>/company',
+        '/crm/<model("res.partner"):partner>/company/edit',
+    ], type='http', auth="user", website=True)
+    def company_info_update(self, partner=None, **post):
+        model = 'res.partner'
+        fields =  ['name','store_class','size','vat','email','phone']
+        if request.httprequest.url[-4:] == 'edit': #Edit
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.company_detail', {'model': model, 'object': partner, 'fields': fields, 'title': partner.name ,'mode': 'edit'})
+            else:
+                partner.write({ f: post.get(f) for f in fields })
+                return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
+        return request.render('crm_repord.company_detail', {'model': model, 'object': partner, 'fields': fields, 'title': partner.name , 'mode': 'view'})
+
+
+    @http.route([
+        '/crm/<model("res.partner"):partner>/contact',
+        '/crm/<model("res.partner"):partner>/contact/edit',
+        '/crm/<model("res.partner"):partner>/contact/add',
+        '/crm/<model("res.partner"):partner>/contact/delete',
+    ], type='http', auth="user", website=True)
+    def contact_info_update(self, partner=None, **post):
+        model = 'res.partner'
+        fields =  ['name','phone','email','type']
+        if request.httprequest.url[-4:] == 'edit': #Edit
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.object_detail', {'model': model, 'object': partner, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name ,'mode': 'edit'})
+            else:
+                partner.write({ f: post.get(f) for f in fields })
+                return request.render('crm_repord.object_detail', {'model': model, 'object': partner, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'view'})
+        elif request.httprequest.url[-3:] == 'add': #Add
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.object_detail', {'model': model, 'object': None, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'add'})
+            else:
+                partner = request.env['res.partner'].create({ f: post.get(f) for f in fields })
+                return request.render('crm_repord.object_detail', {'model': model, 'object': partner, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'view'})
+        elif request.httprequest.url[-6:] == 'delete': #Delete
+            if partner:
+                partner.unlink()
+                return werkzeug.utils.redirect('/crm/%s/repord' % partner.parent_id.id, 302)
+        return request.render('crm_repord.object_detail', {'model': model, 'object': partner, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'view'})
 
 class rep_order(models.Model):
     _name = "rep.order"
