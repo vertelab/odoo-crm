@@ -258,24 +258,24 @@ class MobileSaleView(http.Controller):
         else:
             return request.website.render("crm_repord.search_stores", {})
 
-    @http.route(['/crm/<model("res.partner"):partner>/store_info_update'], type='http', auth="user", website=True)
-    def store_info_update(self, partner=None, **post):
-        if request.httprequest.method == 'POST':
-            partner.write({
-                'name': post['name'],
-                'gs1_gln': post['gs1_gln'],
-                'phone': post['phone'],
-                'mobile': post['mobile'],
-                'email': post['email'],
-                'ref': post['ref'],
-                'street': post['street'],
-                'zip': post['zip'],
-                'city': post['city'],
-                'store_class': post['store_class'],
-                'size': post['size'],
-            })
-            return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
-        return request.website.render("crm_repord.store_info_update", {'partner': partner})
+    #~ @http.route(['/crm/<model("res.partner"):partner>/store_info_update'], type='http', auth="user", website=True)
+    #~ def store_info_update(self, partner=None, **post):
+        #~ if request.httprequest.method == 'POST':
+            #~ partner.write({
+                #~ 'name': post['name'],
+                #~ 'gs1_gln': post['gs1_gln'],
+                #~ 'phone': post['phone'],
+                #~ 'mobile': post['mobile'],
+                #~ 'email': post['email'],
+                #~ 'ref': post['ref'],
+                #~ 'street': post['street'],
+                #~ 'zip': post['zip'],
+                #~ 'city': post['city'],
+                #~ 'store_class': post['store_class'],
+                #~ 'size': post['size'],
+            #~ })
+            #~ return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
+        #~ return request.website.render("crm_repord.store_info_update", {'partner': partner})
 
     @http.route([
         '/crm/<model("res.partner"):partner>/company',
@@ -295,8 +295,8 @@ class MobileSaleView(http.Controller):
 
     @http.route([
         '/crm/<model("res.partner"):partner>/contact',
-        '/crm/<model("res.partner"):partner>/contact/edit',
         '/crm/<model("res.partner"):partner>/contact/add',
+        '/crm/<model("res.partner"):partner>/contact/edit',
         '/crm/<model("res.partner"):partner>/contact/delete',
     ], type='http', auth="user", website=True)
     def contact_info_update(self, partner=None, **post):
@@ -310,14 +310,16 @@ class MobileSaleView(http.Controller):
                 return request.render('crm_repord.object_detail', {'model': model, 'object': partner, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'view'})
         elif request.httprequest.url[-3:] == 'add': #Add
             if request.httprequest.method == 'GET':
-                return request.render('crm_repord.object_detail', {'model': model, 'object': None, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'add'})
+                return request.render('crm_repord.object_add', {'model': model, 'object': None, 'fields': fields, 'title': 'Ny kontakt' , 'mode': 'add'})
             else:
-                partner = request.env['res.partner'].create({ f: post.get(f) for f in fields })
-                return request.render('crm_repord.object_detail', {'model': model, 'object': partner, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'view'})
+                contact = request.env['res.partner'].create({ f: post.get(f) for f in fields })
+                contact.write({'parent_id': partner.id})
+                return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
         elif request.httprequest.url[-6:] == 'delete': #Delete
             if partner:
+                parent = partner.parent_id.id
                 partner.unlink()
-                return werkzeug.utils.redirect('/crm/%s/repord' % partner.parent_id.id, 302)
+                return werkzeug.utils.redirect('/crm/%s/repord' % parent, 302)
         return request.render('crm_repord.object_detail', {'model': model, 'object': partner, 'partner': partner.parent_id, 'fields': fields, 'title': partner.name , 'mode': 'view'})
 
 class rep_order(models.Model):
