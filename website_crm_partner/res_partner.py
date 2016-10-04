@@ -31,12 +31,7 @@ _logger = logging.getLogger(__name__)
 MODULE_BASE_PATH = '/mobile/contact/'
 MODULE_TITLE = _('Contact')
 
-class res_partner(models.Model):
-    _inherit = 'res.partner'
-
-
 class website_crm_partner(http.Controller):
-
     @http.route([
     MODULE_BASE_PATH + '<model("res.partner"):partner>',
     MODULE_BASE_PATH,
@@ -88,15 +83,15 @@ class website_crm_partner(http.Controller):
             'db': request.db,
         })
 
-    @http.route(['/mobile/security/<model("res.partner"):partner>', '/mobile/security'], type='http', auth="user", website=True)
-    def mobile_security(self, partner=False, **post):
-        return request.render('website_crm_partner.object_list', {
-            'model': 'res.partner',
-            'objects': request.env['res.partner'].search([('type','=','contact')], order='name'),
-            'title': MODULE_TITLE,
-            'root': MODULE_BASE_PATH,
-            'db': request.db,
-})
+    #~ @http.route(['/mobile/security/<model("res.partner"):partner>', '/mobile/security'], type='http', auth="user", website=True)
+    #~ def mobile_security(self, partner=False, **post):
+        #~ return request.render('website_crm_partner.object_list', {
+            #~ 'model': 'res.partner',
+            #~ 'objects': request.env['res.partner'].search([('type','=','contact')], order='name'),
+            #~ 'title': MODULE_TITLE,
+            #~ 'root': MODULE_BASE_PATH,
+            #~ 'db': request.db,
+        #~ })
     #~ @http.route(['/allcategory/<model("product.category"):category>', ], type='http', auth="public", website=True)
     #~ def get_category(self, parent_id=1, **post):
         #~ cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
