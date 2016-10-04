@@ -10,17 +10,30 @@
                 <t t-raw="0"/>
             </t>
         </template>
+        <template id="ui_message" name="User Interface Message">
+            <t t-call="website_mobile.mobile_layout">
+                <t t-set="ms_type" t-value="info"/>
+                <t t-set="ms_content" t-value="Heeej"/>
+                <t t-if="ms_type='info'">
+                    <div class="alert alert-info">
+                        <a class="close" data-dismiss="alert" aria-label="close">x</a>
+                        <span><strong><t t-esc="ms_content"/></strong></span>
+                    </div>
+                </t>
+            </t>
+        </template>
         <template id="object_list" name="Object List">
             <t t-call="website_crm_partner.layout_extend_partner">
                 <div>
                     <!-- Content Zone -->
                     <div class="content">
                         <!-- List Contacts -->
-                        <ul t-if="objects" class="table-view">
-                            <li t-foreach="objects" t-as="object" class="table-view-cell">
+                        <ul t-if="objects" class="">
+                            <li t-foreach="objects" t-as="object" class="">
                                 <a class="navigate-right" t-attf-href="#{ root }#{ object.id }" data-transition="slide-in">
                                     <h3>
                                         <span t-esc="object.name" />
+                                        <i class="fa fa-angle-right pull-right" style="padding-right: 40px;"/>
                                     </h3>
                                 </a>
                             </li>
@@ -110,6 +123,12 @@
                 </div>
                 <button t-if="mode == 'edit' or mode == 'add'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
             </form>
+        </template>
+        <!-- hide footer -->
+        <template id="hide_footer" inherit_id="website.layout">
+            <xpath expr="//footer" position="attributes">
+                <attribute name="class">hidden</attribute>
+            </xpath>
         </template>
         <!-- inherit bottom menu -->
         <template id="bottom_menu" inherit_id="website_mobile.mobile_layout">
