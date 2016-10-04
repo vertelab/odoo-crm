@@ -10,6 +10,7 @@
                 <t t-raw="0"/>
             </t>
         </template>
+<!--
         <template id="ui_message" name="User Interface Message">
             <t t-call="website_mobile.mobile_layout">
                 <t t-set="ms_type" t-value="info"/>
@@ -22,6 +23,7 @@
                 </t>
             </t>
         </template>
+-->
         <template id="object_list" name="Object List">
             <t t-call="website_crm_partner.layout_extend_partner">
                 <div>
