@@ -4,17 +4,10 @@
         <!-- mobile layout extend -->
         <template id="layout_extend_partner" name="Main layout Extend">
             <t t-call="website_mobile.mobile_layout">
-                <!-- Search Form -->
-                <div id="search-box" class="container">
-                    <form method="post" t-attf-action="#{ root }search" class="pagination col-xs-12">
-                        <div t-attf-action="#{ root }search" class="input-group">
-                            <input type="text" class="search-query form-control" placeholder="partner name" name="search_words" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" name="btn-search" value="btn-search" type="submit"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
+                <t t-set="root" t-value="root"/>
+                <t t-set="add" t-value="'%sadd' %root"/>
+                <t t-set="search" t-value="'%ssearch' %root"/>
+                <t t-set="search_words" t-value="search_words"/>
                 <t t-raw="0"/>
             </t>
         </template>
@@ -145,26 +138,12 @@
         <!-- inherit bottom menu -->
         <template id="bottom_menu" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//div[@id='footer_container']/ul" position="inside">
-                <li><h3><a t-attf-href="/mobile/security"><i class="fa fa-gear"/></a></h3></li>
-                <li><h3><a t-attf-href="#{ root }add"><i class="fa fa-plus"/></a></h3></li>
-                <li><h3><a><i id="search_button" class="fa fa-search"/></a></h3></li>
             </xpath>
         </template>
         <!-- css -->
         <template id="crm_partner_css" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
                 <style>
-                    #search-box {
-                        position: fixed;
-                        height: 50px;
-                        top: 0px;
-                        left: 0px;
-                        right: 0px;
-                        margin-top: 50px;
-                        display: none;
-                    }
-
-                    #search-box form { padding-left: 15px; }
 
                     .btn-lg {
                         margin: auto;
@@ -179,20 +158,6 @@
             <xpath expr="//body" position="inside">
                 <script>
                     $(".switch-checkbox").bootstrapSwitch();
-
-                    $("#search_button").click(function(){
-                        $("#search-box").fadeToggle();
-                    });
-
-                    $("main").click(function(evt){
-                        if(evt.target.id == "search-box")
-                            return;
-                        if(!$(evt.target).closest("#search-box").length){
-                            if($("#search-box").is(":visible")){
-                                $("#search-box").fadeOut();
-                            }
-                        }
-                    });
 
                     $(document).ready(function() {
                         document.getElementById("database").value = localStorage.getItem("database");

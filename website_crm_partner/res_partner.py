@@ -65,7 +65,6 @@ class website_crm_partner(http.Controller):
                 return request.render(template['detail'], {'model': model, 'object': None, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': 'Add User', 'db': request.db,'mode': 'add'})
             else:
                 record = { f: post.get(f) for f in fields }
-                record['type'] = 'contact'
                 partner = request.env['res.partner'].create(record)
                 return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
         elif request.httprequest.url[-6:] == 'delete': #Delete
