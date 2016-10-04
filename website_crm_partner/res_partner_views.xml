@@ -7,7 +7,6 @@
                 <t t-set="root" t-value="root"/>
                 <t t-set="add" t-value="'%sadd' %root"/>
                 <t t-set="search" t-value="'%ssearch' %root"/>
-                <t t-set="search_words" t-value="search_words"/>
                 <t t-raw="0"/>
             </t>
         </template>
