@@ -112,19 +112,22 @@
                 <button t-if="mode == 'edit' or mode == 'add'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
             </form>
         </template>
+        <!-- inherit bottom menu -->
+        <template id="bottom_menu" inherit_id="website_mobile.mobile_layout">
+            <xpath expr="//div[@id='footer_container']/ul" position="inside">
+            </xpath>
+        </template>
         <!-- set login -->
+<!--
         <template id="set_login" name="Set Login">
             <t t-call="website_crm_partner.layout_extend_partner">
                 <t t-set="title">Set Login</t>
                 <div>
-                    <!-- Top Bar -->
                     <header class="bar bar-nav">
                         <h1 class="title">Set Login</h1>
                         <a class="icon icon-left-nav pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
                     </header>
-                    <!-- Content Zone -->
                     <div class="content">
-                        <!-- Form -->
                         <form id="set_login" method="post">
                             <input id="database" name="database" type="text" placeholder="Database" required="1" />
                             <input id="username" name="username" type="text" placeholder="User name" required="1" />
@@ -135,11 +138,7 @@
                 </div>
             </t>
         </template>
-        <!-- inherit bottom menu -->
-        <template id="bottom_menu" inherit_id="website_mobile.mobile_layout">
-            <xpath expr="//div[@id='footer_container']/ul" position="inside">
-            </xpath>
-        </template>
+-->
         <!-- css -->
         <template id="crm_partner_css" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
