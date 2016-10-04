@@ -39,7 +39,6 @@ class website_crm_partner(http.Controller):
     MODULE_BASE_PATH + '<model("res.partner"):partner>/delete',
     MODULE_BASE_PATH + '<model("res.partner"):partner>/edit',
     MODULE_BASE_PATH + 'search',
-    MODULE_BASE_PATH + 'set_login',
     ], type='http', auth="user", website=True)
     def get_partner(self, partner=None, search='',**post):
         search_domain = [('type','=','contact')]
@@ -70,10 +69,6 @@ class website_crm_partner(http.Controller):
             if request.httprequest.method == 'POST':
                 search = post.get('search_words')
             search_domain.append(('name','ilike',search))
-        elif request.httprequest.url[-9:] == 'set_login': #set login form
-            if request.httprequest.method == 'POST':
-                return werkzeug.utils.redirect(MODULE_BASE_PATH, 302)
-            return request.render(template['list'], {'object': None, 'root': MODULE_BASE_PATH, 'title': MODULE_TITLE, 'db': request.db,})
         elif partner:  # Detail
             return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
         return request.render(template['list'], {
