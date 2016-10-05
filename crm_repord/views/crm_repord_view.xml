@@ -416,9 +416,9 @@
                         </div>
                     </div>
                     <!-- partner todo list -->
-                    <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                    <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', user_id.partner_id.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                        <div class="col-xs-12" style="background-color: rgba(0, 0, 255, 0.15);">
+                        <div class="col-xs-12" id="todo_div">
                             <t t-if="notes">
                                 <h4 class="text-center" style="color: rgba(0, 0, 255, 1); padding-top: 8px;">TODO Notes:</h4>
                                 <t t-foreach="notes" t-as="note">
@@ -430,6 +430,8 @@
                                 </t>
                             </t>
                         </div>
+                        <input name="memo" type="text" class="form-control input-xs"/>
+                        <button onclick="create_note()">Skapa</button>
                     </div>
                     <!-- buttons for create log -->
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
@@ -555,77 +557,6 @@
             </div>
         </div>
     </template>
-
-<!--
-    <template id="store_info_update" name="Update Store Info" page="True">
-        <t t-call="website.layout">
-            <div id="wrap">
-                <div class="container">
-                    <legend class="text-center">Uppdaterar butik information</legend>
-                    <form class="mt32 mb32" method="post">
-                        <div class="form-group">
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="name">Namn</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="name" t-att-value="partner.name" class="form-control input-xs mb16" type="text" placeholder="Namn"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="gs1_gln">GLN nummer</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="gs1_gln" t-att-value="partner.gs1_gln" class="form-control input-xs mb16" type="number" placeholder="7301234567890"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="phone">Telefon</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="phone" t-att-value="partner.phone" class="form-control input-xs mb16" type="number" placeholder="0131234567"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="mobile">Mobil</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="mobile" t-att-value="partner.mobile" class="form-control input-xs mb16" type="number" placeholder="0701234567"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="email">Epost</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="email" t-att-value="partner.email" class="form-control input-xs mb16" type="email" placeholder="kalle.pettersson@exempel.se"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="ref">Reference Nr</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="ref" t-att-value="partner.ref" class="form-control input-xs mb16" type="number" placeholder="Referens nummer"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="street">Gata</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="street" t-att-value="partner.street" class="form-control input-xs mb16" type="text" placeholder="Kungsgatan 123"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="zip">PostNr</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="zip" t-att-value="partner.zip" class="form-control input-xs mb16" type="number" placeholder="12345"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="city">Ort</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="city" t-att-value="partner.city" class="form-control input-xs mb16" type="text" placeholder="Stockholm"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="size">Omsättning</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="size" t-att-value="partner.size" class="form-control input-xs mb16" type="number" placeholder="1000000"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="store_class">Butikklass</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <select name="store_class" class="selectpicker">
-                                    <option t-att-value="partner.store_class if partner.store_class else None"><t t-esc="partner.store_class if partner.store_class else 'Ej angett'"/> (nuvarande)</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="D">D</option>
-                                    <option value="E">E</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="pull-left"><a t-att-href="'/crm/%s/repord' %partner.id" class="btn btn-default" role="button">Avbryt</a></div>
-                            <div class="pull-right"><input type="submit" class="btn btn-warning" value="Uppdatera"/></div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </t>
-    </template>
--->
 
     <!-- Company Information -->
     <template id="company_detail" name="Object Detail Information">
@@ -766,6 +697,10 @@
                 #top_menu { background-color: #FFD529; }
 
                 #wrap { font-family: 'Open Sans', sans-serif; font-weight: 400; background-color: #f8f8f8;}
+
+                label { font-family: 'Open Sans', sans-serif; }
+
+                span, p { font-family: 'Open Sans', sans-serif; font-weight: 400; }
 
                 .navbar-static-top { background-color: #FFD529; }
 
@@ -1122,6 +1057,18 @@
                         confirm_validate = "Reporden har skickat!";
                     }
                     document.getElementById("confirm_message").innerHTML = confirm_validate;
+                }
+
+                /* create todo list */
+                function create_note(){
+                    openerp.jsonRpc("/crm/todo/done", 'call', {
+                        'note_id': '',
+                        'memo': $('input[name=memo]').val(),
+                    }).done(function(data){
+                        if(data == "note_created"){
+                            $("#todo_div").load(document.URL +  " #todo_div");
+                        }
+                    });
                 }
 
                 /* change todo list to done */

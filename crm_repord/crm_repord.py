@@ -157,14 +157,23 @@ class MobileSaleView(http.Controller):
         return 'removed'
 
     @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
-    def todo_done(self, note_id, **kw):
-        note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
-        note.write({
-            'open': False,
-            'stage_id': request.env.ref('note.note_stage_04').id,
-            'date_done': datetime.date.today(),
-        })
-        return 'note_done'
+    def todo_done(self, note_id, **post):
+        if request.httprequest.method == 'POST':
+            request.env['note.note'].create({
+                'open': True,
+                'stage_id': request.env.ref('note.note_stage_00').id,
+                'memo': post.get('memo'),
+                'partner_id': request.env['res.users'].browse(request.uid).partner_id.id,
+            })
+            return 'note_created'
+        else:
+            note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
+            note.write({
+                'open': False,
+                'stage_id': request.env.ref('note.note_stage_04').id, #set to Notes column
+                'date_done': datetime.date.today(),
+            })
+            return 'note_done'
 
     @http.route(['/crm/meeting/visited'], type='json', auth="user", methods=['POST'], website=True)
     def customer_visited(self, partner_id, **kw):
@@ -258,25 +267,6 @@ class MobileSaleView(http.Controller):
         else:
             return request.website.render("crm_repord.search_stores", {})
 
-    #~ @http.route(['/crm/<model("res.partner"):partner>/store_info_update'], type='http', auth="user", website=True)
-    #~ def store_info_update(self, partner=None, **post):
-        #~ if request.httprequest.method == 'POST':
-            #~ partner.write({
-                #~ 'name': post['name'],
-                #~ 'gs1_gln': post['gs1_gln'],
-                #~ 'phone': post['phone'],
-                #~ 'mobile': post['mobile'],
-                #~ 'email': post['email'],
-                #~ 'ref': post['ref'],
-                #~ 'street': post['street'],
-                #~ 'zip': post['zip'],
-                #~ 'city': post['city'],
-                #~ 'store_class': post['store_class'],
-                #~ 'size': post['size'],
-            #~ })
-            #~ return werkzeug.utils.redirect('/crm/%s/repord' % partner.id, 302)
-        #~ return request.website.render("crm_repord.store_info_update", {'partner': partner})
-
     @http.route([
         '/crm/<model("res.partner"):partner>/company',
         '/crm/<model("res.partner"):partner>/company/edit',
@@ -305,7 +295,6 @@ class MobileSaleView(http.Controller):
             'mode': 'view',
             'active_tab': post.get('active_tab')
         })
-
 
     @http.route([
         '/crm/<model("res.partner"):partner>/contact',
