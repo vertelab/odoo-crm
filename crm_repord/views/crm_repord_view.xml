@@ -89,17 +89,18 @@
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; padding: 0px 15px;">
-                            <ul class="nav nav-tabs nav-justified nav-categ">
-                                <li class="active">
+                            <t t-if="not active_tab"><t t-set="active_tab" t-value="'1'"/></t>
+                            <ul class="nav nav_tabs nav-justified nav-categ">
+                                <li t-att-class="'active' if active_tab == '1' else ''">
                                     <a data-toggle="tab" href="#butiksorder" style="border-bottom-style: none;">Order</a>
                                 </li>
-                                <li>
+                                <li t-att-class="'active' if active_tab == '2' else ''">
                                     <a data-toggle="tab" href="#kedjans_sortiment" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Sortiment</a>
                                 </li>
-                                <li>
+                                <li t-att-class="'active' if active_tab == '3' else ''">
                                     <a data-toggle="tab" href="#kund_kort" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Kundkort</a>
                                 </li>
-                                <li>
+                                <li t-att-class="'active' if active_tab == '4' else ''">
                                     <a data-toggle="tab" href="#bilder" style="border: 1px solid #CED2DB; border-top-style: none; border-right-style: none; border-bottom-style: none;">Bilder</a>
                                 </li>
                             </ul>
@@ -125,7 +126,7 @@
 
     <template id="butiksorder" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='butiksorder']" position="replace">
-            <div id="butiksorder" class="tab-pane fade in active col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+            <div id="butiksorder" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '1' else '')" style="padding: 0px;">
                 <div class="container">
                     <!-- content -->
                     <div class="tab-content">
@@ -290,7 +291,7 @@
 
     <template id="kedjans_sortiment" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='kedjans_sortiment']" position="replace">
-            <div id="kedjans_sortiment" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+            <div id="kedjans_sortiment" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '2' else '')" style="padding: 0px;">
                 <div class="container mt8 mb8" style="padding: 0px;">
                     <!-- <h2 class="text-center mb32" t-esc="partner.listing_id.name"/> -->
                     <t t-foreach="parent_products" t-as="pp">
@@ -323,7 +324,7 @@
 
     <template id="kund_kort" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='kund_kort']" position="replace">
-            <div id="kund_kort" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+            <div id="kund_kort" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '3' else '')" style="padding: 0px;">
                 <div class="row">
                     <!-- company information -->
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -363,8 +364,8 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32">
-                            <a t-att-href="'/crm/%s/company/edit' %partner.id" type="button" class="btn btn-paolos">Redigera Fakta</a>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                            <a t-att-href="'/crm/%s/company/edit' %partner.id" type="button" class="btn btn-warning btn-lg">Redigera Fakta</a>
                         </div>
                     </div>
                     <!-- contact persons -->
@@ -375,7 +376,7 @@
                                 <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card">
                                     <t t-foreach="partner.child_ids" t-as="c">
                                         <tr>
-                                            <td><h5><strong><t t-esc="c.function if c.function else 'Kontakt'"/></strong></h5></td>
+                                            <td><h5><strong><t t-esc="c.type.title()"/><t t-if="c.function"><t t-esc="' (%s)' %c.function"/></t></strong></h5></td>
                                         </tr>
                                         <tr>
                                             <td>
@@ -390,8 +391,8 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32">
-                            <a t-att-href="'/crm/%s/contact/add' %partner.id" type="button" class="btn btn-paolos">Lägga till</a>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                            <a t-att-href="'/crm/%s/contact/add' %partner.id" type="button" class="btn btn-warning btn-lg">Lägga till</a>
                         </div>
                     </div>
                     <!-- partner opportunities -->
@@ -415,9 +416,9 @@
                         </div>
                     </div>
                     <!-- partner todo list -->
-                    <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                    <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', user_id.partner_id.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                        <div class="col-xs-12" style="background-color: rgba(0, 0, 255, 0.15);">
+                        <div class="col-xs-12" id="todo_div">
                             <t t-if="notes">
                                 <h4 class="text-center" style="color: rgba(0, 0, 255, 1); padding-top: 8px;">TODO Notes:</h4>
                                 <t t-foreach="notes" t-as="note">
@@ -429,6 +430,8 @@
                                 </t>
                             </t>
                         </div>
+                        <input name="memo" type="text" class="form-control input-xs"/>
+                        <button onclick="create_note()">Skapa</button>
                     </div>
                     <!-- buttons for create log -->
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
@@ -457,7 +460,7 @@
 
     <template id="bilder" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='bilder']" position="replace">
-            <div id="bilder" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
+            <div id="bilder" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '4' else '')" style="padding: 0px;">
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt32 mb32">
@@ -555,77 +558,6 @@
         </div>
     </template>
 
-<!--
-    <template id="store_info_update" name="Update Store Info" page="True">
-        <t t-call="website.layout">
-            <div id="wrap">
-                <div class="container">
-                    <legend class="text-center">Uppdaterar butik information</legend>
-                    <form class="mt32 mb32" method="post">
-                        <div class="form-group">
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="name">Namn</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="name" t-att-value="partner.name" class="form-control input-xs mb16" type="text" placeholder="Namn"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="gs1_gln">GLN nummer</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="gs1_gln" t-att-value="partner.gs1_gln" class="form-control input-xs mb16" type="number" placeholder="7301234567890"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="phone">Telefon</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="phone" t-att-value="partner.phone" class="form-control input-xs mb16" type="number" placeholder="0131234567"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="mobile">Mobil</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="mobile" t-att-value="partner.mobile" class="form-control input-xs mb16" type="number" placeholder="0701234567"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="email">Epost</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="email" t-att-value="partner.email" class="form-control input-xs mb16" type="email" placeholder="kalle.pettersson@exempel.se"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="ref">Reference Nr</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="ref" t-att-value="partner.ref" class="form-control input-xs mb16" type="number" placeholder="Referens nummer"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="street">Gata</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="street" t-att-value="partner.street" class="form-control input-xs mb16" type="text" placeholder="Kungsgatan 123"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="zip">PostNr</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="zip" t-att-value="partner.zip" class="form-control input-xs mb16" type="number" placeholder="12345"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="city">Ort</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="city" t-att-value="partner.city" class="form-control input-xs mb16" type="text" placeholder="Stockholm"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="size">Omsättning</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <input name="size" t-att-value="partner.size" class="form-control input-xs mb16" type="number" placeholder="1000000"/>
-                            </div>
-                            <label class="col-md-4 col-sm-4 col-xs-4 control-label" for="store_class">Butikklass</label>
-                            <div class="col-md-8 col-sm-8 col-xs-8">
-                                <select name="store_class" class="selectpicker">
-                                    <option t-att-value="partner.store_class if partner.store_class else None"><t t-esc="partner.store_class if partner.store_class else 'Ej angett'"/> (nuvarande)</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="D">D</option>
-                                    <option value="E">E</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="pull-left"><a t-att-href="'/crm/%s/repord' %partner.id" class="btn btn-default" role="button">Avbryt</a></div>
-                            <div class="pull-right"><input type="submit" class="btn btn-warning" value="Uppdatera"/></div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </t>
-    </template>
--->
-
     <!-- Company Information -->
     <template id="company_detail" name="Object Detail Information">
         <t t-call="website.layout">
@@ -652,12 +584,12 @@
         <t t-call="website.layout">
             <div class="container mt32 mb32">
                 <t t-call="crm_repord.form_fields"/>
-                <div class="container">
-                    <a t-if="mode=='view'" type="button" class="btn btn-default btn-lg pull-left" onclick="return window.history.back();">Backa</a>
-                    <a t-if="mode=='view'" type="button" class="btn btn-paolos pull-right" t-att-href="'/crm/%s/contact/edit' %object.id">Redigera</a>
-                </div>
-                <div class="container mt32">
-                    <a t-if="mode=='view'" type="button" class="btn btn-danger btn-lg pull-right" style="margin: auto; display: block;" t-att-href="'/crm/%s/contact/delete' %object.id" onclick="return confirm('Are you sure?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a>
+                <div class="container crud_button_group">
+                    <ul>
+                        <li class="text-center"><a t-if="mode=='view'" type="button" class="btn btn-default btn-lg" onclick="return window.history.back();">Backa</a></li>
+                        <li class="text-center"><a t-if="mode=='view' and editable == 'enable'" type="button" class="btn btn-danger btn-lg" t-att-href="'/crm/%s/contact/delete' %object.id" onclick="return confirm('Are you sure?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li>
+                        <li class="text-center"><a t-if="mode=='view' and editable == 'enable'" type="button" class="btn btn-warning btn-lg" t-att-href="'/crm/%s/contact/edit' %object.id">Redigera</a></li>
+                    </ul>
                 </div>
             </div>
         </t>
@@ -674,42 +606,37 @@
                 <t t-if="ttype in ['integer', 'float']" t-set="type" t-value="number"/>
                 <!-- field label -->
                 <label><t t-esc="request.env[model].fields_get([field])[field]['string']" /></label>
-                <t t-if="mode == 'edit'">
+                <t t-if="mode == 'edit' or mode == 'add'">
                     <!-- text -->
                     <input t-if="ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
                         t-att-value="object.read([field])[0][field] if object else ''"
                         t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                        t-att-required="request.env[model].fields_get([field])[field]['required']" />
+                        t-att-required="request.env[model].fields_get([field])[field]['required']"
+                        t-att="{'disabled': '1'} if editable == 'disable' else {}"/>
                     <!-- textarea -->
                     <textarea t-if="ttype == 'text'" class="form-control" t-att-name="field"
                         t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
                         t-att-required="request.env[model].fields_get([field])[field]['required']"><t t-esc="object.read([field])[0][field] if object else ''"/></textarea>
                     <!-- selection -->
                     <select t-if="ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
-                        <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
-                            <option t-att-value="option[0]" t-att="{'selected': 'checked'} if option[0] == object.read([field])[0][field] else {}"><t t-raw="option[1]"/></option>
+                        <t t-if="mode == 'edit'">
+                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
+                                <option t-att-value="option[0]" t-att="{'selected': 'checked'} if option[0] == object.read([field])[0][field] else {}"><t t-raw="option[1]"/></option>
+                            </t>
+                        </t>
+                        <t t-if="mode == 'add'">
+                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
+                                <option t-att-value="option[0]"><t t-raw="option[1]"/></option>
+                            </t>
                         </t>
                     </select>
                     <!-- boolean -->
-                    <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" t-att-checked="1 if object.read([field])[0][field] else 0"/>
-                </t>
-                <t t-if="mode == 'add'">
-                    <!-- text -->
-                    <input t-if="ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
-                        t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                        t-att-required="request.env[model].fields_get([field])[field]['required']" />
-                    <!-- textarea -->
-                    <textarea t-if="ttype == 'text'" class="form-control" t-att-name="field"
-                        t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                        t-att-required="request.env[model].fields_get([field])[field]['required']"></textarea>
-                    <!-- selection -->
-                    <select t-if="ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
-                        <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
-                            <option t-att-value="option[0]"><t t-raw="option[1]"/></option>
-                        </t>
-                    </select>
-                    <!-- boolean -->
-                    <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox"/>
+                    <t t-if="mode == 'edit'">
+                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" t-att="{'checked': '1'} if object.read([field])[0][field] else {}"/>
+                    </t>
+                    <t t-if="mode == 'add'">
+                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox"/>
+                    </t>
                 </t>
                 <t t-if="mode == 'view' and ttype != 'boolean'">
                     <span t-esc="object.read([field])[0][field] if object else ''" />
@@ -719,7 +646,7 @@
                 </t>
             </div>
             <a t-if="mode == 'edit' or mode == 'add'" type="button" class="btn btn-default btn-lg mt32 mb32 pull-left" onclick="return window.history.back();">Avbryt</a>
-            <button t-if="mode == 'edit' or mode == 'add'" class="btn btn-paolos mt32 mb32 pull-right" name="btn-save" value="btn-save" type="submit">Spara</button>
+            <button t-if="mode == 'edit' or mode == 'add'" class="btn btn-warning btn-lg mt32 mb32 pull-right" name="btn-save" value="btn-save" type="submit">Spara</button>
         </form>
     </template>
 
@@ -727,13 +654,10 @@
         <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
             <style>
-                .btn-paolos {
-                    margin: auto;
-                    display: block;
+
+                .btn-warning {
                     background-color: #F6BB43;
-                    color: #fff;
-                    padding: 10px 16px;
-                    font-size: 1.2em;
+                    border-color: #F6BB43;
                 }
 
                 .navbar-static-top > .container {
@@ -773,6 +697,10 @@
                 #top_menu { background-color: #FFD529; }
 
                 #wrap { font-family: 'Open Sans', sans-serif; font-weight: 400; background-color: #f8f8f8;}
+
+                label { font-family: 'Open Sans', sans-serif; }
+
+                span, p { font-family: 'Open Sans', sans-serif; font-weight: 400; }
 
                 .navbar-static-top { background-color: #FFD529; }
 
@@ -964,6 +892,18 @@
                     height: 35px;
                 }
 
+                .customer_card a { color: #555; }
+
+                .crud_button_group > ul {
+                    padding: 0px;
+                }
+
+                .crud_button_group > ul > li {
+                    display: table-cell;
+                    width: 1%;
+                    margin-bottom: 0;
+                }
+
             </style>
         </xpath>
     </template>
@@ -1117,6 +1057,18 @@
                         confirm_validate = "Reporden har skickat!";
                     }
                     document.getElementById("confirm_message").innerHTML = confirm_validate;
+                }
+
+                /* create todo list */
+                function create_note(){
+                    openerp.jsonRpc("/crm/todo/done", 'call', {
+                        'note_id': '',
+                        'memo': $('input[name=memo]').val(),
+                    }).done(function(data){
+                        if(data == "note_created"){
+                            $("#todo_div").load(document.URL +  " #todo_div");
+                        }
+                    });
                 }
 
                 /* change todo list to done */
