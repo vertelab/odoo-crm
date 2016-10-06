@@ -306,26 +306,24 @@ class MobileSaleView(http.Controller):
         '/crm/<model("res.partner"):partner>/company/edit',
     ], type='http', auth="user", website=True)
     def company_info_update(self, partner=None, **post):
-        model = 'res.partner'
-        fields =  ['name','store_class','size','vat','email','phone']
         if request.httprequest.url[-4:] == 'edit': #Edit
             if request.httprequest.method == 'GET':
                 return request.render('crm_repord.company_detail', {
-                    'model': model,
-                    'object': partner,
-                    'fields': fields,
-                    'title': partner.name,
+                    'partner': partner,
                     'mode': 'edit',
                     'active_tab': post.get('active_tab')
                 })
             else:
-                partner.write({ f: post.get(f) for f in fields })
+                partner.write({
+                    'store_class': post.get('store_class'),
+                    'size': post.get('size'),
+                    'vat': post.get('vat'),
+                    'email': post.get('email'),
+                    'phone': post.get('phone'),
+                })
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
         return request.render('crm_repord.company_detail', {
-            'model': model,
-            'object': partner,
-            'fields': fields,
-            'title': partner.name,
+            'partner': partner,
             'mode': 'view',
             'active_tab': post.get('active_tab')
         })
@@ -337,38 +335,42 @@ class MobileSaleView(http.Controller):
         '/crm/<model("res.partner"):partner>/contact/delete',
     ], type='http', auth="user", website=True)
     def contact_info_update(self, partner=None, **post):
-        model = 'res.partner'
-        fields =  ['name','email','phone','mobile','function']
         editable = 'enable'
         if partner.type != 'contact':
             editable = 'disable'
         if request.httprequest.url[-4:] == 'edit': #Edit
             if request.httprequest.method == 'GET':
                 return request.render('crm_repord.object_detail', {
-                    'model': model,
-                    'object': partner,
-                    'partner': partner.parent_id,
-                    'fields': fields,
-                    'title': partner.name,
+                    'partner': partner,
+                    'parent': partner.parent_id,
                     'mode': 'edit',
                     'editable': editable,
                     'active_tab': post.get('active_tab')
                 })
             else:
-                partner.write({ f: post.get(f) for f in fields })
+                partner.write({
+                    'name': post.get('name'),
+                    'email': post.get('email'),
+                    'phone': post.get('phone'),
+                    'mobile': post.get('mobile'),
+                    'function': post.get('function'),
+                })
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.parent_id.id, 302)
         elif request.httprequest.url[-3:] == 'add': #Add
             if request.httprequest.method == 'GET':
-                return request.render('crm_repord.object_add', {
-                    'model': model,
-                    'object': None,
-                    'fields': fields,
-                    'title': 'Ny kontakt',
+                return request.render('crm_repord.object_detail', {
+                    'partner': None,
                     'mode': 'add',
                     'active_tab': post.get('active_tab')
                 })
             else:
-                contact = request.env['res.partner'].create({ f: post.get(f) for f in fields })
+                contact = request.env['res.partner'].create({
+                    'name': post.get('name'),
+                    'email': post.get('email'),
+                    'phone': post.get('phone'),
+                    'mobile': post.get('mobile'),
+                    'function': post.get('function'),
+                })
                 contact.write({'type': 'contact', 'parent_id': partner.id})
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
         elif request.httprequest.url[-6:] == 'delete': #Delete
@@ -378,11 +380,8 @@ class MobileSaleView(http.Controller):
                     partner.unlink()
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % parent, 302)
         return request.render('crm_repord.object_detail', {
-            'model': model,
-            'object': partner,
-            'partner': partner.parent_id,
-            'fields': fields,
-            'title': partner.name,
+            'partner': partner,
+            'parent': partner.parent_id,
             'mode': 'view',
             'editable': editable,
             'active_tab': post.get('active_tab')

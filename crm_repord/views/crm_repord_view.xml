@@ -347,7 +347,7 @@
                                     </tr>
                                     <tr>
                                         <td>Epost</td>
-                                        <td><h5><a t-att-href="'mailto:%s' %partner.email" t-if="partner.store_class"><span class="pull-right" t-esc="partner.email"/></a></h5></td>
+                                        <td><h5><a t-att-href="'mailto:%s' %partner.email" t-if="partner.email"><span class="pull-right" t-esc="partner.email"/></a></h5></td>
                                     </tr>
                                     <tr>
                                         <td>Telefon</td>
@@ -614,95 +614,115 @@
     </template>
 
     <!-- Company Information -->
-    <template id="company_detail" name="Object Detail Information">
+    <template id="company_detail" name="Butik Information">
         <t t-call="website.layout">
-            <div class="container mt32 mb32">
-                <t t-call="crm_repord.form_fields"/>
-                <div class="container">
-                    <a t-if="mode=='view'" type="button" class="fa fa-default pull-left" onclick="return window.history.back();">Backa</a>
+            <t t-if="mode == 'edit'">
+                <div class="container mt32 mb32">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="store_class">Butikklass</label>
+                            <select name="store_class" class="form-control selectpicker dropdown">
+                                <t t-foreach="partner.fields_get(['store_class'])['store_class']['selection']" t-as="option">
+                                    <option t-att-value="option[0]" t-att="{'selected': 'checked'} if option[0] == partner.read(['store_class'])[0]['store_class'] else {}"><t t-raw="option[1]"/></option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="size">Omsättning</label>
+                            <input name="size" type="number" class="form-control" t-att-value="partner.size" placeholder="Omsättning"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="vat">Orgnr</label>
+                            <input name="vat" type="text" class="form-control" t-att-value="partner.vat" placeholder="SE123456123401"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Epost</label>
+                            <input name="email" type="email" class="form-control" t-att-value="partner.email" placeholder="exempel@exempel.com"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefon</label>
+                            <input name="phone" type="text" class="form-control" t-att-value="partner.phone" placeholder="0131234567"/>
+                        </div>
+                        <div class="container">
+                            <a type="button" class="btn btn-default btn-lg mt32 mb32 pull-left" onclick="return window.history.back();">Avbryt</a>
+                            <button class="btn btn-warning btn-lg mt32 mb32 pull-right" name="btn-save" value="btn-save" type="submit">Spara</button>
+                        </div>
+                    </form>
                 </div>
-            </div>
+            </t>
         </t>
     </template>
 
-    <!-- Add New Contact -->
-    <template id="object_add" name="Object Add">
+    <!-- View Contact Information-->
+    <template id="object_detail" name="Kontakt Information">
         <t t-call="website.layout">
-            <div class="container mt32 mb32">
-                <t t-call="crm_repord.form_fields"/>
-            </div>
-        </t>
-    </template>
-
-    <!-- Object Information-->
-    <template id="object_detail" name="Object Detail Information">
-        <t t-call="website.layout">
-            <div class="container mt32 mb32">
-                <t t-call="crm_repord.form_fields"/>
-                <div class="container crud_button_group">
-                    <ul>
-                        <li class="text-center"><a t-if="mode=='view'" type="button" class="btn btn-default btn-lg" onclick="return window.history.back();">Backa</a></li>
-                        <li class="text-center"><a t-if="mode=='view' and editable == 'enable'" type="button" class="btn btn-danger btn-lg" t-att-href="'/crm/%s/contact/delete' %object.id" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li>
-                        <li class="text-center"><a t-if="mode=='view' and editable == 'enable'" type="button" class="btn btn-warning btn-lg" t-att-href="'/crm/%s/contact/edit' %object.id">Redigera</a></li>
-                    </ul>
+            <t t-if="mode == 'view'">
+                <div class="container mt32 mb32">
+                    <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                        <tr>
+                            <td>Namn</td>
+                            <td><h5 t-if="partner.name" t-esc="partner.name" class="pull-right"/></td>
+                        </tr>
+                        <tr>
+                            <td>Epost</td>
+                            <td><h5><a t-att-href="'mailto:%s' %partner.email" t-if="partner.email"><span class="pull-right" t-esc="partner.email"/></a></h5></td>
+                        </tr>
+                        <tr>
+                            <td>Telefon</td>
+                            <td><h5><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.phone)[1:] if str(partner.phone).startswith('0') else partner.phone))" t-if="partner.phone"><span class="pull-right" t-esc="partner.phone"/></a></h5></td>
+                        </tr>
+                        <tr>
+                            <td>Mobil</td>
+                            <td><h5><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.mobile)[1:] if str(partner.mobile).startswith('0') else partner.mobile))" t-if="partner.mobile"><span class="pull-right" t-esc="partner.mobile"/></a></h5></td>
+                        </tr>
+                        <tr>
+                            <td>Tjänst</td>
+                            <td><h5 class="pull-right" t-esc="partner.function"/></td>
+                        </tr>
+                    </table>
+                    <div class="container crud_button_group">
+                        <ul>
+                            <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                            <t t-if="editable == 'enable'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/contact/delete' %partner.id" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li></t>
+                            <t t-if="editable == 'enable'"><li class="text-center"><a type="button" class="btn btn-warning btn-lg mt32 mb32" t-att-href="'/crm/%s/contact/edit' %partner.id">Redigera</a></li></t>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            </t>
+            <t t-if="mode == 'edit' or mode == 'add'">
+                <div class="container mt32 mb32">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="name">Namn</label>
+                            <input name="name" type="text" class="form-control" t-att-value="partner.name if partner else ''" att="{'disabled': '1'} if editable == disable else {}" placeholder="Pelle Svensson" required="1"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Epost</label>
+                            <input name="email" type="email" class="form-control" t-att-value="partner.email if partner else ''" att="{'disabled': '1'} if editable == disable else {}" placeholder="exempel@exempel.com"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefon</label>
+                            <input name="phone" type="text" class="form-control" t-att-value="partner.phone if partner else ''" att="{'disabled': '1'} if editable == disable else {}" placeholder="0131234567"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile">Mobil</label>
+                            <input name="mobile" type="text" class="form-control" t-att-value="partner.mobile if partner else ''" att="{'disabled': '1'} if editable == disable else {}" placeholder="0131234567"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="function">Tjänst</label>
+                            <input name="function" type="text" class="form-control" t-att-value="partner.function if partner else ''" att="{'disabled': '1'} if editable == disable else {}" placeholder="Kontakt"/>
+                        </div>
+                        <div class="container crud_button_group">
+                            <ul>
+                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                                <t t-if="mode == 'edit' and editable == 'enable'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/contact/delete' %partner.id" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li></t>
+                                <t t-if="mode == 'add' or (mode == 'edit' and editable == 'enable')"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </t>
         </t>
-    </template>
-
-    <!-- form fileds -->
-    <template id="form_fields">
-        <form t-attf-action="" method="post">
-            <div t-foreach="fields" t-as="field" class="form-group">
-                <t t-set="ttype" t-value="request.env[model].fields_get([field])[field]['type']"/>
-                <t t-set="type" t-value="text"/>
-                <t t-if="'mail' in field" t-set="type" t-value="email"/>
-                <t t-if="ttype in ['date', 'datetime']" t-set="type" t-value="date"/>
-                <t t-if="ttype in ['integer', 'float']" t-set="type" t-value="number"/>
-                <!-- field label -->
-                <label><t t-esc="request.env[model].fields_get([field])[field]['string']" /></label>
-                <t t-if="mode == 'edit' or mode == 'add'">
-                    <!-- text -->
-                    <input t-if="ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
-                        t-att-value="object.read([field])[0][field] if object else ''"
-                        t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                        t-att-required="request.env[model].fields_get([field])[field]['required']"
-                        t-att="{'disabled': '1'} if editable == 'disable' else {}"/>
-                    <!-- textarea -->
-                    <textarea t-if="ttype == 'text'" class="form-control" t-att-name="field"
-                        t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                        t-att-required="request.env[model].fields_get([field])[field]['required']"><t t-esc="object.read([field])[0][field] if object else ''"/></textarea>
-                    <!-- selection -->
-                    <select t-if="ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
-                        <t t-if="mode == 'edit'">
-                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
-                                <option t-att-value="option[0]" t-att="{'selected': 'checked'} if option[0] == object.read([field])[0][field] else {}"><t t-raw="option[1]"/></option>
-                            </t>
-                        </t>
-                        <t t-if="mode == 'add'">
-                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
-                                <option t-att-value="option[0]"><t t-raw="option[1]"/></option>
-                            </t>
-                        </t>
-                    </select>
-                    <!-- boolean -->
-                    <t t-if="mode == 'edit'">
-                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" t-att="{'checked': '1'} if object.read([field])[0][field] else {}"/>
-                    </t>
-                    <t t-if="mode == 'add'">
-                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox"/>
-                    </t>
-                </t>
-                <t t-if="mode == 'view' and ttype != 'boolean'">
-                    <span t-esc="object.read([field])[0][field] if object else ''" />
-                </t>
-                <t t-if="mode == 'view' and ttype == 'boolean'">
-                    <span t-esc="'Yes' if object.read([field])[0][field] else 'No'" />
-                </t>
-            </div>
-            <a t-if="mode == 'edit' or mode == 'add'" type="button" class="btn btn-default btn-lg mt32 mb32 pull-left" onclick="return window.history.back();">Avbryt</a>
-            <button t-if="mode == 'edit' or mode == 'add'" class="btn btn-warning btn-lg mt32 mb32 pull-right" name="btn-save" value="btn-save" type="submit">Spara</button>
-        </form>
     </template>
 
     <template id="crm_css" inherit_id="website.layout">
