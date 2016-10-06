@@ -377,6 +377,7 @@
                                     <t t-foreach="partner.child_ids" t-as="c">
                                         <tr>
                                             <td><h5><strong><t t-esc="c.type.title()"/><t t-if="c.function"><t t-esc="' (%s)' %c.function"/></t></strong></h5></td>
+                                            <td/>
                                         </tr>
                                         <tr>
                                             <td>
@@ -396,48 +397,97 @@
                         </div>
                     </div>
                     <!-- partner opportunities -->
-                    <t t-set="oppors" t-value="request.env['crm.lead'].sudo().search([('partner_id', '=', partner.id)])"/>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8 text-center">
-                        <div t-if="oppors" class="col-xs-12" style="background-color: rgba(0, 255, 0, 0.2);">
-                            <h4 class="text-center" style="color: rgba(0, 123, 0, 1); padding-top: 8px;">Opportunity:</h4>
-                            <t t-foreach="oppors" t-as="opp">
-                                <div class="mb8" style="padding: 10px; background-color: rgba(0, 0, 0, 0.2);">
-                                    <strong>
-                                        <span t-field="opp.name"/>
-                                        <span><t t-esc="'%.0d' %opp.planned_revenue"/> <t t-esc="opp.revenue_unit"/></span>
-                                        <span t-field="opp.campaign"/>
-                                        <span t-if="opp.campaign.account_id" t-field="opp.campaign.account_id.name"/>
-                                    </strong>
-                                    <p t-if="opp.description">
-                                        <span t-field="opp.description"/>
-                                    </p>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <h3 class="text-center">Affärsmöjligheter</h3>
+                        <t t-set="oppors" t-value="request.env['crm.lead'].sudo().search([('partner_id', '=', partner.id)])"/>
+                        <div class="container">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <t t-if="oppors">
+                                    <table id="oppor_table" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                                        <t t-foreach="oppors" t-as="oppor">
+                                            <tr>
+                                                <td>
+                                                    <span t-field="oppor.name"/>
+<!--
+                                                    <span><t t-esc="'%.0d' %oppor.planned_revenue"/> <t t-esc="oppor.revenue_unit"/></span>
+                                                    <span t-field="oppor.campaign"/>
+                                                    <span t-if="oppor.campaign.account_id" t-field="oppor.campaign.account_id.name"/>
+                                                    <span t-if="opp.description" t-field="opp.description"/>
+-->
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- partner meeting -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <h3 class="text-center">Möten</h3>
+                        <t t-set="meetings" t-value="partner.meeting_ids.filtered(lambda m: m.check_if_current(m)).sorted(lambda r: r.start)"/>
+                        <div class="container">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <t t-if="meetings">
+                                    <table id="meeting_table" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                                        <t t-foreach="meetings" t-as="meeting">
+                                            <tr>
+                                                <td>
+                                                    <p t-att-onclick="'meeting_done(&quot;%s&quot;)' %meeting.id" t-att-id="'meeting_%s_text' %meeting.id" t-esc="meeting.description[:-1]" class="pull-left meeting_text"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="meeting.start_date">
+                                                        <p t-esc="meeting.start_date" class="pull-right" style="margin-top: 10px;"/>
+                                                    </t>
+                                                    <t t-if="meeting.start_datetime">
+                                                        <p t-esc="meeting.start_datetime[:-3]" class="pull-right" style="margin-top: 10px;"/>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </t>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                                <button id="show_meeting_button_group" class="btn btn-warning btn-lg" onclick="show_create_meeting()">Skapa nytt</button>
+                                <div id="meeting_button_group" class="hidden">
+                                    <lable for="meeting_content">Beskrivning</lable>
+                                    <input id="meeting_content" name="meeting_content" type="text" class="form-control input-xs mb16"/>
+                                    <lable for="meeting_date_start">Startdatum</lable>
+                                    <input id="meeting_date_start" name="meeting_date_start" type="datetime" class="form-control input-xs mb16"/>
+                                    <lable for="meeting_date_end">Slutdatum</lable>
+                                    <input id="meeting_date_end" name="meeting_date_end" type="datetime" class="form-control input-xs mb16"/>
+                                    <button class="btn btn-default btn-lg pull-left" onclick="hide_create_meeting()">Avbryt</button>
+                                    <button class="btn btn-warning btn-lg pull-right" t-att-onclick="'create_meeting(&quot;%s&quot;)' %partner.id">Skapa</button>
                                 </div>
-                            </t>
+                            </div>
                         </div>
                     </div>
                     <!-- partner todo list -->
-                    <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', user_id.partner_id.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)], order='create_date')"/>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <h3 class="text-center">Todo</h3>
-                        <div class="container" id="todo_div">
-                            <t t-if="notes">
-                                <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
-                                    <t t-foreach="notes" t-as="note">
-                                        <tr>
-                                            <td>
-                                                <p t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" t-att-id="'note_%s_text' %note.id" t-field="note.name" style="margin-top: 10px;"/>
-                                            </td>
-                                        </tr>
-                                    </t>
-                                </table>
-                            </t>
-                        </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
-                            <button id="show_note_button_group" class="btn btn-warning btn-lg" onclick="show_create_note()">Skapa nytt</button>
-                            <div id="note_button_group" class="hidden">
-                                <input id="note_memo" name="memo" type="text" class="form-control input-xs mb16"/>
-                                <button class="btn btn-default btn-lg pull-left" onclick="hide_create_note()">Avbryt</button>
-                                <button class="btn btn-warning btn-lg pull-right" onclick="create_note()">Skapa</button>
+                        <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', user_id.partner_id.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)], order='create_date')"/>
+                        <div class="container">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <t t-if="notes">
+                                    <table id="todo_table" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                                        <t t-foreach="notes" t-as="note">
+                                            <tr>
+                                                <td>
+                                                    <p t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" t-att-id="'note_%s_text' %note.id" t-field="note.name" style="margin-top: 10px;"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </t>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                                <button id="show_note_button_group" class="btn btn-warning btn-lg" onclick="show_create_note()">Skapa nytt</button>
+                                <div id="note_button_group" class="hidden">
+                                    <input id="note_memo" name="memo" type="text" class="form-control input-xs mb16"/>
+                                    <button class="btn btn-default btn-lg pull-left" onclick="hide_create_note()">Avbryt</button>
+                                    <button class="btn btn-warning btn-lg pull-right" onclick="create_note()">Skapa</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -912,6 +962,13 @@
                     margin-bottom: 0;
                 }
 
+                .meeting_text {
+                    margin-top: 10px;
+                    padding-right: 10px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
             </style>
         </xpath>
     </template>
@@ -1067,6 +1124,39 @@
                     document.getElementById("confirm_message").innerHTML = confirm_validate;
                 }
 
+                /* show meeting input */
+                function show_create_meeting(){
+                    $("#show_meeting_button_group").addClass("hidden");
+                    $("#meeting_button_group").removeClass("hidden");
+                }
+
+                /* hide meeting input */
+                function hide_create_meeting(){
+                    $("#meeting_button_group").addClass("hidden");
+                    $("#show_meeting_button_group").removeClass("hidden");
+                }
+
+                /* create meeting */
+                function create_meeting(partner){
+                    if ($("input[name=meeting_content]").val() != "") {
+                        openerp.jsonRpc("/crm/meeting/create", 'call', {
+                            'partner_id': partner,
+                            'meeting_content': $("input[name=meeting_content]").val(),
+                            'meeting_date_start': $("input[name=meeting_date_start]").val(),
+                            'meeting_date_end': $("input[name=meeting_date_end]").val()
+                        }).done(function(data){
+                            if(data == "meeting_created"){
+                                $("#meeting_table").load(document.URL + " #meeting_table");
+                                $("#meeting_content").val("");
+                                $("#meeting_date_start").val("");
+                                $("#meeting_date_end").val("");
+                                $("#meeting_button_group").addClass("hidden");
+                                $("#show_meeting_button_group").removeClass("hidden");
+                            }
+                        });
+                    }
+                }
+
                 /* show note input */
                 function show_create_note(){
                     $("#show_note_button_group").addClass("hidden");
@@ -1083,11 +1173,11 @@
                 function create_note(){
                     if ($("input[name=memo]").val() != "") {
                         openerp.jsonRpc("/crm/todo/create", 'call', {
-                            'note_id': '',
-                            'memo': $('input[name=memo]').val(),
+                            'note_id': "",
+                            'memo': $("input[name=memo]").val(),
                         }).done(function(data){
                             if(data == "note_created"){
-                                $("#todo_div").load(document.URL + " #todo_div");
+                                $("#todo_table").load(document.URL + " #todo_table");
                                 $("#note_memo").val("");
                                 $("#note_button_group").addClass("hidden");
                                 $("#show_note_button_group").removeClass("hidden");
@@ -1107,7 +1197,7 @@
                                 "color": "#f00;",
                                 "margin-top": 10 + "px;"
                             });
-                            $("#todo_div").load(document.URL + " #todo_div");
+                            $("#todo_table").load(document.URL + " #todo_table");
                         }
                     });
                 }

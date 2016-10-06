@@ -56,6 +56,13 @@ class res_partner(models.Model):
     listing_id = fields.Many2one(comodel_name='res.partner.listing', string='Listing')
     repord_3p_supplier = fields.Boolean('Handle reporders for this partner')
 
+class calendar_event(models.Model):
+    _inherit = 'calendar.event'
+
+    @api.model
+    def check_if_current(self, event):
+        return event.start_datetime > fields.Datetime.now() or event.start_date > fields.Date.today()
+
 class res_partner_listing(models.Model):
     _name = 'res.partner.listing'
 
@@ -155,6 +162,24 @@ class MobileSaleView(http.Controller):
                     'product_ids': [(3, int(product_id), 0)]
                 })
         return 'removed'
+
+    @http.route(['/crm/meeting/create'], type='json', auth="user", methods=['POST'], website=True)
+    def meeting_create(self, partner_id, meeting_content, meeting_date_start, meeting_date_end, **post):
+        _logger.warn(meeting_date_start)
+        if request.httprequest.method == 'POST':
+            #~ _logger.warn(fields.Datetime.convert_to_cache(meeting_date_start))
+            week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
+            meeting = request.env['calendar.event'].create({
+                'name': request.env['res.partner'].browse(int(partner_id)).name,
+                'start_datetime': meeting_date_start,
+                'stop_datetime': meeting_date_end,
+                'week_number': week_number,
+                'weekday': weekday,
+                'partner_ids': [(6, 0, [int(partner_id)])],
+                'allday': False,
+                'description': meeting_content + '\n' + '%s/crm/%s/repord' % (request.env['ir.config_parameter'].get_param('web.base.url'), partner_id),
+            })
+            return 'meeting_created'
 
     @http.route(['/crm/todo/create'], type='json', auth="user", methods=['POST'], website=True)
     def todo_create(self, **post):
