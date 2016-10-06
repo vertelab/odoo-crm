@@ -448,7 +448,7 @@
                                     </table>
                                 </t>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32">
                                 <button id="show_meeting_button_group" class="btn btn-warning btn-lg" onclick="show_create_meeting()">Skapa nytt</button>
                                 <div id="meeting_button_group" class="hidden">
                                     <lable for="meeting_content">Beskrivning</lable>
@@ -491,26 +491,23 @@
                             </div>
                         </div>
                     </div>
-                    <!-- buttons for create log -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                        <div class="mt32 mb32">
-                            <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
-                            <h4 class="text-center" id="p_fa_message"/>
-                            <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-default mt16 mb16" style="margin: auto; display: block;">Paolos Frys</button>
-                            <h4 class="text-center" id="p_fr_message"/>
-                            <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary mt16 mb16" style="margin: auto; display: block;">Leröy Färsk</button>
-                            <h4 class="text-center" id="l_fa_message"/>
+                </div>
+                <!-- buttons for create log -->
+                <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                    <div class="mt32 mb32">
+                        <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
+                        <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-default mt16 mb16" style="margin: auto; display: block;">Paolos Frys</button>
+                        <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary mt16 mb16" style="margin: auto; display: block;">Leröy Färsk</button>
+                    </div>
+                </div>
+                <!-- buttons for mark meeting done -->
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                    <t t-if="len(partner._get_meeting()) &gt; 0">
+                        <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
+                        <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
+                            <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
                         </div>
-                    </div>
-                    <!-- buttons for mark meeting done -->
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                        <t t-if="len(partner._get_meeting()) &gt; 0">
-                            <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
-                            <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
-                                <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success" style="margin: auto; display: block;">Customer Visited</button>
-                            </div>
-                        </t>
-                    </div>
+                    </t>
                 </div>
             </div>
         </xpath>
@@ -969,6 +966,10 @@
                     text-overflow: ellipsis;
                 }
 
+                #presentation_div {
+                    background-color: #F8F8F8;
+                }
+
             </style>
         </xpath>
     </template>
@@ -1204,53 +1205,47 @@
 
                 /* presentation of Paolos färsk */
                 function paolos_farsk(partner_id, categ){
-                    var p_fa = "";
                     if (confirm("Vill du registrera denna presentation?") == true) {
                         openerp.jsonRpc("/crm/presentation/done", 'call', {
                             'partner_id': partner_id,
                             'categ': categ,
                         }).done(function(data){
                             if(data == "presentation_done"){
-                                $("#" + partner_id + "_p_fa").addClass("hidden");
+                                $("#" + partner_id + "_p_fa").css({"opacity": "0.4", "cursor": "not-allowed"});
+                                $("#" + partner_id + "_p_fa").removeAttr("onclick");
                             }
                         });
-                        p_fa = "Du har registrerat presentation för Paolos Färsk!";
                     }
-                    document.getElementById("p_fa_message").innerHTML = p_fa;
                 }
 
                 /* presentation of Paolos frys */
                 function paolos_frys(partner_id, categ){
-                    var p_fr = "";
                     if (confirm("Vill du registrera denna presentation?") == true) {
                         openerp.jsonRpc("/crm/presentation/done", 'call', {
                             'partner_id': partner_id,
                             'categ': categ,
                         }).done(function(data){
                             if(data == "presentation_done"){
-                                $("#" + partner_id + "_p_fr").addClass("hidden");
+                                $("#" + partner_id + "_p_fr").css({"opacity": "0.4", "cursor": "not-allowed"});
+                                $("#" + partner_id + "_p_fr").removeAttr("onclick");
                             }
                         });
-                        p_fr = "Du har registrerat presentation för Paolos Frys!";
                     }
-                    document.getElementById("p_fr_message").innerHTML = p_fr;
                 }
 
                 /* presentation of Leröy färsk */
                 function leroy_farsk(partner_id, categ){
-                    var l_fa = "";
                     if (confirm("Vill du registrera denna presentation?") == true) {
                         openerp.jsonRpc("/crm/presentation/done", 'call', {
                             'partner_id': partner_id,
                             'categ': categ,
                         }).done(function(data){
                             if(data == "presentation_done"){
-                                $("#" + partner_id + "_l_fa").addClass("hidden");
+                                $("#" + partner_id + "_l_fa").css({"opacity": "0.4", "cursor": "not-allowed"});
+                                $("#" + partner_id + "_l_fa").removeAttr("onclick");
                             }
                         });
-                        l_fa = "Du har registrerat presentation för Lerøy Färsk!";
                     }
-                    document.getElementById("l_fa_message").innerHTML = l_fa;
                 }
 
                 /* change status of meeting */

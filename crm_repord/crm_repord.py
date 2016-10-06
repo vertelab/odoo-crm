@@ -218,7 +218,7 @@ class MobileSaleView(http.Controller):
         partner = request.env['res.partner'].browse(int(partner_id))
         request.env['mail.message'].create({
             'body': 'Presentation done.',   #TODO: change message body
-            'subject': 'Presentation to ' + categ + ' has be done',
+            'subject': 'Presentationen till ' + categ + ' har registrerat',
             'author_id': request.env['res.users'].browse(request.env.uid).partner_id.id,
             'model': partner._name,
             'res_id': partner.id,
