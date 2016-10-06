@@ -332,7 +332,7 @@
                         <h3 class="text-center mt8"><t t-esc="partner.name"/></h3>
                         <div class="container">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card">
+                                <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
                                     <tr>
                                         <td>Butikklass</td>
                                         <td><h5 t-if="partner.store_class" t-esc="partner.store_class" class="pull-right"/></td>
@@ -373,7 +373,7 @@
                         <h3 class="text-center">Kontaktpersoner</h3>
                         <div class="container">
                             <div t-if="partner.child_ids" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card">
+                                <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
                                     <t t-foreach="partner.child_ids" t-as="c">
                                         <tr>
                                             <td><h5><strong><t t-esc="c.type.title()"/><t t-if="c.function"><t t-esc="' (%s)' %c.function"/></t></strong></h5></td>
@@ -416,22 +416,30 @@
                         </div>
                     </div>
                     <!-- partner todo list -->
-                    <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', user_id.partner_id.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])"/>
+                    <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', user_id.partner_id.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)], order='create_date')"/>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
-                        <div class="col-xs-12" id="todo_div">
+                        <h3 class="text-center">Todo</h3>
+                        <div class="container" id="todo_div">
                             <t t-if="notes">
-                                <h4 class="text-center" style="color: rgba(0, 0, 255, 1); padding-top: 8px;">TODO Notes:</h4>
-                                <t t-foreach="notes" t-as="note">
-                                    <div t-att-id="'note_%s' %note.id" t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" class="mb8" style="padding: 10px; background-color: rgba(0, 0, 0, 0.2);">
-                                        <p t-att-id="'note_%s_text' %note.id" class="text-center" style="margin-top: 10px;">
-                                            <span t-field="note.name" style="color: #000; padding: 5px; margin: 0px;"/>
-                                        </p>
-                                    </div>
-                                </t>
+                                <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                                    <t t-foreach="notes" t-as="note">
+                                        <tr>
+                                            <td>
+                                                <p t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" t-att-id="'note_%s_text' %note.id" t-field="note.name" style="margin-top: 10px;"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
                             </t>
                         </div>
-                        <input name="memo" type="text" class="form-control input-xs"/>
-                        <button onclick="create_note()">Skapa</button>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                            <button id="show_note_button_group" class="btn btn-warning btn-lg" onclick="show_create_note()">Skapa nytt</button>
+                            <div id="note_button_group" class="hidden">
+                                <input id="note_memo" name="memo" type="text" class="form-control input-xs mb16"/>
+                                <button class="btn btn-default btn-lg pull-left" onclick="hide_create_note()">Avbryt</button>
+                                <button class="btn btn-warning btn-lg pull-right" onclick="create_note()">Skapa</button>
+                            </div>
+                        </div>
                     </div>
                     <!-- buttons for create log -->
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
@@ -887,12 +895,12 @@
 
                 .control-label { padding-top: 7px; }
 
-                .customer_card tr {
+                .customer_card_table tr {
                     border-bottom: 1px solid #D5D5D5 !important;
                     height: 35px;
                 }
 
-                .customer_card a { color: #555; }
+                .customer_card_table a { color: #555; }
 
                 .crud_button_group > ul {
                     padding: 0px;
@@ -1059,30 +1067,47 @@
                     document.getElementById("confirm_message").innerHTML = confirm_validate;
                 }
 
+                /* show note input */
+                function show_create_note(){
+                    $("#show_note_button_group").addClass("hidden");
+                    $("#note_button_group").removeClass("hidden");
+                }
+
+                /* hide note input */
+                function hide_create_note(){
+                    $("#note_button_group").addClass("hidden");
+                    $("#show_note_button_group").removeClass("hidden");
+                }
+
                 /* create todo list */
                 function create_note(){
-                    openerp.jsonRpc("/crm/todo/done", 'call', {
-                        'note_id': '',
-                        'memo': $('input[name=memo]').val(),
-                    }).done(function(data){
-                        if(data == "note_created"){
-                            $("#todo_div").load(document.URL +  " #todo_div");
-                        }
-                    });
+                    if ($("input[name=memo]").val() != "") {
+                        openerp.jsonRpc("/crm/todo/create", 'call', {
+                            'note_id': '',
+                            'memo': $('input[name=memo]').val(),
+                        }).done(function(data){
+                            if(data == "note_created"){
+                                $("#todo_div").load(document.URL + " #todo_div");
+                                $("#note_memo").val("");
+                                $("#note_button_group").addClass("hidden");
+                                $("#show_note_button_group").removeClass("hidden");
+                            }
+                        });
+                    }
                 }
 
                 /* change todo list to done */
                 function todo_done(note_id){
-                    note_text = "note_" + note_id + "_text";
                     openerp.jsonRpc("/crm/todo/done", 'call', {
                         'note_id': note_id,
                     }).done(function(data){
                         if(data == "note_done"){
-                            $("#" + note_text).css({
+                            $("#note_" + note_id + "_text").css({
                                 "text-decoration": "line-through",
                                 "color": "#f00;",
                                 "margin-top": 10 + "px;"
                             });
+                            $("#todo_div").load(document.URL + " #todo_div");
                         }
                     });
                 }

@@ -156,8 +156,8 @@ class MobileSaleView(http.Controller):
                 })
         return 'removed'
 
-    @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
-    def todo_done(self, note_id, **post):
+    @http.route(['/crm/todo/create'], type='json', auth="user", methods=['POST'], website=True)
+    def todo_create(self, **post):
         if request.httprequest.method == 'POST':
             request.env['note.note'].create({
                 'open': True,
@@ -166,14 +166,16 @@ class MobileSaleView(http.Controller):
                 'partner_id': request.env['res.users'].browse(request.uid).partner_id.id,
             })
             return 'note_created'
-        else:
-            note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
-            note.write({
-                'open': False,
-                'stage_id': request.env.ref('note.note_stage_04').id, #set to Notes column
-                'date_done': datetime.date.today(),
-            })
-            return 'note_done'
+
+    @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
+    def todo_done(self, note_id, **post):
+        note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
+        note.write({
+            'open': False,
+            'stage_id': request.env.ref('note.note_stage_04').id, #set to Notes column
+            'date_done': datetime.date.today(),
+        })
+        return 'note_done'
 
     @http.route(['/crm/meeting/visited'], type='json', auth="user", methods=['POST'], website=True)
     def customer_visited(self, partner_id, **kw):
