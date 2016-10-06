@@ -63,6 +63,13 @@ class calendar_event(models.Model):
     def check_if_current(self, event):
         return event.start_datetime > fields.Datetime.now() or event.start_date > fields.Date.today()
 
+    @api.multi
+    def strip_desc(self):
+        str = ''
+        if 'http://' in self.description:
+            str = self.description[0:self.description.find('http://')]
+        return str[0:30 if len(str) >= 30 else len(str)]
+
 class res_partner_listing(models.Model):
     _name = 'res.partner.listing'
 

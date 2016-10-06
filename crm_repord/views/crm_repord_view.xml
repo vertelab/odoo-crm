@@ -365,7 +365,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
-                            <a t-att-href="'/crm/%s/company/edit' %partner.id" type="button" class="btn btn-warning btn-lg">Redigera Fakta</a>
+                            <a t-att-href="'/crm/%s/company/edit' %partner.id" type="button" class="btn btn-warning btn-lg">Redigera infomation</a>
                         </div>
                     </div>
                     <!-- contact persons -->
@@ -433,7 +433,7 @@
                                         <t t-foreach="meetings" t-as="meeting">
                                             <tr>
                                                 <td>
-                                                    <p t-att-onclick="'meeting_done(&quot;%s&quot;)' %meeting.id" t-att-id="'meeting_%s_text' %meeting.id" t-esc="meeting.description[:-1]" class="pull-left meeting_text"/>
+                                                    <p t-att-onclick="'meeting_done(&quot;%s&quot;)' %meeting.id" t-att-id="'meeting_%s_text' %meeting.id" t-esc="meeting.strip_desc()" class="pull-left meeting_text"/>
                                                 </td>
                                                 <td>
                                                     <t t-if="meeting.start_date">
@@ -449,14 +449,14 @@
                                 </t>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32">
-                                <button id="show_meeting_button_group" class="btn btn-warning btn-lg" onclick="show_create_meeting()">Skapa nytt</button>
+                                <button id="show_meeting_button_group" class="btn btn-warning btn-lg" onclick="show_create_meeting()" style="margin: auto; display: block;">Skapa nytt</button>
                                 <div id="meeting_button_group" class="hidden">
                                     <lable for="meeting_content">Beskrivning</lable>
                                     <input id="meeting_content" name="meeting_content" type="text" class="form-control input-xs mb16"/>
                                     <lable for="meeting_date_start">Startdatum</lable>
-                                    <input id="meeting_date_start" name="meeting_date_start" type="datetime" class="form-control input-xs mb16"/>
+                                    <input id="meeting_date_start" name="meeting_date_start" type="datetime" class="form-control input-xs mb16" placeholder="åååå-mm-dd tt:mm:ss"/>
                                     <lable for="meeting_date_end">Slutdatum</lable>
-                                    <input id="meeting_date_end" name="meeting_date_end" type="datetime" class="form-control input-xs mb16"/>
+                                    <input id="meeting_date_end" name="meeting_date_end" type="datetime" class="form-control input-xs mb16" placeholder="åååå-mm-dd tt:mm:ss"/>
                                     <button class="btn btn-default btn-lg pull-left" onclick="hide_create_meeting()">Avbryt</button>
                                     <button class="btn btn-warning btn-lg pull-right" t-att-onclick="'create_meeting(&quot;%s&quot;)' %partner.id">Skapa</button>
                                 </div>
