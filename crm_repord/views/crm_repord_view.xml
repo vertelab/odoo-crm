@@ -75,7 +75,6 @@
                         <span t-field="partner.image" t-field-options="{&quot;widget&quot;: &quot;image&quot;, &quot;style&quot;:&quot;margin: auto; margin-top: 40px; max-height: 70px;&quot;}"/>
                         <p class="text-center mt16 mb16" style="font-size: 2.3em; font-weight: 300; color: #6a6a6a;" t-field="partner.name"/>
                         <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')"/>
-                        <!-- <h2 class="text-center mb32" t-esc="partner.name"/> -->
                         <!-- navigator -->
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-12 col-sm-12 col-xs-12">
@@ -146,18 +145,6 @@
                                         </div>
                                     </div>
                                 </div>
-<!--
-                                <ul class="dropdown-menu">
-                                    <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
-                                    <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
-                                        <li t-att-class="'%s' %'active' if b_c == brand_categs[0] else ''">
-                                            <a data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %b_c.id">
-                                                <span t-field="b_c.name" style="color: #FFA62B;"/>
-                                            </a>
-                                        </li>
-                                    </t>
-                                </ul>
--->
                                 <div class="tab-content">
                                     <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
                                     <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
@@ -168,13 +155,6 @@
                                             <t t-foreach="b_c" t-as="p_c">
                                                 <t t-set="order_line" t-value="request.env['rep.order.line'].search([('order_id', '=', order.id)])"/>
                                                 <table class="table table-striped" style="">
-<!--
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="text-center" style="background-color: #000; color: #fff;">Products</th>
-                                                        </tr>
-                                                    </thead>
--->
                                                     <tbody>
                                                         <t t-foreach="products" t-as="p">
                                                         <tr>
@@ -293,7 +273,6 @@
         <xpath expr="//div[@id='kedjans_sortiment']" position="replace">
             <div id="kedjans_sortiment" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '2' else '')" style="padding: 0px;">
                 <div class="container mt8 mb8" style="padding: 0px;">
-                    <!-- <h2 class="text-center mb32" t-esc="partner.listing_id.name"/> -->
                     <t t-foreach="parent_products" t-as="pp">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8 sort_products">
                             <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if pp not in partner.product_ids else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" style="background-color: #FF4F35; height: 100%; color: #fff;">
@@ -493,7 +472,7 @@
                     </div>
                 </div>
                 <!-- buttons for create log -->
-                <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="mt32 mb32">
                         <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
                         <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-default btn-lg mt16 mb16" style="margin: auto; display: block;">Paolos Frys</button>
@@ -501,7 +480,7 @@
                     </div>
                 </div>
                 <!-- buttons for mark meeting done -->
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <t t-if="len(partner._get_meeting()) &gt; 0">
                         <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
                         <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
