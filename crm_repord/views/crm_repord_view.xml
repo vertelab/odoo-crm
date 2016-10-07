@@ -343,7 +343,7 @@
                                     </tr>
                                     <tr>
                                         <td>Orgnr</td>
-                                        <td><h5 t-if="partner.vat and partner.vat.startswith('SE')"><span class="pull-right"><t t-esc="partner.vat[2:8]"/>-<t t-esc="partner.vat[8:12]"/></span></h5></td>
+                                        <td><h5 t-if="partner.company_registry"><span class="pull-right"><t t-esc="partner.company_registry"/></span></h5></td>
                                     </tr>
                                     <tr>
                                         <td>Epost</td>
