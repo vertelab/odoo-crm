@@ -208,7 +208,6 @@ class MobileSaleView(http.Controller):
 
     @http.route(['/crm/meeting/create'], type='json', auth="user", methods=['POST'], website=True)
     def meeting_create(self, partner_id, meeting_content, meeting_date_start, meeting_date_end, **post):
-        _logger.warn(meeting_date_start)
         if request.httprequest.method == 'POST':
             #~ _logger.warn(fields.Datetime.convert_to_cache(meeting_date_start))
             week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
@@ -240,7 +239,7 @@ class MobileSaleView(http.Controller):
         note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
         note.write({
             'open': False,
-            'stage_id': request.env.ref('note.note_stage_04').id, #set to Notes column
+            'stage_id': request.env.ref('note.note_stage_04').id, #this doesn't work
             'date_done': datetime.date.today(),
         })
         return 'note_done'
