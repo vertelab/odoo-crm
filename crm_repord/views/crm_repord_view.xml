@@ -424,10 +424,10 @@
                                                 </td>
                                                 <td>
                                                     <t t-if="meeting.start_date">
-                                                        <p t-esc="meeting.start_date" class="pull-right" style="margin-top: 10px;"/>
+                                                        <p t-field="meeting.start_date" class="pull-right" style="margin-top: 10px;"/>
                                                     </t>
                                                     <t t-if="meeting.start_datetime">
-                                                        <p t-esc="meeting.start_datetime[:-3]" class="pull-right" style="margin-top: 10px;"/>
+                                                        <p t-field="meeting.start_datetime" class="pull-right" style="margin-top: 10px;"/>
                                                     </t>
                                                 </td>
                                             </tr>
