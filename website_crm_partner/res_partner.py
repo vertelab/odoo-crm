@@ -25,74 +25,66 @@ from openerp import http
 from openerp.http import request
 import werkzeug
 
+from openerp.addons.website_mobile.website_mobile import mobile_crud
+#~ import openerp.addons.website_mobile as mobile
+
 import logging
 _logger = logging.getLogger(__name__)
 
-MODULE_BASE_PATH = '/mobile/contact/'
-MODULE_TITLE = _('Contact')
+MOBILE_BASE_PATH = '/mobile/contact/'
 
-class website_crm_partner(http.Controller):
-    @http.route([
-    MODULE_BASE_PATH + '<model("res.partner"):partner>',
-    MODULE_BASE_PATH,
-    MODULE_BASE_PATH + 'add',
-    MODULE_BASE_PATH + '<model("res.partner"):partner>/delete',
-    MODULE_BASE_PATH + '<model("res.partner"):partner>/edit',
-    MODULE_BASE_PATH + 'search',
-    ], type='http', auth="user", website=True)
-    def get_partner(self, partner=None, search='',**post):
-        search_domain = [('type','=','contact')]
-        model = 'res.partner'
-        fields =  ['name','is_company','phone','email','type']
-        template = {'list': 'website_crm_partner.object_list', 'detail': 'website_crm_partner.object_detail'}
+class website_crm_partner(mobile_crud,http.Controller):
+#~ class website_crm_partner(website_mobile.mobile_crud):
+        
+    def __init__(self):
+        super(website_crm_partner,self).__init__()
+        self.search_domain = [('type','=','contact')]
+        self.model = 'res.partner'
+        self.load_fields(['name','is_company','phone','email','type'])
+        self.root = MOBILE_BASE_PATH
+        self.title = _('Contact')
 
-        if request.httprequest.url[-4:] == 'edit': #Edit
-            if request.httprequest.method == 'GET':
-                return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'edit'})
-            else:
-                partner.write({
-                    f: post.get(f) for f in fields
-                })
-                return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
-        elif request.httprequest.url[-3:] == 'add': #Add
-            if request.httprequest.method == 'GET':
-                return request.render(template['detail'], {'model': model, 'object': None, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': 'Add User', 'db': request.db,'mode': 'add'})
-            else:
-                record = { f: post.get(f) for f in fields }
-                partner = request.env['res.partner'].create(record)
-                return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
-        elif request.httprequest.url[-6:] == 'delete': #Delete
-            if partner:
-                partner.unlink()
-                return werkzeug.utils.redirect(MODULE_BASE_PATH, 302)
-        elif request.httprequest.url[-6:] == 'search': #Search
-            if request.httprequest.method == 'POST':
-                search = post.get('search_words')
-            search_domain.append(('name','ilike',search))
-        elif partner:  # Detail
-            return request.render(template['detail'], {'model': model, 'object': partner, 'fields': fields, 'root': MODULE_BASE_PATH, 'title': partner.name, 'db': request.db, 'mode': 'view'})
-        return request.render(template['list'], {
-            'objects': request.env['res.partner'].search(search_domain, order='name'),
-            'title': MODULE_TITLE,
-            'root': MODULE_BASE_PATH,
-            'db': request.db,
-        })
 
-    #~ @http.route(['/mobile/security/<model("res.partner"):partner>', '/mobile/security'], type='http', auth="user", website=True)
-    #~ def mobile_security(self, partner=False, **post):
-        #~ return request.render('website_crm_partner.object_list', {
-            #~ 'model': 'res.partner',
-            #~ 'objects': request.env['res.partner'].search([('type','=','contact')], order='name'),
-            #~ 'title': MODULE_TITLE,
-            #~ 'root': MODULE_BASE_PATH,
-            #~ 'db': request.db,
-        #~ })
-    #~ @http.route(['/allcategory/<model("product.category"):category>', ], type='http', auth="public", website=True)
-    #~ def get_category(self, parent_id=1, **post):
-        #~ cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        #~ categories = request.env['product.category'].sudo().search([('parent_id', '=', parent_id)], order='id')
-        #~ #categories.filtered("category.is_translated(lang)")
-        #~ return request.render('website_product_category.page_allcategories', {'categories': categories})
+    @http.route([MOBILE_BASE_PATH,MOBILE_BASE_PATH+'<model("res.partner"):partner>'],type='http', auth="user", website=True)
+    def partner_list(self, partner=None, search='',**post):
+        return self.do_list(obj=partner)
 
+    @http.route([MOBILE_BASE_PATH+'<string:search>/search',MOBILE_BASE_PATH+'search'],type='http', auth="user", website=True)
+    def partner_search(self, search=None,**post):
+        return self.do_list(search=search or post.get('search'))
+
+    @http.route([MOBILE_BASE_PATH+'add'],type='http', auth="user", website=True)
+    def partner_add(self, partner=None, search='',**post):
+        return self.do_add(**post)
+
+    @http.route([MOBILE_BASE_PATH+'<model("res.partner"):partner>/edit'],type='http', auth="user", website=True)
+    def partner_edit(self, partner=None, search='',**post):
+        return self.do_edit(obj=partner,**post)
+
+    @http.route([MOBILE_BASE_PATH+'<model("res.partner"):partner>/delete'],type='http', auth="user", website=True)
+    def partner_delete(self, partner=None, search='',**post):
+        return self.do_delete(obj=partner)
+
+
+class website_crm_user(mobile_crud,http.Controller):
+#~ class website_crm_partner(website_mobile.mobile_crud):
+       
+    def __init__(self):
+        super(website_crm_user,self).__init__()
+        self.model = 'res.users'
+        self.load_fields(['name','phone','login'])
+        self.root = '/mobile/user'
+
+    @http.route(['/mobile/user','/mobile/user/<model("res.users"):partner>'],type='http', auth="user", website=True)
+    def partner_list(self, partner=None, search='',**post):
+        return self.do_list(obj=partner)
+
+    @http.route(['/mobile/user/add'],type='http', auth="user", website=True)
+    def partner_add(self, partner=None, search='',**post):
+        return self.do_add(**post)
+
+    @http.route(['/mobile/user/<model("res.users"):partner>/edit'],type='http', auth="user", website=True)
+    def partner_edit(self, partner=None, search='',**post):
+        return self.do_edit(obj=partner,**post)
 
 
