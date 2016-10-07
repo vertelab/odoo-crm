@@ -618,10 +618,12 @@
                             <label for="size">Omsättning</label>
                             <input name="size" type="number" class="form-control" t-att-value="partner.size" placeholder="Omsättning"/>
                         </div>
+<!--
                         <div class="form-group">
                             <label for="vat">Orgnr</label>
                             <input name="vat" type="text" class="form-control" t-att-value="partner.vat" placeholder="SE123456123401"/>
                         </div>
+-->
                         <div class="form-group">
                             <label for="email">Epost</label>
                             <input name="email" type="email" class="form-control" t-att-value="partner.email" placeholder="exempel@exempel.com"/>
