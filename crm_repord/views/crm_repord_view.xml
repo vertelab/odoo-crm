@@ -20,7 +20,8 @@
         <field name="arch" type="xml">
             <field name="website" position="after">
                 <field name="product_ids" widget="many2many_tags"/>
-                <field name="listing_id"/>
+                <field name="inactive_product_ids" widget="many2many_tags"/>
+                <field name="listing_ids" widget="many2many_tags"/>
                 <field name="repord_3p_supplier" groups="base.group_sale_manager"/>
             </field>
         </field>
@@ -37,7 +38,13 @@
                         <label class="oe_edit_only" for="name" string="Listing Name"/>
                         <h1><field name="name" placeholder="ICA Kvantum" class="oe_inline"/></h1>
                     </div>
-                    <field name="product_ids" string="Products" widget="many2many_tags"/>
+                    <group>
+                        <field name="mandatory"/>
+                        <field name="role"/>
+                        <field name="rangebox"/>
+                        <field name="product_ids" string="Products" widget="many2many_tags"/>
+                    </group>
+                    
                 </sheet>
             </form>
         </field>
@@ -177,7 +184,7 @@
                                                     <tbody>
                                                         <t t-foreach="products" t-as="p">
                                                         <tr>
-                                                            <t t-if="p.categ_id in p_c">
+                                                            <t t-if="p.categ_id in p_c and partner.is_product_active(p)">
                                                                 <t t-set="order_line_qty" t-value="0"/>
                                                                 <t t-set="order_line_discount" t-value="0"/>
                                                                 <t t-foreach="order_line" t-as="ol">
@@ -293,9 +300,9 @@
             <div id="kedjans_sortiment" class="tab-pane fade in col-xs-12 col-md-12 col-lg-12" style="padding: 0px;">
                 <div class="container mt8 mb8" style="padding: 0px;">
                     <!-- <h2 class="text-center mb32" t-esc="partner.listing_id.name"/> -->
-                    <t t-foreach="parent_products" t-as="pp">
+                    <t t-foreach="products" t-as="pp">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt8 mb8 sort_products">
-                            <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if pp not in partner.product_ids else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" style="background-color: #FF4F35; height: 100%; color: #fff;">
+                            <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if not partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" t-att-style="'background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if pp in partner.m_range_product_ids else '#FFCF35')">
                                 <div class="text-center">
                                     <i class="fa fa-minus" style="font-size: 3.3em; margin-top: 100px;　vertical-align: middle;"/>
                                 </div>
@@ -309,7 +316,7 @@
                                     <h3 class="text-center sort_product_name cutable" t-field="pp.product_tmpl_id"/>
                                 </div>
                             </div>
-                            <div t-att-id="'ksp_%s_plus' %pp.id" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if pp in partner.product_ids else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" style="background-color: #FAC134; height: 100%; color: #fff;">
+                            <div t-att-id="'ksp_%s_plus' %pp.id" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" style="background-color: #FAC134; height: 100%; color: #fff;">
                                 <div class="text-center">
                                     <i class="fa fa-plus" style="font-size: 3.3em; margin-top: 100px;　vertical-align: middle;"/>
                                 </div>

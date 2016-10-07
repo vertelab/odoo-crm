@@ -40,7 +40,29 @@ class sale_order(models.Model):
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-
+    
+    @api.one
+    @api.depends('listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
+    def _get_m_range_product_ids(self):
+        listings = self.env['res.partner.listing'].search([('role', '=', self.role), ('rangebox', '=', self.rangebox), ('mandatory', '=', True)])
+        listings |= self.listing_ids.filtered('mandatory')
+        products = self.env['product.product'].browse([])
+        for listing in listings:
+            products |= listing.product_ids
+        self.m_range_product_ids = products
+    
+    @api.one
+    @api.depends('m_range_product_ids', 'listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
+    def _get_range_product_ids(self):
+        listings = self.env['res.partner.listing'].search([('role', '=', self.role), ('rangebox', '=', self.rangebox), ('mandatory', '=', False)])
+        listings |= self.listing_ids.filtered(lambda rec: not rec.mandatory)
+        products = self.env['product.product'].browse([])
+        for listing in listings:
+            products |= listing.product_ids
+        for product in self.m_range_product_ids:
+            products -= product
+        self.range_product_ids = products
+    
     def _get_meeting(self):
         meetings = []
         for m in self.meeting_ids:
@@ -53,20 +75,33 @@ class res_partner(models.Model):
         return meetings
 
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
-    listing_id = fields.Many2one(comodel_name='res.partner.listing', string='Listing')
+    range_product_ids = fields.Many2many(comodel_name='product.product', string='Product Range', compute='_get_range_product_ids')
+    inactive_product_ids = fields.Many2many(comodel_name='product.product', relation='product_product_inactive_res_partner_rel', string='Inactive Products')
+    m_range_product_ids = fields.Many2many(comodel_name='product.product', string='Mandatory Product Range', compute='_get_m_range_product_ids')
+    listing_ids = fields.Many2many(comodel_name='res.partner.listing', string='Listings')
     repord_3p_supplier = fields.Boolean('Handle reporders for this partner')
-
+    
+    def is_product_active(self, product):
+        if product in self.m_range_product_ids:
+            return product not in self.inactive_product_ids
+        elif product in self.range_product_ids:
+            return product in self.product_ids
+    
 class res_partner_listing(models.Model):
     _name = 'res.partner.listing'
 
     name = fields.Char(string='Name')
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
+    mandatory = fields.Boolean('Mandatory', help="Check to automatically make products in this listing active.")
+    role = fields.Char('Role')
+    rangebox = fields.Char('Rangebox')
 
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="user", website=True)
     def repord(self, partner=None, **post):
-        products = request.env['res.partner'].browse(partner.id).product_ids
-        parent_products = request.env['res.partner'].browse(partner.id).listing_id.product_ids
+        #~ products = partner.product_ids
+        #~ products |= partner.m_range_product_ids - partner.inactive_product_ids
+        products = partner.m_range_product_ids + partner.range_product_ids
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft')])
         if not rep_order:
             rep_order = request.env['rep.order'].create({
@@ -74,7 +109,7 @@ class MobileSaleView(http.Controller):
             })
         else:
             rep_order = rep_order[0]
-        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'parent_products': parent_products, 'order': rep_order,})
+        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'order': rep_order,})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
     def image_upload(self, partner=None, **post):
@@ -138,22 +173,22 @@ class MobileSaleView(http.Controller):
 
     @http.route(['/crm/add/product'], type='json', auth="user", methods=['POST'], website=True)
     def add_product(self, res_partner, product_id, **kw):
-        partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
-        for p in partner.listing_id.product_ids:
-            if int(product_id) != p.id:
-                partner.write({
-                    'product_ids': [(4, int(product_id), 0)]
-                })
+        partner = request.env['res.partner'].browse(int(res_partner))
+        product = request.env['product.product'].browse(int(product_id))
+        if product in partner.m_range_product_ids:
+            partner.inactive_product_ids -= product
+        elif product in partner.range_product_ids:
+            partner.product_ids |= product
         return 'added'
 
     @http.route(['/crm/remove/product'], type='json', auth="user", methods=['POST'], website=True)
     def remove_product(self, res_partner, product_id, **kw):
-        partner = request.env['res.partner'].search([('id', '=', int(res_partner))])
-        for p in partner.listing_id.product_ids:
-            if int(product_id) == p.id:
-                partner.write({
-                    'product_ids': [(3, int(product_id), 0)]
-                })
+        partner = request.env['res.partner'].browse(int(res_partner))
+        product = request.env['product.product'].browse(int(product_id))
+        if product in partner.m_range_product_ids:
+            partner.inactive_product_ids |= product
+        elif product in partner.range_product_ids:
+            partner.product_ids -= product
         return 'removed'
 
     @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
