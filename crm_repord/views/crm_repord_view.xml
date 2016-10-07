@@ -764,7 +764,7 @@
 
                 label { font-family: 'Open Sans', sans-serif; }
 
-                h1, h2, h3, h4, h5, h6, span, p, a { font-family: 'Open Sans', sans-serif; font-weight: 400; }
+                h1, h2, h3, h4, h5, h6, p, a, td, .oe_structure span { font-family: 'Open Sans', sans-serif; font-weight: 400; }
 
                 .navbar-static-top { background-color: #FFD529; }
 
