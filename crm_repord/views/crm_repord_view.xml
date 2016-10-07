@@ -44,7 +44,7 @@
                         <field name="rangebox"/>
                         <field name="product_ids" string="Products" widget="many2many_tags"/>
                     </group>
-                    
+
                 </sheet>
             </form>
         </field>
@@ -424,10 +424,10 @@
                                                 </td>
                                                 <td>
                                                     <t t-if="meeting.start_date">
-                                                        <p t-esc="meeting.start_date" class="pull-right" style="margin-top: 10px;"/>
+                                                        <p t-field="meeting.start_date" class="pull-right" style="margin-top: 10px;"/>
                                                     </t>
                                                     <t t-if="meeting.start_datetime">
-                                                        <p t-esc="meeting.start_datetime[:-3]" class="pull-right" style="margin-top: 10px;"/>
+                                                        <p t-field="meeting.start_datetime" class="pull-right" style="margin-top: 10px;"/>
                                                     </t>
                                                 </td>
                                             </tr>
@@ -453,7 +453,7 @@
                     <!-- partner todo list -->
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <h3 class="text-center">Todo</h3>
-                        <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', user_id.partner_id.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)], order='create_date')"/>
+                        <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)], order='create_date')"/>
                         <div class="container">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <t t-if="notes">
@@ -473,7 +473,7 @@
                                 <div id="note_button_group" class="hidden">
                                     <input id="note_memo" name="memo" type="text" class="form-control input-xs mb16"/>
                                     <button class="btn btn-default btn-lg pull-left" onclick="hide_create_note()">Avbryt</button>
-                                    <button class="btn btn-warning btn-lg pull-right" onclick="create_note()">Skapa</button>
+                                    <button class="btn btn-warning btn-lg pull-right" t-att-onclick="'create_note(&quot;%s&quot;)' %partner.id">Skapa</button>
                                 </div>
                             </div>
                         </div>
@@ -618,10 +618,12 @@
                             <label for="size">Omsättning</label>
                             <input name="size" type="number" class="form-control" t-att-value="partner.size" placeholder="Omsättning"/>
                         </div>
+<!--
                         <div class="form-group">
                             <label for="vat">Orgnr</label>
                             <input name="vat" type="text" class="form-control" t-att-value="partner.vat" placeholder="SE123456123401"/>
                         </div>
+-->
                         <div class="form-group">
                             <label for="email">Epost</label>
                             <input name="email" type="email" class="form-control" t-att-value="partner.email" placeholder="exempel@exempel.com"/>
@@ -758,11 +760,11 @@
 
                 #top_menu { background-color: #FFD529; }
 
-                #wrap { font-family: 'Open Sans', sans-serif; font-weight: 400; background-color: #f8f8f8;}
+                #wrapwrap { background-color: #f8f8f8;}
 
                 label { font-family: 'Open Sans', sans-serif; }
 
-                span, p { font-family: 'Open Sans', sans-serif; font-weight: 400; }
+                h1, h2, h3, h4, h5, h6, span, p, a { font-family: 'Open Sans', sans-serif; font-weight: 400; }
 
                 .navbar-static-top { background-color: #FFD529; }
 
@@ -1178,10 +1180,10 @@
                 }
 
                 /* create todo list */
-                function create_note(){
+                function create_note(partner){
                     if ($("input[name=memo]").val() != "") {
                         openerp.jsonRpc("/crm/todo/create", 'call', {
-                            'note_id': "",
+                            'partner': partner,
                             'memo': $("input[name=memo]").val(),
                         }).done(function(data){
                             if(data == "note_created"){

@@ -49,7 +49,7 @@ class sale_order(models.Model):
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-    
+
     @api.one
     @api.depends('listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_m_range_product_ids(self):
@@ -59,7 +59,7 @@ class res_partner(models.Model):
         for listing in listings:
             products |= listing.product_ids
         self.m_range_product_ids = products
-    
+
     @api.one
     @api.depends('m_range_product_ids', 'listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_range_product_ids(self):
@@ -71,7 +71,7 @@ class res_partner(models.Model):
         for product in self.m_range_product_ids:
             products -= product
         self.range_product_ids = products
-    
+
     def _get_meeting(self):
         meetings = []
         for m in self.meeting_ids:
@@ -89,7 +89,7 @@ class res_partner(models.Model):
     m_range_product_ids = fields.Many2many(comodel_name='product.product', string='Mandatory Product Range', compute='_get_m_range_product_ids')
     listing_ids = fields.Many2many(comodel_name='res.partner.listing', string='Listings')
     repord_3p_supplier = fields.Boolean('Handle reporders for this partner')
-    
+
     def is_product_active(self, product):
         if product in self.m_range_product_ids:
             return product not in self.inactive_product_ids
@@ -132,7 +132,7 @@ class MobileSaleView(http.Controller):
             })
         else:
             rep_order = rep_order[0]
-            
+        
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'order': rep_order, 'active_tab': post.get('active_tab'),})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
@@ -215,11 +215,30 @@ class MobileSaleView(http.Controller):
             partner.product_ids -= product
         return 'removed'
 
+    @http.route(['/crm/todo/create'], type='json', auth="user", methods=['POST'], website=True)
+    def todo_create(self, partner, memo, **post):
+        if request.httprequest.method == 'POST':
+            request.env['note.note'].create({
+                'open': True,
+                'stage_id': request.env.ref('note.note_stage_00').id,
+                'memo': memo,
+                'partner_id': int(partner),
+            })
+            return 'note_created'
+
+    @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
+    def todo_done(self, note_id, **post):
+        note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
+        note.write({
+            'open': False,
+            'stage_id': request.env.ref('note.note_stage_04').id, #this doesn't work
+            'date_done': datetime.date.today(),
+        })
+        return 'note_done'
+
     @http.route(['/crm/meeting/create'], type='json', auth="user", methods=['POST'], website=True)
     def meeting_create(self, partner_id, meeting_content, meeting_date_start, meeting_date_end, **post):
-        _logger.warn(meeting_date_start)
         if request.httprequest.method == 'POST':
-            #~ _logger.warn(fields.Datetime.convert_to_cache(meeting_date_start))
             week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
             meeting = request.env['calendar.event'].create({
                 'name': request.env['res.partner'].browse(int(partner_id)).name,
@@ -231,45 +250,31 @@ class MobileSaleView(http.Controller):
                 'allday': False,
                 'description': meeting_content + '\n' + '%s/crm/%s/repord' % (request.env['ir.config_parameter'].get_param('web.base.url'), partner_id),
             })
+            #~ class fake_record(object):
+                #~ _context = {}
+                #~ env.user.tz = None
+            #~ dt = fields.Datetime.from_string(meeting_date_start)
+            #~ _logger.warn(fields.Datetime.convert_to_cache(dt, meeting))
+            #~ banan = fields.Datetime.context_timestamp(fake_record(), dt)
+            #~ _logger.warn(type(banan))
+            #~ _logger.warn(fields.Datetime.to_string(banan))
+            #~ _logger.warn(fields.Datetime.convert_to_export(meeting_date_start, request.env))
             return 'meeting_created'
-
-    @http.route(['/crm/todo/create'], type='json', auth="user", methods=['POST'], website=True)
-    def todo_create(self, **post):
-        if request.httprequest.method == 'POST':
-            request.env['note.note'].create({
-                'open': True,
-                'stage_id': request.env.ref('note.note_stage_00').id,
-                'memo': post.get('memo'),
-                'partner_id': request.env['res.users'].browse(request.uid).partner_id.id,
-            })
-            return 'note_created'
-
-    @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
-    def todo_done(self, note_id, **post):
-        note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
-        note.write({
-            'open': False,
-            'stage_id': request.env.ref('note.note_stage_04').id, #set to Notes column
-            'date_done': datetime.date.today(),
-        })
-        return 'note_done'
 
     @http.route(['/crm/meeting/visited'], type='json', auth="user", methods=['POST'], website=True)
     def customer_visited(self, partner_id, **kw):
-        meetings = request.env['calendar.event'].search([])
-        partner = request.env['res.partner'].search([('id', '=', int(partner_id))])
+        meetings = request.env['calendar.event'].search([('partner_ids', '=', int(partner_id)), ('start', '<', fields.Datetime.now()), ('stop', '>', fields.Datetime.now())])
         for m in meetings:
-            if partner in m.partner_ids:
-                m.write({
-                    'categ_ids': [(4, request.env.ref('crm_repord.categ_meet6').id, _)],
-                })
+            m.write({
+                'categ_ids': [(4, request.env.ref('crm_repord.categ_meet6').id, _)],
+            })
         return 'meeting_done'
 
     @http.route(['/crm/presentation/done'], type='json', auth="user", methods=['POST'], website=True)
     def presentation(self, partner_id, categ, **kw):
         partner = request.env['res.partner'].browse(int(partner_id))
         request.env['mail.message'].create({
-            'body': 'Presentation done.',   #TODO: change message body
+            'body': 'Presentation har registrerat.',
             'subject': 'Presentationen till ' + categ + ' har registrerat',
             'author_id': request.env['res.users'].browse(request.env.uid).partner_id.id,
             'model': partner._name,
