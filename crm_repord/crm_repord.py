@@ -361,7 +361,6 @@ class MobileSaleView(http.Controller):
                 partner.write({
                     'store_class': post.get('store_class'),
                     'size': post.get('size'),
-                    'vat': post.get('vat'),
                     'email': post.get('email'),
                     'phone': post.get('phone'),
                 })
