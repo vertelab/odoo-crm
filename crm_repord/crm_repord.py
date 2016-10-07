@@ -32,6 +32,15 @@ from openerp.exceptions import Warning
 
 import openerp.addons.decimal_precision as dp
 
+def convert_to_utc(record, timestamp):
+    if isinstance(record, basestring):
+        tz_name = record
+    else:
+        tz_name = record._context.get('tz') or record.env.user.tz
+    dt = fields.Datetime.from_string(timestamp)
+    utc_dt = pytz.timezone(tz_name).localize(dt).astimezone(pytz.utc)
+    return fields.Datetime.to_string(utc_dt)
+
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
@@ -123,7 +132,7 @@ class MobileSaleView(http.Controller):
             })
         else:
             rep_order = rep_order[0]
-        
+            
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'order': rep_order, 'active_tab': post.get('active_tab'),})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
