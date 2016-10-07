@@ -73,7 +73,7 @@
 
     <menuitem id="menu_res_partner_listing" name="Partner Listing" parent="base.menu_product" sequence="30" action="action_res_partner_listing" groups="base.group_sale_salesman"/>
 
-    <template id="mobile_order_view" name="Mobile Order View">
+    <template id="mobile_order_view" name="Repord App">
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="oe_structure">
