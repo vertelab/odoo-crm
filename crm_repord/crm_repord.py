@@ -238,10 +238,10 @@ class MobileSaleView(http.Controller):
         return 'note_done'
 
     @http.route(['/crm/meeting/create'], type='json', auth="user", methods=['POST'], website=True)
-    def meeting_create(self, partner_id, meeting_content, meeting_date_start, meeting_date_end, **post):
+    def meeting_create(self, partner_id, meeting_content, meeting_date, meeting_time_start, meeting_time_end, **post):
         if request.httprequest.method == 'POST':
-            meeting_date_start = convert_to_utc(request.env.user.tz, meeting_date_start)
-            meeting_date_end = convert_to_utc(request.env.user.tz, meeting_date_end)
+            meeting_date_start = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_start + ':00'))
+            meeting_date_end = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_end + ':00'))
             week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
             meeting = request.env['calendar.event'].create({
                 'name': request.env['res.partner'].browse(int(partner_id)).name,
