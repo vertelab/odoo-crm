@@ -40,7 +40,7 @@ class sale_order(models.Model):
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-    
+
     @api.one
     @api.depends('listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_m_range_product_ids(self):
@@ -50,7 +50,7 @@ class res_partner(models.Model):
         for listing in listings:
             products |= listing.product_ids
         self.m_range_product_ids = products
-    
+
     @api.one
     @api.depends('m_range_product_ids', 'listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_range_product_ids(self):
@@ -62,7 +62,7 @@ class res_partner(models.Model):
         for product in self.m_range_product_ids:
             products -= product
         self.range_product_ids = products
-    
+
     def _get_meeting(self):
         meetings = []
         for m in self.meeting_ids:
@@ -80,7 +80,7 @@ class res_partner(models.Model):
     m_range_product_ids = fields.Many2many(comodel_name='product.product', string='Mandatory Product Range', compute='_get_m_range_product_ids')
     listing_ids = fields.Many2many(comodel_name='res.partner.listing', string='Listings')
     repord_3p_supplier = fields.Boolean('Handle reporders for this partner')
-    
+
     def is_product_active(self, product):
         if product in self.m_range_product_ids:
             return product not in self.inactive_product_ids
@@ -123,7 +123,7 @@ class MobileSaleView(http.Controller):
             })
         else:
             rep_order = rep_order[0]
-        
+
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'order': rep_order, 'active_tab': post.get('active_tab'),})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
@@ -225,13 +225,13 @@ class MobileSaleView(http.Controller):
             return 'meeting_created'
 
     @http.route(['/crm/todo/create'], type='json', auth="user", methods=['POST'], website=True)
-    def todo_create(self, **post):
+    def todo_create(self, partner, memo, **post):
         if request.httprequest.method == 'POST':
             request.env['note.note'].create({
                 'open': True,
                 'stage_id': request.env.ref('note.note_stage_00').id,
-                'memo': post.get('memo'),
-                'partner_id': request.env['res.users'].browse(request.uid).partner_id.id,
+                'memo': memo,
+                'partner_id': int(partner),
             })
             return 'note_created'
 
