@@ -21,6 +21,7 @@
 from openerp import models, fields, api, _
 from openerp import http
 from openerp.http import request
+import pytz
 import datetime
 import time
 import logging
@@ -132,7 +133,7 @@ class MobileSaleView(http.Controller):
             })
         else:
             rep_order = rep_order[0]
-        
+
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'order': rep_order, 'active_tab': post.get('active_tab'),})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
@@ -237,8 +238,10 @@ class MobileSaleView(http.Controller):
         return 'note_done'
 
     @http.route(['/crm/meeting/create'], type='json', auth="user", methods=['POST'], website=True)
-    def meeting_create(self, partner_id, meeting_content, meeting_date_start, meeting_date_end, **post):
+    def meeting_create(self, partner_id, meeting_content, meeting_date, meeting_time_start, meeting_time_end, **post):
         if request.httprequest.method == 'POST':
+            meeting_date_start = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_start + ':00'))
+            meeting_date_end = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_end + ':00'))
             week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
             meeting = request.env['calendar.event'].create({
                 'name': request.env['res.partner'].browse(int(partner_id)).name,
@@ -250,15 +253,6 @@ class MobileSaleView(http.Controller):
                 'allday': False,
                 'description': meeting_content + '\n' + '%s/crm/%s/repord' % (request.env['ir.config_parameter'].get_param('web.base.url'), partner_id),
             })
-            #~ class fake_record(object):
-                #~ _context = {}
-                #~ env.user.tz = None
-            #~ dt = fields.Datetime.from_string(meeting_date_start)
-            #~ _logger.warn(fields.Datetime.convert_to_cache(dt, meeting))
-            #~ banan = fields.Datetime.context_timestamp(fake_record(), dt)
-            #~ _logger.warn(type(banan))
-            #~ _logger.warn(fields.Datetime.to_string(banan))
-            #~ _logger.warn(fields.Datetime.convert_to_export(meeting_date_start, request.env))
             return 'meeting_created'
 
     @http.route(['/crm/meeting/visited'], type='json', auth="user", methods=['POST'], website=True)
@@ -367,7 +361,6 @@ class MobileSaleView(http.Controller):
                 partner.write({
                     'store_class': post.get('store_class'),
                     'size': post.get('size'),
-                    'vat': post.get('vat'),
                     'email': post.get('email'),
                     'phone': post.get('phone'),
                 })

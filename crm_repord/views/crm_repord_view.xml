@@ -73,7 +73,7 @@
 
     <menuitem id="menu_res_partner_listing" name="Partner Listing" parent="base.menu_product" sequence="30" action="action_res_partner_listing" groups="base.group_sale_salesman"/>
 
-    <template id="mobile_order_view" name="Mobile Order View">
+    <template id="mobile_order_view" name="Repord App">
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="oe_structure">
@@ -157,7 +157,7 @@
                                     <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
                                         <div t-att-class="'tab-pane product_tab fade col-xs-12 col-md-12 col-lg-12 active in'
                                             if b_c == brand_categs[0] else
-                                            'tab-pane product_tab fade col-xs-12 col-md-12 col-lg-12'"
+                                            'tab-pane product_tab fade col-xs-12 col-sm-12 col-md-12 col-lg-12'"
                                             t-att-id="'product_categ_%s' %b_c.id" style="padding: 0px;">
                                             <t t-foreach="b_c" t-as="p_c">
                                                 <t t-set="order_line" t-value="request.env['rep.order.line'].search([('order_id', '=', order.id)])"/>
@@ -174,18 +174,18 @@
                                                                         <t t-set="order_line_discount" t-value="ol.discount"/>
                                                                     </t>
                                                                 </t>
-                                                                <td>
-                                                                    <div class="col-md-12 mb16">
-                                                                        <div class="col-md-12">
-                                                                            <h4 class="text-center mt4 mb4" t-field="p.default_code"/>
+                                                                <td class="col-xs-12 col-md-12">
+                                                                    <div class="col-xs-12 col-md-12 mb16">
+                                                                        <div class="col-xs-12 col-md-12">
+                                                                            <h5 class="text-center mt4 mb4" t-field="p.default_code"/>
                                                                         </div>
-                                                                        <div class="col-md-12">
-                                                                            <h3 class="text-center mt4 mb4 order_product_name cutable" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
+                                                                        <div class="col-xs-12 col-md-12">
+                                                                            <h4 class="text-center mt4 mb4 order_product_name cutable" t-att-onclick="'toggle_cell(&quot;%s&quot;)' %p.id" t-field="p.name"/>
                                                                         </div>
-                                                                        <div class="col-md-12">
-                                                                            <h4 class="text-center mt4 mb16">Kvantitet / <t t-esc="p.uom_id.name"/></h4>
+                                                                        <div class="col-xs-12 col-md-12">
+                                                                            <h5 class="text-center mt4 mb16">Kvantitet / <t t-esc="p.uom_id.name"/></h5>
                                                                         </div>
-                                                                        <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                        <div class="col-xs-12 col-md-12 input-group oe_website_spinner" style="margin: auto;">
                                                                             <span class="input-group-addon quantity-button float_left" style="width: 60px; margin: 0px 7px;" t-att-onclick="'plus(&quot;%s_qty_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                 <i class="fa fa-plus" style="width: 40px;"/>
                                                                             </span>
@@ -198,7 +198,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="table_cell" t-att-id="'product_cell_%s' %p.id">
-                                                                        <div class="col-md-12 input-group oe_website_spinner" style="margin: auto;">
+                                                                        <div class="col-xs-12 col-md-12 input-group oe_website_spinner" style="margin: auto;">
                                                                             <span class="input-group-addon float_left" style="background-color: #9e9e9e; color: #fff;" t-att-onclick="'plus(&quot;%s_discount_%s&quot;); send_rep_order(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, p.id, partner.id, p.id)">
                                                                                 <i class="fa fa-plus"/>
                                                                             </span>
@@ -440,10 +440,18 @@
                                 <div id="meeting_button_group" class="hidden">
                                     <lable for="meeting_content">Beskrivning</lable>
                                     <input id="meeting_content" name="meeting_content" type="text" class="form-control input-xs mb16"/>
-                                    <lable for="meeting_date_start">Startdatum</lable>
-                                    <input id="meeting_date_start" name="meeting_date_start" type="datetime" class="form-control input-xs mb16" placeholder="åååå-mm-dd tt:mm:ss"/>
-                                    <lable for="meeting_date_end">Slutdatum</lable>
-                                    <input id="meeting_date_end" name="meeting_date_end" type="datetime" class="form-control input-xs mb16" placeholder="åååå-mm-dd tt:mm:ss"/>
+                                    <lable for="meeting_date">Datum</lable>
+                                    <input id="meeting_date" name="meeting_date" type="date" class="form-control input-xs mb16"/>
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6">
+                                            <label for="meeting_time_start">Starttid</label>
+                                            <input id="meeting_time_start" name="meeting_time_start" class="form-control input-xs mb16" type="time"/>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6">
+                                            <label for="meeting_time_end">Sluttid</label>
+                                            <input id="meeting_time_end" name="meeting_time_end" class="form-control input-xs mb16" type="time"/>
+                                        </div>
+                                    </div>
                                     <button class="btn btn-default btn-lg pull-left" onclick="hide_create_meeting()">Avbryt</button>
                                     <button class="btn btn-warning btn-lg pull-right" t-att-onclick="'create_meeting(&quot;%s&quot;)' %partner.id">Skapa</button>
                                 </div>
@@ -618,12 +626,6 @@
                             <label for="size">Omsättning</label>
                             <input name="size" type="number" class="form-control" t-att-value="partner.size" placeholder="Omsättning"/>
                         </div>
-<!--
-                        <div class="form-group">
-                            <label for="vat">Orgnr</label>
-                            <input name="vat" type="text" class="form-control" t-att-value="partner.vat" placeholder="SE123456123401"/>
-                        </div>
--->
                         <div class="form-group">
                             <label for="email">Epost</label>
                             <input name="email" type="email" class="form-control" t-att-value="partner.email" placeholder="exempel@exempel.com"/>
@@ -764,7 +766,7 @@
 
                 label { font-family: 'Open Sans', sans-serif; }
 
-                h1, h2, h3, h4, h5, h6, span, p, a { font-family: 'Open Sans', sans-serif; font-weight: 400; }
+                h1, h2, h3, h4, h5, h6, p, a, td, .oe_structure span { font-family: 'Open Sans', sans-serif; font-weight: 400; }
 
                 .navbar-static-top { background-color: #FFD529; }
 
@@ -896,6 +898,7 @@
                     overflow: hidden;
                     text-overflow: ellipsis;
                     margin: auto;
+                    width: 300px;
                 }
 
                 .order_product_name {
@@ -1152,14 +1155,16 @@
                         openerp.jsonRpc("/crm/meeting/create", 'call', {
                             'partner_id': partner,
                             'meeting_content': $("input[name=meeting_content]").val(),
-                            'meeting_date_start': $("input[name=meeting_date_start]").val(),
-                            'meeting_date_end': $("input[name=meeting_date_end]").val()
+                            'meeting_date': $("input[name=meeting_date]").val(),
+                            'meeting_time_start': $("input[name=meeting_time_start]").val(),
+                            'meeting_time_end': $("input[name=meeting_time_end]").val(),
                         }).done(function(data){
                             if(data == "meeting_created"){
                                 $("#meeting_table").load(document.URL + " #meeting_table");
                                 $("#meeting_content").val("");
-                                $("#meeting_date_start").val("");
-                                $("#meeting_date_end").val("");
+                                $("#meeting_date").val("");
+                                $("#meeting_time_start").val("");
+                                $("#meeting_time_end").val("");
                                 $("#meeting_button_group").addClass("hidden");
                                 $("#show_meeting_button_group").removeClass("hidden");
                             }
