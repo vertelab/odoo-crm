@@ -440,15 +440,17 @@
                                 <div id="meeting_button_group" class="hidden">
                                     <lable for="meeting_content">Beskrivning</lable>
                                     <input id="meeting_content" name="meeting_content" type="text" class="form-control input-xs mb16"/>
-                                    <lable for="meeting_date">Datum</lable>
-                                    <input id="meeting_date" name="meeting_date" type="date" class="form-control input-xs mb16"/>
                                     <div class="form-group">
-                                        <div class="col-xs-6 col-sm-6">
-                                            <label for="meeting_time_start">Starttid</label>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding-left: 0px; padding-right: 0px;">
+                                            <lable for="meeting_date">Datum</lable>
+                                            <input id="meeting_date" name="meeting_date" type="date" class="form-control input-xs mb16"/>
+                                        </div>
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;">
+                                            <label for="meeting_time_start" style="display: unset; font-weight: unset;">Starttid</label>
                                             <input id="meeting_time_start" name="meeting_time_start" class="form-control input-xs mb16" type="time"/>
                                         </div>
-                                        <div class="col-xs-6 col-sm-6">
-                                            <label for="meeting_time_end">Sluttid</label>
+                                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;">
+                                            <label for="meeting_time_end" style="display: unset; font-weight: unset;">Sluttid</label>
                                             <input id="meeting_time_end" name="meeting_time_end" class="form-control input-xs mb16" type="time"/>
                                         </div>
                                     </div>

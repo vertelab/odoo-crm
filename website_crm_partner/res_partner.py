@@ -35,7 +35,7 @@ MOBILE_BASE_PATH = '/mobile/contact/'
 
 class website_crm_partner(mobile_crud,http.Controller):
 #~ class website_crm_partner(website_mobile.mobile_crud):
-        
+
     def __init__(self):
         super(website_crm_partner,self).__init__()
         self.search_domain = [('type','=','contact')]
@@ -63,12 +63,12 @@ class website_crm_partner(mobile_crud,http.Controller):
 
     @http.route([MOBILE_BASE_PATH+'<model("res.partner"):partner>/delete'],type='http', auth="user", website=True)
     def partner_delete(self, partner=None, search='',**post):
-        return self.do_delete(obj=partner)
+        return self.do_delete(obj=partner,base_path=MOBILE_BASE_PATH)
 
 
 class website_crm_user(mobile_crud,http.Controller):
 #~ class website_crm_partner(website_mobile.mobile_crud):
-       
+
     def __init__(self):
         super(website_crm_user,self).__init__()
         self.model = 'res.users'
