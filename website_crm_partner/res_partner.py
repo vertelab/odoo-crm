@@ -51,7 +51,7 @@ class website_crm_partner(mobile_crud,http.Controller):
 
     @http.route([MOBILE_BASE_PATH+'<string:search>/search',MOBILE_BASE_PATH+'search'],type='http', auth="user", website=True)
     def partner_search(self, search=None,**post):
-        return self.do_list(search=search or post.get('search'))
+        return self.do_list(search=search or post.get('search_words'))
 
     @http.route([MOBILE_BASE_PATH+'add'],type='http', auth="user", website=True)
     def partner_add(self, partner=None, search='',**post):
