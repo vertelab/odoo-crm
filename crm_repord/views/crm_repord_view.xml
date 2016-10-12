@@ -490,8 +490,9 @@
                     </div>
                 </div>
                 <!-- buttons for create log -->
-                <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="mt32 mb32">
+                <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mb32">
+                    <h3 class="text-center">Presentationer</h3>
+                    <div class="container">
                         <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
                         <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-default btn-lg mt16 mb16" style="margin: auto; display: block;">Paolos Frys</button>
                         <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary btn-lg mt16 mb16" style="margin: auto; display: block;">Leröy Färsk</button>
