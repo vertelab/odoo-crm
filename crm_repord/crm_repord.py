@@ -42,6 +42,23 @@ def convert_to_utc(record, timestamp):
     utc_dt = pytz.timezone(tz_name).localize(dt).astimezone(pytz.utc)
     return fields.Datetime.to_string(utc_dt)
 
+class website(models.Model):
+    _inherit = 'website'
+    
+    @api.multi
+    def convert_to_local(self, timestamp):
+        dt = fields.Datetime.from_string(timestamp)
+        tz_name = self._context.get('tz') or self.env.user.tz
+        local_dt = pytz.utc.localize(dt).astimezone(pytz.timezone(tz_name))
+        return fields.Datetime.to_string(local_dt)
+    
+    @api.multi
+    def convert_to_utc(self, timestamp):
+        tz_name = self._context.get('tz') or self.env.user.tz
+        dt = fields.Datetime.from_string(timestamp)
+        utc_dt = pytz.timezone(tz_name).localize(dt).astimezone(pytz.utc)
+        return fields.Datetime.to_string(utc_dt)
+
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
@@ -111,8 +128,8 @@ class calendar_event(models.Model):
             str = self.description[0:self.description.find('http://')]
         return str[0:30 if len(str) >= 30 else len(str)]
 
-    def convert_to_utc(record, timestamp):
-        time = super(name, self).convert_to_utc(record, timestamp)
+    def convert_to_utc(self, timestamp):
+        time = convert_to_utc(self, timestamp)
         return time
 
 class res_partner_listing(models.Model):
