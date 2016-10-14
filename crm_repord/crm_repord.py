@@ -111,6 +111,10 @@ class calendar_event(models.Model):
             str = self.description[0:self.description.find('http://')]
         return str[0:30 if len(str) >= 30 else len(str)]
 
+    def convert_to_utc(record, timestamp):
+        time = super(name, self).convert_to_utc(record, timestamp)
+        return time
+
 class res_partner_listing(models.Model):
     _name = 'res.partner.listing'
 
@@ -215,54 +219,6 @@ class MobileSaleView(http.Controller):
         elif product in partner.range_product_ids:
             partner.product_ids -= product
         return 'removed'
-
-    @http.route(['/crm/todo/create'], type='json', auth="user", methods=['POST'], website=True)
-    def todo_create(self, partner, memo, **post):
-        if request.httprequest.method == 'POST':
-            request.env['note.note'].create({
-                'open': True,
-                'stage_id': request.env.ref('note.note_stage_00').id,
-                'memo': memo,
-                'partner_id': int(partner),
-            })
-            return 'note_created'
-
-    @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
-    def todo_done(self, note_id, **post):
-        note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
-        note.write({
-            'open': False,
-            'stage_id': request.env.ref('note.note_stage_04').id, #this doesn't work
-            'date_done': datetime.date.today(),
-        })
-        return 'note_done'
-
-    @http.route(['/crm/meeting/create'], type='json', auth="user", methods=['POST'], website=True)
-    def meeting_create(self, partner_id, meeting_content, meeting_date, meeting_time_start, meeting_time_end, **post):
-        if request.httprequest.method == 'POST':
-            meeting_date_start = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_start + ':00'))
-            meeting_date_end = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_end + ':00'))
-            week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
-            meeting = request.env['calendar.event'].create({
-                'name': request.env['res.partner'].browse(int(partner_id)).name,
-                'start_datetime': meeting_date_start,
-                'stop_datetime': meeting_date_end,
-                'week_number': week_number,
-                'weekday': weekday,
-                'partner_ids': [(6, 0, [int(partner_id)])],
-                'allday': False,
-                'description': meeting_content + '\n' + '%s/crm/%s/repord' % (request.env['ir.config_parameter'].get_param('web.base.url'), partner_id),
-            })
-            return 'meeting_created'
-
-    @http.route(['/crm/meeting/visited'], type='json', auth="user", methods=['POST'], website=True)
-    def customer_visited(self, partner_id, **kw):
-        meetings = request.env['calendar.event'].search([('partner_ids', '=', int(partner_id)), ('start', '<', fields.Datetime.now()), ('stop', '>', fields.Datetime.now())])
-        for m in meetings:
-            m.write({
-                'categ_ids': [(4, request.env.ref('crm_repord.categ_meet6').id, _)],
-            })
-        return 'meeting_done'
 
     @http.route(['/crm/presentation/done'], type='json', auth="user", methods=['POST'], website=True)
     def presentation(self, partner_id, categ, **kw):
@@ -383,7 +339,7 @@ class MobileSaleView(http.Controller):
             editable = 'disable'
         if request.httprequest.url[-4:] == 'edit': #Edit
             if request.httprequest.method == 'GET':
-                return request.render('crm_repord.object_detail', {
+                return request.render('crm_repord.contact_detail', {
                     'partner': partner,
                     'parent': partner.parent_id,
                     'mode': 'edit',
@@ -401,7 +357,7 @@ class MobileSaleView(http.Controller):
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.parent_id.id, 302)
         elif request.httprequest.url[-3:] == 'add': #Add
             if request.httprequest.method == 'GET':
-                return request.render('crm_repord.object_detail', {
+                return request.render('crm_repord.contact_detail', {
                     'partner': None,
                     'mode': 'add',
                     'active_tab': post.get('active_tab')
@@ -422,13 +378,250 @@ class MobileSaleView(http.Controller):
                 if partner.type == 'contact':
                     partner.unlink()
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % parent, 302)
-        return request.render('crm_repord.object_detail', {
+        return request.render('crm_repord.contact_detail', {
             'partner': partner,
             'parent': partner.parent_id,
             'mode': 'view',
             'editable': editable,
             'active_tab': post.get('active_tab')
         })
+
+    @http.route([
+        '/crm/<model("res.partner"):partner>/lead/<model("crm.lead"):lead>',
+        '/crm/<model("res.partner"):partner>/lead/add',
+        '/crm/<model("res.partner"):partner>/lead/<model("crm.lead"):lead>/edit',
+        '/crm/<model("res.partner"):partner>/lead/<model("crm.lead"):lead>/delete',
+    ], type='http', auth="user", website=True)
+    def lead_info_update(self, partner=None, lead=None, **post):
+        if request.httprequest.url[-4:] == 'edit': #Edit
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.lead_detail', {
+                    'partner': partner,
+                    'lead': lead,
+                    'name': lead.name,
+                    'campaign_id': lead.campaign_id,
+                    'description': lead.description,
+                    'mode': 'edit',
+                })
+            else:
+                lead.write({
+                    'name': post.get('name'),
+                    'campaign': int(post.get('campaign')) if post.get('campaign') != '' else None,
+                    'description': post.get('description'),
+                })
+                return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        elif request.httprequest.url[-3:] == 'add': #Add
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.lead_detail', {
+                    'partner': partner,
+                    'lead': None,
+                    'mode': 'add',
+                    'active_tab': post.get('active_tab')
+                })
+            else:
+                request.env['crm.lead'].create({
+                    'name': '[' + post.get('name') + '] - ' + partner.name,
+                    'campaign': post.get('campaign'),
+                    'description': post.get('description'),
+                    'partner_id': int(partner),
+                    'user_id': partner.user_id.id,
+                    'type': 'opportunity',
+                    'mode': 'add',
+                })
+                return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        elif request.httprequest.url[-6:] == 'delete': #Delete
+            if lead:
+                lead.unlink()
+            return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        return request.render('crm_repord.lead_detail', {
+            'partner': partner,
+            'lead': lead,
+            'name': lead.name,
+            'campaign_id': lead.campaign_id,
+            'description': lead.description,
+            'mode': 'view',
+            'active_tab': post.get('active_tab')
+        })
+
+    @http.route([
+        '/crm/<model("res.partner"):partner>/meeting/<model("calendar.event"):meeting>',
+        '/crm/<model("res.partner"):partner>/meeting/add',
+        '/crm/<model("res.partner"):partner>/meeting/<model("calendar.event"):meeting>/edit',
+        '/crm/<model("res.partner"):partner>/meeting/<model("calendar.event"):meeting>/delete',
+        '/crm/<model("res.partner"):partner>/meeting/visited',
+    ], type='http', auth="user", website=True)
+    def meeting_info_update(self, partner=None, meeting=None, **post):
+        if request.httprequest.url[-4:] == 'edit': #Edit
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.meeting_detail', {
+                    'partner': partner,
+                    'meeting': meeting,
+                    'description': meeting.description,
+                    'start_datetime': meeting.start_datetime,
+                    'stop_datetime': meeting.stop_datetime,
+                    'week_number': meeting.week_number,
+                    'weekday': meeting.weekday,
+                    'mode': 'edit',
+                })
+            else:
+                meeting_date_start = convert_to_utc(request.env.user.tz, (post.get('meeting_date') + ' ' + post.get('meeting_time_start') + ':00'))
+                meeting_date_end = convert_to_utc(request.env.user.tz, (post.get('meeting_date') + ' ' + post.get('meeting_time_end') + ':00'))
+                week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
+                meeting.write({
+                    'description': post.get('description'),
+                    'start_datetime': meeting_date_start,
+                    'stop_datetime': meeting_date_end,
+                    'week_number': week_number,
+                    'weekday': weekday,
+                })
+                return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        elif request.httprequest.url[-3:] == 'add': #Add
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.meeting_detail', {
+                    'partner': partner,
+                    'meeting': None,
+                    'mode': 'add',
+                    'active_tab': post.get('active_tab')
+                })
+            else:
+                meeting_date_start = convert_to_utc(request.env.user.tz, (post.get('meeting_date') + ' ' + post.get('meeting_time_start') + ':00'))
+                meeting_date_end = convert_to_utc(request.env.user.tz, (post.get('meeting_date') + ' ' + post.get('meeting_time_end') + ':00'))
+                week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
+                request.env['calendar.event'].create({
+                    'name': request.env['res.partner'].browse(int(partner)).name,
+                    'description': post.get('description') + '\n' + '%s/crm/%s/repord' % (request.env['ir.config_parameter'].get_param('web.base.url'), partner.id),
+                    'start_datetime': meeting_date_start,
+                    'stop_datetime': meeting_date_end,
+                    'week_number': week_number,
+                    'weekday': weekday,
+                    'partner_ids': [(6, 0, [int(partner)])],
+                    'allday': False,
+                })
+                return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        elif request.httprequest.url[-7:] == 'visited': #Visited
+            meetings = request.env['calendar.event'].search([('partner_ids', '=', int(partner)), ('start', '<', fields.Datetime.now()), ('stop', '>', fields.Datetime.now())])
+            for m in meetings:
+                m.write({
+                    'categ_ids': [(4, request.env.ref('crm_repord.categ_meet6').id, _)],
+                })
+            return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        elif request.httprequest.url[-6:] == 'delete': #Delete
+            if meeting:
+                meeting.unlink()
+            return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        return request.render('crm_repord.meeting_detail', {
+            'partner': partner,
+            'meeting': meeting,
+            'name': meeting.name,
+            'start_datetime': meeting.start_datetime,
+            'stop_datetime': meeting.stop_datetime,
+            'week_number': meeting.week_number,
+            'weekday': meeting.weekday,
+            'description': meeting.description,
+            'mode': 'view',
+            'active_tab': post.get('active_tab')
+        })
+
+    @http.route([
+        '/crm/<model("note.note"):note>/note',
+        '/crm/<model("res.partner"):partner>/note/add',
+        '/crm/<model("note.note"):note>/note/edit',
+        '/crm/<model("note.note"):note>/note/done',
+        '/crm/<model("note.note"):note>/note/delete',
+    ], type='http', auth="user", website=True)
+    def todo_info_update(self, note=None, partner=None, **post):
+        if request.httprequest.url[-4:] == 'edit': #Edit
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.todo_detail', {
+                    'memo': note.memo,
+                    'mode': 'edit',
+                })
+            else:
+                note.write({
+                    'memo': post.get('memo'),
+                })
+                return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        elif request.httprequest.url[-3:] == 'add': #Add
+            if request.httprequest.method == 'GET':
+                return request.render('crm_repord.todo_detail', {
+                    'memo': post.get('memo'),
+                    'mode': 'add',
+                    'active_tab': post.get('active_tab')
+                })
+            else:
+                request.env['note.note'].create({
+                    'open': True,
+                    'stage_id': request.env.ref('note.note_stage_00').id,
+                    'memo': memo,
+                    'partner_id': int(partner),
+                })
+                return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        elif request.httprequest.url[-4:] == 'done': #Done
+            note = request.env['note.note'].search(['&', '&', ('id', '=', int(note)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
+            note.write({
+                'open': False,
+                'stage_id': request.env.ref('note.note_stage_04').id, #this doesn't work
+                'date_done': datetime.date.today(),
+            })
+            return 'note_done'
+        elif request.httprequest.url[-6:] == 'delete': #Delete
+            if note:
+                note.unlink()
+            return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
+        return request.render('crm_repord.todo_detail', {
+            'note': note,
+            'memo': post.get('memo'),
+            'mode': 'view',
+            'active_tab': post.get('active_tab')
+        })
+
+    #~ @http.route(['/crm/meeting/visited'], type='json', auth="user", methods=['POST'], website=True)
+    #~ def customer_visited(self, partner_id, **kw):
+        #~ meetings = request.env['calendar.event'].search([('partner_ids', '=', int(partner_id)), ('start', '<', fields.Datetime.now()), ('stop', '>', fields.Datetime.now())])
+        #~ for m in meetings:
+            #~ m.write({
+                #~ 'categ_ids': [(4, request.env.ref('crm_repord.categ_meet6').id, _)],
+            #~ })
+        #~ return 'meeting_done'
+
+    #~ @http.route(['/crm/meeting/create'], type='json', auth="user", methods=['POST'], website=True)
+    #~ def meeting_create(self, partner_id, meeting_content, meeting_date, meeting_time_start, meeting_time_end, **post):
+        #~ if request.httprequest.method == 'POST':
+            #~ meeting_date_start = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_start + ':00'))
+            #~ meeting_date_end = convert_to_utc(request.env.user.tz, (meeting_date + ' ' + meeting_time_end + ':00'))
+            #~ week_number, weekday = request.env['calendar.event']._change_week_and_weekday(meeting_date_start)
+            #~ meeting = request.env['calendar.event'].create({
+                #~ 'name': request.env['res.partner'].browse(int(partner_id)).name,
+                #~ 'start_datetime': meeting_date_start,
+                #~ 'stop_datetime': meeting_date_end,
+                #~ 'week_number': week_number,
+                #~ 'weekday': weekday,
+                #~ 'partner_ids': [(6, 0, [int(partner_id)])],
+                #~ 'allday': False,
+                #~ 'description': meeting_content + '\n' + '%s/crm/%s/repord' % (request.env['ir.config_parameter'].get_param('web.base.url'), partner_id),
+            #~ })
+            #~ return 'meeting_created'
+
+    #~ @http.route(['/crm/todo/create'], type='json', auth="user", methods=['POST'], website=True)
+    #~ def todo_create(self, partner, memo, **post):
+        #~ if request.httprequest.method == 'POST':
+            #~ request.env['note.note'].create({
+                #~ 'open': True,
+                #~ 'stage_id': request.env.ref('note.note_stage_00').id,
+                #~ 'memo': memo,
+                #~ 'partner_id': int(partner),
+            #~ })
+            #~ return 'note_created'
+
+    #~ @http.route(['/crm/todo/done'], type='json', auth="user", methods=['POST'], website=True)
+    #~ def todo_done(self, note_id, **post):
+        #~ note = request.env['note.note'].search(['&', '&', ('id', '=', int(note_id)), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)])
+        #~ note.write({
+            #~ 'open': False,
+            #~ 'stage_id': request.env.ref('note.note_stage_04').id, #this doesn't work
+            #~ 'date_done': datetime.date.today(),
+        #~ })
+        #~ return 'note_done'
 
 class rep_order(models.Model):
     _name = "rep.order"

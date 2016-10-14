@@ -394,7 +394,7 @@
                                         <t t-foreach="oppors" t-as="oppor">
                                             <tr>
                                                 <td>
-                                                    <span t-field="oppor.name"/>
+                                                    <a t-att-href="'/crm/%s/lead/%s' %(partner.id, oppor.id)"><span t-field="oppor.name"/></a>
 <!--
                                                     <span><t t-esc="'%.0d' %oppor.planned_revenue"/> <t t-esc="oppor.revenue_unit"/></span>
                                                     <span t-field="oppor.campaign"/>
@@ -406,6 +406,9 @@
                                         </t>
                                     </table>
                                 </t>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                                <a t-att-href="'/crm/%s/lead/add' %partner.id" type="button" class="btn btn-warning btn-lg">Lägga till</a>
                             </div>
                         </div>
                     </div>
@@ -420,7 +423,7 @@
                                         <t t-foreach="meetings" t-as="meeting">
                                             <tr>
                                                 <td>
-                                                    <p t-att-onclick="'meeting_done(&quot;%s&quot;)' %meeting.id" t-att-id="'meeting_%s_text' %meeting.id" t-esc="meeting.strip_desc()" class="pull-left meeting_text"/>
+                                                    <a t-att-href="'/crm/%s/meeting/%s' %(partner.id, meeting.id)"><p t-att-id="'meeting_%s_text' %meeting.id" t-esc="meeting.strip_desc()" class="pull-left meeting_text"/></a>
                                                 </td>
                                                 <td>
                                                     <t t-if="meeting.start_date">
@@ -435,8 +438,9 @@
                                     </table>
                                 </t>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32">
-                                <button id="show_meeting_button_group" class="btn btn-warning btn-lg" onclick="show_create_meeting()" style="margin: auto; display: block;">Skapa nytt</button>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                                <a t-att-href="'/crm/%s/meeting/add' %partner.id" type="button" class="btn btn-warning btn-lg">Skapa nytt</a>
+<!--
                                 <div id="meeting_button_group" class="hidden">
                                     <lable for="meeting_content">Beskrivning</lable>
                                     <input id="meeting_content" name="meeting_content" type="text" class="form-control input-xs mb16"/>
@@ -457,6 +461,7 @@
                                     <button class="btn btn-default btn-lg pull-left" onclick="hide_create_meeting()">Avbryt</button>
                                     <button class="btn btn-warning btn-lg pull-right" t-att-onclick="'create_meeting(&quot;%s&quot;)' %partner.id">Skapa</button>
                                 </div>
+-->
                             </div>
                         </div>
                     </div>
@@ -648,7 +653,7 @@
     </template>
 
     <!-- View Contact Information-->
-    <template id="object_detail" name="Kontakt Information">
+    <template id="contact_detail" name="Kontakt Information">
         <t t-call="website.layout">
             <t t-if="mode == 'view'">
                 <div class="container mt32 mb32">
@@ -719,6 +724,156 @@
         </t>
     </template>
 
+    <!-- View Lead Information-->
+    <template id="lead_detail" name="Lead Information">
+        <t t-call="website.layout">
+            <t t-if="mode == 'view'">
+                <div class="container mt32 mb32">
+                    <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                        <tr>
+                            <td>Namn</td>
+                            <td><h5 t-if="lead.name" t-esc="lead.name" class="pull-right"/></td>
+                        </tr>
+                        <tr>
+                            <td>Kampanj</td>
+                            <td><h5 t-if="lead.campaign" t-esc="lead.campaign.name" class="pull-right"/></td>
+                        </tr>
+                        <tr>
+                            <td>Beskrivning</td>
+                            <td><h5 t-if="lead.description" t-esc="lead.description" class="pull-right"/></td>
+                        </tr>
+                    </table>
+                    <div class="container crud_button_group">
+                        <ul>
+                            <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/lead/%s/delete' %(partner.id, lead.id)" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-warning btn-lg mt32 mb32" t-att-href="'/crm/%s/lead/%s/edit' %(partner.id, lead.id)">Redigera</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </t>
+            <t t-if="mode == 'edit' or mode == 'add'">
+                <div class="container mt32 mb32">
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="name">Namn</label>
+                            <input name="name" type="text" class="form-control" t-att-value="lead.name if lead else ''" placeholder="Storsäljare" required="1"/>
+                        </div>
+                        <t t-if="mode == 'add'">
+                            <div class="form-group">
+                                <label for="name">Kampanj</label>
+                                <select name="campaign" id="campaign" class="form-control selectpicker dropdown">
+                                    <option value=""></option>
+                                    <t t-foreach="request.env['marketing.campaign'].search([])" t-as="c">
+                                        <option t-att-value="c.id"><t t-raw="c.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                        </t>
+                        <t t-if="mode == 'edit'">
+                            <div class="form-group">
+                                <label for="name">Kampanj</label>
+                                <select name="campaign" id="campaign" class="form-control selectpicker dropdown">
+                                    <option value=""></option>
+                                    <t t-foreach="request.env['marketing.campaign'].search([])" t-as="c">
+                                        <option t-att-value="c.id" t-att="{'selected': 'checked'} if c.id == lead.campaign.id else {}"><t t-raw="c.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                        </t>
+                        <div class="form-group">
+                            <label for="description">Beskrivning</label>
+                            <textarea name="description" type="text" class="form-control" placeholder="Beskrivning"><t t-esc="lead.description if lead else ''"/></textarea>
+                        </div>
+                        <div class="container crud_button_group">
+                            <ul>
+                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                                <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/lead/%s/delete' %(partner.id, lead.id)" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li></t>
+                                <t t-if="mode == 'add' or mode == 'edit'"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- View Meeting Information-->
+    <template id="meeting_detail" name="Meeting Information">
+        <t t-call="website.layout">
+            <t t-if="mode == 'view'">
+                <div class="container mt32 mb32">
+                    <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                        <tr>
+                            <td>Namn</td>
+                            <td><span t-field="meeting.name"/></td>
+                        </tr>
+                        <tr>
+                            <td>Beskrivning</td>
+                            <td><span t-field="meeting.description"/></td>
+                        </tr>
+                        <tr>
+                            <td>Datum</td>
+                            <td>
+                                <t t-if="meeting.start_date">
+                                    <span t-field="meeting.start_date"/>
+                                </t>
+                                <t t-if="meeting.start_datetime">
+                                    <span t-field="meeting.start_datetime"/>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="container crud_button_group">
+                        <ul>
+                            <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/meeting/%s/delete' %(partner.id, meeting.id)" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-warning btn-lg mt32 mb32" t-att-href="'/crm/%s/meeting/%s/edit' %(partner.id, meeting.id)">Redigera</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </t>
+            <t t-if="mode == 'edit' or mode == 'add'">
+                <div class="container mt32 mb32">
+                    <form method="post">
+                        <div class="form-group">
+                            <lable for="description">Beskrivning</lable>
+                            <textarea name="description" type="text" class="form-control input-xs mb16" required="1"><t t-esc="meeting.description if meeting else ''"/></textarea>
+                            <div class="form-group">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding-left: 0px; padding-right: 0px;">
+                                    <lable for="meeting_date">Datum</lable>
+                                    <input id="meeting_date" name="meeting_date" type="date" class="form-control input-xs mb16" t-att-value="meeting.start[:10] if mode == 'edit' else ''" required="1"/>
+                                </div>
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;">
+                                    <label for="meeting_time_start" style="display: unset; font-weight: unset;">Starttid</label>
+                                    <input name="meeting_time_start" class="form-control input-xs mb16" type="time" t-att-value="meeting.convert_to_utc(meeting.start)[11:] if mode == 'edit' else ''" required="1"/>
+                                </div>
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;">
+                                    <label for="meeting_time_end" style="display: unset; font-weight: unset;">Sluttid</label>
+                                    <input name="meeting_time_end" class="form-control input-xs mb16" type="time" t-att-value="meeting.stop[11:] if mode == 'edit' else ''" required="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container crud_button_group">
+                            <ul>
+                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                                <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/meeting/%s/delete' %(partner.id, meeting.id)" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li></t>
+                                <t t-if="mode == 'add' or mode == 'edit'"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- View TODO Information-->
+    <template id="todo_detail" name="TODO Information">
+        <t t-call="website.layout">
+            <span>TODO: TODOs</span>
+        </t>
+    </template>
+
     <template id="crm_css" inherit_id="website.layout">
         <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
@@ -726,7 +881,7 @@
                 .navbar-default .navbar-nav > li > a {
                     font-size: 12px;
                 }
-                
+
                 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
                     background-color: #FFD529;
                 }
