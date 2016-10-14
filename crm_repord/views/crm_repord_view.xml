@@ -723,6 +723,13 @@
         <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
             <style>
+                .navbar-default .navbar-nav > li > a {
+                    font-size: 12px;
+                }
+                
+                .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+                    background-color: #FFD529;
+                }
 
                 .btn-warning {
                     background-color: #F6BB43;
