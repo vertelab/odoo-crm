@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- inherit crm-lead form -->
+        <record id="crm_case_form_view_leads" model="ir.ui.view">
+            <field name="name">crm_lead_info.inherit CRM - Leads Form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="company_registry_no"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
