@@ -495,7 +495,7 @@
                     </div>
                 </div>
                 <!-- buttons for create log -->
-                <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mb32">
+                <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="text-center">Presentationer</h3>
                     <div class="container">
                         <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
@@ -504,11 +504,11 @@
                     </div>
                 </div>
                 <!-- buttons for mark meeting done -->
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="background-color: #F8F8F8;">
                     <t t-if="len(partner._get_meeting()) &gt; 0">
                         <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
                         <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
-                            <button t-att-id="'%s_meeting' %partner.id" t-att-onclick="'customer_visited(&quot;%s&quot;)' %partner.id" class="btn btn-success btn-lg mb16" style="margin: auto; display: block;" onclick="return confirm('Är du säkert?')">Kunden besökt</button>
+                            <a type="button" class="btn btn-success btn-lg mb16" t-att-href="'/crm/%s/meeting/visited' %partner.id" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Kunden besökt</a>
                         </div>
                     </t>
                 </div>
@@ -846,11 +846,11 @@
                                 </div>
                                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;">
                                     <label for="meeting_time_start" style="display: unset; font-weight: unset;">Starttid</label>
-                                    <input name="meeting_time_start" class="form-control input-xs mb16" type="time" t-att-value="meeting.convert_to_utc(meeting.start)[11:] if mode == 'edit' else ''" required="1"/>
+                                    <input name="meeting_time_start" class="form-control input-xs mb16" type="time" t-att-value="website.convert_to_local(meeting.start)[11:] if mode == 'edit' else ''" required="1"/>
                                 </div>
                                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3" style="padding-right: 0px;">
                                     <label for="meeting_time_end" style="display: unset; font-weight: unset;">Sluttid</label>
-                                    <input name="meeting_time_end" class="form-control input-xs mb16" type="time" t-att-value="meeting.stop[11:] if mode == 'edit' else ''" required="1"/>
+                                    <input name="meeting_time_end" class="form-control input-xs mb16" type="time" t-att-value="website.convert_to_local(meeting.stop)[11:] if mode == 'edit' else ''" required="1"/>
                                 </div>
                             </div>
                         </div>
@@ -1434,14 +1434,16 @@
 
                 /* change status of meeting */
                 function customer_visited(partner_id){
-                    button = partner_id + "_meeting";
-                    openerp.jsonRpc("/crm/meeting/visited", 'call', {
-                        'partner_id': partner_id,
-                    }).done(function(data){
-                        if(data == "meeting_done"){
-                            $("#" + button).addClass("hidden");
-                        }
-                    });
+                    if (confirm("Är du säkert?") == true) {
+                        button = partner_id + "_meeting";
+                        openerp.jsonRpc("/crm/" + partner_id + "/meeting/visited", 'call', {
+                            'partner': partner_id,
+                        }).done(function(data){
+                            if(data == "meeting_done"){
+                                $("#" + button).addClass("hidden");
+                            }
+                        });
+                    }
                 }
 
                 /* submit file automatically */

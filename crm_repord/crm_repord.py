@@ -44,14 +44,14 @@ def convert_to_utc(record, timestamp):
 
 class website(models.Model):
     _inherit = 'website'
-    
+
     @api.multi
     def convert_to_local(self, timestamp):
         dt = fields.Datetime.from_string(timestamp)
         tz_name = self._context.get('tz') or self.env.user.tz
         local_dt = pytz.utc.localize(dt).astimezone(pytz.timezone(tz_name))
         return fields.Datetime.to_string(local_dt)
-    
+
     @api.multi
     def convert_to_utc(self, timestamp):
         tz_name = self._context.get('tz') or self.env.user.tz
@@ -94,10 +94,10 @@ class res_partner(models.Model):
         meetings = []
         for m in self.meeting_ids:
             if m.allday:
-                if m.start_date == datetime.date.today():
+                if m.start_date == fields.Date.today():
                     meetings.append(m)
             if not m.allday:
-                if m.start_datetime[0:10] == str(datetime.date.today()):
+                if m.start_datetime < fields.Datetime.now() and m.stop_datetime > fields.Datetime.now():
                     meetings.append(m)
         return meetings
 
