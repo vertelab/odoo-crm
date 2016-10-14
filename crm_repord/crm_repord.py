@@ -540,11 +540,11 @@ class MobileSaleView(http.Controller):
         })
 
     @http.route([
-        '/crm/<model("note.note"):note>/note',
+        '/crm/<model("res.partner"):partner>/note/<model("note.note"):note>',
         '/crm/<model("res.partner"):partner>/note/add',
-        '/crm/<model("note.note"):note>/note/edit',
-        '/crm/<model("note.note"):note>/note/done',
-        '/crm/<model("note.note"):note>/note/delete',
+        '/crm/<model("res.partner"):partner>/note/<model("note.note"):note>/edit',
+        '/crm/<model("res.partner"):partner>/note/<model("note.note"):note>/delete',
+        '/crm/<model("res.partner"):partner>/note/<model("note.note"):note>/done',
     ], type='http', auth="user", website=True)
     def todo_info_update(self, note=None, partner=None, **post):
         if request.httprequest.url[-4:] == 'edit': #Edit
