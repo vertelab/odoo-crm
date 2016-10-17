@@ -144,9 +144,6 @@ class res_partner_listing(models.Model):
 class MobileSaleView(http.Controller):
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="user", website=True)
     def repord(self, partner=None, **post):
-        #~ products = partner.product_ids
-        #~ products |= partner.m_range_product_ids - partner.inactive_product_ids
-        products = partner.m_range_product_ids + partner.range_product_ids
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft')])
         if not rep_order:
             rep_order = request.env['rep.order'].create({
@@ -154,8 +151,12 @@ class MobileSaleView(http.Controller):
             })
         else:
             rep_order = rep_order[0]
-
-        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'order': rep_order, 'active_tab': post.get('active_tab'),})
+        listing = partner.m_range_product_ids + partner.range_product_ids
+        if rep_order.order_type == 'direct':
+            products = request.env['product.product'].search([('categ_id', 'child_of', request.env.ref('product.product_category_1').id)])
+        else:
+            products = listing
+        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'listing': listing, 'order': rep_order, 'active_tab': post.get('active_tab'),})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
     def image_upload(self, partner=None, **post):
