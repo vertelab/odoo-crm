@@ -29,6 +29,7 @@ class res_partner(models.Model):
 
     role = fields.Char(string="Role",help="Chain or type of shop", select=True)
     store_class = fields.Selection([('A', 'A'),('B', 'B'),('C', 'C'),('D', 'D'),('E', 'E')], string='Store Class')
+    #A-regioner enligt SCB
     areg = fields.Selection([
     ('1', u'Stockholm'),
     ('2', u'Norrtälje'),
@@ -60,6 +61,16 @@ class res_partner(models.Model):
     ('28', u'Malmö/Lund/Trelleborg'),
     ('29', u'Ystad/Simrishamn'),
     ('30', u'Eslöv'),
+    ('31', u'Halmstad'),
+    ('32', u'Falkenberg/Varberg'),
+    ('33', u'Göteborg'),
+    ('34', u'Uddevalla'),
+    ('35', u'Trollhättan/Vänersborg'),
+    ('36', u'Borås'),
+    ('37', u'Lidköping/Skara'),
+    ('38', u'Falköping'),
+    ('39', u'Skövde'),
+    ('40', u'Mariestad'),
     ('41', u'Kristinehamn'),
     ('42', u'Karlstad'),
     ('43', u'Säffle/Åmål'),
