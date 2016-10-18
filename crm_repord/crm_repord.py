@@ -33,6 +33,17 @@ from openerp.exceptions import Warning
 
 import openerp.addons.decimal_precision as dp
 
+from HTMLParser import HTMLParser
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
+
 def convert_to_utc(record, timestamp):
     if isinstance(record, basestring):
         tz_name = record
@@ -550,19 +561,23 @@ class MobileSaleView(http.Controller):
     def todo_info_update(self, note=None, partner=None, **post):
         if request.httprequest.url[-4:] == 'edit': #Edit
             if request.httprequest.method == 'GET':
+                stripper = MLStripper()
+                stripper.feed(note.memo)
                 return request.render('crm_repord.todo_detail', {
-                    'memo': note.memo,
+                    'partner': partner,
+                    'note': note,
+                    'memo': stripper.get_data(),
                     'mode': 'edit',
                 })
             else:
                 note.write({
                     'memo': post.get('memo'),
+                    'due_date': post.get('due_date'),
                 })
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
         elif request.httprequest.url[-3:] == 'add': #Add
             if request.httprequest.method == 'GET':
                 return request.render('crm_repord.todo_detail', {
-                    'memo': post.get('memo'),
                     'mode': 'add',
                     'active_tab': post.get('active_tab')
                 })
@@ -570,8 +585,9 @@ class MobileSaleView(http.Controller):
                 request.env['note.note'].create({
                     'open': True,
                     'stage_id': request.env.ref('note.note_stage_00').id,
-                    'memo': memo,
-                    'partner_id': int(partner),
+                    'memo': post.get('memo'),
+                    'due_date': post.get('due_date'),
+                    'partner_id': partner.id,
                 })
                 return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
         elif request.httprequest.url[-4:] == 'done': #Done
@@ -581,14 +597,14 @@ class MobileSaleView(http.Controller):
                 'stage_id': request.env.ref('note.note_stage_04').id, #this doesn't work
                 'date_done': datetime.date.today(),
             })
-            return 'note_done'
+            return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
         elif request.httprequest.url[-6:] == 'delete': #Delete
             if note:
                 note.unlink()
             return werkzeug.utils.redirect('/crm/%s/repord?active_tab=3' % partner.id, 302)
         return request.render('crm_repord.todo_detail', {
+            'partner': partner,
             'note': note,
-            'memo': post.get('memo'),
             'mode': 'view',
             'active_tab': post.get('active_tab')
         })

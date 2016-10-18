@@ -45,5 +45,6 @@ class note_note(models.Model):
     _inherit='note.note'
 
     partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
+    due_date = fields.Date('Due Date')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

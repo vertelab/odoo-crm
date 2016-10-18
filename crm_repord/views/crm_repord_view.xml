@@ -351,7 +351,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
-                            <a t-att-href="'/crm/%s/company/edit' %partner.id" type="button" class="btn btn-warning btn-lg">Redigera infomation</a>
+                            <a t-att-href="'/crm/%s/company/edit' %partner.id" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Redigera info</a>
                         </div>
                     </div>
                     <!-- contact persons -->
@@ -379,7 +379,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
-                            <a t-att-href="'/crm/%s/contact/add' %partner.id" type="button" class="btn btn-warning btn-lg">Lägga till</a>
+                            <a t-att-href="'/crm/%s/contact/add' %partner.id" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Lägga till</a>
                         </div>
                     </div>
                     <!-- partner opportunities -->
@@ -407,7 +407,7 @@
                                 </t>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
-                                <a t-att-href="'/crm/%s/lead/add' %partner.id" type="button" class="btn btn-warning btn-lg">Lägga till</a>
+                                <a t-att-href="'/crm/%s/lead/add' %partner.id" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Lägga till</a>
                             </div>
                         </div>
                     </div>
@@ -438,7 +438,7 @@
                                 </t>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
-                                <a t-att-href="'/crm/%s/meeting/add' %partner.id" type="button" class="btn btn-warning btn-lg">Skapa nytt</a>
+                                <a t-att-href="'/crm/%s/meeting/add' %partner.id" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Skapa nytt</a>
 <!--
                                 <div id="meeting_button_group" class="hidden">
                                     <lable for="meeting_content">Beskrivning</lable>
@@ -467,7 +467,7 @@
                     <!-- partner todo list -->
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <h3 class="text-center">Todo</h3>
-                        <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)], order='create_date')"/>
+                        <t t-set="notes" t-value="request.env['note.note'].search(['&amp;', '&amp;', ('partner_id', '=', partner.id), ('open', '=', True), ('stage_id', '!=', request.env.ref('note.note_stage_04').id)], order='due_date')"/>
                         <div class="container">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <t t-if="notes">
@@ -475,7 +475,13 @@
                                         <t t-foreach="notes" t-as="note">
                                             <tr>
                                                 <td>
-                                                    <p t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" t-att-id="'note_%s_text' %note.id" t-field="note.name" style="margin-top: 10px;"/>
+                                                    <a t-att-href="'/crm/%s/note/%s' %(partner.id, note.id)"><p t-field="note.name" class="pull-left meeting_text"/></a>
+<!--                                                    <p t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" t-att-id="'note_%s_text' %note.id" t-field="note.name" style="margin-top: 10px;"/>-->
+                                                </td>
+                                                <td>
+                                                    <t t-if="note.due_date">
+                                                        <p t-field="note.due_date" class="pull-right" style="margin-top: 10px;"/>
+                                                    </t>
                                                 </td>
                                             </tr>
                                         </t>
@@ -483,12 +489,15 @@
                                 </t>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt16 mb32 text-center">
+                                <a t-att-href="'/crm/%s/note/add' %partner.id" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Skapa nytt</a>
+<!--
                                 <button id="show_note_button_group" class="btn btn-warning btn-lg" onclick="show_create_note()">Skapa nytt</button>
                                 <div id="note_button_group" class="hidden">
                                     <input id="note_memo" name="memo" type="text" class="form-control input-xs mb16"/>
                                     <button class="btn btn-default btn-lg pull-left" onclick="hide_create_note()">Avbryt</button>
                                     <button class="btn btn-warning btn-lg pull-right" t-att-onclick="'create_note(&quot;%s&quot;)' %partner.id">Skapa</button>
                                 </div>
+-->
                             </div>
                         </div>
                     </div>
@@ -497,9 +506,9 @@
                 <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="text-center">Presentationer</h3>
                     <div class="container">
-                        <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16" style="margin: auto; display: block;">Paolos Färsk</button>
-                        <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16" style="margin: auto; display: block;">Paolos Frys</button>
-                        <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary btn-lg mt16 mb16" style="margin: auto; display: block;">Lerøy</button>
+                        <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Paolos Färsk</button>
+                        <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Paolos Frys</button>
+                        <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Lerøy</button>
                     </div>
                 </div>
                 <!-- buttons for mark meeting done -->
@@ -507,7 +516,7 @@
                     <t t-if="len(partner._get_meeting()) &gt; 0">
                         <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
                         <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
-                            <a type="button" class="btn btn-success btn-lg mb16" t-att-href="'/crm/%s/meeting/visited' %partner.id" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Kunden besökt</a>
+                            <a type="button" class="btn btn-success btn-lg mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3" t-att-href="'/crm/%s/meeting/visited' %partner.id" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Kunden besökt</a>
                         </div>
                     </t>
                 </div>
@@ -805,20 +814,20 @@
                     <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
                         <tr>
                             <td>Namn</td>
-                            <td><span t-field="meeting.name"/></td>
+                            <td><span t-field="meeting.name" class="pull-right"/></td>
                         </tr>
                         <tr>
                             <td>Beskrivning</td>
-                            <td><span t-field="meeting.description"/></td>
+                            <td><span t-field="meeting.description" class="pull-right"/></td>
                         </tr>
                         <tr>
                             <td>Datum</td>
                             <td>
                                 <t t-if="meeting.start_date">
-                                    <span t-field="meeting.start_date"/>
+                                    <span t-field="meeting.start_date" class="pull-right"/>
                                 </t>
                                 <t t-if="meeting.start_datetime">
-                                    <span t-field="meeting.start_datetime"/>
+                                    <span t-field="meeting.start_datetime" class="pull-right"/>
                                 </t>
                             </td>
                         </tr>
@@ -856,7 +865,7 @@
                         <div class="container crud_button_group">
                             <ul>
                                 <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
-                                <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/meeting/%s/delete' %(partner.id, meeting.id)" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li></t>
+                                <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/meeting/%s/delete' %(partner.id, meeting.id)" onclick="return confirm('Är du säker?')" ontouchend="return confirm('Är du säker?')">Ta bort</a></li></t>
                                 <t t-if="mode == 'add' or mode == 'edit'"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
                             </ul>
                         </div>
@@ -869,7 +878,53 @@
     <!-- View TODO Information-->
     <template id="todo_detail" name="TODO Information">
         <t t-call="website.layout">
-            <span>TODO: TODOs</span>
+            <t t-if="mode == 'view'">
+                <div class="container mt32 mb32">
+                    <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
+                        <tr>
+                            <td>Att göra</td>
+                            <td><span t-att-id="'note_%s_text' % note.id" t-field="note.memo" t-att-style="'text-decoration: line-through;color: #f00;' if not note.open else ''" class="pull-right"/></td>
+                        </tr>
+                        <tr>
+                            <td>Datum</td>
+                            <td>
+                                <span t-field="note.due_date" class="pull-right"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="container crud_button_group">
+                        <ul>
+                            <li class="text-center"><a type="button" class="btn btn-default btn-primary mt32 mb32" t-att-href="'/crm/%s/note/%s/done' %(partner.id, note.id)">Klar</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/note/%s/delete' %(partner.id, note.id)" onclick="return confirm('Är du säker?')" ontouchend="return confirm('Är du säker?')">Ta bort</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-warning btn-lg mt32 mb32" t-att-href="'/crm/%s/note/%s/edit' %(partner.id, note.id)">Redigera</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </t>
+            <t t-if="mode == 'edit' or mode == 'add'">
+                <div class="container mt32 mb32">
+                    <form method="post">
+                        <div class="form-group">
+                            <lable for="description">Beskrivning</lable>
+                            <textarea name="memo" type="text" class="form-control input-xs mb16" required="1"><t t-esc="memo if memo else ''"/></textarea>
+                            <div class="form-group">
+                                <div style="padding-right: 0px;">
+                                    <label for="due_date" style="display: unset; font-weight: unset;">Datum</label>
+                                    <input name="due_date" class="form-control input-xs mb16" type="date" t-att-value="website.convert_to_local(note.due_date) if mode == 'edit' else ''" required="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container crud_button_group">
+                            <ul>
+                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                                <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/note/%s/delete' %(partner.id, note.id)" onclick="return confirm('Är du säkert?')" ontouchend="return confirm('Är du säkert?')">Ta bort</a></li></t>
+                                <t t-if="mode == 'add' or mode == 'edit'"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </t>
         </t>
     </template>
 
@@ -891,8 +946,8 @@
                 }
 
                 .btn-primary {
-                    background-color: #4200C3;
-                    border-color: #4200C3;
+                    background-color: #2542C2;
+                    border-color: #2542C2;
                 }
 
                 .navbar-static-top > .container {

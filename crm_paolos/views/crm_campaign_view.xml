@@ -51,7 +51,20 @@
                 </field>
             </field>
         </record>
-
+        
+        <record id="view_note_note_form" model="ir.ui.view">
+            <field name="name">note.note.reporder.date</field>
+            <field name="model">note.note</field>
+            <field name="inherit_id" ref="note.view_note_note_form"/>
+            <field name="arch" type="xml">
+                <field name="memo" position="before">
+                    <group>
+                        <field name="due_date"/>
+                    </group>
+                </field>
+            </field>
+        </record>
+        
         <record id="crm_campaign_note_note_tree_view" model="ir.ui.view">
             <field name="name">note.note.tree</field>
             <field name="model">note.note</field>
@@ -59,6 +72,7 @@
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="partner_id"/>
+                    <field name="due_date"/>
                 </field>
             </field>
         </record>
@@ -69,10 +83,14 @@
             <field name="inherit_id" ref="note.view_note_note_kanban"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
+                    <field name="due_date"/>
                     <field name="partner_id"/>
                 </field>
                 <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_global_click_edit oe_semantic_html_override oe_kanban_card #{record.group_fancy==1 ? 'oe_kanban_card_fancy' : ''}" position="inside">
                     <span style="color: #369;"><field name="partner_id"/></span>
+                    <div>
+                        <field name="due_date"/>
+                    </div>
                 </div>
             </field>
         </record>
