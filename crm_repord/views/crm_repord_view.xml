@@ -515,7 +515,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center" style="background-color: #F8F8F8;">
                     <t t-if="len(partner._get_meeting()) &gt; 0">
                         <t t-set="meeting" t-value="partner._get_meeting()[0]"/>
-                        <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt32">
+                        <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt16">
                             <a type="button" class="btn btn-success btn-lg mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3" t-att-href="'/crm/%s/meeting/visited' %partner.id" onclick="return confirm('Är du säker?')">Kunden besökt</a>
                         </div>
                     </t>
