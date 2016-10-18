@@ -721,7 +721,7 @@
                         </div>
                         <div class="container crud_button_group">
                             <ul>
-                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Avbryt</a></li>
                                 <t t-if="mode == 'edit' and editable == 'enable'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/contact/delete' %partner.id" onclick="return confirm('Är du säker?')">Ta bort</a></li></t>
                                 <t t-if="mode == 'add' or (mode == 'edit' and editable == 'enable')"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
                             </ul>
@@ -795,7 +795,7 @@
                         </div>
                         <div class="container crud_button_group">
                             <ul>
-                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
+                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Avbryt</a></li>
                                 <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/lead/%s/delete' %(partner.id, lead.id)" onclick="return confirm('Är du säker?')">Ta bort</a></li></t>
                                 <t t-if="mode == 'add' or mode == 'edit'"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
                             </ul>
@@ -864,8 +864,8 @@
                         </div>
                         <div class="container crud_button_group">
                             <ul>
-                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
-                                <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/meeting/%s/delete' %(partner.id, meeting.id)" onclick="return confirm('Är du säker?')" ontouchend="return confirm('Är du säker?')">Ta bort</a></li></t>
+                                <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Avbryt</a></li>
+                                <t t-if="mode == 'edit'"><li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/meeting/%s/delete' %(partner.id, meeting.id)" onclick="return confirm('Är du säker?')">Ta bort</a></li></t>
                                 <t t-if="mode == 'add' or mode == 'edit'"><li class="text-center"><button class="btn btn-warning btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Spara</button></li></t>
                             </ul>
                         </div>
