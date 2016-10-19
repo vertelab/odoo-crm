@@ -877,7 +877,7 @@
                     </table>
                     <div class="container crud_button_group">
                         <ul>
-                            <li class="text-center"><a type="button" class="btn btn-default btn-primary mt32 mb32" t-att-href="'/crm/%s/note/%s/done' %(partner.id, note.id)">Klar</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-default btn-lg btn-primary mt32 mb32" t-att-href="'/crm/%s/note/%s/done' %(partner.id, note.id)">Klar</a></li>
                             <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
                             <li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/note/%s/delete' %(partner.id, note.id)" onclick="return confirm('Är du säker?')" ontouchend="return confirm('Är du säker?')">Ta bort</a></li>
                             <li class="text-center"><a type="button" class="btn btn-warning btn-lg mt32 mb32" t-att-href="'/crm/%s/note/%s/edit' %(partner.id, note.id)">Redigera</a></li>
