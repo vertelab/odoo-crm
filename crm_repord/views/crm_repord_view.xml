@@ -405,7 +405,7 @@
                                         <t t-foreach="meetings" t-as="meeting">
                                             <tr>
                                                 <td>
-                                                    <a t-att-href="'/crm/%s/meeting/%s' %(partner.id, meeting.id)"><p t-att-id="'meeting_%s_text' %meeting.id" t-esc="meeting.strip_desc()" class="pull-left meeting_text"/></a>
+                                                    <a t-att-href="'/crm/%s/meeting/%s' %(partner.id, meeting.id)"><span t-att-id="'meeting_%s_text' %meeting.id" t-esc="meeting.strip_desc()" class="pull-left meeting_text"/></a>
                                                 </td>
                                                 <td>
                                                     <t t-if="meeting.start_date">
@@ -458,7 +458,7 @@
                                         <t t-foreach="notes" t-as="note">
                                             <tr>
                                                 <td>
-                                                    <a t-att-href="'/crm/%s/note/%s' %(partner.id, note.id)"><p t-field="note.name" class="pull-left meeting_text"/></a>
+                                                    <a t-att-href="'/crm/%s/note/%s' %(partner.id, note.id)"><span t-field="note.name" class="pull-left meeting_text"/></a>
 <!--                                                    <p t-att-onclick="'todo_done(&quot;%s&quot;)' %note.id" t-att-id="'note_%s_text' %note.id" t-field="note.name" style="margin-top: 10px;"/>-->
                                                 </td>
                                                 <td>
