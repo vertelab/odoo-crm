@@ -304,31 +304,31 @@
                                 <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
                                     <tr>
                                         <td>Butikklass</td>
-                                        <td><h5 t-if="partner.store_class" t-esc="partner.store_class" class="pull-right"/></td>
+                                        <td><span t-if="partner.store_class" t-esc="partner.store_class" class="pull-right"/></td>
                                     </tr>
                                     <tr>
                                         <td>Omsättning</td>
-                                        <td><h5 t-if="partner.size" t-esc="partner.size" class="pull-right"/></td>
+                                        <td><span t-if="partner.size" t-esc="partner.size" class="pull-right"/></td>
                                     </tr>
                                     <tr>
                                         <td>Orgnr</td>
-                                        <td><h5 t-if="partner.company_registry" class="pull-right"><t t-esc="partner.company_registry"/></h5></td>
+                                        <td><span t-if="partner.company_registry" class="pull-right"><t t-esc="partner.company_registry"/></span></td>
                                     </tr>
                                     <tr>
                                         <td>Epost</td>
-                                        <td><a t-att-href="'mailto:%s' %partner.email" t-if="partner.email"><h5 t-esc="partner.email" class="pull-right"/></a></td>
+                                        <td><a t-att-href="'mailto:%s' %partner.email" t-if="partner.email"><span t-esc="partner.email" class="pull-right"/></a></td>
                                     </tr>
                                     <tr>
                                         <td>Telefon</td>
-                                        <td><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.phone)[1:] if str(partner.phone).startswith('0') else partner.phone))" t-if="partner.phone"><h5 t-esc="partner.phone" class="pull-right"/></a></td>
+                                        <td><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.phone)[1:] if str(partner.phone).startswith('0') else partner.phone))" t-if="partner.phone"><span t-esc="partner.phone" class="pull-right"/></a></td>
                                     </tr>
                                     <tr>
                                         <td>Handlare</td>
-                                        <td><h5 class="pull-right" t-esc="partner.child_ids.filtered(lambda c: c.function == 'Butikchef').name"/></td>
+                                        <td><span class="pull-right" t-esc="partner.child_ids.filtered(lambda c: c.function == 'Butikchef').name"/></td>
                                     </tr>
                                     <tr t-if="partner.rangebox">
                                         <td>Sortimentsbox</td>
-                                        <td><h5 class="pull-right" t-esc="partner.rangebox"/></td>
+                                        <td><span class="pull-right" t-esc="partner.rangebox"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -345,16 +345,16 @@
                                 <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
                                     <t t-foreach="partner.child_ids" t-as="c">
                                         <tr>
-                                            <td><h5><strong><t t-esc="c.type.title()"/><t t-if="c.function"><t t-esc="' (%s)' %c.function"/></t></strong></h5></td>
+                                            <td><strong><t t-esc="c.type.title()"/><t t-if="c.function"><t t-esc="' (%s)' %c.function"/></t></strong></td>
                                             <td/>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <h5 class="pull-left"><a t-att-href="'/crm/%s/contact' %c.id"><t t-esc="c.name"/></a></h5>
+                                                <span class="pull-left"><a t-att-href="'/crm/%s/contact' %c.id"><t t-esc="c.name"/></a></span>
                                             </td>
                                             <td>
-                                                <h5 t-if="c.phone" class="pull-right"><a t-att-href="'tel:%s' %('+46{}'.format(str(c.phone)[1:] if str(c.phone).startswith('0') else c.phone))"><t t-esc="c.phone"/></a></h5>
-                                                <h5 t-if="not c.phone and c.mobile" class="pull-right"><a t-att-href="'tel:%s' %('+46{}'.format(str(c.mobile)[1:] if str(c.mobile).startswith('0') else c.mobile))"><t t-esc="c.mobile"/></a></h5>
+                                                <span t-if="c.phone" class="pull-right"><a t-att-href="'tel:%s' %('+46{}'.format(str(c.phone)[1:] if str(c.phone).startswith('0') else c.phone))"><t t-esc="c.phone"/></a></span>
+                                                <span t-if="not c.phone and c.mobile" class="pull-right"><a t-att-href="'tel:%s' %('+46{}'.format(str(c.mobile)[1:] if str(c.mobile).startswith('0') else c.mobile))"><t t-esc="c.mobile"/></a></span>
                                             </td>
                                         </tr>
                                     </t>
@@ -409,10 +409,10 @@
                                                 </td>
                                                 <td>
                                                     <t t-if="meeting.start_date">
-                                                        <p t-field="meeting.start_date" class="pull-right" style="margin-top: 10px;"/>
+                                                        <span t-field="meeting.start_date" class="pull-right" style="margin-top: 10px;"/>
                                                     </t>
                                                     <t t-if="meeting.start_datetime">
-                                                        <p t-field="meeting.start_datetime" class="pull-right" style="margin-top: 10px;"/>
+                                                        <span t-field="meeting.start_datetime" class="pull-right" style="margin-top: 10px;"/>
                                                     </t>
                                                 </td>
                                             </tr>
@@ -463,7 +463,7 @@
                                                 </td>
                                                 <td>
                                                     <t t-if="note.due_date">
-                                                        <p t-field="note.due_date" class="pull-right" style="margin-top: 10px;"/>
+                                                        <span t-field="note.due_date" class="pull-right" style="margin-top: 10px;"/>
                                                     </t>
                                                 </td>
                                             </tr>
@@ -651,23 +651,23 @@
                     <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
                         <tr>
                             <td>Namn</td>
-                            <td><h5 t-if="partner.name" t-esc="partner.name" class="pull-right"/></td>
+                            <td><span t-if="partner.name" t-esc="partner.name" class="pull-right"/></td>
                         </tr>
                         <tr>
                             <td>Epost</td>
-                            <td><h5><a t-att-href="'mailto:%s' %partner.email" t-if="partner.email"><span class="pull-right" t-esc="partner.email"/></a></h5></td>
+                            <td><a t-att-href="'mailto:%s' %partner.email" t-if="partner.email"><span class="pull-right" t-esc="partner.email"/></a></td>
                         </tr>
                         <tr>
                             <td>Telefon</td>
-                            <td><h5><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.phone)[1:] if str(partner.phone).startswith('0') else partner.phone))" t-if="partner.phone"><span class="pull-right" t-esc="partner.phone"/></a></h5></td>
+                            <td><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.phone)[1:] if str(partner.phone).startswith('0') else partner.phone))" t-if="partner.phone"><span class="pull-right" t-esc="partner.phone"/></a></td>
                         </tr>
                         <tr>
                             <td>Mobil</td>
-                            <td><h5><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.mobile)[1:] if str(partner.mobile).startswith('0') else partner.mobile))" t-if="partner.mobile"><span class="pull-right" t-esc="partner.mobile"/></a></h5></td>
+                            <td><a t-att-href="'tel:%s' %('+46{}'.format(str(partner.mobile)[1:] if str(partner.mobile).startswith('0') else partner.mobile))" t-if="partner.mobile"><span class="pull-right" t-esc="partner.mobile"/></a></td>
                         </tr>
                         <tr>
                             <td>Tjänst</td>
-                            <td><h5 class="pull-right" t-esc="partner.function"/></td>
+                            <td><span class="pull-right" t-esc="partner.function"/></td>
                         </tr>
                     </table>
                     <div class="container crud_button_group">
@@ -723,15 +723,15 @@
                     <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
                         <tr>
                             <td>Namn</td>
-                            <td><h5 t-if="lead.name" t-esc="lead.name" class="pull-right"/></td>
+                            <td><span t-if="lead.name" t-esc="lead.name" class="pull-right"/></td>
                         </tr>
                         <tr>
                             <td>Kampanj</td>
-                            <td><h5 t-if="lead.campaign" t-esc="lead.campaign.name" class="pull-right"/></td>
+                            <td><span t-if="lead.campaign" t-esc="lead.campaign.name" class="pull-right"/></td>
                         </tr>
                         <tr>
                             <td>Beskrivning</td>
-                            <td><h5 t-if="lead.description" t-esc="lead.description" class="pull-right"/></td>
+                            <td><span t-if="lead.description" t-esc="lead.description" class="pull-right"/></td>
                         </tr>
                     </table>
                     <div class="container crud_button_group">
