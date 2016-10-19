@@ -83,7 +83,7 @@
                         <p class="text-center mt4 mb4" style="font-size: 2.3em; font-weight: 300; color: #6a6a6a;" t-field="partner.name"/>
                         <t t-set="product_categories" t-value="request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')"/>
                         <!-- navigator -->
-                        <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px 10px;">
                             <ul class="nav nav-tabs nav-justified nav-brand text-center" style="padding: 0px; margin: 10px auto;">
                                 <t t-foreach="product_categories" t-as="brand_categs">
                                     <li t-att-class="'active' if brand_categs == product_categories[0] else ''">
@@ -92,7 +92,7 @@
                                 </t>
                             </ul>
                         </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; padding: 0px 15px;">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="width: 100%; padding: 0px;">
                             <t t-if="not active_tab"><t t-set="active_tab" t-value="'1'"/></t>
                             <ul class="nav nav_tabs nav-justified nav-categ">
                                 <li t-att-class="'active' if active_tab == '1' else ''">
@@ -139,7 +139,7 @@
                             t-att-id="'categs_%s' %brand_categories.id" style="padding: 0px;">
                                 <!-- selection for product category -->
                                 <div class="form-group">
-                                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin: 10px 0px; padding: 0px;">
+                                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin: 10px 0px; padding: 0px 10px;">
                                         <select name="" id="product_tab" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" onchange="product_tab()">
                                             <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
                                             <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
@@ -230,14 +230,14 @@
                     </div>
                 </div>
                 <div class="container form-group">
-                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px;">
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                         <select name="order_type" id="order_type" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
                             <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
                                 <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
                             </t>
                         </select>
                     </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px;">
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                         <select name="campaign" id="campaign" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
                             <option value="">Kampanj</option>
                             <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
@@ -245,7 +245,7 @@
                             </t>
                         </select>
                     </div>
-                    <div class="input-group col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px;">
+                    <div class="input-group col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                         <input id="delivery_date" type="date" name="Delivery Date" class="form-control selection_dropdown" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id" placeholder="Leveransdatum"/>
                         <span id="calendar-icon" class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
@@ -1121,7 +1121,7 @@
                 .sort_products {
                     box-shadow: 1px 2px #d8d8d8;
                     height: 175px;
-                    padding: 5px 0px;
+                    padding: 5px 10px;
                 }
 
                 .quantity-button {
