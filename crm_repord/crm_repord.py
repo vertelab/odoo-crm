@@ -134,7 +134,8 @@ class calendar_event(models.Model):
 
     @api.multi
     def strip_desc(self):
-        str = ''
+        self.ensure_one()
+        str = self.description
         if 'http://' in self.description:
             str = self.description[0:self.description.find('http://')]
         return str[0:30 if len(str) >= 30 else len(str)]

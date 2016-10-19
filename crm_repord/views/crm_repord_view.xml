@@ -801,7 +801,7 @@
                         </tr>
                         <tr>
                             <td>Beskrivning</td>
-                            <td><span t-field="meeting.description" class="pull-right"/></td>
+                            <td><span t-esc="meeting.strip_desc()" class="pull-right text-right"/></td>
                         </tr>
                         <tr>
                             <td>Datum</td>
