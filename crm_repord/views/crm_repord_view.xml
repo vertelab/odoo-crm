@@ -894,7 +894,7 @@
                     </table>
                     <div class="container crud_button_group">
                         <ul>
-                            <li class="text-center"><a type="button" class="btn btn-default btn-primary mt32 mb32" t-att-href="'/crm/%s/note/%s/done' %(partner.id, note.id)">Klar</a></li>
+                            <li class="text-center"><a type="button" class="btn btn-default btn-lg btn-primary mt32 mb32" t-att-href="'/crm/%s/note/%s/done' %(partner.id, note.id)">Klar</a></li>
                             <li class="text-center"><a type="button" class="btn btn-default btn-lg mt32 mb32" onclick="return window.history.back();">Backa</a></li>
                             <li class="text-center"><a type="button" class="btn btn-danger btn-lg mt32 mb32" t-att-href="'/crm/%s/note/%s/delete' %(partner.id, note.id)" onclick="return confirm('Är du säker?')" ontouchend="return confirm('Är du säker?')">Ta bort</a></li>
                             <li class="text-center"><a type="button" class="btn btn-warning btn-lg mt32 mb32" t-att-href="'/crm/%s/note/%s/edit' %(partner.id, note.id)">Redigera</a></li>
@@ -911,7 +911,7 @@
                             <div class="form-group">
                                 <div style="padding-right: 0px;">
                                     <label for="due_date" style="display: unset; font-weight: unset;">Datum</label>
-                                    <input name="due_date" class="form-control input-xs mb16" type="date" t-att-value="website.convert_to_local(note.due_date) if mode == 'edit' else ''" required="1"/>
+                                    <input name="due_date" class="form-control input-xs mb16" type="date" t-att-value="note.due_date if mode == 'edit' else ''" required="1"/>
                                 </div>
                             </div>
                         </div>
