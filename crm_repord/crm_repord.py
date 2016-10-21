@@ -154,6 +154,7 @@ class res_partner_listing(models.Model):
     rangebox = fields.Char('Rangebox')
 
 class MobileSaleView(http.Controller):
+    
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="user", website=True)
     def repord(self, partner=None, **post):
         rep_order = request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft')])
@@ -168,7 +169,15 @@ class MobileSaleView(http.Controller):
             products = request.env['product.product'].search([('categ_id', 'child_of', request.env.ref('product.product_category_1').id)])
         else:
             products = listing
-        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'products': products, 'listing': listing, 'order': rep_order, 'active_tab': post.get('active_tab'),})
+        listings = {}
+        product_categories = request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')
+        for category in product_categories:
+            listings[category.id] = request.env['product.product'].browse([])
+            for product in listing:
+                if product.categ_id.is_child_of_category(category):
+                    listings[category.id] |= product
+        _logger.warn(listings)
+        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'product_categories': product_categories, 'products': products, 'listings': listings, 'order': rep_order, 'active_tab': post.get('active_tab'),})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
     def image_upload(self, partner=None, **post):
@@ -916,4 +925,12 @@ class product_category(models.Model):
     def _repord_set_3p_supplier(self):
         for category in self.child_id:
             category.repord_3p_supplier = self.repord_3p_supplier
-
+    
+    @api.multi
+    def is_child_of_category(self, category):
+        self.ensure_one()
+        if category == self:
+            return True
+        elif self.parent_id == category:
+            return True
+        return False
