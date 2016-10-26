@@ -10,122 +10,6 @@
                 <t t-raw="0"/>
             </t>
         </template>
-<!--
-        <template id="ui_message" name="User Interface Message">
-            <t t-call="website_mobile.mobile_layout">
-                <t t-set="ms_type" t-value="info"/>
-                <t t-set="ms_content" t-value="Heeej"/>
-                <t t-if="ms_type='info'">
-                    <div class="alert alert-info">
-                        <a class="close" data-dismiss="alert" aria-label="close">x</a>
-                        <span><strong><t t-esc="ms_content"/></strong></span>
-                    </div>
-                </t>
-            </t>
-        </template>
--->
-        <template id="object_list" name="Object List">
-            <t t-call="website_crm_partner.layout_extend_partner">
-                <div>
-                    <!-- Content Zone -->
-                    <div class="content">
-                        <!-- List Contacts -->
-                        <ul t-if="objects" class="">
-                            <li t-foreach="objects" t-as="object" class="">
-                                <a class="navigate-right" t-attf-href="#{ root }#{ object.id }" data-transition="slide-in">
-                                    <h3>
-                                        <span t-esc="object.name" />
-                                        <i class="fa fa-angle-right pull-right" style="padding-right: 40px;"/>
-                                    </h3>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </t>
-        </template>
-        <!-- Customer Information-->
-        <template id="object_detail" name="Object Detail Information">
-            <t t-call="website_crm_partner.layout_extend_partner">
-                <!-- Content Zone -->
-                <div class="container mt32 mb32">
-                    <!-- Customer Info -->
-<!--
-                    <t t-set="ttype" t-value="request.env[model].fields_get(['name'])"/>
-                    <span t-esc="ttype"/>
--->
-                    <t t-call="website_crm_partner.form_fields"/>
-                    <div class="container">
-                        <t t-if="object">
-                            <h2><a t-if="mode=='view'" class="fa fa-trash pull-left" t-attf-href="#{ root }#{ object.id }/delete" onclick="return confirm('Are you sure?')" ontouchend="return confirm('Are you sure?')" /></h2>
-                            <h2><a t-if="mode=='view'" class="fa fa-pencil-square-o pull-right" t-attf-href="#{ root }#{ object.id }/edit" /></h2>
-                        </t>
-                    </div>
-                </div>
-            </t>
-        </template>
-        <!-- form fileds -->
-        <template id="form_fields">
-            <form t-attf-action="" method="post">
-                <div t-foreach="fields" t-as="field" class="form-group">
-                    <t t-set="ttype" t-value="request.env[model].fields_get([field])[field]['type']"/>
-                    <t t-set="type" t-value="text"/>
-                    <t t-if="'mail' in field" t-set="type" t-value="email"/>
-                    <t t-if="ttype in ['date', 'datetime']" t-set="type" t-value="date"/>
-                    <t t-if="ttype in ['integer', 'float']" t-set="type" t-value="number"/>
-                    <!-- field label -->
-                    <label><t t-esc="request.env[model].fields_get([field])[field]['string']" /></label>
-                    <t t-if="mode == 'edit'">
-                        <!-- text -->
-                        <input t-if="ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
-                            t-att-value="object.read([field])[0][field] if object else ''"
-                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                            t-att-required="request.env[model].fields_get([field])[field]['required']"
-                            t-att-help="request.env[model].fields_get([field])[field]['help']" />
-                        <!-- textarea -->
-                        <textarea t-if="ttype == 'text'" class="form-control" t-att-name="field"
-                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                            t-att-required="request.env[model].fields_get([field])[field]['required']"
-                            t-att-help="request.env[model].fields_get([field])[field]['help']"><t t-esc="object.read([field])[0][field] if object else ''"/></textarea>
-                        <!-- selection -->
-                        <select t-if="ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
-                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
-                                <option t-att-value="option[0]" t-att="{'selected': 'checked'} if option[0] == object.read([field])[0][field] else {}"><t t-raw="option[1]"/></option>
-                            </t>
-                        </select>
-                        <!-- boolean -->
-                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" class="switch-checkbox" t-att-checked="1 if object.read([field])[0][field] else 0"/>
-                    </t>
-                    <t t-if="mode == 'add'">
-                        <!-- text -->
-                        <input t-if="ttype in ['char', 'date', 'datetime', 'float', 'integer']" class="form-control input-xs" t-att-name="field" t-att-type="type"
-                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                            t-att-required="request.env[model].fields_get([field])[field]['required']"
-                            t-att-help="request.env[model].fields_get([field])[field]['help']" />
-                        <!-- textarea -->
-                        <textarea t-if="ttype == 'text'" class="form-control" t-att-name="field"
-                            t-att-placeholder="request.env[model].fields_get([field])[field]['string']"
-                            t-att-required="request.env[model].fields_get([field])[field]['required']"
-                            t-att-help="request.env[model].fields_get([field])[field]['help']"></textarea>
-                        <!-- selection -->
-                        <select t-if="ttype == 'selection'" t-att-name="field" class="form-control selectpicker dropdown">
-                            <t t-foreach="request.env[model].fields_get([field])[field]['selection']" t-as="option">
-                                <option t-att-value="option[0]"><t t-raw="option[1]"/></option>
-                            </t>
-                        </select>
-                        <!-- boolean -->
-                        <input t-if="ttype == 'boolean'" t-att-name="field" type="checkbox" class="switch-checkbox"/>
-                    </t>
-                    <t t-if="mode == 'view' and ttype != 'boolean'">
-                        <span t-esc="object.read([field])[0][field] if object else ''" />
-                    </t>
-                    <t t-if="mode == 'view' and ttype == 'boolean'">
-                        <span t-esc="'Yes' if object.read([field])[0][field] else 'No'" />
-                    </t>
-                </div>
-                <button t-if="mode == 'edit' or mode == 'add'" class="btn btn-success btn-lg mt32 mb32" name="btn-save" value="btn-save" type="submit">Save</button>
-            </form>
-        </template>
         <!-- hide footer -->
         <template id="hide_footer" inherit_id="website.layout">
             <xpath expr="//footer" position="attributes">
@@ -137,28 +21,6 @@
             <xpath expr="//div[@id='footer_container']/ul" position="inside">
             </xpath>
         </template>
-        <!-- set login -->
-<!--
-        <template id="set_login" name="Set Login">
-            <t t-call="website_crm_partner.layout_extend_partner">
-                <t t-set="title">Set Login</t>
-                <div>
-                    <header class="bar bar-nav">
-                        <h1 class="title">Set Login</h1>
-                        <a class="icon icon-left-nav pull-left" t-attf-href="/mobile/logout/#{ db }/#{ root[1:] }" />
-                    </header>
-                    <div class="content">
-                        <form id="set_login" method="post">
-                            <input id="database" name="database" type="text" placeholder="Database" required="1" />
-                            <input id="username" name="username" type="text" placeholder="User name" required="1" />
-                            <input id="password" type="password" placeholder="Password" required="1" />
-                            <button class="btn btn-positive btn-block" name="btn-set_login_save" value="btn-set_login_save" type="submit" onclick="set_login()">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </t>
-        </template>
--->
         <!-- css -->
         <template id="crm_partner_css" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
@@ -176,21 +38,6 @@
         <template id="crm_partner_javascript" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//body" position="inside">
                 <script>
-                    $(".switch-checkbox").bootstrapSwitch();
-
-                    /*
-                    $(document).ready(function() {
-                        document.getElementById("database").value = localStorage.getItem("database");
-                        document.getElementById("username").value = localStorage.getItem("username");
-                        document.getElementById("password").value = localStorage.getItem("password");
-                    });
-
-                    function set_login(){
-                        localStorage.setItem("database", document.getElementById("database").value);
-                        localStorage.setItem("username", document.getElementById("username").value);
-                        localStorage.setItem("password", document.getElementById("password").value);
-                    }
-                    */
                 </script>
             </xpath>
         </template>
