@@ -3,18 +3,6 @@
     <data>
         <!-- mobile layout extend -->
         <template id="layout_extend_partner" name="Main layout Extend">
-            <t t-call="website_mobile.mobile_layout">
-                <t t-set="root" t-value="root"/>
-                <t t-set="add" t-value="'%sadd' %root"/>
-                <t t-set="search" t-value="'%ssearch' %root"/>
-                <t t-raw="0"/>
-            </t>
-        </template>
-        <!-- hide footer -->
-        <template id="hide_footer" inherit_id="website.layout">
-            <xpath expr="//footer" position="attributes">
-                <attribute name="class">hidden</attribute>
-            </xpath>
         </template>
         <!-- inherit bottom menu -->
         <template id="bottom_menu" inherit_id="website_mobile.mobile_layout">
@@ -25,12 +13,6 @@
         <template id="crm_partner_css" inherit_id="website_mobile.mobile_layout">
             <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
                 <style>
-
-                    .btn-lg {
-                        margin: auto;
-                        display: block;
-                    }
-
                 </style>
             </xpath>
         </template>
