@@ -26,7 +26,6 @@ from openerp.http import request
 import werkzeug
 
 from openerp.addons.website_mobile.website_mobile import mobile_crud
-#~ import openerp.addons.website_mobile as mobile
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -34,7 +33,6 @@ _logger = logging.getLogger(__name__)
 MOBILE_BASE_PATH = '/mobile/contact/'
 
 class website_crm_partner(mobile_crud,http.Controller):
-#~ class website_crm_partner(website_mobile.mobile_crud):
 
     def __init__(self):
         super(website_crm_partner,self).__init__()
@@ -67,7 +65,6 @@ class website_crm_partner(mobile_crud,http.Controller):
 
 
 class website_crm_user(mobile_crud,http.Controller):
-#~ class website_crm_partner(website_mobile.mobile_crud):
 
     def __init__(self):
         super(website_crm_user,self).__init__()
