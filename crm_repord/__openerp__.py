@@ -21,7 +21,7 @@
 
 {
     'name': 'CRM Repord',
-    'version': '0.1',
+    'version': '0.2',
     'category': '',
     'description': """
 CRM Repord for mobile device
@@ -29,13 +29,14 @@ CRM Repord for mobile device
 """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['sale', 'product', 'website', 'calendar_ics', 'calendar_kanban', 'crm_meeting', 'product_customer_code','l10n_se', 'sale_crm', 'website_imagemagick'], # product_customer_code from oca-addons-vauxoo
+    'depends': ['sale', 'product', 'website', 'calendar_ics', 'calendar_kanban', 'crm_meeting', 'product_customer_code','l10n_se', 'sale_crm', 'website_imagemagick','partner_rangebox'], # product_customer_code from oca-addons-vauxoo
     'data': [
         'views/crm_repord_view.xml',
         'views/crm_repord_data.xml',
         'views/crm_repord_report.xml',
         'views/repord_view.xml',
         'wizard/repord_make_invoice.xml',
+        'crm_report_view.xml',
         'repord_data.xml',
         'security/ir.model.access.csv',
     ],
