@@ -46,5 +46,13 @@ class note_note(models.Model):
 
     partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
     due_date = fields.Date('Due Date')
+    salesman_id = fields.Many2one(string="Salesman",comodel_name="res.partner",)
+
+    @api.one
+    def message_subscribe(self, partner_ids, subtype_ids=None):
+        if partner_ids:
+            self.salesman_id = partner_ids[0]
+
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

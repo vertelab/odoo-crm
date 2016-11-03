@@ -9,7 +9,8 @@ class res_partner_note_wizard(models.TransientModel):
     memo = fields.Html(string='Note Content')
     partner_ids = fields.One2many(comodel_name='res.partner', compute='_get_partner_ids')
     stage_id = fields.Many2one(comodel_name='note.stage')
-
+    tag_ids = fields.Many2many(string="Tags",comodel_name='note.tag')
+    
     def _get_partner_ids(self):
         self.partner_ids = self._context.get('active_ids', [])
 
@@ -20,7 +21,8 @@ class res_partner_note_wizard(models.TransientModel):
                 n.env['note.note'].create({
                     'memo': n.memo,
                     'partner_id': p.id,
-                    'message_follower_ids': [(4, p.user_id.partner_id.id, 0)],
+                    'tag_ids': [(6,0,[t.id for t in n.tag_ids])],
+                    'message_follower_ids': [(6,0, [p.user_id.partner_id.id])] if p.user_id else None,
                 })
 
 
