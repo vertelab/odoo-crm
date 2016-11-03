@@ -177,7 +177,15 @@ class MobileSaleView(http.Controller):
                 if product.categ_id.is_child_of_category(category):
                     listings[category.id] |= product
         _logger.warn(listings)
-        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'product_categories': product_categories, 'products': products, 'listings': listings, 'order': rep_order, 'active_tab': post.get('active_tab'),})
+        active_category = post.get('category')
+        if not active_category:
+            if rep_order.order_type == '3rd_party':
+                for c in product_categories:
+                    if c.repord_3p_supplier:
+                        active_category = c.id
+            if not active_category:
+                active_category = product_categories[0].id
+        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'product_categories': product_categories, 'products': products, 'listings': listings, 'order': rep_order, 'active_tab': post.get('active_tab'), 'active_category': active_category,})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
     def image_upload(self, partner=None, **post):
@@ -217,7 +225,6 @@ class MobileSaleView(http.Controller):
             if line.product_id.id == int(product_id):
                 order_line = line
         if order_line:
-            order_line = request.env['rep.order.line'].search([('product_id', '=', int(product_id))])
             if float(product_uom_qty) == 0.000:
                 order_line.unlink()
             else:
@@ -271,7 +278,16 @@ class MobileSaleView(http.Controller):
             'type': 'notification',
         })
         return 'presentation_done'
-
+    
+    #~ @http.route(['/crm/repord/change_category'], type='json', auth="user", methods=['POST'], website=True)
+    #~ def change_category(self, order, category, **kw):
+        #~ order = request.env['rep.order'].browse(int(order))
+        #~ category = request.env['product.category'].browse(int(order))
+        #~ order.write({
+            #~ 'order_type': order_type,
+        #~ })
+        #~ return 'order_type_changed'
+    
     @http.route(['/crm/repord/type'], type='json', auth="user", methods=['POST'], website=True)
     def change_order_type(self, order, order_type, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
@@ -305,13 +321,15 @@ class MobileSaleView(http.Controller):
     @http.route(['/crm/repord/confirm'], type='json', auth="user", methods=['POST'], website=True)
     def order_confirm(self, order, send_mail, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
-        if send_mail == True:
-            if not order.partner_id.email:
-                return 'no_email'
-            else:
-                order.force_quotation_send()
-        order.action_convert_to_sale_order()
-        return 'repord_confirmed'
+        if order.check_if_3p_ok():
+            if send_mail == True:
+                if not order.partner_id.email:
+                    return 'no_email'
+                else:
+                    order.force_quotation_send()
+            order.action_convert_to_sale_order()
+            return 'repord_confirmed'
+        return 'Wrong order type, or incorrect products on order (mixing your own and 3rd party products).'
 
     # store list
     @http.route(['/crm/mystores'], type='http', auth="user", website=True)
@@ -696,18 +714,36 @@ class rep_order(models.Model):
     amount_discount = fields.Float(compute='_amount_discount', string='Total Discount')
     procurement_group_id = None
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
-
     third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
-
+    
     @api.one
-    @api.depends('order_type', 'order_line', 'order_line.product_id')
-    def repord_set_3p_supplier(self):
+    def check_if_3p_ok(self):
+        """Check if 3rd party values are correct."""
         if self.order_type == '3rd_party':
+            if not self.third_party_supplier:
+                return False
             for line in self.order_line:
-                if line.product_id and line.product_id.categ_id and line.product_id.categ_id.repord_3p_supplier:
-                    self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
-                    return
+                if line.product_id.categ_id.repord_3p_supplier != self.third_party_supplier:
+                    return False
+        if self.order_type != '3rd_party':
+            if self.third_party_supplier:
+                return False
+            for line in self.order_line:
+                if line.product_id.categ_id.repord_3p_supplier:
+                    return False
+        return True
+        
+    @api.one
+    @api.depends('order_line', 'order_line.product_id')
+    def repord_set_3p_supplier(self):
+        for line in self.order_line:
+            if line.product_id and line.product_id.categ_id and line.product_id.categ_id.repord_3p_supplier:
+                self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
+                self.order_type = '3rd_party'
+                return
         self.third_party_supplier = None
+        if self.order_type == '3rd_party':
+            self.order_type = 'order'
 
     @api.one
     def action_view_sale_order_line_make_invoice(self):
@@ -915,6 +951,14 @@ class rep_order_line(models.Model):
     invoice_lines = None
     #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
     procurement_ids = None
+    
+    @api.model
+    @api.returns('self', lambda value: value.id)
+    def create(self, values):
+        res = super(rep_order_line, self).create(values)
+        #The depends on order_line doesn't trigger on create. Ugly workaround.
+        res.order_id.repord_set_3p_supplier()
+        return res
 
 class product_category(models.Model):
     _inherit = 'product.category'
