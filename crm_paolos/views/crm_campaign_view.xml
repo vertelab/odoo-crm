@@ -89,7 +89,6 @@
                 </field>
                 <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_global_click_edit oe_semantic_html_override oe_kanban_card #{record.group_fancy==1 ? 'oe_kanban_card_fancy' : ''}" position="inside">
                     <span style="color: #369;"><field name="partner_id"/></span>
-                    <span style="color: #369;"><field name="salesman_id"/>XXX</span>
                     <div>
                         <field name="due_date"/>
                     </div>
