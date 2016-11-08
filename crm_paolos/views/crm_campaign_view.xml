@@ -85,6 +85,7 @@
                 <field name="name" position="after">
                     <field name="due_date"/>
                     <field name="partner_id"/>
+                    <field name="salesman_id"/>
                 </field>
                 <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_global_click_edit oe_semantic_html_override oe_kanban_card #{record.group_fancy==1 ? 'oe_kanban_card_fancy' : ''}" position="inside">
                     <span style="color: #369;"><field name="partner_id"/></span>
@@ -94,6 +95,60 @@
                 </div>
             </field>
         </record>
+
+        <record id="view_note_note_filter" model="ir.ui.view">
+            <field name="name">note.note.paolos.search</field>
+            <field name="model">note.note</field>
+            <field name="inherit_id" ref="note.view_note_note_filter"/>
+            <field name="arch" type="xml">
+                <field name="memo" position="after">
+                    <field name="due_date"/>
+                    <field name="date_done"/>
+                    <field name="color"/>
+                    <field name="partner_id"/>
+                    <field name="tag_ids"/>
+                    <field name="stage_id"/>
+                    <field name="open"/>
+                    <field name="user_id"/>
+                    <field name="salesman_id"/>
+                </field>
+                
+                <group string="Group By" position="inside">
+                    <filter  string="Date Done"  context="{'group_by':'date_done'}"/>
+                    <filter  string="Color"  context="{'group_by':'color'}"/>
+                    <filter  string="Due Date" help="By Due Date" context="{'group_by':'due_date'}"/>
+                    <filter  string="Partner" context="{'group_by':'partner_id'}"/>
+                    <filter  string="Active" context="{'group_by':'open'}"/>
+                    <filter  string="User" context="{'group_by':'user_id'}"/>
+                    <filter  string="Salesman" context="{'group_by':'salesman_id'}"/>
+                </group>
+                
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_note_calendar">
+            <field name="name">Notes Calendar</field>
+            <field name="model">note.note</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Note" date_start="due_date" date_stop="due_date"  
+                             display="[name]" color="color"  avatar_model="res.partner"
+                             use_contacts="True" >
+                    <field name="name"/>
+                    <field name="user_id"/>
+                    <field name="color"/>
+                    <field name="partner_id"/>
+                    <field name="tag_ids"/>
+                </calendar>
+            </field>
+        </record>
+    
+    <!-- Action -->
+    <record model="ir.actions.act_window" id="note.action_note_note">  
+        <field name="view_mode">kanban,tree,form,calendar</field>
+    </record>
+    
+    
 
     </data>
 </openerp>

@@ -52,7 +52,7 @@
         <!-- discount product -->
         <record id="discount_product" model="product.template">
             <field name="name">Lämnade rabatter %s</field>
-            <field name="supplier_taxes_id" eval="[(6,0,[ref('l10n_se.bI12')])]"/>
+            <field name="supplier_taxes_id" search="[('code', '=', 'bI12')]" /> <!-- eval="[(6,0,[ref('l10n_se.bI12')])]"/> -->
             <field name="categ_id" ref="product.product_category_1"/>
             <field name="sale_ok" eval="True"/>
             <field name="property_account_expense" ref="l10n_se.k2_3730"/>

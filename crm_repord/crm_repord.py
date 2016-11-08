@@ -715,6 +715,13 @@ class rep_order(models.Model):
     procurement_group_id = None
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
     third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
+    role    =   fields.Char(related='partner_id.role', store=True)
+    store_class = fields.Selection(related='partner_id.store_class',store=True)
+    areg =      fields.Selection(related='partner_id.areg',store=True)
+    parent_id = fields.Many2one(related='partner_id.parent_id',store=True)
+    rangebox =  fields.Char(related='partner_id.rangebox',store=True)
+    zip      =  fields.Char(related='partner_id.zip',store=True)
+    city     =  fields.Char(related='partner_id.city',store=True)
     
     @api.multi
     def check_if_3p_ok(self):

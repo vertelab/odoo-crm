@@ -1,3 +1,4 @@
 import crm_repord
 import product
 import wizard
+import crm_repord_report
