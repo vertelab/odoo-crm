@@ -82,8 +82,26 @@ class res_partner(models.Model):
     @api.one
     @api.depends('listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_m_range_product_ids(self):
-        listings = self.env['res.partner.listing'].search([('role', '=', self.role), ('rangebox', '=', self.rangebox), ('mandatory', '=', True)])
-        listings |= self.listing_ids.filtered('mandatory')
+        listings = self.env['res.partner.listing'].browse()
+        lists = self.env['res.partner.listing'].search([])
+        for listing in lists:
+            if listing.mandatory:
+                match = False
+                if listing.role:
+                    roles = listing.role.split(';')
+                    for role in roles:
+                        if role.lower() == self.role.lower():
+                            match = True
+                            break
+                if not match and listing.rangebox:
+                    ranges = listing.rangebox.split(';')
+                    for r in ranges:
+                        if r.lower() == self.rangebox.lower():
+                            match = True
+                            break
+                if match:
+                    listings |= listing
+        listings |= self.listing_ids.filtered(lambda rec: rec.mandatory)
         products = self.env['product.product'].browse([])
         for listing in listings:
             products |= listing.product_ids
@@ -92,7 +110,25 @@ class res_partner(models.Model):
     @api.one
     @api.depends('m_range_product_ids', 'listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_range_product_ids(self):
-        listings = self.env['res.partner.listing'].search([('role', '=', self.role), ('rangebox', '=', self.rangebox), ('mandatory', '=', False)])
+        listings = self.env['res.partner.listing'].browse()
+        lists = self.env['res.partner.listing'].search([])
+        for listing in lists:
+            if not listing.mandatory:
+                match = False
+                if listing.role:
+                    roles = listing.role.split(';')
+                    for role in roles:
+                        if role.lower() == self.role.lower():
+                            match = True
+                            break
+                if not match and listing.rangebox:
+                    ranges = listing.rangebox.split(';')
+                    for r in ranges:
+                        if r.lower() == self.rangebox.lower():
+                            match = True
+                            break
+                if match:
+                    listings |= listing
         listings |= self.listing_ids.filtered(lambda rec: not rec.mandatory)
         products = self.env['product.product'].browse([])
         for listing in listings:
