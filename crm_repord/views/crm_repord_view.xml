@@ -1358,14 +1358,18 @@
                             'send_mail': send_mail
                         }).done(function(data){
                             if(data == "no_email"){
-                                window.alert("Den butiken har ingen epost!");
+                                window.alert("Butiken har ingen epost!");
                             }
                             else if(data == "repord_confirmed"){
                                 $("#send_mail").addClass("hidden");
                                 $("#confirm").addClass("hidden");
+                                confirm_validate = "Reporden har skickats!";
+                            }
+                            else if(data == "validation_fail"){
+                                window.alert("Fel i ordern! Fel typ, eller så har du blandat Lerøy- och Paolos-produkter.");
                             }
                         });
-                        confirm_validate = "Reporden har skickat!";
+                        
                     }
                     document.getElementById("confirm_message").innerHTML = confirm_validate;
                 }

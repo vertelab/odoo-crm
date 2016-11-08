@@ -320,7 +320,7 @@ class MobileSaleView(http.Controller):
 
     @http.route(['/crm/repord/confirm'], type='json', auth="user", methods=['POST'], website=True)
     def order_confirm(self, order, send_mail, **kw):
-        order = request.env['rep.order'].search([('id', '=', int(order))])
+        order = request.env['rep.order'].browse(int(order))
         if order.check_if_3p_ok():
             if send_mail == True:
                 if not order.partner_id.email:
@@ -329,7 +329,7 @@ class MobileSaleView(http.Controller):
                     order.force_quotation_send()
             order.action_convert_to_sale_order()
             return 'repord_confirmed'
-        return 'Wrong order type, or incorrect products on order (mixing your own and 3rd party products).'
+        return 'validation_fail'
 
     # store list
     @http.route(['/crm/mystores'], type='http', auth="user", website=True)
@@ -716,9 +716,10 @@ class rep_order(models.Model):
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
     third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
     
-    @api.one
+    @api.multi
     def check_if_3p_ok(self):
         """Check if 3rd party values are correct."""
+        self.ensure_one()
         if self.order_type == '3rd_party':
             if not self.third_party_supplier:
                 return False
