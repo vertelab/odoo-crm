@@ -772,7 +772,37 @@ class rep_order(models.Model):
 
     @api.one
     def action_repord_done(self):
+        self.action_analytic_create()
         self.state = 'done'
+        
+    @api.one
+    def action_analytic_create(self):
+        """ Creates repord related analytics lines """
+        account = {
+                'scrap': self.env.ref('crm_repord.account_scrap'),
+                'order': self.env.ref('crm_repord.account_order'),
+                'reminder': self.env.ref('crm_repord.account_reminder'),
+                'discount': self.env.ref('crm_repord.account_discount'),
+                'direct': self.env.ref('crm_repord.account_direct'),
+                '3rd_party': self.env.ref('crm_repord.account_3rd_party'),
+        }
+        journal = self.env.ref('account.analytic_journal_sale')   
+        for l in self.order_line:
+            #raise Warning(l.product_id.property_account_income.id if l.product_id.property_account_income else l.product_id.categ_id.property_account_income_categ.id)     
+            self.env['account.analytic.line'].create({
+                'name': l.name,
+                'date': l.order_id.date_order,
+                'account_id': account[l.order_id.order_type].id,
+                'unit_amount': l.product_uom_qty,  
+                'amount': l.price_subtotal * 1 if l.order_id.order_type in ['order','reminder','direct','3rd_party'] else -1,
+                'product_id': l.product_id.id,
+                'product_uom_id': l.product_uom.id,
+                'general_account_id': l.product_id.property_account_income.id if l.product_id.property_account_income else l.product_id.categ_id.property_account_income_categ.id,
+                'journal_id': journal.id,
+                'ref': l.order_id.name,
+                'user_id': l.order_id.partner_id.user_id.id if l.order_id.partner_id.user_id else self._uid,
+                'partner_id': l.order_id.partner_id.id,
+            })
 
     @api.model
     def create(self, vals):

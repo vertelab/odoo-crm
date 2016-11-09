@@ -1,175 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
-
-
-        <record id="sequence_repord" model="ir.sequence">
-            <field name="name">REPORD Sequence</field>
-            <field eval="3" name="padding"/>
-            <field name="prefix">RO</field>
-        </record>
-
-        <record id="listing_ica_planogramlagt" model="res.partner.listing">
-            <field name="name">ICA Planogramlagt</field>
-        </record>
-
-        <record id="listing_ica_tillgangligt" model="res.partner.listing">
-            <field name="name">ICA Tillgängligt</field>
-        </record>
-
-        <record id="listing_coop_ti" model="res.partner.listing">
-            <field name="name">TI</field>
-        </record>
-
-        <record id="listing_coop_pt" model="res.partner.listing">
-            <field name="name">PT</field>
-        </record>
-
-        <record id="listing_coop_sa" model="res.partner.listing">
-            <field name="name">SÄ</field>
-        </record>
-
-        <record id="listing_coop_gl" model="res.partner.listing">
-            <field name="name">GL</field>
-        </record>
-
-        <record id="listing_coop_ak" model="res.partner.listing">
-            <field name="name">AK</field>
-        </record>
-
-        <record id="listing_axfood_b" model="res.partner.listing">
-            <field name="name">B</field>
-        </record>
-
-        <record id="listing_axfood_c" model="res.partner.listing">
-            <field name="name">C</field>
-        </record>
-
-        <record id="3rd_party_group" model="res.groups">
-            <field name="name">Reporder 3rd Party Supplier</field>
-        </record>
-
-        <!-- discount product -->
-        <record id="discount_product" model="product.template">
-            <field name="name">Lämnade rabatter %s</field>
-            <field name="supplier_taxes_id" search="[('code', '=', 'bI12')]" /> <!-- eval="[(6,0,[ref('l10n_se.bI12')])]"/> -->
-            <field name="categ_id" ref="product.product_category_1"/>
-            <field name="sale_ok" eval="True"/>
-            <field name="property_account_expense" ref="l10n_se.k2_3730"/>
-        </record>
-
-        <record id="rule_rep_order" model="ir.rule">
-            <field name="name">Reporder 3rd Party Reporder</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="crm_repord.model_rep_order"/>
-            <field name="domain_force">[('order_type', '=', '3rd_party'), ('third_party_supplier', '=', user.partner_id.parent_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_rep_order_line" model="ir.rule">
-            <field name="name">Reporder 3rd Party Reporder lines</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="crm_repord.model_rep_order_line"/>
-            <field name="domain_force">[('order_id.order_type', '=', '3rd_party'),('order_id.third_party_supplier', '=', user.partner_id.parent_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_product_template" model="ir.rule">
-            <field name="name">Reporder 3rd Party Products</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="account.model_product_template"/>
-            <field name="domain_force">[('categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_product_product" model="ir.rule">
-            <field name="name">Reporder 3rd Party Variants</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="crm_repord.model_product_product"/>
-            <field name="domain_force">[('categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_pricelist_item_empty" model="ir.rule">
-            <field name="name">Reporder 3rd Party Pricelist Item Empty</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="product.model_product_pricelist_item"/>
-            <field name="domain_force">[('product_id', '=', None), ('product_tmpl_id', '=', None), ('categ_id', '=', None)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <record id="rule_pricelist_item" model="ir.rule">
-            <field name="name">Reporder 3rd Party Pricelist Item</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="product.model_product_pricelist_item"/>
-            <field name="domain_force">['|', '|', ('product_id.categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id),
-                ('product_tmpl_id.categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id),
-                ('categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]
-            </field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_product_customer_code" model="ir.rule">
-            <field name="name">Reporder 3rd Party Product Customer Codes</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="product_customer_code.model_product_customer_code"/>
-            <field name="domain_force">[('product_id.categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_product_category" model="ir.rule">
-            <field name="name">Reporder 3rd Party Product Category</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="account.model_product_category"/>
-            <field name="domain_force">[('repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_product_category_base" model="ir.rule">
-            <field name="name">Reporder 3rd Party Product Category Base</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="account.model_product_category"/>
-            <field name="domain_force">[('id', 'in', [1, 2])]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <record id="rule_account_Analytic_Account" model="ir.rule">
-            <field name="name">Reporder 3rd Party Contract</field>
-            <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]"/>
-            <field name="model_id" ref="account_analytic_analysis.model_account_analytic_account"/>
-            <field name="domain_force">[('manager_id.parent_id', '=', user.partner_id.parent_id.id)]</field>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-    </data>
+  <data noupdate="1">
+    <record id="sequence_repord" model="ir.sequence">
+      <field name="name">REPORD Sequence</field>
+      <field eval="3" name="padding" />
+      <field name="prefix">RO</field>
+    </record>
+    <record id="listing_ica_planogramlagt" model="res.partner.listing">
+      <field name="name">ICA Planogramlagt</field>
+    </record>
+    <record id="listing_ica_tillgangligt" model="res.partner.listing">
+      <field name="name">ICA Tillgängligt</field>
+    </record>
+    <record id="listing_coop_ti" model="res.partner.listing">
+      <field name="name">TI</field>
+    </record>
+    <record id="listing_coop_pt" model="res.partner.listing">
+      <field name="name">PT</field>
+    </record>
+    <record id="listing_coop_sa" model="res.partner.listing">
+      <field name="name">SÄ</field>
+    </record>
+    <record id="listing_coop_gl" model="res.partner.listing">
+      <field name="name">GL</field>
+    </record>
+    <record id="listing_coop_ak" model="res.partner.listing">
+      <field name="name">AK</field>
+    </record>
+    <record id="listing_axfood_b" model="res.partner.listing">
+      <field name="name">B</field>
+    </record>
+    <record id="listing_axfood_c" model="res.partner.listing">
+      <field name="name">C</field>
+    </record>
+    <record id="3rd_party_group" model="res.groups">
+      <field name="name">Reporder 3rd Party Supplier</field>
+    </record>
+    <!-- discount product -->
+    <record id="discount_product" model="product.template">
+      <field name="name">Lämnade rabatter %s</field>
+      <field name="supplier_taxes_id" search="[('code', '=', 'bI12')]" />
+      <!-- eval="[(6,0,[ref('l10n_se.bI12')])]"/> -->
+      <field name="categ_id" ref="product.product_category_1" />
+      <field name="sale_ok" eval="True" />
+      <field name="property_account_expense" ref="l10n_se.k2_3730" />
+    </record>
+    <record id="rule_rep_order" model="ir.rule">
+      <field name="name">Reporder 3rd Party Reporder</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="crm_repord.model_rep_order" />
+      <field name="domain_force">[('order_type', '=', '3rd_party'), ('third_party_supplier', '=', user.partner_id.parent_id.id)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+    <record id="rule_rep_order_line" model="ir.rule">
+      <field name="name">Reporder 3rd Party Reporder lines</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="crm_repord.model_rep_order_line" />
+      <field name="domain_force">[('order_id.order_type', '=', '3rd_party'),('order_id.third_party_supplier', '=', user.partner_id.parent_id.id)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+    <record id="rule_product_template" model="ir.rule">
+      <field name="name">Reporder 3rd Party Products</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="account.model_product_template" />
+      <field name="domain_force">[('categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+    <record id="rule_product_product" model="ir.rule">
+      <field name="name">Reporder 3rd Party Variants</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="crm_repord.model_product_product" />
+      <field name="domain_force">[('categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+    <record id="rule_pricelist_item_empty" model="ir.rule">
+      <field name="name">Reporder 3rd Party Pricelist Item Empty</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="product.model_product_pricelist_item" />
+      <field name="domain_force">[('product_id', '=', None), ('product_tmpl_id', '=', None), ('categ_id', '=', None)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="False" />
+      <field name="perm_create" eval="False" />
+      <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="rule_pricelist_item" model="ir.rule">
+      <field name="name">Reporder 3rd Party Pricelist Item</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="product.model_product_pricelist_item" />
+      <field name="domain_force">
+        ['|', '|', ('product_id.categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id),
+        ('product_tmpl_id.categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id),
+        ('categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]
+      </field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+    <record id="rule_product_customer_code" model="ir.rule">
+      <field name="name">Reporder 3rd Party Product Customer Codes</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="product_customer_code.model_product_customer_code" />
+      <field name="domain_force">[('product_id.categ_id.repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+    <record id="rule_product_category" model="ir.rule">
+      <field name="name">Reporder 3rd Party Product Category</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="account.model_product_category" />
+      <field name="domain_force">[('repord_3p_supplier', '=', user.partner_id.parent_id.id)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+    <record id="rule_product_category_base" model="ir.rule">
+      <field name="name">Reporder 3rd Party Product Category Base</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="account.model_product_category" />
+      <field name="domain_force">[('id', 'in', [1, 2])]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="False" />
+      <field name="perm_unlink" eval="False" />
+    </record>
+    <record id="rule_account_Analytic_Account" model="ir.rule">
+      <field name="name">Reporder 3rd Party Contract</field>
+      <field name="groups" eval="[(6,0,[ref('crm_repord.3rd_party_group')])]" />
+      <field name="model_id" ref="account_analytic_analysis.model_account_analytic_account" />
+      <field name="domain_force">[('manager_id.parent_id', '=', user.partner_id.parent_id.id)]</field>
+      <field name="perm_read" eval="True" />
+      <field name="perm_write" eval="True" />
+      <field name="perm_create" eval="True" />
+      <field name="perm_unlink" eval="True" />
+    </record>
+  </data>
+  <data noupdate="1">
+    <record id="account_repord" model="account.analytic.account">
+      <field name="name">Rep Order</field>
+      <field name="code">REP00</field>
+      <field name="type">view</field>
+    </record>
+    <record id="account_scrap" model="account.analytic.account">
+      <field name="name">Scrap</field>
+      <field name="code">REP01</field>
+      <field name="type">normal</field>
+      <field name="parent_id" ref="account_repord" />
+    </record>
+    <record id="account_order" model="account.analytic.account">
+      <field name="name">Order</field>
+      <field name="code">REP02</field>
+      <field name="type">normal</field>
+      <field name="parent_id" ref="account_repord" />
+    </record>
+    <record id="account_reminder" model="account.analytic.account">
+      <field name="name">Reminder</field>
+      <field name="code">REP03</field>
+      <field name="type">normal</field>
+      <field name="parent_id" ref="account_repord" />
+    </record>
+    <record id="account_discount" model="account.analytic.account">
+      <field name="name">Discount</field>
+      <field name="code">REP04</field>
+      <field name="type">normal</field>
+      <field name="parent_id" ref="account_repord" />
+    </record>
+    <record id="account_direct" model="account.analytic.account">
+      <field name="name">Direct</field>
+      <field name="code">REP05</field>
+      <field name="type">normal</field>
+      <field name="parent_id" ref="account_repord" />
+    </record>
+    <record id="account_3rd_party" model="account.analytic.account">
+      <field name="name">Third Party Order</field>
+      <field name="code">REP06</field>
+      <field name="type">normal</field>
+      <field name="parent_id" ref="account_repord" />
+    </record>
+  </data>
 </openerp>
