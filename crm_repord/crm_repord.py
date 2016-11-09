@@ -211,7 +211,7 @@ class MobileSaleView(http.Controller):
             for product in listing:
                 if product.categ_id.is_child_of_category(category):
                     listings[category.id] |= product
-        _logger.warn(listings)
+        _logger.debug(listings)
         active_category = post.get('category')
         if not active_category:
             if rep_order.order_type == '3rd_party':
@@ -312,10 +312,7 @@ class MobileSaleView(http.Controller):
             'res_id': partner.id,
             'type': 'notification',
         })
-        _logger.warn('|%s| %s' % (categ, type(categ)))
-        _logger.warn(type('Paolos Färsk'))
         if categ == u'Paolos Färsk':
-            _logger.warn('för helvete')
             p_account = request.env.ref('crm_repord.analytic_presentations_fresh')
         elif categ == u'Paolos Frys':
             p_account = request.env.ref('crm_repord.analytic_presentations_frozen')
@@ -754,7 +751,7 @@ class rep_order(models.Model):
     @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
     def _repord_amount_all_wrapper(self):
         values = self._amount_all_wrapper(None, None)
-        _logger.warn(values)
+        _logger.debug(values)
         for order in self:
             order.amount_untaxed = values.get(order.id, {}).get('amount_untaxed', 0)
             order.amount_tax = values.get(order.id, {}).get('amount_tax', 0)
