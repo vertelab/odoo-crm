@@ -85,7 +85,7 @@
                         <div class="col-md-12 col-sm-12 col-xs-12" style="padding: 0px 10px;">
                             <ul class="nav nav-tabs nav-justified nav-brand text-center" style="padding: 0px; margin: 10px auto;">
                                 <t t-foreach="product_categories" t-as="brand_categs">
-                                    <li t-att-class="'active' if brand_categs == product_categories[0] else ''">
+                                    <li t-att-class="'active' if brand_categs.id == active_category else ''">
                                         <a data-toggle="tab" class="brand_tab" t-att-data-target="'&#35;categs_%s, #sortiment_list_%s' % (brand_categs.id, brand_categs.id)"><span t-field="brand_categs.name"/></a>
                                     </li>
                                 </t>
@@ -223,19 +223,23 @@
                                             </t>
                                         </div>
                                     </t>
+                                    
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
+                                        <select name="order_type" id="order_type" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
+                                            <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
+                                                <option t-if="(not brand_categories.repord_3p_supplier and order_type[0] != '3rd_party') or (brand_categories.repord_3p_supplier and order_type[0] == '3rd_party')" t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
+                                            </t>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </t>
                     </div>
                 </div>
                 <div class="container form-group">
-                    <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
-                        <select name="order_type" id="order_type" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
-                            <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
-                                <option t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
-                            </t>
-                        </select>
-                    </div>
+                    
                     <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                         <select name="campaign" id="campaign" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
                             <option value="">Kampanj</option>
@@ -1354,14 +1358,18 @@
                             'send_mail': send_mail
                         }).done(function(data){
                             if(data == "no_email"){
-                                window.alert("Den butiken har ingen epost!");
+                                window.alert("Butiken har ingen epost!");
                             }
                             else if(data == "repord_confirmed"){
                                 $("#send_mail").addClass("hidden");
                                 $("#confirm").addClass("hidden");
+                                confirm_validate = "Reporden har skickats!";
+                            }
+                            else if(data == "validation_fail"){
+                                window.alert("Fel i ordern! Fel typ, eller så har du blandat Lerøy- och Paolos-produkter.");
                             }
                         });
-                        confirm_validate = "Reporden har skickat!";
+                        
                     }
                     document.getElementById("confirm_message").innerHTML = confirm_validate;
                 }

@@ -38,6 +38,7 @@ CRM Repord for mobile device
         'wizard/repord_make_invoice.xml',
         'crm_report_view.xml',
         'repord_data.xml',
+        'views/calendar_view.xml',
         'security/ir.model.access.csv',
     ],
     'application': False,

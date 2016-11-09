@@ -23,7 +23,7 @@ class res_partner_meeting_wizard(models.TransientModel):
                     'stop_datetime': '2010-01-01 00:00:00',
                     'allday': False,
                     'week_number': 'Undefined',
-                    'weekday': 'Friday',
+                    'weekday': 'friday',
                     'location': p.city,
                     'description': r.description + '\n' + add_repord if r.description else add_repord,
                     'partner_ids': [(6, 0, [p.user_id.partner_id.id if p.user_id else self.env['res.users'].browse(self.env.uid).partner_id.id, p.id])],

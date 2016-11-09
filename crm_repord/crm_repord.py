@@ -75,15 +75,32 @@ class sale_order(models.Model):
 
     rep_order_id = fields.Many2one('rep.order', 'Rep Order Reference')
 
-
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
     @api.one
     @api.depends('listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_m_range_product_ids(self):
-        listings = self.env['res.partner.listing'].search([('role', '=', self.role), ('rangebox', '=', self.rangebox), ('mandatory', '=', True)])
-        listings |= self.listing_ids.filtered('mandatory')
+        listings = self.env['res.partner.listing'].browse()
+        lists = self.env['res.partner.listing'].search([])
+        for listing in lists:
+            if listing.mandatory:
+                match = False
+                if listing.role:
+                    roles = listing.role.split(';')
+                    for role in roles:
+                        if role.lower() == self.role.lower():
+                            match = True
+                            break
+                if not match and listing.rangebox:
+                    ranges = listing.rangebox.split(';')
+                    for r in ranges:
+                        if r.lower() == self.rangebox.lower():
+                            match = True
+                            break
+                if match:
+                    listings |= listing
+        listings |= self.listing_ids.filtered(lambda rec: rec.mandatory)
         products = self.env['product.product'].browse([])
         for listing in listings:
             products |= listing.product_ids
@@ -92,7 +109,25 @@ class res_partner(models.Model):
     @api.one
     @api.depends('m_range_product_ids', 'listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
     def _get_range_product_ids(self):
-        listings = self.env['res.partner.listing'].search([('role', '=', self.role), ('rangebox', '=', self.rangebox), ('mandatory', '=', False)])
+        listings = self.env['res.partner.listing'].browse()
+        lists = self.env['res.partner.listing'].search([])
+        for listing in lists:
+            if not listing.mandatory:
+                match = False
+                if listing.role:
+                    roles = listing.role.split(';')
+                    for role in roles:
+                        if role.lower() == self.role.lower():
+                            match = True
+                            break
+                if not match and listing.rangebox:
+                    ranges = listing.rangebox.split(';')
+                    for r in ranges:
+                        if r.lower() == self.rangebox.lower():
+                            match = True
+                            break
+                if match:
+                    listings |= listing
         listings |= self.listing_ids.filtered(lambda rec: not rec.mandatory)
         products = self.env['product.product'].browse([])
         for listing in listings:
@@ -176,8 +211,16 @@ class MobileSaleView(http.Controller):
             for product in listing:
                 if product.categ_id.is_child_of_category(category):
                     listings[category.id] |= product
-        _logger.warn(listings)
-        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'product_categories': product_categories, 'products': products, 'listings': listings, 'order': rep_order, 'active_tab': post.get('active_tab'),})
+        _logger.debug(listings)
+        active_category = post.get('category')
+        if not active_category:
+            if rep_order.order_type == '3rd_party':
+                for c in product_categories:
+                    if c.repord_3p_supplier:
+                        active_category = c.id
+            if not active_category:
+                active_category = product_categories[0].id
+        return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'product_categories': product_categories, 'products': products, 'listings': listings, 'order': rep_order, 'active_tab': post.get('active_tab'), 'active_category': active_category,})
 
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
     def image_upload(self, partner=None, **post):
@@ -217,7 +260,6 @@ class MobileSaleView(http.Controller):
             if line.product_id.id == int(product_id):
                 order_line = line
         if order_line:
-            order_line = request.env['rep.order.line'].search([('product_id', '=', int(product_id))])
             if float(product_uom_qty) == 0.000:
                 order_line.unlink()
             else:
@@ -263,15 +305,46 @@ class MobileSaleView(http.Controller):
     def presentation(self, partner_id, categ, **kw):
         partner = request.env['res.partner'].browse(int(partner_id))
         request.env['mail.message'].create({
-            'body': 'Presentation har registrerat.',
+            'body': 'Presentation har registrerats.',
             'subject': 'Presentationen till ' + categ + ' har registrerat',
             'author_id': request.env['res.users'].browse(request.env.uid).partner_id.id,
             'model': partner._name,
             'res_id': partner.id,
             'type': 'notification',
         })
+        if categ == u'Paolos Färsk':
+            p_account = request.env.ref('crm_repord.analytic_presentations_fresh')
+        elif categ == u'Paolos Frys':
+            p_account = request.env.ref('crm_repord.analytic_presentations_frozen')
+        elif categ == u'Leröy Färsk':
+            p_account = request.env.ref('crm_repord.analytic_presentations_leroy')
+        account = request.env['account.analytic.account'].search([('partner_id', '=', partner.id), ('parent_id', '=', p_account.id)])
+        if not account:
+            account = request.env['account.analytic.account'].create({
+                'parent_id': p_account.id,
+                'name': partner.name,
+                'partner_id': partner.id,
+            })
+        request.env['account.analytic.line'].create({
+            'name': 'Presentation %s' % fields.Datetime.now(),
+            'date': fields.Date.today(),
+            'account_id': account.id,
+            'unit_amount': 1,  
+            'general_account_id': request.env.ref('hr_timesheet.analytic_journal').id,
+            'user_id': partner.user_id.id,
+            
+        })
         return 'presentation_done'
-
+    
+    #~ @http.route(['/crm/repord/change_category'], type='json', auth="user", methods=['POST'], website=True)
+    #~ def change_category(self, order, category, **kw):
+        #~ order = request.env['rep.order'].browse(int(order))
+        #~ category = request.env['product.category'].browse(int(order))
+        #~ order.write({
+            #~ 'order_type': order_type,
+        #~ })
+        #~ return 'order_type_changed'
+    
     @http.route(['/crm/repord/type'], type='json', auth="user", methods=['POST'], website=True)
     def change_order_type(self, order, order_type, **kw):
         order = request.env['rep.order'].search([('id', '=', int(order))])
@@ -304,14 +377,16 @@ class MobileSaleView(http.Controller):
 
     @http.route(['/crm/repord/confirm'], type='json', auth="user", methods=['POST'], website=True)
     def order_confirm(self, order, send_mail, **kw):
-        order = request.env['rep.order'].search([('id', '=', int(order))])
-        if send_mail == True:
-            if not order.partner_id.email:
-                return 'no_email'
-            else:
-                order.force_quotation_send()
-        order.action_convert_to_sale_order()
-        return 'repord_confirmed'
+        order = request.env['rep.order'].browse(int(order))
+        if order.check_if_3p_ok():
+            if send_mail == True:
+                if not order.partner_id.email:
+                    return 'no_email'
+                else:
+                    order.force_quotation_send()
+            order.action_convert_to_sale_order()
+            return 'repord_confirmed'
+        return 'validation_fail'
 
     # store list
     @http.route(['/crm/mystores'], type='http', auth="user", website=True)
@@ -676,7 +751,7 @@ class rep_order(models.Model):
     @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
     def _repord_amount_all_wrapper(self):
         values = self._amount_all_wrapper(None, None)
-        _logger.warn(values)
+        _logger.debug(values)
         for order in self:
             order.amount_untaxed = values.get(order.id, {}).get('amount_untaxed', 0)
             order.amount_tax = values.get(order.id, {}).get('amount_tax', 0)
@@ -696,9 +771,7 @@ class rep_order(models.Model):
     amount_discount = fields.Float(compute='_amount_discount', string='Total Discount')
     procurement_group_id = None
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
-
     third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
-    
     role    =   fields.Char(related='partner_id.role', store=True)
     store_class = fields.Selection(related='partner_id.store_class',store=True)
     areg =      fields.Selection(related='partner_id.areg',store=True)
@@ -707,16 +780,35 @@ class rep_order(models.Model):
     zip      =  fields.Char(related='partner_id.zip',store=True)
     city     =  fields.Char(related='partner_id.city',store=True)
     
-
-    @api.one
-    @api.depends('order_type', 'order_line', 'order_line.product_id')
-    def repord_set_3p_supplier(self):
+    @api.multi
+    def check_if_3p_ok(self):
+        """Check if 3rd party values are correct."""
+        self.ensure_one()
         if self.order_type == '3rd_party':
+            if not self.third_party_supplier:
+                return False
             for line in self.order_line:
-                if line.product_id and line.product_id.categ_id and line.product_id.categ_id.repord_3p_supplier:
-                    self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
-                    return
+                if line.product_id.categ_id.repord_3p_supplier != self.third_party_supplier:
+                    return False
+        if self.order_type != '3rd_party':
+            if self.third_party_supplier:
+                return False
+            for line in self.order_line:
+                if line.product_id.categ_id.repord_3p_supplier:
+                    return False
+        return True
+        
+    @api.one
+    @api.depends('order_line', 'order_line.product_id')
+    def repord_set_3p_supplier(self):
+        for line in self.order_line:
+            if line.product_id and line.product_id.categ_id and line.product_id.categ_id.repord_3p_supplier:
+                self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
+                self.order_type = '3rd_party'
+                return
         self.third_party_supplier = None
+        if self.order_type == '3rd_party':
+            self.order_type = 'order'
 
     @api.one
     def action_view_sale_order_line_make_invoice(self):
@@ -954,6 +1046,14 @@ class rep_order_line(models.Model):
     invoice_lines = None
     #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
     procurement_ids = None
+    
+    @api.model
+    @api.returns('self', lambda value: value.id)
+    def create(self, values):
+        res = super(rep_order_line, self).create(values)
+        #The depends on order_line doesn't trigger on create. Ugly workaround.
+        res.order_id.repord_set_3p_supplier()
+        return res
 
 class product_category(models.Model):
     _inherit = 'product.category'
