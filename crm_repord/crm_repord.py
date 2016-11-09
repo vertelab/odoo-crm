@@ -75,7 +75,6 @@ class sale_order(models.Model):
 
     rep_order_id = fields.Many2one('rep.order', 'Rep Order Reference')
 
-
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
@@ -306,12 +305,37 @@ class MobileSaleView(http.Controller):
     def presentation(self, partner_id, categ, **kw):
         partner = request.env['res.partner'].browse(int(partner_id))
         request.env['mail.message'].create({
-            'body': 'Presentation har registrerat.',
+            'body': 'Presentation har registrerats.',
             'subject': 'Presentationen till ' + categ + ' har registrerat',
             'author_id': request.env['res.users'].browse(request.env.uid).partner_id.id,
             'model': partner._name,
             'res_id': partner.id,
             'type': 'notification',
+        })
+        _logger.warn('|%s| %s' % (categ, type(categ)))
+        _logger.warn(type('Paolos Färsk'))
+        if categ == u'Paolos Färsk':
+            _logger.warn('för helvete')
+            p_account = request.env.ref('crm_repord.analytic_presentations_fresh')
+        elif categ == u'Paolos Frys':
+            p_account = request.env.ref('crm_repord.analytic_presentations_frozen')
+        elif categ == u'Leröy Färsk':
+            p_account = request.env.ref('crm_repord.analytic_presentations_leroy')
+        account = request.env['account.analytic.account'].search([('partner_id', '=', partner.id), ('parent_id', '=', p_account.id)])
+        if not account:
+            account = request.env['account.analytic.account'].create({
+                'parent_id': p_account.id,
+                'name': partner.name,
+                'partner_id': partner.id,
+            })
+        request.env['account.analytic.line'].create({
+            'name': 'Presentation %s' % fields.Datetime.now(),
+            'date': fields.Date.today(),
+            'account_id': account.id,
+            'unit_amount': 1,  
+            'general_account_id': request.env.ref('hr_timesheet.analytic_journal').id,
+            'user_id': partner.user_id.id,
+            
         })
         return 'presentation_done'
     

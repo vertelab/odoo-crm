@@ -12,6 +12,17 @@
                 </calendar>
             </field>
         </record>
+        
+        <record id="view_analytic_entries_report_search" model="ir.ui.view">
+            <field name="name">analytic.entries.report.repord.search</field>
+            <field name="model">analytic.entries.report</field>
+            <field name="inherit_id" ref="account.view_analytic_entries_report_search"/>
+            <field name="arch" type="xml">
+                <field name="account_id" position="after">
+                    <filter string="Presentations" domain="[('account_id','child_of',%(crm_repord.analytic_presentations)d)]"/>
+                </field>
+            </field>
+        </record>
 
         <record model="ir.ui.view" id="view_sale_order_graph">
             <field name="name">rep.order.graph</field>

@@ -1,11 +1,34 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-
+        
+        <record id="analytic_presentations" model="account.analytic.account">
+        	<field name="name">Presentationer</field>
+            <field name="type">view</field>
+        </record>
+        
+        <record id="analytic_presentations_fresh" model="account.analytic.account">
+        	<field name="name">Paolos Färsk</field>
+            <field name="parent_id" ref="analytic_presentations"/>
+            <field name="type">view</field>
+        </record>
+        
+        <record id="analytic_presentations_frozen" model="account.analytic.account">
+        	<field name="name">Paolos Fryst</field>
+            <field name="parent_id" ref="analytic_presentations"/>
+            <field name="type">view</field>
+        </record>
+        
+        <record id="analytic_presentations_leroy" model="account.analytic.account">
+        	<field name="name">Lerøy</field>
+            <field name="parent_id" ref="analytic_presentations"/>
+            <field name="type">view</field>
+        </record>
+        
         <record model="calendar.event.type" id="categ_meet6">
             <field name="name">Visited</field>
         </record>
-
+        
         <report
             id="report_rep_order"
             string="Quotation / Order"

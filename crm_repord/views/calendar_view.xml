@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_calendar_event_filter" model="ir.ui.view">
+            <field name="name">CRM - Meetings Search Paolos</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+            <field name="arch" type="xml">
+                <filter string="My Meetings" position="after">
+                    <filter string="Last Month" domain="[('start','&gt;=',(datetime.date.today() - datetime.timedelta(days=31)).strftime('%Y-%m-%d')), ('start','&lt;',(datetime.date.today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" domain="[('start','&gt;=',(datetime.date.today() - datetime.timedelta(days=datetime.date.today().weekday())).strftime('%Y-%m-%d')), ('start','&lt;',(datetime.date.today() + datetime.timedelta(days=7 - datetime.date.today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Visited" domain="[('categ_ids','=',%(categ_meet6)d)]"/>
+                    <filter string="Not Visited" domain="[('categ_ids','!=',%(categ_meet6)d)]"/>
+                </filter>
+            </field>
+        </record>
+        
+    </data>
+</openerp>
