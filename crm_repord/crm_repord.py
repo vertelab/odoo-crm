@@ -86,13 +86,13 @@ class res_partner(models.Model):
         for listing in lists:
             if listing.mandatory:
                 match = False
-                if listing.role:
+                if listing.role and self.role:
                     roles = listing.role.split(';')
                     for role in roles:
                         if role.lower() == self.role.lower():
                             match = True
                             break
-                if not match and listing.rangebox:
+                if not match and listing.rangebox and self.rangebox:
                     ranges = listing.rangebox.split(';')
                     for r in ranges:
                         if r.lower() == self.rangebox.lower():
@@ -114,13 +114,13 @@ class res_partner(models.Model):
         for listing in lists:
             if not listing.mandatory:
                 match = False
-                if listing.role:
+                if listing.role and self.role:
                     roles = listing.role.split(';')
                     for role in roles:
                         if role.lower() == self.role.lower():
                             match = True
                             break
-                if not match and listing.rangebox:
+                if not match and listing.rangebox and self.rangebox:
                     ranges = listing.rangebox.split(';')
                     for r in ranges:
                         if r.lower() == self.rangebox.lower():

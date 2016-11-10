@@ -10,6 +10,7 @@ class res_partner_note_wizard(models.TransientModel):
     partner_ids = fields.One2many(comodel_name='res.partner', compute='_get_partner_ids')
     stage_id = fields.Many2one(comodel_name='note.stage')
     tag_ids = fields.Many2many(string="Tags",comodel_name='note.tag')
+    due_date = fields.Date('Due Date')
     
     @api.one
     def _get_partner_ids(self):
@@ -23,6 +24,7 @@ class res_partner_note_wizard(models.TransientModel):
                     'memo': n.memo,
                     'partner_id': p.id,
                     'tag_ids': [(6,0,[t.id for t in n.tag_ids])],
+                    'due_date': self.due_date,
                 }).message_follower_ids = p.user_id.partner_id if p.user_id else None
 
 
