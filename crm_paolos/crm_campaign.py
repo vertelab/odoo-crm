@@ -52,7 +52,7 @@ class note_note(models.Model):
     def message_subscribe(self, partner_ids, subtype_ids=None):
         if partner_ids:
             self.salesman_id = partner_ids[0]
-
+        super(note_note, self).message_subscribe(partner_ids, subtype_ids)
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
