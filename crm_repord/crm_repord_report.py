@@ -58,7 +58,7 @@ class crm_repord_report(models.Model):
             
         
     order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('3rd_party', 'Third Party Order')], string="Order Type", readonly=True)
-    order_id = fields.Many2one('sale.order', 'Sale Order',readonly=True)
+    order_id = fields.Many2one('rep.order', 'Rep Order',readonly=True)
 #    amount_discount = fields.Float(string='Total Discount',digits=(16,2),readonly=True)
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign',readonly=True)
     third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier',  readonly=True)
