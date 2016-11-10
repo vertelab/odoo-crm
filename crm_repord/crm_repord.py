@@ -330,8 +330,9 @@ class MobileSaleView(http.Controller):
             'date': fields.Date.today(),
             'account_id': account.id,
             'unit_amount': 1,  
-            'journal_id': request.env.ref('hr_timesheet.analytic_journal').id,
+            'general_account_id': request.env['account.account'].search([('code', '=', '3000')]).id,
             'user_id': partner.user_id.id,
+            'journal_id': request.env.ref('hr_timesheet.analytic_journal').id,
         })
         return 'presentation_done'
     
