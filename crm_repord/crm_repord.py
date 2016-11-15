@@ -857,8 +857,7 @@ class rep_order(models.Model):
                 }) for l in self.order_line],
             })
             self.state = 'progress'
-            self.order_id = order.id
-            #~ order.action_button_confirm()
+            self.order_id = order
         else:
             self.state = 'sent'
 
