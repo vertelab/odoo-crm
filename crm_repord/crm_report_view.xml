@@ -134,7 +134,7 @@
             </search>
         </field>
     </record>
-
+    
     <record id="action_rep_order_report_all" model="ir.actions.act_window">
         <field name="name">Rep Order Analysis</field>
         <field name="res_model">rep.order.report</field>
@@ -145,8 +145,70 @@
         <field name="context">{'search_default_Sales':1, 'group_by_no_leaf':1,'group_by':[]}</field>
         <field name="help">This report performs analysis on your rep orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application.</field>
     </record>
-
+    
     <menuitem action="action_rep_order_report_all" id="menu_report_product_all" parent="base.next_id_64" sequence="10"/>
-
+    
+    <record id="view_listing_history_search" model="ir.ui.view">
+        <field name="name">res.partner.listing.report.search</field>
+        <field name="model">res.partner.listing.report</field>
+        <field name="arch" type="xml">
+            <search string="Listing History">
+                <field name="date"/>
+                <filter string="This Year" name="year" domain="[('date','&lt;=', time.strftime('%%Y-12-31')),('date','&gt;=',time.strftime('%%Y-01-01'))]"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="user_id"/>
+                <field name="role"/>
+                <field name="store_class"/>
+                <field name="areg"/>
+                <field name="parent_id"/>
+                <field name="rangebox"/>
+                <field name="zip"/>
+                <field name="city"/>
+                <group expand="0" string="Extended Filters">
+                    <field name="categ_id" filter_domain="[('categ_id', 'child_of', self)]"/>
+                </group>
+                <group expand="1" string="Group By">
+                    <filter string="Salesperson" name="User" context="{'group_by':'user_id'}"/>
+                    <filter string="Customer" name="Customer" context="{'group_by':'partner_id'}"/>
+                    <filter string="Category of Product" name="Category" context="{'group_by':'categ_id'}"/>
+                    
+                        <filter string="Role" domain="[]" context="{'group_by':'role'}"/>
+                        <filter string="Store Class" domain="[]" context="{'group_by':'store_class'}"/>
+                        <filter string="Areg" domain="[]" context="{'group_by':'areg'}"/>
+                        <filter string="Parent" domain="[]" context="{'group_by':'parent_id'}"/>
+                        <filter string="Rangebox" domain="[]" context="{'group_by':'rangebox'}"/>
+                        <filter string="Zip" domain="[]" context="{'group_by':'zip'}"/>
+                        <filter string="City" domain="[]" context="{'group_by':'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <record id="view_listing_history_graph" model="ir.ui.view">
+         <field name="name">res.partner.listing.graph</field>
+         <field name="model">res.partner.listing.report</field>
+         <field name="arch" type="xml">
+             <graph string="Listing History" type="pivot" stacked="True">
+                 <field name="product_id" type="row"/>
+                 <field name="date" interval="month" type="col"/>
+                 <field name="count" type="measure"/>
+             </graph>
+         </field>
+    </record>
+    
+    <record id="action_res_partner_listing_report" model="ir.actions.act_window">
+        <field name="name">Listing History</field>
+        <field name="res_model">res.partner.listing.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph</field>
+        <field name="search_view_id" ref="view_listing_history_search"/>
+        <field name="view_id" ref="view_listing_history_graph"/>
+        <field name="context">{}</field>
+        <field name="help">This report </field>
+    </record>
+    
+    <menuitem action="action_res_partner_listing_report" id="menu_report_listing_history" parent="base.next_id_64" sequence="11"/>
+    
 </data>
 </openerp>

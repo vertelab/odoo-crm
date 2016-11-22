@@ -25,51 +25,7 @@ from openerp import models, fields, api, _
 import logging
 _logger = logging.getLogger(__name__)
 
-class crm_repord_report(models.Model):
-    _name = "rep.order.report"
-    _description = "Rep Order Statistics"
-    _auto = False
-    _rec_name = 'date'
-
-    date = fields.Datetime(string='Date Created', readonly=True)
-    date_confirm = fields.Datetime(string='Date Confirm', readonly=True)
-    product_id = fields.Many2one(comodel_name='product.product',string='Product', readonly=True)
-    product_uom = fields.Many2one(comodel_name='product.uom', string='Unit of Measure', readonly=True)
-    product_uom_qty = fields.Float(string='# of DFP', readonly=True)
-    product_uom_kfp = fields.Float(string='# of KFP', readonly=True)
-
-    partner_id = fields.Many2one(comodel_name='res.partner', string='Partner', readonly=True)
-    parent_id = fields.Many2one(comodel_name='res.partner', string='Parent', readonly=True)
-    company_id = fields.Many2one(comodel_name='res.company', string='Company', readonly=True)
-    user_id = fields.Many2one(comodel_name='res.users', string='User', readonly=True)
-    section_id = fields.Many2one(comodel_name='crm.case.section', string='Sales Team', readonly=True)
-    price_total = fields.Float(string='Total Price', readonly=True)
-    delay = fields.Float(string='Commitment Delay', digits=(16,2),readonly=True)
-    categ_id = fields.Many2one(comodel_name="product.category",string='Category of Product',readonly=True)
-    nbr = fields.Integer(string='# of Lines', readonly=True)
-    state = fields.Selection([
-            ('cancel', 'Cancelled'),
-            ('draft', 'Draft'),
-            ('sent', 'Sent'),
-            ('waiting_date', 'Waiting Schedule'),
-            ('progress', 'Sales Order'),
-            ('manual', 'Sale to Invoice'),
-            ('shipping_except', 'Shipping Exception'),
-            ('invoice_except', 'Exception'),
-            ('done', 'Done')], 'Order Status', readonly=True)
-    pricelist_id = fields.Many2one(comodel_name="product.pricelist",string='Pricelist',readonly=True)
-    analytic_account_id = fields.Many2one(comodel_name="account.analytic.account",string='Analytic Account',readonly=True)
-            
-        
-    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('3rd_party', 'Third Party Order')], string="Order Type", readonly=True)
-    order_id = fields.Many2one('rep.order', 'Rep Order',readonly=True)
-#    amount_discount = fields.Float(string='Total Discount',digits=(16,2),readonly=True)
-    campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign',readonly=True)
-    third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier',  readonly=True)
-    
-    role    =   fields.Char(string="Role",readonly=True)
-    store_class = fields.Selection([('A', 'A'),('B', 'B'),('C', 'C'),('D', 'D'),('E', 'E')],string='Store Class',readonly=True)
-    areg =      fields.Selection([
+AREG_LIST = [
     ('1', u'Stockholm'),
     ('2', u'Norrtälje'),
     ('3', u'Enköping'),
@@ -140,9 +96,132 @@ class crm_repord_report(models.Model):
     ('68', u'Luleå/Boden'),
     ('69', u'Haparanda/Kalix'),
     ('70', u'Kiruna/Gällivare'),
-    ],
-    string='Areg',
-    readonly=True)
+]
+class res_partner_listing_report(models.Model):
+    _name = "res.partner.listing.report"
+    _description = "Rep Order Statistics"
+    _auto = False
+    _rec_name = 'date'
+
+    product_id = fields.Many2one(comodel_name='product.product', string='Product', readonly=True)
+    categ_id = fields.Many2one(comodel_name="product.category", string='Product Category', readonly=True)
+    
+    user_id = fields.Many2one(comodel_name='res.users', string='Salesman', readonly=True)
+    
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', readonly=True)
+    parent_id = fields.Many2one(comodel_name='res.partner', string='Chain', readonly=True)
+    role    =   fields.Char(string="Role", readonly=True)
+    store_class = fields.Selection([('A', 'A'), ('B', 'B'), ('C', 'C'), ('D', 'D'), ('E', 'E')], string='Store Class', readonly=True)
+    areg =      fields.Selection(AREG_LIST, string='Areg', readonly=True)
+    rangebox =  fields.Char(string='Rangebox', readonly=True)
+    zip      =  fields.Char(string='Zip', readonly=True)
+    city     =  fields.Char(string='City', readonly=True)
+    
+    date = fields.Date(string='Date', readonly=True)
+    count = fields.Integer(string='Count', readonly=True)
+    
+    def _select(self):
+        select_str = """
+        SELECT min(history.id) as id,
+                    history.product_id as product_id,
+                    template.categ_id as categ_id,
+                    history.user_id as user_id,
+                    history.partner_id as partner_id,
+                    partner.parent_id as parent_id,
+                    partner.role as role,
+                    partner.store_class as store_class,
+                    partner.areg as areg,
+                    partner.rangebox as rangebox,
+                    partner.zip as zip,
+                    partner.city as city,
+                    history.date as date,
+                    history.count as count
+        """
+        return select_str
+    
+    def _from(self):
+        from_str = """
+                res_partner_listing_history history
+                left join product_product product on (history.product_id=product.id)
+                left join product_template template on (product.product_tmpl_id=template.id)
+                left join res_partner partner on (history.partner_id=partner.id)
+        """
+        return from_str
+
+
+    def _group_by(self):
+        group_by_str = """
+            GROUP BY history.product_id,
+                    template.categ_id,
+                    history.partner_id,
+                    history.user_id,
+                    partner.parent_id,
+                    partner.role,
+                    partner.store_class,
+                    partner.areg,
+                    partner.rangebox,
+                    partner.zip,
+                    partner.city,
+                    history.date,
+                    history.count
+        """
+        return group_by_str
+
+
+
+    def init(self, cr):
+        tools.drop_view_if_exists(cr, self._table)
+        cr.execute("""CREATE or REPLACE VIEW %s as (
+            %s
+            FROM ( %s )
+            %s
+            )""" % (self._table, self._select(), self._from(), self._group_by()))
+    
+class crm_repord_report(models.Model):
+    _name = "rep.order.report"
+    _description = "Rep Order Statistics"
+    _auto = False
+    _rec_name = 'date'
+
+    date = fields.Datetime(string='Date Created', readonly=True)
+    date_confirm = fields.Datetime(string='Date Confirm', readonly=True)
+    product_id = fields.Many2one(comodel_name='product.product',string='Product', readonly=True)
+    product_uom = fields.Many2one(comodel_name='product.uom', string='Unit of Measure', readonly=True)
+    product_uom_qty = fields.Float(string='# of DFP', readonly=True)
+    product_uom_kfp = fields.Float(string='# of KFP', readonly=True)
+
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Partner', readonly=True)
+    parent_id = fields.Many2one(comodel_name='res.partner', string='Parent', readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='User', readonly=True)
+    section_id = fields.Many2one(comodel_name='crm.case.section', string='Sales Team', readonly=True)
+    price_total = fields.Float(string='Total Price', readonly=True)
+    delay = fields.Float(string='Commitment Delay', digits=(16,2),readonly=True)
+    categ_id = fields.Many2one(comodel_name="product.category",string='Category of Product',readonly=True)
+    nbr = fields.Integer(string='# of Lines', readonly=True)
+    state = fields.Selection([
+            ('cancel', 'Cancelled'),
+            ('draft', 'Draft'),
+            ('sent', 'Sent'),
+            ('waiting_date', 'Waiting Schedule'),
+            ('progress', 'Sales Order'),
+            ('manual', 'Sale to Invoice'),
+            ('shipping_except', 'Shipping Exception'),
+            ('invoice_except', 'Exception'),
+            ('done', 'Done')], 'Order Status', readonly=True)
+    pricelist_id = fields.Many2one(comodel_name="product.pricelist",string='Pricelist',readonly=True)
+    analytic_account_id = fields.Many2one(comodel_name="account.analytic.account",string='Analytic Account',readonly=True)
+            
+        
+    order_type = fields.Selection([('scrap', 'Scrap'), ('order', 'Order'), ('reminder', 'Reminder'), ('discount', 'Discount'), ('direct', 'Direct'), ('3rd_party', 'Third Party Order')], string="Order Type", readonly=True)
+    order_id = fields.Many2one('rep.order', 'Rep Order',readonly=True)
+#    amount_discount = fields.Float(string='Total Discount',digits=(16,2),readonly=True)
+    campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign',readonly=True)
+    third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier',  readonly=True)
+    
+    role    =   fields.Char(string="Role",readonly=True)
+    store_class = fields.Selection([('A', 'A'),('B', 'B'),('C', 'C'),('D', 'D'),('E', 'E')],string='Store Class',readonly=True)
+    areg =      fields.Selection(AREG_LIST, string='Areg', readonly=True)
     rangebox =  fields.Char(string='Rangebox',readonly=True)
     zip      =  fields.Char(string='Zip',readonly=True)
     city     =  fields.Char(string='City',readonly=True)

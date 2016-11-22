@@ -9,14 +9,8 @@
     <record id="listing_ica_planogramlagt" model="res.partner.listing">
       <field name="name">ICA Planogramlagt</field>
     </record>
-    <record id="listing_ica_tillgangligt" model="res.partner.listing">
-      <field name="name">ICA Tillgängligt</field>
-    </record>
     <record id="listing_coop_ti" model="res.partner.listing">
       <field name="name">TI</field>
-    </record>
-    <record id="listing_coop_pt" model="res.partner.listing">
-      <field name="name">PT</field>
     </record>
     <record id="listing_coop_sa" model="res.partner.listing">
       <field name="name">SÄ</field>
