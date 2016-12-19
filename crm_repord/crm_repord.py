@@ -210,6 +210,11 @@ class res_partner_listing(models.Model):
     rangebox_old = fields.Char('Old Rangebox', help='Used to identify partners that no longer match in _update_partners.')
     partner_ids = fields.Many2many(comodel_name='res.partner', relation='res_partner_res_partner_listing_rel', string='Listings')
     
+    @api.model
+    def update_all_partners(self):
+        partners = self.env['res.partner'].search(['|', ('role', '!=', False), ('rangebox', '!=', False)])
+        partners._recompute_listing_ids(self.env['res.partner.listing'].search([]))
+    
     @api.multi
     def _get_matching_partners(self):
         self.ensure_one()
@@ -312,7 +317,7 @@ class res_partner_listing_line(models.Model):
                 del values_h['listing_id']
             values_h['user_id'] = record.partner_id.user_id.id
             if 'buying' in values_h:
-                prev_count = earlier_history[0]['count'] if earlier_history else 0
+                prev_count = earlier_history[0]['count'] if earlier_history else 2
                 if values_h['buying']:
                     #Identical to last history. Remove this entry.
                     if prev_count == 1:
@@ -321,13 +326,13 @@ class res_partner_listing_line(models.Model):
                         return res
                     values_h['count'] = 1
                 else:
-                    if prev_count == -1:
+                    if prev_count == -1 or prev_count == 0:
                         #Identical to last history. Remove this entry.
                         if history_id:
                             history_obj.unlink(cr, uid, history_id, context = context)
                         return res
                     #Check if this is is the first history entry.
-                    values_h['count'] = -1 if prev_count else 0
+                    values_h['count'] = -1 if prev_count == 1 else 0
                 del values_h['buying']
             if history_id:
                 history_obj.write(cr, uid, history_id, values_h, context = context)
@@ -337,7 +342,7 @@ class res_partner_listing_line(models.Model):
                 if not values_h.get('product_id'):
                     values_h['product_id'] = record.product_id.id
                 if values_h.get('buying') == None:
-                    values_h['count'] = 1 if record.buying else 0
+                    values_h['count'] = 1 if record.buying else -1 if prev_count == 1 else 0
                 history_obj.create(cr, uid, values_h, context = context)
         return res
 
