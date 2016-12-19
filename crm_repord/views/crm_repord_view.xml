@@ -19,8 +19,10 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <field name="website" position="after">
+<!--
                 <field name="product_ids" widget="many2many_tags"/>
                 <field name="inactive_product_ids" widget="many2many_tags"/>
+-->
                 <field name="listing_ids" widget="many2many_tags"/>
                 <field name="repord_3p_supplier" groups="base.group_sale_manager"/>
             </field>
@@ -274,7 +276,7 @@
                             t-att-id="'sortiment_list_%s' %brand_category.id" style="padding: 0px;">
                                 <t t-foreach="listings.get(brand_category.id, [])" t-as="pp">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt4 mb4 sort_products">
-                                        <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if not partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if pp in partner.m_range_product_ids else '#FAC134')">
+                                        <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if not partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if partner.is_product_mandatory(pp) else '#FAC134')">
                                             <i class="fa fa-minus" style="font-size: 3.3em;"/>
                                         </div>
                                         <div t-att-id="'ksp_%s_product' %pp.id" class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="height: 100%;">
@@ -288,7 +290,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div t-att-id="'ksp_%s_plus' %pp.id" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if pp in partner.m_range_product_ids else '#FAC134')">
+                                        <div t-att-id="'ksp_%s_plus' %pp.id" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if partner.is_product_mandatory(pp) else '#FAC134')">
                                             <i class="fa fa-plus" style="font-size: 3.3em;"/>
                                         </div>
                                     </div>

@@ -15,5 +15,5 @@ access_product_template_3rd_party,product.template.3rd.party,account.model_produ
 access_hr_employee_3rd_party,hr.employee.3rd.party,hr.model_hr_employee,crm_repord.3rd_party_group,1,0,0,0
 access_rep_order_3rd_party,rep.order.3rd.party,crm_repord.model_rep_order,crm_repord.3rd_party_group,1,1,1,0
 access_rep_order_line_3rd_party,rep.order.line.3rd.party,crm_repord.model_rep_order_line,crm_repord.3rd_party_group,1,1,1,1
-access_rep_order_manager,sale.order.manager,model_rep_order_report,base.group_sale_manager,1,1,1,1
+access_rep_order_report_manager,sale.order.manager,model_rep_order_report,base.group_sale_manager,1,1,1,1
 access_res_partner_listing_3rd_party,res.partner.listing,model_res_partner_listing,crm_repord.3rd_party_group,1,1,1,0
