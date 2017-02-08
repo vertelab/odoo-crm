@@ -10,6 +10,7 @@
                     <group col="2">
                         <group>
                             <field name="order_id" />
+                            <field name="categ_ids" widget="many2many_tags" />
                         </group>
                     </group>
                     <footer>
