@@ -11,9 +11,6 @@
                         <group>
                             <field name="order_id" />
                         </group>
-                        <group >
-                            <field name="partner_ids" widget="many2many_tags" />
-                        </group>
                     </group>
                     <footer>
                         <div>

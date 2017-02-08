@@ -42,7 +42,6 @@ class sale_order_generator(models.TransientModel):
             values['partner_id'] = p.id
             order = self.order_id.copy(values)
             order.categ_ids = categs
-            order.action_button_confirm()
 
     @api.model
     def get_so_categs(self, partners):
