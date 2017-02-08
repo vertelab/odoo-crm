@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data noupdate="1">
 
         <record id="generate_sale_orders" model="ir.actions.server">
             <field name="name">Generate Sale Orders</field>
