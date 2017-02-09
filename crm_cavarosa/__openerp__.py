@@ -25,13 +25,17 @@
     'description': """
 CRM configuration for Cavarosa AB
 =================================
-* A server action that generates sale orders from an exist order template
+* A server action that generates sale orders from an exist order as template
+* An email template
 * Controller for email customers to accept or reject order
 """,
     'author': 'Vertel AB',
     'website': 'https://vertel.se',
-    'depends': ['sale_crm', 'mass_mailing_sale',],
-    'data': ['res_partner_data.xml', 'sale_order_view.xml',
+    'depends': ['sale_crm', 'mass_mailing_sale', 'email_template', 'website'],
+    'data': [
+        'res_partner_data.xml',
+        'sale_order_view.xml',
+        'sale_order_data.xml',
     ],
     'installable': True,
 }

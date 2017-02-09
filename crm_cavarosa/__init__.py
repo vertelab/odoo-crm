@@ -20,6 +20,5 @@
 ##############################################################################
 
 import sale_order
-import mass_mailing
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
