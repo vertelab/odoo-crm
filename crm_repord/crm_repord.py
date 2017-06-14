@@ -77,21 +77,65 @@ class sale_order(models.Model):
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-    
+
     @api.one
-    def add_product_to_range(self, product):
-        line = self.env['res.partner.listing.line'].search([
-            ('partner_id', '=', self.id), ('product_id', '=', product.id)])
-        if line:
-            line.buying = True
-    
+    @api.depends('listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
+    def _get_m_range_product_ids(self):
+        listings = self.env['res.partner.listing'].browse()
+        lists = self.env['res.partner.listing'].search([])
+        for listing in lists:
+            if listing.mandatory:
+                match = False
+                if listing.role and self.role:
+                    roles = listing.role.split(';')
+                    for role in roles:
+                        if role.lower() == self.role.lower():
+                            match = True
+                            break
+                if not match and listing.rangebox and self.rangebox:
+                    ranges = listing.rangebox.split(';')
+                    for r in ranges:
+                        if r.lower() == self.rangebox.lower():
+                            match = True
+                            break
+                if match:
+                    listings |= listing
+        listings |= self.listing_ids.filtered(lambda rec: rec.mandatory)
+        products = self.env['product.product'].browse([])
+        for listing in listings:
+            products |= listing.product_ids
+        self.m_range_product_ids = products
+
     @api.one
-    def remove_product_from_range(self, product):
-        line = self.env['res.partner.listing.line'].search([
-            ('partner_id', '=', self.id), ('product_id', '=', product.id)])
-        if line:
-            line.buying = False
-    
+    @api.depends('m_range_product_ids', 'listing_ids', 'listing_ids.product_ids', 'listing_ids.mandatory')
+    def _get_range_product_ids(self):
+        listings = self.env['res.partner.listing'].browse()
+        lists = self.env['res.partner.listing'].search([])
+        for listing in lists:
+            if not listing.mandatory:
+                match = False
+                if listing.role and self.role:
+                    roles = listing.role.split(';')
+                    for role in roles:
+                        if role.lower() == self.role.lower():
+                            match = True
+                            break
+                if not match and listing.rangebox and self.rangebox:
+                    ranges = listing.rangebox.split(';')
+                    for r in ranges:
+                        if r.lower() == self.rangebox.lower():
+                            match = True
+                            break
+                if match:
+                    listings |= listing
+        listings |= self.listing_ids.filtered(lambda rec: not rec.mandatory)
+        products = self.env['product.product'].browse([])
+        for listing in listings:
+            products |= listing.product_ids
+        for product in self.m_range_product_ids:
+            products -= product
+        self.range_product_ids = products
+
     def _get_meeting(self):
         meetings = []
         for m in self.meeting_ids:
@@ -102,83 +146,20 @@ class res_partner(models.Model):
                 if m.start_datetime < fields.Datetime.now() and m.stop_datetime > fields.Datetime.now():
                     meetings.append(m)
         return meetings
-    
-    @api.one
-    @api.depends('role', 'rangebox')
-    def _recompute_listing_ids(self, lists = None):
-        listings = self.env['res.partner.listing'].browse()
-        if not lists:
-            lists = self.env['res.partner.listing'].search([])
-        for listing in lists:
-            match = False
-            if listing.role and self.role:
-                roles = listing.role.split(';')
-                for role in roles:
-                    if role.lower().strip() == self.role.lower():
-                        match = True
-                        break
-            if not match and listing.rangebox and self.rangebox:
-                ranges = listing.rangebox.split(';')
-                for r in ranges:
-                    if r.lower().strip() == self.rangebox.lower():
-                        match = True
-                        break
-            if match:
-                listings |= listing
-        _logger.debug('%s, %s, %s' % (self.id, self.name, listings))
-        self.listing_ids = listings
-        self._get_listing_line_ids()
-    
-    @api.multi
-    def _update_listing_lines(self, listing, products):
-        #~ self.ensure_one()
-        #~ lines = self.env['res.partner.listing.line'].browse()
-        for product in listing.product_ids:
-            if product not in products:
-                line = self.env['res.partner.listing.line'].search([('product_id', '=', product.id), ('partner_id', '=', self.id)])
-                if line:
-                    if line.listing_id != listing:
-                        line.listing_id = listing
-                else:
-                    _logger.debug('partner: %s, product: %s, listing: %s' % (self, product, listing))
-                    self.listing_line_ids |= self.env['res.partner.listing.line'].create({
-                        'product_id': product.id,
-                        'listing_id': listing.id,
-                        'partner_id': self.id,
-                        'buying': (not listing.mandatory and product in self.product_ids) or (listing.mandatory and product not in self.inactive_product_ids),
-                    })
-    
-    @api.one
-    def _get_listing_line_ids(self):
-        products = self.env['product.product'].browse()
-        for listing in self.listing_ids.filtered(lambda rec: rec.mandatory):
-            self._update_listing_lines(listing, products)
-            products |= listing.product_ids
-        for listing in self.listing_ids.filtered(lambda rec: not rec.mandatory):
-            self._update_listing_lines(listing, products)
-            products |= listing.product_ids        
-    
+
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
-    listing_line_ids = fields.One2many(comodel_name='res.partner.listing.line', inverse_name='partner_id', string='Listing Lines')
-    #~ range_product_ids = fields.Many2many(comodel_name='product.product', string='Product Range', compute='_get_range_product_ids')
+    range_product_ids = fields.Many2many(comodel_name='product.product', string='Product Range', compute='_get_range_product_ids')
     inactive_product_ids = fields.Many2many(comodel_name='product.product', relation='product_product_inactive_res_partner_rel', string='Inactive Products')
-    #~ m_range_product_ids = fields.Many2many(comodel_name='product.product', string='Mandatory Product Range', compute='_get_m_range_product_ids')
-    listing_ids = fields.Many2many(comodel_name='res.partner.listing', relation='res_partner_res_partner_listing_rel', string='Listings')
+    m_range_product_ids = fields.Many2many(comodel_name='product.product', string='Mandatory Product Range', compute='_get_m_range_product_ids')
+    listing_ids = fields.Many2many(comodel_name='res.partner.listing', string='Listings')
     repord_3p_supplier = fields.Boolean('Handle reporders for this partner')
-    
-    @api.multi
+
     def is_product_active(self, product):
-        self.ensure_one()
-        line = self.env['res.partner.listing.line'].search([
-            ('partner_id', '=', self.id), ('product_id', '=', product.id)])
-        return line.buying if line else False
-    
-    @api.multi
-    def is_product_mandatory(self, product):
-        self.ensure_one()
-        for line in self.listing_line_ids.filtered(lambda r: r.product_id == product):
-            return line.listing_id.mandatory
-        
+        if product in self.m_range_product_ids:
+            return product not in self.inactive_product_ids
+        elif product in self.range_product_ids:
+            return product in self.product_ids
+
 class calendar_event(models.Model):
     _inherit = 'calendar.event'
 
@@ -204,157 +185,8 @@ class res_partner_listing(models.Model):
     name = fields.Char(string='Name')
     product_ids = fields.Many2many(comodel_name='product.product', string='Products')
     mandatory = fields.Boolean('Mandatory', help="Check to automatically make products in this listing active.")
-    role = fields.Char('Role', inverse='_update_partners')
-    rangebox = fields.Char('Rangebox', inverse='_update_partners')
-    role_old = fields.Char('Old Role', help='Used to identify partners that no longer match in _update_partners.')
-    rangebox_old = fields.Char('Old Rangebox', help='Used to identify partners that no longer match in _update_partners.')
-    partner_ids = fields.Many2many(comodel_name='res.partner', relation='res_partner_res_partner_listing_rel', string='Listings')
-    
-    @api.model
-    def update_all_partners(self):
-        partners = self.env['res.partner'].search(['|', ('role', '!=', False), ('rangebox', '!=', False)])
-        partners._recompute_listing_ids(self.env['res.partner.listing'].search([]))
-    
-    @api.multi
-    def _get_matching_partners(self):
-        self.ensure_one()
-        roles = []
-        for role in (self.role or '').split(';') + (self.role_old or '').split(';'):
-            roles.append(role.strip())
-        partners = self.env['res.partner'].browse()
-        for role in set(roles):
-            if role:
-                partners |= self.env['res.partner'].search([('role', 'ilike', role)])
-        rangeboxes = []
-        for r in (self.rangebox or '').split(';')+ (self.rangebox_old or '').split(';'):
-            rangeboxes.append(r.strip())
-        for r in set(rangeboxes):
-            if r:
-                partners |= self.env['res.partner'].search([('rangebox', 'ilike', r)])
-        _logger.debug(partners)
-        return partners
-    
-    @api.one
-    def _update_partners(self):
-        """Update listing_ids on matching partners"""
-        partners = self._get_matching_partners()
-        if partners:
-            partners._recompute_listing_ids(self.env['res.partner.listing'].search([]))
-        #Update old fields.
-        self.role_old = self.role
-        self.rangebox_old = self.rangebox
-    
-    @api.multi
-    def write(self, vals):
-        res = super(res_partner_listing, self).write(vals)
-        if vals.get('rangebox') or vals.get('role') or vals.get('mandatory') or vals.get('product_ids'):
-            for record in self:
-                record._update_partners()
-        return res
-    
-    @api.model
-    @api.returns('self', lambda value: value.id)
-    def create(self, values):
-        res = super(res_partner_listing, self).create(values)
-        res._update_partners()
-        return res
-
-class res_partner_listing_line(models.Model):
-    _name = 'res.partner.listing.line'
-    
-    partner_id = fields.Many2one(comodel_name='res.partner', string='Partner', required=True)
-    product_id = fields.Many2one(comodel_name='product.product', string='Product', required=True)
-    listing_id = fields.Many2one(comodel_name='res.partner.listing', string='Listing', required=True)
-    buying = fields.Boolean('Buying')
-    
-    @api.model
-    @api.returns('self', lambda value: value.id)
-    def create(self, values):
-        _logger.debug(values)
-        #Avoid duplicate history entries for today.
-        history = self.env['res.partner.listing.history'].search([
-            ('partner_id', '=', values['partner_id']),
-            ('product_id', '=', values['product_id']),
-            ('date', '=', fields.Date.today()),
-        ])
-        #Create history entry.
-        _logger.debug(self.env['res.partner'].search_read([('id', '=', values['partner_id'])], ['user_id'])[0]['user_id'][0])
-        values_h = {
-            'partner_id': values['partner_id'],
-            'product_id': values['product_id'],
-            'date': fields.Date.today(),
-            'count': 1 if values.get('buying') else 0,
-            'user_id': self.env['res.partner'].search_read([('id', '=', values['partner_id'])], ['user_id'])[0]['user_id'][0],
-        }
-        _logger.debug(values_h)
-        if history:
-            history.write(values_h)
-        else:
-            history.create(values_h)
-        #~ #if 'sold' in values:
-        #~ #    del values['sold']
-        return super(res_partner_listing_line, self).create(values)
-    
-    @api.multi
-    def write(self, values):
-        res = super(res_partner_listing_line, self).write(values)
-        cr, uid, context = self._cr, self.env.user.id, self._context
-        for record in self:
-            #Avoid duplicate history entries for today.
-            history_obj = self.pool.get('res.partner.listing.history')
-            history_id = history_obj.search(cr, uid, [
-                ('partner_id', '=', values.get('partner_id') or record.partner_id.id),
-                ('product_id', '=', values.get('product_id') or record.product_id.id),
-                ('date', '=', fields.Date.today())], context = context)
-            earlier_history = self.env['res.partner.listing.history'].search_read([
-                ('partner_id', '=', values.get('partner_id') or record.partner_id.id),
-                ('product_id', '=', values.get('product_id') or record.product_id.id),
-                ('date', '<', fields.Date.today()),
-                ], ['count'], limit = 1, order = 'date DESC')
-            #Create history entry.
-            values_h = dict(values)
-            if 'listing_id' in values_h:
-                del values_h['listing_id']
-            values_h['user_id'] = record.partner_id.user_id.id
-            if 'buying' in values_h:
-                prev_count = earlier_history[0]['count'] if earlier_history else 2
-                if values_h['buying']:
-                    #Identical to last history. Remove this entry.
-                    if prev_count == 1:
-                        if history_id:
-                            history_obj.unlink(cr, uid, history_id, context = context)
-                        return res
-                    values_h['count'] = 1
-                else:
-                    if prev_count == -1 or prev_count == 0:
-                        #Identical to last history. Remove this entry.
-                        if history_id:
-                            history_obj.unlink(cr, uid, history_id, context = context)
-                        return res
-                    #Check if this is is the first history entry.
-                    values_h['count'] = -1 if prev_count == 1 else 0
-                del values_h['buying']
-            if history_id:
-                history_obj.write(cr, uid, history_id, values_h, context = context)
-            else:
-                if not values_h.get('partner_id'):
-                    values_h['partner_id'] = record.partner_id.id
-                if not values_h.get('product_id'):
-                    values_h['product_id'] = record.product_id.id
-                if values_h.get('buying') == None:
-                    values_h['count'] = 1 if record.buying else -1 if prev_count == 1 else 0
-                history_obj.create(cr, uid, values_h, context = context)
-        return res
-
-class res_partner_listing_history(models.Model):
-    _name = 'res.partner.listing.history'
-    
-    partner_id = fields.Many2one(comodel_name='res.partner', string='Partner', required=True)
-    product_id = fields.Many2one(comodel_name='product.product', string='Product', required=True)
-    user_id = fields.Many2one(comodel_name='res.users', string='Salesman')
-    date = fields.Date('Date', default=fields.Date.today)
-    count = fields.Integer(string='Added')
-    #~ sold = fields.Integer(string='Sold', help='Wether to credit seller for the change.')
+    role = fields.Char('Role')
+    rangebox = fields.Char('Rangebox')
 
 class MobileSaleView(http.Controller):
     
@@ -367,20 +199,15 @@ class MobileSaleView(http.Controller):
             })
         else:
             rep_order = rep_order[0]
-        listing = request.env['product.product'].browse()
-        for line in partner.listing_line_ids:
-            listing |= line.product_id
-        listing = listing.sorted(lambda r: r.default_code)
+        listing = partner.m_range_product_ids + partner.range_product_ids
         products = request.env['product.product'].search([('categ_id', 'child_of', request.env.ref('product.product_category_1').id)])
-        product_categories = request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')
         listings = {}
+        product_categories = request.env['product.category'].search([('parent_id', '=', request.env.ref('product.product_category_1').id)], order='id')
         for category in product_categories:
             listings[category.id] = request.env['product.product'].browse([])
             for product in listing:
                 if product.categ_id.is_child_of_category(category):
                     listings[category.id] |= product
-        for key in listings:
-            listings[key] = listings[key].sorted(lambda r: r.default_code)
         _logger.debug(listings)
         active_category = post.get('category')
         if not active_category:
@@ -443,7 +270,7 @@ class MobileSaleView(http.Controller):
             order_line.create({
                 'order_id': rep_order_ids[0].id,
                 'product_id': int(product_id),
-                'name': '%s%s' % ('' if not product.default_code else '[%s] ' % product.default_code, product.name),
+                'name': product.name,
                 'product_uom_qty': float(product_uom_qty),
                 'product_uom': product.uom_id.id,
                 'price_unit': product.lst_price,
@@ -455,14 +282,20 @@ class MobileSaleView(http.Controller):
     def add_product(self, res_partner, product_id, **kw):
         partner = request.env['res.partner'].browse(int(res_partner))
         product = request.env['product.product'].browse(int(product_id))
-        partner.add_product_to_range(product)
+        if product in partner.m_range_product_ids:
+            partner.inactive_product_ids -= product
+        elif product in partner.range_product_ids:
+            partner.product_ids |= product
         return 'added'
 
     @http.route(['/crm/remove/product'], type='json', auth="user", methods=['POST'], website=True)
     def remove_product(self, res_partner, product_id, **kw):
         partner = request.env['res.partner'].browse(int(res_partner))
         product = request.env['product.product'].browse(int(product_id))
-        partner.remove_product_from_range(product)
+        if product in partner.m_range_product_ids:
+            partner.inactive_product_ids |= product
+        elif product in partner.range_product_ids:
+            partner.product_ids -= product
         return 'removed'
 
     @http.route(['/crm/presentation/done'], type='json', auth="user", methods=['POST'], website=True)
@@ -542,14 +375,18 @@ class MobileSaleView(http.Controller):
     @http.route(['/crm/repord/confirm'], type='json', auth="user", methods=['POST'], website=True)
     def order_confirm(self, order, send_mail, **kw):
         order = request.env['rep.order'].browse(int(order))
+        if not order.order_line:
+            return 'no_lines'
         if order.check_if_3p_ok():
+            res = 'repord_confirmed'
             if send_mail == True:
                 if not order.partner_id.email:
-                    return 'no_email'
+                    res = 'no_email'
                 else:
                     order.force_quotation_send()
             order.action_convert_to_sale_order()
-            return 'repord_confirmed'
+            _logger.warn(res)
+            return res
         return 'validation_fail'
 
     # store list
@@ -910,7 +747,7 @@ class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
     _description = "Representative Order"
-    
+
     @api.multi
     @api.depends('order_line', 'order_line.price_unit', 'order_line.tax_id', 'order_line.discount', 'order_line.product_uom_qty')
     def _repord_amount_all_wrapper(self):
@@ -954,12 +791,12 @@ class rep_order(models.Model):
             for line in self.order_line:
                 if line.product_id.categ_id.repord_3p_supplier != self.third_party_supplier:
                     return False
-        if self.order_type != '3rd_party':
-            if self.third_party_supplier:
-                return False
-            for line in self.order_line:
-                if line.product_id.categ_id.repord_3p_supplier:
-                    return False
+        #if self.order_type != '3rd_party':
+        #    if self.third_party_supplier:
+        #        return False
+        #    for line in self.order_line:
+        #        if line.product_id.categ_id.repord_3p_supplier:
+        #            return False
         return True
         
     @api.one
@@ -1021,7 +858,8 @@ class rep_order(models.Model):
                 }) for l in self.order_line],
             })
             self.state = 'progress'
-            self.order_id = order
+            self.order_id = order.id
+            #~ order.action_button_confirm()
         else:
             self.state = 'sent'
 

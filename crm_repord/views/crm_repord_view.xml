@@ -19,10 +19,8 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <field name="website" position="after">
-<!--
                 <field name="product_ids" widget="many2many_tags"/>
                 <field name="inactive_product_ids" widget="many2many_tags"/>
--->
                 <field name="listing_ids" widget="many2many_tags"/>
                 <field name="repord_3p_supplier" groups="base.group_sale_manager"/>
             </field>
@@ -88,7 +86,7 @@
                             <ul class="nav nav-tabs nav-justified nav-brand text-center" style="padding: 0px; margin: 10px auto;">
                                 <t t-foreach="product_categories" t-as="brand_categs">
                                     <li t-att-class="'active' if brand_categs.id == active_category else ''">
-                                        <a data-toggle="tab" class="brand_tab" t-att-data-target="'&#35;categs_%s, #sortiment_list_%s' % (brand_categs.id, brand_categs.id)"><span t-field="brand_categs.name"/></a>
+                                        <a data-toggle="tab" class="brand_tab" t-att-data-category-id="brand_categs.id" t-att-data-target="'&#35;categs_%s, #sortiment_list_%s' % (brand_categs.id, brand_categs.id)"><span t-field="brand_categs.name"/></a>
                                     </li>
                                 </t>
                             </ul>
@@ -161,8 +159,9 @@
                                                 <table class="table table-striped" style="">
                                                     <tbody>
                                                         <t t-foreach="products" t-as="p">
-                                                        <tr>
-                                                            <t t-if="p.categ_id in p_c and (order.order_type == 'direct' or partner.is_product_active(p))">
+                                                            <t t-if="p.categ_id in p_c">
+                                                                <tr t-att-class="'%s' % (('oe-extra-product%s' % (' hidden' if order.order_type in ['order', '3rd_party'] else '')) if not partner.is_product_active(p) else '')">
+                                                            
                                                                 <t t-set="order_line_qty" t-value="0"/>
                                                                 <t t-set="order_line_discount" t-value="0"/>
                                                                 <t t-foreach="order_line" t-as="ol">
@@ -217,20 +216,21 @@
                                                                         </ul>
                                                                     </div>
                                                                 </td>
+                                                            </tr>
                                                             </t>
-                                                        </tr>
                                                         </t>
                                                     </tbody>
                                                 </table>
                                             </t>
                                         </div>
                                     </t>
+                                    
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                                         <select name="order_type" id="order_type" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
                                             <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
-                                                <option t-if="(not brand_categories.repord_3p_supplier and order_type[0] != '3rd_party') or (brand_categories.repord_3p_supplier and order_type[0] == '3rd_party')" t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
+                                                <option t-if="(not brand_categories.repord_3p_supplier and order_type[0] != '3rd_party') or (brand_categories.repord_3p_supplier and order_type[0] != 'order')" t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
                                             </t>
                                         </select>
                                     </div>
@@ -240,7 +240,7 @@
                     </div>
                 </div>
                 <div class="container form-group">
-
+                    
                     <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                         <select name="campaign" id="campaign" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
                             <option value="">Kampanj</option>
@@ -250,7 +250,7 @@
                         </select>
                     </div>
                     <div class="input-group col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
-                        <input id="delivery_date" type="date" name="Delivery Date" class="form-control selection_dropdown" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id" placeholder="Leveransdatum"/>
+                        <input id="delivery_date" t-att-value="order.date_order and order.date_order[:10]" type="date" name="Delivery Date" class="form-control selection_dropdown" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id" placeholder="Leveransdatum"/>
                         <span id="calendar-icon" class="input-group-addon"><i class="fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -275,7 +275,7 @@
                             t-att-id="'sortiment_list_%s' %brand_category.id" style="padding: 0px;">
                                 <t t-foreach="listings.get(brand_category.id, [])" t-as="pp">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt4 mb4 sort_products">
-                                        <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if not partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if partner.is_product_mandatory(pp) else '#FAC134')">
+                                        <div t-att-id="'ksp_%s_minus' %pp.id" t-att-onclick="'remove_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if not partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-left product_minus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if pp in partner.m_range_product_ids else '#FAC134')">
                                             <i class="fa fa-minus" style="font-size: 3.3em;"/>
                                         </div>
                                         <div t-att-id="'ksp_%s_product' %pp.id" class="col-xs-9 col-sm-9 col-md-9 col-lg-9" style="height: 100%;">
@@ -289,7 +289,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div t-att-id="'ksp_%s_plus' %pp.id" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if partner.is_product_mandatory(pp) else '#FAC134')">
+                                        <div t-att-id="'ksp_%s_plus' %pp.id" t-att-onclick="'add_product(&quot;%s&quot;, &quot;%s&quot;)' %(partner.id, pp.id)" t-att-class="'hidden' if partner.is_product_active(pp) else 'col-xs-3 col-sm-3 col-md-3 col-lg-3 pull-right product_plus'" t-att-style="'display: flex; justify-content: center; align-items: center; background-color: {}; height: 100%; color: #fff;'.format('#FF4F35' if pp in partner.m_range_product_ids else '#FAC134')">
                                             <i class="fa fa-plus" style="font-size: 3.3em;"/>
                                         </div>
                                     </div>
@@ -1318,7 +1318,11 @@
                             window.alert('Something went wrong when changing order type');
                         }
                         else {
-                            location.reload(true);
+                            if(order_type == "order" || order_type == "3rd_party") {
+                                $("tr.oe-extra-product").hide();
+                            } else {
+                                $("tr.oe-extra-product").show();
+                            };
                         }
                     });
                 }
@@ -1369,10 +1373,12 @@
                             else if(data == "validation_fail"){
                                 window.alert("Fel i ordern! Fel typ, eller så har du blandat Lerøy- och Paolos-produkter.");
                             }
+                            else if(data == "no_lines"){
+                                window.alert("Ordern har inga rader!");
+                            }
+                            $("#confirm_message").text(confirm_validate);console.log("validation fail");
                         });
-
                     }
-                    document.getElementById("confirm_message").innerHTML = confirm_validate;
                 }
 
                 /* show meeting input */
