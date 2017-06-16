@@ -236,7 +236,7 @@ class MobileSaleView(http.Controller):
         order_info = {
             'name': order.name,
             'partner': order.partner_id.name,
-            'date_order': order.date_order,
+            'date_order': order.date_order[:10],
             'order_type': order.order_type,
             'third_party_supplier': order.third_party_supplier.name if order.third_party_supplier else '',
         }
