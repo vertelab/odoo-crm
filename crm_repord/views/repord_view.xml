@@ -12,7 +12,7 @@
                 </calendar>
             </field>
         </record>
-        
+
         <record id="view_analytic_entries_report_search" model="ir.ui.view">
             <field name="name">analytic.entries.report.repord.search</field>
             <field name="model">analytic.entries.report</field>
@@ -65,6 +65,7 @@
                     <field name="message_unread" invisible="1"/>
                     <field name="name" string="Quotation Number"/>
                     <field name="order_type"/>
+                    <field name="third_party_supplier"/>
                     <field name="date_order"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
@@ -293,7 +294,7 @@
                         <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Order Month" domain="[]" context="{'group_by':'date_order'}"/>
                         <filter string="State" domain="[]" context="{'group_by':'state'}"/>
-                        
+
                         <filter string="Order Type" domain="[]" context="{'group_by':'order_type'}"/>
                         <filter string="Role" domain="[]" context="{'group_by':'role'}"/>
                         <filter string="Store Class" domain="[]" context="{'group_by':'store_class'}"/>
@@ -305,7 +306,7 @@
 
                         <filter string="Zip" domain="[]" context="{'group_by':'zip'}"/>
                         <filter string="City" domain="[]" context="{'group_by':'city'}"/>
-                        
+
                     </group>
                </search>
             </field>
