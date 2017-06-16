@@ -1,0 +1,286 @@
+.navbar-default .navbar-nav &gt; li &gt; a {
+    font-size: 12px;
+}
+
+.navbar-default .navbar-nav &gt; .active &gt; a, .navbar-default .navbar-nav &gt; .active &gt; a:hover, .navbar-default .navbar-nav &gt; .active &gt; a:focus {
+    background-color: #FFD529;
+}
+
+.btn-warning {
+    background-color: #F6BB43;
+    border-color: #F6BB43;
+}
+
+.btn-primary {
+    background-color: #2542C2;
+    border-color: #2542C2;
+}
+
+.navbar-static-top &gt; .container {
+    height: 80px;
+}
+
+.navbar-static-top &gt; .container &gt; .navbar-header {
+    padding-top: 25px;
+}
+
+.navbar-static-top &gt; .navbar-header &gt; .navbar-toggle &gt; span.icon-bar {
+    width: 30px;
+}
+
+.navbar-static-top &gt; .navbar-header &gt; .navbar-toggle &gt; span.icon-bar:first-child {
+    margin-bottom: 7px;
+}
+
+.navbar-static-top &gt; .navbar-header &gt; .navbar-toggle &gt; span.icon-bar:last-child {
+    margin-top: 7px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+.p_exist{ background: #FFD529; }
+
+.p_not_exist{ background: #C2FFC2; }
+
+#top_menu { background-color: #FFD529; }
+
+#wrapwrap { background-color: #f8f8f8;}
+
+label { font-family: 'Open Sans', sans-serif; }
+
+h1, h2, h3, h4, h5, h6, p, a, td, .oe_structure span { font-family: 'Open Sans', sans-serif; font-weight: 400; }
+
+.navbar-static-top { background-color: #FFD529; }
+
+.navbar-toggle { border: none; margin-top: 0px; }
+
+.navbar-toggle:hover, .navbar-toggle:active, .navbar-toggle:focus { background: none; }
+
+.navbar-default .navbar-toggle .icon-bar { background-color: #fff; }
+
+header a.navbar-brand img { max-height: 28px; padding-top: 5px; }
+
+.nav-brand &gt; li {
+    float: none;
+    display: inline-block;
+    *display:inline; /* ie7 fix */
+    zoom:1; /* hasLayout ie7 trigger */
+}
+
+ul.nav-brand &gt; li &gt; a {
+    color: #A0A0A0;
+    background-color: #E6E9EE;
+    border-radius: 6px;
+    border-width: 0px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul.nav-brand &gt; li:first-child &gt; a { border-radius: 6px 0px 0px 6px; }
+
+ul.nav-brand &gt; li:last-child &gt; a { border-radius: 0px 6px 6px 0px; }
+
+.nav-tabs.nav-brand &gt; li.active &gt; a, .nav-tabs.nav-brand &gt; li:active &gt; a, .nav-tabs.nav-brand &gt; li:focus &gt; a {
+    border: 0px solid #F6BB43;
+    background: #F6BB43;
+    color: #fff;
+}
+
+.nav-brand &gt; li &gt; a &gt; span {
+    border-width: 0px;
+    font-size: 1.3em;
+}
+
+.nav-categ &gt; li, .nav-brand &gt; li {
+    display: table-cell;
+    width: 1%;
+    margin-bottom: 0;
+}
+
+.nav-categ &gt; li &gt; a {
+    background-color: #E6E9EE;
+    color: #6c6c6c;
+    height: 40px;
+    font-size: 1.0em;
+    vertical-algin: middle;
+}
+
+.nav-tabs.nav-categ &gt; li.active &gt; a, .nav-tabs.nav-categ &gt; li.active &gt; a:hover, .nav-tabs.nav-categ &gt; li.active &gt; a:focus {
+    background: none;
+}
+
+.nav-categ &gt; li.active &gt; a, .nav-categ &gt; li.active:hover &gt; a, .nav-categ &gt; li.active:focus &gt; a{
+    background-color: #fff !important;
+    color: #333;
+}
+
+.nav-categ &gt; li:hover &gt; a, .nav-categ &gt; li:focus &gt; a{
+    background-color: none;
+    color: #333;
+}
+
+.nav-categ &gt; li.active, .nav-categ &gt; li.active:hover, .nav-categ &gt; li.active:focus{
+    background-color: #fff;
+}
+
+.nav-tabs { border: none; }
+
+.nav-justified &gt; li &gt; a {
+    border-radius: 0px;
+    margin-bottom: 0px !important;
+}
+
+.nav-tabs.nav-justified &gt; .active &gt; a, .nav-tabs.nav-justified &gt; .active &gt; a:hover, .nav-tabs.nav-justified &gt; .active &gt; a:focus {
+    border: none;
+}
+
+.nav-categ &gt; li &gt; a { border: none; }
+
+.nav-justified &gt; li &gt; a, {
+    color: #fff;
+    background-color: #F6BB43;
+    height: 40px;
+    font-size: 1.3em;
+}
+
+#butiksorder, #kedjans_sortiment, #kund_kort, #bilder { background-color: #fff; }
+
+.selection_dropdown {
+    color: #fff;
+    background-color: #F6BB43;
+    height: 40px;
+    font-size: 1.3em;
+    border: 0px solid #F6BB43;
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
+
+#calendar-icon {
+    width: 60px;
+    background-color: #F6BB43;
+    color: #fff;
+    font-size: 1.3em;
+    border: 0px solid #F6BB43;
+    background-color: #F6BB43;
+    border-radius: 0px 6px 6px 0px;
+}
+
+.table {
+    margin-bottom: 10px;
+}
+
+.table-striped &gt; tbody &gt; tr:nth-child(2n+1) &gt; td, .table-striped &gt; tbody &gt; tr:nth-child(2n+1) &gt; th {
+    background-color: #eee;
+}
+
+.table &gt; tbody &gt; tr &gt; td { border: none; }
+
+.input-style {
+    height: 45px;
+    font-size: 1.7em;
+    border-radius: 6px !important;
+}
+
+.cutable {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: auto;
+}
+
+.product_name { font-size: 1.3em; }
+
+.sort_products {
+    box-shadow: 1px 2px #d8d8d8;
+    height: 175px;
+    padding: 5px 10px;
+}
+
+.quantity-button {
+    color: #fff;
+    background-color: #9E9E9E;
+    font-size: 1.3em;
+    border-radius: 6px !important;
+}
+
+#search_container {
+    width: 100%;
+    background-color: #535353;
+    height: 45px;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#search_text {
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    display: table;
+    display: none;
+}
+
+#search_button {
+    background-color:#535353;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    padding-top: 10px;
+}
+
+.product_image {
+    margin: auto;
+    display: block;
+    width: 100%;
+    position: relative;
+}
+
+.product_image_delete {
+    right: 10px;
+    top: 10px;
+    font-size: 2.0em;
+    color: #f00;
+    position: absolute;
+}
+
+.control-label { padding-top: 7px; }
+
+.customer_card_table tr {
+    border-bottom: 1px solid #D5D5D5 !important;
+    height: 35px;
+}
+
+.customer_card_table a { color: #555; }
+
+.crud_button_group &gt; ul {
+    padding: 0px;
+}
+
+.crud_button_group &gt; ul &gt; li {
+    display: table-cell;
+    width: 1%;
+    margin-bottom: 0;
+}
+
+.meeting_text {
+    margin-top: 10px;
+    padding-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#presentation_div {
+    background-color: #F8F8F8;
+}
