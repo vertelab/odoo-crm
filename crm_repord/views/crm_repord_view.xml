@@ -86,7 +86,7 @@
                             <ul class="nav nav-tabs nav-justified nav-brand text-center" style="padding: 0px; margin: 10px auto;">
                                 <t t-foreach="product_categories" t-as="brand_categs">
                                     <li t-att-class="'active' if brand_categs.id == active_category else ''">
-                                        <a data-toggle="tab" class="brand_tab" t-att-data-category-id="brand_categs.id" t-att-data-target="'&#35;categs_%s, #sortiment_list_%s' % (brand_categs.id, brand_categs.id)"><span t-field="brand_categs.name"/></a>
+                                        <a href="#" data-toggle="tab" class="brand_tab" t-att-data-category-id="brand_categs.id" t-att-data-target="'&#35;categs_%s, #sortiment_list_%s' % (brand_categs.id, brand_categs.id)"><span t-field="brand_categs.name"/></a>
                                     </li>
                                 </t>
                             </ul>
@@ -603,16 +603,17 @@
                         </span>
                     </a>
                 </div>
-                <div class="col-md-8 col-xs-8">
+                <div class="col-md-6 col-xs-6">
                     <form action="/crm/search/stores" method="post" class="pagination form-inline" style="width: 100%; margin: 8px 0px;">
                         <div id="search_text" class="input-group">
                             <input type="text" name="search_words" t-att-value="search_words" class="search-query form-control" placeholder="Sök..."/>
                         </div>
                     </form>
                 </div>
-                <div class="col-md-2 col-xs-2 text-right">
+                <div class="col-md-4 col-xs-4 text-right">
                     <span class="input-group-btn text-right" style="height: 40px;">
                         <button id="search_button" class="btn btn-default" style="color: #a4a4a4;"><i class="fa fa-search"></i></button>
+                        <button id="refresh_button" class="btn btn-default" style="color: #a4a4a4;" onclick="location.reload();"><i class="fa fa-refresh"></i></button>
                     </span>
                 </div>
             </div>

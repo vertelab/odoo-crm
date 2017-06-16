@@ -232,7 +232,7 @@ ul.nav-brand &gt; li:last-child &gt; a { border-radius: 0px 6px 6px 0px; }
     display: none;
 }
 
-#search_button {
+#search_button, #refresh_button {
     background-color:#535353;
     color: #fff;
     border: none;
