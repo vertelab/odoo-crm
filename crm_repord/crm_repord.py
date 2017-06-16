@@ -231,6 +231,26 @@ class MobileSaleView(http.Controller):
                 active_category = product_categories[0].id
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'product_categories': product_categories, 'products': products, 'listings': listings, 'active_tab': post.get('active_tab'), 'active_category': active_category,})
 
+    @http.route(['/crm/<model("rep.order"):order>/updated_order'], type='json', auth="user", website=True)
+    def repord_updated_order(self, order=None, **kw):
+        order_info = {
+            'name': order.name,
+            'partner': order.partner_id.name,
+            'date_order': order.date_order,
+            'order_type': order.order_type,
+            'third_party_supplier': order.third_party_supplier.name if order.third_party_supplier else '',
+        }
+        order_line = []
+        for line in order.order_line:
+            order_line.append({
+                'default_code': line.product_id.default_code,
+                'product': line.product_id.name,
+                'product_uom_qty': line.product_uom_qty,
+                'product_uom': line.product_uom.name,
+                'discount': line.discount,
+            })
+        return {'order': order_info, 'order_line': order_line}
+
     @http.route(['/crm/<model("res.partner"):partner>/image_upload'], type='http', auth="user", website=True)
     def image_upload(self, partner=None, **post):
         if request.httprequest.method == 'POST':

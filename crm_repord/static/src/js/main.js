@@ -131,34 +131,46 @@ function change_delivery_date(order){
     });
 }
 
+/* get updated rep order */
+function get_updated_order(order){
+    openerp.jsonRpc("/crm/" + order + "/updated_order", 'call', {
+    }).done(function(data){
+        $("#updated_order_info").html('<p class="text-center"><b>' + data['order'].name + '</b></p><div class="col-md-6"><p><b>Kund: </b>' + data['order'].partner + '</p><p><b>Datum:</b> ' + data['order'].date_order + '</p></div><div class="col-md-6"><p><b>Typ:</b> ' + data['order'].order_type + '</p><p><b>3:e part:</b> ' + (data['order'].third_party_supplier != '' ? data['order'].third_party_supplier : '') +'</p></div>');
+        var line_content = "";
+        $.each(data['order_line'], function(key, info) {
+            var content = '<tr><td><span class="text-muted">[' + data['order_line'][key]['default_code'] + ']</span> ' + data['order_line'][key]['product'] + '</td><td>' + data['order_line'][key]['product_uom_qty'] + '</td><td>' + data['order_line'][key]['product_uom'] + '</td><td>' + data['order_line'][key]['discount'] + '</td></tr>';
+            line_content += content;
+        });
+        $("#updated_order_line").html(line_content);
+    });
+}
+
 /* confirm rep order */
 function order_confirm(order){
     var confirm_validate = "";
-    if (confirm("Vill du skicka denna repord?") == true) {
-        send_mail = $("#send_mail").is(":checked");
-        openerp.jsonRpc("/crm/repord/confirm", 'call', {
-            'order': order,
-            'send_mail': send_mail
-        }).done(function(data){
-            if(data == "no_email"){
-                window.alert("Butiken har ingen epost!");
-            }
-            else if(data == "repord_confirmed"){
-                $("#send_mail").addClass("hidden");
-                $("#confirm").addClass("hidden");
-                confirm_validate = "Reporden har skickats!";
-                $("#create_new").removeClass("hidden");
-            }
-            else if(data == "validation_fail"){
-                window.alert("Fel i ordern! Fel typ, eller så har du blandat Lerøy- och Paolos-produkter.");
-            }
-            else if(data == "no_lines"){
-                window.alert("Ordern har inga rader!");
-            }
-            $("#confirm_message").text(confirm_validate);
-            console.log("validation fail");
-        });
-    }
+    send_mail = $("#send_mail").is(":checked");
+    openerp.jsonRpc("/crm/repord/confirm", 'call', {
+        'order': order,
+        'send_mail': send_mail
+    }).done(function(data){
+        if(data == "no_email"){
+            window.alert("Butiken har ingen epost!");
+        }
+        else if(data == "repord_confirmed"){
+            $("#send_mail").addClass("hidden");
+            $("#confirm").addClass("hidden");
+            confirm_validate = "Reporden har skickats!";
+            $("#create_new").removeClass("hidden");
+        }
+        else if(data == "validation_fail"){
+            window.alert("Fel i ordern! Fel typ, eller så har du blandat Lerøy- och Paolos-produkter.");
+        }
+        else if(data == "no_lines"){
+            window.alert("Ordern har inga rader!");
+        }
+        $("#confirm_message").text(confirm_validate);
+        console.log("validation fail");
+    });
 }
 
 /* show meeting input */
