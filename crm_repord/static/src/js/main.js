@@ -37,12 +37,12 @@ function toggle_cell(product_id)
 }
 
 /* send rep.order */
-function send_rep_order(res_partner, product_id){
+function send_rep_order(order_id, res_partner, product_id, ){
     quantity = res_partner + "_qty_" +product_id;
     discount = res_partner + "_discount_" +product_id;
     document.getElementById(quantity).value
     openerp.jsonRpc("/crm/send/repord", 'call', {
-        'res_partner': res_partner,
+        'order_id': order_id,
         'product_id': product_id,
         'product_uom_qty': document.getElementById(quantity).value,
         'discount': document.getElementById(discount).value
@@ -135,32 +135,33 @@ function change_delivery_date(order){
 function get_updated_order(order){
     openerp.jsonRpc("/crm/" + order + "/updated_order", 'call', {
     }).done(function(data){
-        $("#updated_order_info").html('<p class="text-center"><b>' + data['order'].name + '</b></p><div class="col-md-6"><p><b>Kund: </b>' + data['order'].partner + '</p><p><b>Datum:</b> ' + data['order'].date_order + '</p></div><div class="col-md-6"><p><b>Typ:</b> ' + data['order'].order_type + '</p><p><b>3:e part:</b> ' + (data['order'].third_party_supplier != '' ? data['order'].third_party_supplier : '') +'</p></div>');
+        $("#updated_order_info_" + order).html('<p class="text-center"><b>' + data['order'].name + '</b></p><div class="col-md-6"><p><b>Kund: </b>' + data['order'].partner + '</p><p><b>Datum:</b> ' + data['order'].date_order + '</p></div><div class="col-md-6"><p><b>Typ:</b> ' + data['order'].order_type + '</p><p><b>3:e part:</b> ' + (data['order'].third_party_supplier != '' ? data['order'].third_party_supplier : '') +'</p></div>');
         var line_content = "";
         $.each(data['order_line'], function(key, info) {
             var content = '<tr><td><span class="text-muted">[' + data['order_line'][key]['default_code'] + ']</span> ' + data['order_line'][key]['product'] + '</td><td>' + data['order_line'][key]['product_uom_qty'] + '</td><td>' + data['order_line'][key]['product_uom'] + '</td><td>' + data['order_line'][key]['discount'] + '</td></tr>';
             line_content += content;
         });
-        $("#updated_order_line").html(line_content);
+        $("#updated_order_line_" + order).html(line_content);
     });
 }
 
 /* confirm rep order */
 function order_confirm(order){
     var confirm_validate = "";
-    send_mail = $("#send_mail").is(":checked");
+    send_mail = $("#send_mail_" + order).is(":checked");
     openerp.jsonRpc("/crm/repord/confirm", 'call', {
         'order': order,
         'send_mail': send_mail
     }).done(function(data){
+        $('#confirm_modal_' + order).modal('hide');
         if(data == "no_email"){
             window.alert("Butiken har ingen epost!");
         }
         else if(data == "repord_confirmed"){
-            $("#send_mail").addClass("hidden");
-            $("#confirm").addClass("hidden");
+            $("#send_mail_" + order).addClass("hidden");
+            $("#confirm_" + order).addClass("hidden");
             confirm_validate = "Reporden har skickats!";
-            $("#create_new").removeClass("hidden");
+            $("#create_new_" + order).removeClass("hidden");
         }
         else if(data == "validation_fail"){
             window.alert("Fel i ordern! Fel typ, eller så har du blandat Lerøy- och Paolos-produkter.");
@@ -168,7 +169,7 @@ function order_confirm(order){
         else if(data == "no_lines"){
             window.alert("Ordern har inga rader!");
         }
-        $("#confirm_message").text(confirm_validate);
+        $("#confirm_message_" + order).text(confirm_validate);
         console.log("validation fail");
     });
 }
@@ -341,4 +342,12 @@ function store_info_update(partner){
     openerp.jsonRpc("/crm/" + partner_id + "/store_info_update", 'call', {
         'partner': partner,
     });
+}
+
+/* refresh the page. keep current tabs */
+function refresh_page(){
+    var href = window.location.pathname;
+    href = href + '?category=' + $('li.active > a.brand_tab').data('category-id');
+    href = href + '&active_tab=' + $('li.active > a.oe_paolos_tab_picker').data('tab-id');
+    window.location.href = href;
 }

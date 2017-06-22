@@ -191,16 +191,17 @@ class res_partner_listing(models.Model):
 class MobileSaleView(http.Controller):
 
     @http.route([
-        '/crm/<model("res.partner"):partner>/create_repord/<model("res.partner"):supplier>',
-        '/crm/<model("res.partner"):partner>/create_repord',
+        '/crm/<model("res.partner"):partner>/<int:category_id>/create_repord/<model("res.partner"):supplier>',
+        '/crm/<model("res.partner"):partner>/<int:category_id>/create_repord',
     ], type='http', auth="user", website=True)
-    def create_repord(self, partner=None, supplier=None, **post):
+    def create_repord(self, partner=None, supplier=None, category_id=None, **post):
         if not request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft'), ('third_party_supplier', '=', supplier and supplier.id or False)]):
             request.env['rep.order'].create({
                 'partner_id': partner.id,
                 'third_party_supplier': supplier and supplier.id or False,
+                'order_type': '3rd_party' if supplier else 'order', 
             })
-        return werkzeug.utils.redirect('/crm/%s/repord' %partner.id, 302)
+        return werkzeug.utils.redirect('/crm/%s/repord?category=%s&active_tab=1' %(partner.id, category_id), 302)
 
     @http.route(['/crm/<model("res.partner"):partner>/repord'], type='http', auth="user", website=True)
     def repord(self, partner=None, **post):
@@ -223,12 +224,9 @@ class MobileSaleView(http.Controller):
         _logger.debug(listings)
         active_category = post.get('category')
         if not active_category:
-            #~ if rep_order.order_type == '3rd_party':
-                #~ for c in product_categories:
-                    #~ if c.repord_3p_supplier:
-                        #~ active_category = c.id
-            if not active_category:
-                active_category = product_categories[0].id
+            active_category = product_categories[0].id
+        else:
+            active_category = int(active_category)
         return request.website.render("crm_repord.mobile_order_view", {'partner': partner, 'product_categories': product_categories, 'products': products, 'listings': listings, 'active_tab': post.get('active_tab'), 'active_category': active_category,})
 
     @http.route(['/crm/<model("rep.order"):order>/updated_order'], type='json', auth="user", website=True)
@@ -274,15 +272,8 @@ class MobileSaleView(http.Controller):
         return 'image_deleted'
 
     @http.route(['/crm/send/repord'], type='json', auth="user", methods=['POST'], website=True)
-    def send_rep_order(self, res_partner, product_id, product_uom_qty, discount, **kw):
-        rep_order_ids = request.env['rep.order'].search([('partner_id', '=', int(res_partner)),('state','=','draft')])
-        if len(rep_order_ids)>0:
-            repord = rep_order_ids[0]
-        else:
-            repord = request.env['rep.order'].create({
-                'partner_id': int(res_partner),
-                'state': 'draft',
-            })
+    def send_rep_order(self, order_id, product_id, product_uom_qty, discount, **kw):
+        repord = request.env['rep.order'].browse(int(order_id))
         order_line = False
         product = request.env['product.product'].search([('id', '=', int(product_id))])
         for line in repord.order_line:
@@ -300,7 +291,7 @@ class MobileSaleView(http.Controller):
         elif product_uom_qty > 0.000:
             order_line = request.env['rep.order.line'].search([('order_id', '=', repord.id)])
             order_line.create({
-                'order_id': rep_order_ids[0].id,
+                'order_id': repord.id,
                 'product_id': int(product_id),
                 'name': product.name,
                 'product_uom_qty': float(product_uom_qty),
@@ -804,7 +795,7 @@ class rep_order(models.Model):
     amount_discount = fields.Float(compute='_amount_discount', string='Total Discount')
     procurement_group_id = None
     campaign = fields.Many2one(comodel_name='marketing.campaign', string='Campaign')
-    third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier', compute='repord_set_3p_supplier', store=True, readonly=False)
+    third_party_supplier = fields.Many2one('res.partner', 'Third Party Supplier')
     role    =   fields.Char(related='partner_id.role', store=True)
     store_class = fields.Selection(related='partner_id.store_class',store=True)
     areg =      fields.Selection(related='partner_id.areg',store=True)
@@ -830,18 +821,6 @@ class rep_order(models.Model):
         #        if line.product_id.categ_id.repord_3p_supplier:
         #            return False
         return True
-
-    @api.one
-    @api.depends('order_line', 'order_line.product_id')
-    def repord_set_3p_supplier(self):
-        for line in self.order_line:
-            if line.product_id and line.product_id.categ_id and line.product_id.categ_id.repord_3p_supplier:
-                self.third_party_supplier = line.product_id.categ_id.repord_3p_supplier
-                self.order_type = '3rd_party'
-                return
-        self.third_party_supplier = None
-        if self.order_type == '3rd_party':
-            self.order_type = 'order'
 
     @api.one
     def action_view_sale_order_line_make_invoice(self):
@@ -1079,14 +1058,6 @@ class rep_order_line(models.Model):
     invoice_lines = None
     #Overwriting procurement_ids just to be safe. Don't need this for repord anyway.
     procurement_ids = None
-
-    @api.model
-    @api.returns('self', lambda value: value.id)
-    def create(self, values):
-        res = super(rep_order_line, self).create(values)
-        #The depends on order_line doesn't trigger on create. Ugly workaround.
-        res.order_id.repord_set_3p_supplier()
-        return res
 
 class product_category(models.Model):
     _inherit = 'product.category'
