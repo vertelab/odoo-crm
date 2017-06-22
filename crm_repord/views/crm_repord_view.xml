@@ -139,7 +139,9 @@
                             <div t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if brand_categories.id == active_category else '')"
                             t-att-id="'categs_%s' %brand_categories.id" style="padding: 0px;">
                                 <t t-if="not order">
-                                    <a t-att-href="'/crm/%s/%s/create_repord/%s' %(partner.id, brand_categories.id, brand_partner.id if brand_partner else '')" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Skapa order</a>
+                                    <a t-att-href="'/crm/%s/%s/create_repord/%s' %(partner.id, brand_categories.id, brand_partner.id if brand_partner else '')" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">
+                                        Skapa <t t-esc="brand_categories.name"/>-order
+                                    </a>
                                 </t>
                                 <t t-if="order">
                                     <div class="text-center">
