@@ -275,7 +275,7 @@
                 <div class="container" style="padding: 0px;">
                     <div class="tab-content">
                         <t t-foreach="product_categories" t-as="brand_category">
-                            <div t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if brand_category.id == active_category else ''"
+                            <div t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if brand_category.id == active_category else '')"
                             t-att-id="'sortiment_list_%s' %brand_category.id" style="padding: 0px;">
                                 <t t-foreach="listings.get(brand_category.id, [])" t-as="pp">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt4 mb4 sort_products">
