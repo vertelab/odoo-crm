@@ -129,14 +129,14 @@
 
     <template id="butiksorder" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='butiksorder']" position="replace">
-            <div id="butiksorder" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '1' else '')" style="padding: 0px;">
+            <div id="butiksorder" t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if active_tab == '1' else '')" style="padding: 0px;">
                 <div class="container">
                     <!-- content -->
                     <div class="tab-content">
                         <t t-foreach="product_categories" t-as="brand_categories">
                             <t t-set="brand_partner" t-value="brand_categories.repord_3p_supplier"/>
                             <t t-set="order" t-value="request.env['rep.order'].search([('partner_id', '=', partner.id), ('state', '=', 'draft'), ('third_party_supplier', '=', brand_partner and brand_partner.id or False)])"/>
-                            <div t-att-class="'tab-pane fade in active col-xs-12 col-md-12 col-lg-12' if brand_categories == product_categories[0] else 'tab-pane fade in col-xs-12 col-md-12 col-lg-12'"
+                            <div t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if brand_categories.id == active_category else '')"
                             t-att-id="'categs_%s' %brand_categories.id" style="padding: 0px;">
                                 <t t-if="not order">
                                     <a t-att-href="'/crm/%s/%s/create_repord/%s' %(partner.id, brand_categories.id, brand_partner.id if brand_partner else '')" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Skapa order</a>
@@ -159,9 +159,7 @@
                                     <div class="tab-content">
                                         <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
                                         <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
-                                            <div t-att-class="'tab-pane product_tab fade col-xs-12 col-md-12 col-lg-12 active in'
-                                                if b_c == brand_categs[0] else
-                                                'tab-pane product_tab fade col-xs-12 col-sm-12 col-md-12 col-lg-12'"
+                                            <div t-att-class="'tab-pane product_tab fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if b_c == brand_categs[0] else '')"
                                                 t-att-id="'product_categ_%s' %b_c.id" style="padding: 0px;">
                                                 <t t-foreach="b_c" t-as="p_c">
                                                     <table class="table table-striped" style="">
@@ -259,7 +257,7 @@
                                             <t t-call="crm_repord.confirm_modal"/>
                                             <button t-att-id="'confirm_%s' % order.id" name="confirm" style="margin: auto; display: block; background-color: #9e9e9e; color: #fff; padding: 12px 45px; font-size: 2.0em;" class="btn btn-lg" t-att-onclick="'get_updated_order(&quot;%s&quot;)' %order.id" data-toggle="modal" t-att-data-target="'#confirm_modal_%s' % order.id">Skicka order</button>
                                             <h4 class="text-center" t-att-id="'confirm_message_%s' % order.id"/>
-                                            <a t-att-id="'create_new_%s' % order.id" t-att-href="'/crm/%s/%s/create_repord/%s' %(partner.id, brand_categories.id, brand_partner.id if brand_partner else '')" type="button" name="create_new" style="margin: auto; display: block; background-color: #9e9e9e; color: #fff; padding: 12px 45px; font-size: 2.0em;" class="btn btn-lg hidden" >Skapa ny order</a>
+                                            <a t-att-id="'create_new_%s' % order.id" t-att-href="'/crm/%s/%s/create_repord/%s' %(partner.id, brand_categories.id, brand_partner.id if brand_partner else '')" name="create_new" class="hidden" style="text-decoration: none;"><button class="btn btn-lg" style="margin: auto; display: block; background-color: #9e9e9e; color: #fff; padding: 12px 45px; font-size: 2.0em;">Skapa ny order</button></a>
                                         </div>
                                     </div>
                                 </t>
@@ -273,11 +271,11 @@
 
     <template id="kedjans_sortiment" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='kedjans_sortiment']" position="replace">
-            <div id="kedjans_sortiment" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '2' else '')" style="padding: 0px;">
+            <div id="kedjans_sortiment" t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if active_tab == '2' else '')" style="padding: 0px;">
                 <div class="container" style="padding: 0px;">
                     <div class="tab-content">
                         <t t-foreach="product_categories" t-as="brand_category">
-                            <div t-att-class="'tab-pane fade in active col-xs-12 col-md-12 col-lg-12' if brand_category == product_categories[0] else 'tab-pane fade in col-xs-12 col-md-12 col-lg-12'"
+                            <div t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if brand_category.id == active_category else '')"
                             t-att-id="'sortiment_list_%s' %brand_category.id" style="padding: 0px;">
                                 <t t-foreach="listings.get(brand_category.id, [])" t-as="pp">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt4 mb4 sort_products">
@@ -310,7 +308,7 @@
 
     <template id="kund_kort" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='kund_kort']" position="replace">
-            <div id="kund_kort" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '3' else '')" style="padding: 0px;">
+            <div id="kund_kort" t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if active_tab == '3' else '')" style="padding: 0px;">
                 <div class="row">
                     <!-- company information -->
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -526,7 +524,7 @@
 
     <template id="bilder" inherit_id="mobile_order_view">
         <xpath expr="//div[@id='bilder']" position="replace">
-            <div id="bilder" t-att-class="'tab-pane fade in %s col-xs-12 col-md-12 col-lg-12' %('active' if active_tab == '4' else '')" style="padding: 0px;">
+            <div id="bilder" t-att-class="'tab-pane fade col-xs-12 col-md-12 col-lg-12 %s' %('active in' if active_tab == '4' else '')" style="padding: 0px;">
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt32 mb32">
