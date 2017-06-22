@@ -87,7 +87,7 @@ function remove_product(res_partner, product_id){
 
 /* change rep order type */
 function change_order_type(order){
-    order_type = document.getElementById("order_type").value;
+    order_type = document.getElementById("order_type_" + order).value;
     openerp.jsonRpc("/crm/repord/type", 'call', {
         'order': order,
         'order_type': order_type,
@@ -107,7 +107,7 @@ function change_order_type(order){
 
 /* change campaign */
 function change_campaign(order){
-    campaign_id = document.getElementById("campaign").value;
+    campaign_id = document.getElementById("campaign_" + order).value;
     openerp.jsonRpc("/crm/repord/campaign", 'call', {
         'order': order,
         'campaign_id': campaign_id,
@@ -120,7 +120,7 @@ function change_campaign(order){
 
 /* change delivery date */
 function change_delivery_date(order){
-    delivery_date = document.getElementById("delivery_date").value;
+    delivery_date = document.getElementById("delivery_date_" + order).value;
     openerp.jsonRpc("/crm/repord/deliverydate", 'call', {
         'order': order,
         'date_order': delivery_date,

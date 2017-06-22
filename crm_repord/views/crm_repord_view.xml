@@ -234,14 +234,14 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
-                                            <select id="order_type" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
+                                            <select t-att-id="'order_type_%s' % order.id" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
                                                 <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
                                                     <option t-if="(not brand_categories.repord_3p_supplier and order_type[0] != '3rd_party') or (brand_categories.repord_3p_supplier and order_type[0] != 'order')" t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
                                                 </t>
                                             </select>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
-                                            <select id="campaign" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
+                                            <select t-att-id="'campaign_%s' % order.id" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
                                                 <option value="">Kampanj</option>
                                                 <t t-foreach="request.env['crm.lead'].search([('partner_id', '=', partner.id)])" t-as="aa">
                                                     <option t-if="aa.campaign" t-att-value="aa.campaign.id"><t t-raw="aa.campaign.name"/></option>
@@ -249,7 +249,7 @@
                                             </select>
                                         </div>
                                         <div class="input-group col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
-                                            <input id="delivery_date" t-att-value="order.date_order and order.date_order[:10]" type="date" class="form-control selection_dropdown" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id" placeholder="Leveransdatum"/>
+                                            <input t-att-id="'delivery_date_%s' % order.id" t-att-value="order.date_order and order.date_order[:10]" type="date" class="form-control selection_dropdown" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id" placeholder="Leveransdatum"/>
                                             <span id="calendar-icon" class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         </div>
                                         <div class="col-md-12 checkbox mb16 text-center">
@@ -771,7 +771,7 @@
                         <t t-if="mode == 'add'">
                             <div class="form-group">
                                 <label for="name">Kampanj</label>
-                                <select name="campaign" id="campaign" class="form-control selectpicker dropdown">
+                                <select name="campaign" class="form-control selectpicker dropdown">
                                     <option value=""></option>
                                     <t t-foreach="request.env['marketing.campaign'].search([])" t-as="c">
                                         <option t-att-value="c.id"><t t-raw="c.name"/></option>
@@ -781,8 +781,8 @@
                         </t>
                         <t t-if="mode == 'edit'">
                             <div class="form-group">
-                                <label for="name">Kampanj</label>
-                                <select name="campaign" id="campaign" class="form-control selectpicker dropdown">
+                                <label for="campaign">Kampanj</label>
+                                <select name="campaign" class="form-control selectpicker dropdown">
                                     <option value=""></option>
                                     <t t-foreach="request.env['marketing.campaign'].search([])" t-as="c">
                                         <option t-att-value="c.id" t-att="{'selected': 'checked'} if c.id == lead.campaign.id else {}"><t t-raw="c.name"/></option>
