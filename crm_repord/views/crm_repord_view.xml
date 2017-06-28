@@ -140,7 +140,7 @@
                             t-att-id="'categs_%s' %brand_categories.id" style="padding: 0px;">
                                 <t t-if="not order">
                                     <a t-att-href="'/crm/%s/%s/create_repord/%s' %(partner.id, brand_categories.id, brand_partner.id if brand_partner else '')" type="button" class="btn btn-warning btn-lg col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">
-                                        Skapa <t t-esc="brand_categories.name"/>-order
+                                        Ny <t t-esc="brand_categories.name"/>-order
                                     </a>
                                 </t>
                                 <t t-if="order">
@@ -148,15 +148,14 @@
                                         <p class="text-center mt4 mb4" style="font-size: 2.3em; font-weight: 300; color: #6a6a6a;" t-field="order.name"/>
                                     </div>
                                     <!-- selection for product category -->
-                                    <div class="form-group">
-                                        <div class="col-md-12 col-sm-12 col-xs-12" style="margin: 10px 0px; padding: 0px 10px;">
-                                            <select id="product_tab" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" onchange="product_tab()">
-                                                <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
-                                                <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
-                                                    <option data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %b_c.id" t-att-value="'product_categ_%s' %b_c.id"><span t-field="b_c.name" style="color: #FFA62B;"/></option>
-                                                </t>
-                                            </select>
-                                        </div>
+                                    <div class="form-group col-md-12 col-sm-12 col-xs-12" style="margin: 10px 0px; padding: 0px 10px;">
+                                        <select id="product_tab" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" onchange="product_tab()">
+                                            <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
+                                            <t t-if="len(brand_categs) &gt; 0" t-foreach="brand_categs" t-as="b_c">
+                                                <option data-toggle="tab" style="padding: 5px;" t-att-href="'&#35;product_categ_%s' %b_c.id" t-att-value="'product_categ_%s' %b_c.id"><span t-field="b_c.name" style="color: #FFA62B;"/></option>
+                                            </t>
+                                        </select>
+                                        <i class="fa fa-caret-down"/>
                                     </div>
                                     <div class="tab-content">
                                         <t t-set="brand_categs" t-value="request.env['product.category'].search([('parent_id', '=', brand_categories.id)])"/>
@@ -239,6 +238,7 @@
                                                     <option t-if="(not brand_categories.repord_3p_supplier and order_type[0] != '3rd_party') or (brand_categories.repord_3p_supplier and order_type[0] != 'order')" t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
                                                 </t>
                                             </select>
+                                            <i class="fa fa-caret-down"/>
                                         </div>
                                         <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                                             <select t-att-id="'campaign_%s' % order.id" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_campaign(&quot;%s&quot;)' %order.id">
@@ -247,6 +247,7 @@
                                                     <option t-if="aa.campaign" t-att-value="aa.campaign.id"><t t-raw="aa.campaign.name"/></option>
                                                 </t>
                                             </select>
+                                            <i class="fa fa-caret-down"/>
                                         </div>
                                         <div class="input-group col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                                             <input t-att-id="'delivery_date_%s' % order.id" t-att-value="order.date_order and order.date_order[:10]" type="date" class="form-control selection_dropdown" data-style="btn-primary" t-att-onchange="'change_delivery_date(&quot;%s&quot;)' %order.id" placeholder="Leveransdatum"/>

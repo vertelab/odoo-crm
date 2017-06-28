@@ -164,6 +164,19 @@ ul.nav-brand &gt; li:last-child &gt; a { border-radius: 0px 6px 6px 0px; }
     border-radius: 6px;
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    position: static;
+}
+
+select.selection_dropdown + i.fa {
+  float: right;
+  margin-top: -28px;
+  margin-right: 10px;
+  /* this is so when you click on the chevron, your click actually goes on the dropdown menu */
+  pointer-events: none;
+  color: white;
 }
 
 #calendar-icon {
