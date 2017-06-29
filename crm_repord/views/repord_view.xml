@@ -283,8 +283,7 @@
 
                     <filter string="My" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
                     <separator/>
-                    <filter string="Quotations" name="draft" domain="[('state','in',('draft','sent'))]" help="Sales Order that haven't yet been confirmed"/>
-                    <filter string="Sales" name="sales" domain="[('state','in',('manual','progress'))]"/>
+                    <filter string="Order in draft" name="draft" domain="[('state','in',('draft'))]" help="Order that haven't yet been confirmed"/>
                     <filter string="To Invoice" domain="[('order_type','=',['scrap', 'discount', 'order', 'reminder']), ('invoice_id','=',False), ('third_party_supplier', '=', False), ('state', 'not in', ['draft', 'cancel'])]" help="Sales Order ready to be invoiced"/>
                     <filter string="Done" domain="[('state','=','done')]" help="Sales Order done"/>
                     <separator/>

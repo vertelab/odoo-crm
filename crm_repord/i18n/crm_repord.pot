@@ -1,0 +1,2475 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* crm_repord
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20170601\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-29 07:33+0000\n"
+"PO-Revision-Date: 2017-06-29 07:33+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: crm_repord
+#: model:email.template,body_html:crm_repord.email_template_edi_sale
+msgid "\n"
+"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); \">\n"
+"\n"
+"    <p>Hello ${object.partner_id.name},</p>\n"
+"\n"
+"    <p>Here is your ${object.state in ('draft', 'sent') and 'quotation' or 'order confirmation'} from ${object.company_id.name}: </p>\n"
+"\n"
+"    <p style=\"border-left: 1px solid #8e0000; margin-left: 30px;\">\n"
+"       &nbsp;&nbsp;<strong>REFERENCES</strong><br />\n"
+"       &nbsp;&nbsp;Order number: <strong>${object.name}</strong><br />\n"
+"       &nbsp;&nbsp;Order total: <strong>${object.amount_total} ${object.pricelist_id.currency_id.name}</strong><br />\n"
+"       &nbsp;&nbsp;Order date:  ${format_tz(object.date_order, tz=user.tz, context={'lang':object.partner_id.lang})}<br />\n"
+"       % if object.origin:\n"
+"       &nbsp;&nbsp;Order reference: ${object.origin}<br />\n"
+"       % endif\n"
+"       % if object.client_order_ref:\n"
+"       &nbsp;&nbsp;Your reference: ${object.client_order_ref}<br />\n"
+"       % endif\n"
+"       % if object.user_id:\n"
+"       &nbsp;&nbsp;Your contact: <a href=\"mailto:${object.user_id.email or ''}?subject=Order%20${object.name}\">${object.user_id.name}</a>\n"
+"       % endif\n"
+"    </p>\n"
+"\n"
+"    % set signup_url = object.get_signup_url()\n"
+"    % if signup_url:\n"
+"    <p>\n"
+"    You can access this document and pay online via our Customer Portal:\n"
+"    </p>\n"
+"        <a style=\"display:block; width: 150px; height:20px; margin-left: 120px; color: #DDD; font-family: 'Lucida Grande', Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; text-align: center; text-decoration: none !important; line-height: 1; padding: 5px 0px 0px 0px; background-color: #8E0000; border-radius: 5px 5px; background-repeat: repeat no-repeat;\"\n"
+"           href=\"${signup_url}\">View ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'}</a>\n"
+"    % endif\n"
+"\n"
+"    % if object.paypal_url:\n"
+"    <br/>\n"
+"    <p>It is also possible to directly pay with Paypal:</p>\n"
+"        <a style=\"margin-left: 120px;\" href=\"${object.paypal_url}\">\n"
+"            <img class=\"oe_edi_paypal_button\" src=\"/sale/static/img/btn_paynowcc_lg.gif\"/>\n"
+"        </a>\n"
+"    % endif\n"
+"\n"
+"    <br/>\n"
+"    <p>If you have any question, do not hesitate to contact us.</p>\n"
+"    <p>Thank you for choosing ${object.company_id.name or 'us'}!</p>\n"
+"    <br/>\n"
+"    <br/>\n"
+"    <div style=\"width: 375px; margin: 0px; padding: 0px; background-color: #8E0000; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; background-repeat: repeat no-repeat;\">\n"
+"        <h3 style=\"margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;\">\n"
+"            <strong style=\"text-transform:uppercase;\">${object.company_id.name}</strong></h3>\n"
+"    </div>\n"
+"    <div style=\"width: 347px; margin: 0px; padding: 5px 14px; line-height: 16px; background-color: #F2F2F2;\">\n"
+"        <span style=\"color: #222; margin-bottom: 5px; display: block; \">\n"
+"        % if object.company_id.street:\n"
+"            ${object.company_id.street}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.street2:\n"
+"            ${object.company_id.street2}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.city or object.company_id.zip:\n"
+"            ${object.company_id.zip} ${object.company_id.city}<br/>\n"
+"        % endif\n"
+"        % if object.company_id.country_id:\n"
+"            ${object.company_id.state_id and ('%s, ' % object.company_id.state_id.name) or ''} ${object.company_id.country_id.name or ''}<br/>\n"
+"        % endif\n"
+"        </span>\n"
+"        % if object.company_id.phone:\n"
+"            <div style=\"margin-top: 0px; margin-right: 0px; margin-bottom: 0px; margin-left: 0px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; \">\n"
+"                Phone:&nbsp; ${object.company_id.phone}\n"
+"            </div>\n"
+"        % endif\n"
+"        % if object.company_id.website:\n"
+"            <div>\n"
+"                Web :&nbsp;<a href=\"${object.company_id.website}\">${object.company_id.website}</a>\n"
+"            </div>\n"
+"        % endif\n"
+"        <p></p>\n"
+"    </div>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,message_count:0
+msgid "# messages"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,product_uom_qty:0
+msgid "# of DFP"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,product_uom_kfp:0
+msgid "# of KFP"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,nbr:0
+msgid "# of Lines"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,purchase_count:0
+msgid "# purchases"
+msgstr ""
+
+#. module: crm_repord
+#: model:email.template,report_name:crm_repord.email_template_edi_sale
+msgid "${(object.name or '').replace('/','_')}_${object.state == 'draft' and 'draft' or ''}"
+msgstr ""
+
+#. module: crm_repord
+#: model:email.template,subject:crm_repord.email_template_edi_sale
+msgid "${object.company_id.name|safe} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.confirm_modal
+msgid "&times;"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "(update)"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order.line,state:0
+msgid "* The 'Draft' status is set when the related sales order in draft status.                     \n"
+"* The 'Confirmed' status is set when the related sales order is confirmed.                     \n"
+"* The 'Exception' status is set when the related sales order is set as exception.                     \n"
+"* The 'Done' status is set when the sales order line has been picked.                     \n"
+"* The 'Cancelled' status is set when a user cancel the sales order related."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "-order"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.contact_detail
+msgid "0131234567"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,help:crm_repord.action_quotations
+msgid "<p class=\"oe_view_nocontent_create\">\n"
+"                Click to create a quotation, the first step of a new sale.\n"
+"              </p><p>\n"
+"                Odoo will help you handle efficiently the complete sale flow:\n"
+"                from the quotation to the sales order, the\n"
+"                delivery, the invoicing and the payment collection.\n"
+"              </p><p>\n"
+"                The social feature helps you organize discussions on each sales\n"
+"                order, and allow your customers to keep track of the evolution\n"
+"                of the sales order.\n"
+"              </p>\n"
+"            "
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,help:crm_repord.action_order_line_tree2
+msgid "<p>\n"
+"                Here is a list of each sales order line to be invoiced. You can\n"
+"                invoice sales orders partially, by lines of sales order. You do\n"
+"                not need this list if you invoice from the delivery orders or\n"
+"                if you invoice sales totally.\n"
+"              </p>\n"
+"            "
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order.line,address_allotment_id:0
+msgid "A partner to whom the particular product needs to be allotted."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Affärsmöjligheter"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,address_allotment_id:0
+msgid "Allotment Partner"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,analytic_account_id:0
+msgid "Analytic Account"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.confirm_modal
+msgid "Antal"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,areg:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,areg:0
+msgid "Areg"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Arvika"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.todo_detail
+msgid "Att göra"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.confirm_modal
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.meeting_detail
+msgid "Avbryt"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Avesta/Hedemora"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mystores
+msgid "Axfood"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.meeting_detail
+#: view:website:crm_repord.todo_detail
+msgid "Backa"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_policy:0
+msgid "Before Delivery"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.meeting_detail
+#: view:website:crm_repord.todo_detail
+msgid "Beskrivning"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Bilder"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Bolagsfakta"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Bollnäs/Söderhamn"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Borlänge/Falun"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Borås"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.mobile_order_view
+msgid "Butikklass"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_isale_report_order_type
+msgid "By Ordertype"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_isale_report_product
+msgid "By Product"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_isale_report_role
+msgid "By Role"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_sale_report_salespersons
+msgid "By Salespersons"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_sale_report_salesteam
+msgid "By Salesteam"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_isale_report_store_class
+msgid "By Store Class"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_isale_report_third_party_supplier
+msgid "By Third Party Supplier"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,nad_by:0
+msgid "Byer, party to whom merchandise and/or service is sold."
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,campaign:0
+#: field:rep.order,campaign_id:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,campaign:0
+msgid "Campaign"
+msgstr ""
+
+#. module: crm_repord
+#: field:product.product,hr_expense_ok:0
+msgid "Can be Expensed"
+msgstr ""
+
+#. module: crm_repord
+#: view:reporder.make.invoice:crm_repord.view_rep_order_make_invoice
+msgid "Cancel"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_order_line_form2
+msgid "Cancel Line"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,state:0
+#: selection:rep.order.line,state:0
+#: selection:rep.order.report,state:0
+msgid "Cancelled"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,categ_id:0
+msgid "Category of Product"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,role:0
+msgid "Chain or type of shop"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,medium_id:0
+msgid "Channel"
+msgstr ""
+
+#. module: crm_repord
+#: help:reporder.make.invoice,grouped:0
+msgid "Check the box to group the invoices for the same customers"
+msgstr ""
+
+#. module: crm_repord
+#: help:res.partner.listing,mandatory:0
+msgid "Check to automatically make products in this listing active."
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,city:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,city:0
+msgid "City"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,delay:0
+msgid "Commitment Delay"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,company_id:0
+#: field:rep.order.line,company_id:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,company_id:0
+msgid "Company"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "Confirm"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,date_confirm:0
+msgid "Confirmation Date"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+#: selection:rep.order.line,state:0
+msgid "Confirmed"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Confirmed sales order lines, not yet delivered"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,nad_cn:0
+msgid "Consignee, party to which goods are consigned."
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,project_id:0
+msgid "Contract / Analytic"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mystores
+msgid "Coop"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,order_policy:0
+#: view:rep.order.line:crm_repord.view_order_line_form2
+msgid "Create Invoice"
+msgstr ""
+
+#. module: crm_repord
+#: view:reporder.make.invoice:crm_repord.view_rep_order_make_invoice
+msgid "Create Invoices"
+msgstr ""
+
+#. module: crm_repord
+#: view:reporder.make.invoice:crm_repord.view_rep_order_make_invoice
+msgid "Create Invoie"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,create_uid:0
+#: field:rep.order.line,create_uid:0
+#: field:reporder.make.invoice,create_uid:0
+#: field:res.partner.listing,create_uid:0
+msgid "Created by"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,create_date:0
+#: field:reporder.make.invoice,create_date:0
+#: field:res.partner.listing,create_date:0
+msgid "Created on"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,create_date:0
+msgid "Creation Date"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,currency_id:0
+msgid "Currency"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,partner_id:0
+#: field:rep.order.line,order_partner_id:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Customer"
+msgstr ""
+
+#. module: crm_repord
+#: field:product.product,product_customer_code:0
+msgid "Customer Product Code"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "DFP:"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,date_order:0
+msgid "Date"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,date_confirm:0
+msgid "Date Confirm"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Date Ordered:"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,dtm_issue:0
+msgid "Date from DTM with code 137."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,dtm_delivery:0
+msgid "Date from DTM with code 2."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,message_last_post:0
+msgid "Date of the last message posted on the record."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,date_confirm:0
+msgid "Date on which sales order is confirmed."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,create_date:0
+msgid "Date on which sales order is created."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.meeting_detail
+#: view:website:crm_repord.todo_detail
+msgid "Datum"
+msgstr ""
+
+#. module: crm_repord
+#: view:res.company:crm_repord.view_company_inherit_form2
+msgid "Default terms & conditions..."
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,picking_policy:0
+msgid "Deliver all products at once"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,picking_policy:0
+msgid "Deliver each product when available"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,shipped:0
+msgid "Delivered"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,partner_shipping_id:0
+msgid "Delivery Address"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,dtm_delivery:0
+#: field:rep.order.report,date:0
+msgid "Delivery Date"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,delay:0
+msgid "Delivery Lead Time"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,partner_shipping_id:0
+msgid "Delivery address for current sales order."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,nad_dp:0
+msgid "Delivery party, party to which goods should be delivered, if not identical with consignee."
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,name:0
+#: view:website:crm_repord.report_reporder_document
+msgid "Description"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_type:0
+#: selection:rep.order.report,order_type:0
+msgid "Direct"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Disc.(%)"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_type:0
+#: selection:rep.order.report,order_type:0
+#: view:website:crm_repord.confirm_modal
+msgid "Discount"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,discount:0
+msgid "Discount (%)"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,display_name:0
+#: field:rep.order.line,display_name:0
+#: field:rep.order.report,display_name:0
+#: field:reporder.make.invoice,display_name:0
+#: field:res.partner.listing,display_name:0
+msgid "Display Name"
+msgstr ""
+
+#. module: crm_repord
+#: view:reporder.make.invoice:crm_repord.view_rep_order_make_invoice
+msgid "Do you really want to create the invoice(s)?"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: selection:rep.order,state:0
+#: view:rep.order.line:crm_repord.view_order_line_form2
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+#: selection:rep.order.line,state:0
+#: selection:rep.order.report,state:0
+msgid "Done"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.line,state:0
+#: selection:rep.order.report,state:0
+msgid "Draft"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,state:0
+msgid "Draft Quotation"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Eksjö/Nässjö/Vetlanda"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.confirm_modal
+msgid "Enhet"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Enköping"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.mobile_order_view
+msgid "Epost"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Eskilstuna"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Eslöv"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_calendar_event
+msgid "Event"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.line,state:0
+#: selection:rep.order.report,state:0
+msgid "Exception"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Extended Filters"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Fagersta"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Falkenberg/Varberg"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Falköping"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,fiscal_position:0
+msgid "Fiscal Position"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,message_follower_ids:0
+msgid "Followers"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order.line,sequence:0
+msgid "Gives the sequence order when displaying a list of sales order lines."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,state:0
+msgid "Gives the status of the quotation or sales order.              \n"
+"The exception status is automatically set when a cancel operation occurs               in the invoice validation (Invoice Exception) or in the picking list process (Shipping Exception).\n"
+"The 'Waiting Schedule' status is set when the invoice is confirmed               but waiting for the scheduler to run on the order date."
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Group By"
+msgstr ""
+
+#. module: crm_repord
+#: field:reporder.make.invoice,grouped:0
+msgid "Group the invoices"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Gävle/Sandviken"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Göteborg"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Halmstad"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Handlare"
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner,repord_3p_supplier:0
+msgid "Handle reporders for this partner"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Haparanda/Kalix"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Helsingborg/Landskrona"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,message_summary:0
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Hudiksvall/Ljusdal"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Hultsfred/Vimmerby"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Härnösand/Kramfors"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Hässleholm"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mystores
+msgid "ICA"
+msgstr ""
+
+#. module: crm_repord
+#: view:res.partner.listing:crm_repord.view_partner_listing_form
+msgid "ICA Kvantum"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,id:0
+#: field:rep.order.line,id:0
+#: field:rep.order.report,id:0
+#: field:reporder.make.invoice,id:0
+#: field:res.partner.listing,id:0
+msgid "ID"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner,inactive_product_ids:0
+msgid "Inactive Products"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,incoterm:0
+msgid "Incoterm"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.search_result
+msgid "Ingen butik har hittat..."
+msgstr ""
+
+#. module: crm_repord
+#: field:reporder.make.invoice,invoice_date:0
+msgid "Inovice Date"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,incoterm:0
+msgid "International Commercial Terms are a series of predefined commercial terms used in international transactions."
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,invoice_id:0
+msgid "Invoice"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,partner_invoice_id:0
+msgid "Invoice Address"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,state:0
+msgid "Invoice Exception"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,partner_invoice_id:0
+msgid "Invoice address for current sales order."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Invoice address:"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Invoice and shipping address:"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,nad_ito:0
+msgid "Invoice party, party to which bill should be invoiced, if not identical with consignee."
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,invoice_exists:0
+#: field:rep.order.line,invoiced:0
+msgid "Invoiced"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,invoiced_rate:0
+msgid "Invoiced Ratio"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,message_is_follower:0
+msgid "Is a Follower"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,is_available:0
+msgid "Is available"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,dtm_issue:0
+msgid "Issued Date"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,invoiced:0
+msgid "It indicates that an invoice has been paid."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,invoice_exists:0
+msgid "It indicates that sales order has at least one invoice."
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Jönköping"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "KFP:"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Kalmar/Nybro"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.mobile_order_view
+msgid "Kampanj"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Karlshamn"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Karlskoga"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Karlskrona"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Karlstad"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Katrineholm"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Kiruna/Gällivare"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.todo_detail
+msgid "Klar"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+msgid "Kontakt"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Kontaktpersoner"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Kopia till epost"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Kristianstad"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Kristinehamn"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Kunden besökt"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Kundkort"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Kvantitet /"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Köping"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,message_last_post:0
+msgid "Last Message Date"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,__last_update:0
+#: field:rep.order.line,__last_update:0
+#: field:rep.order.report,__last_update:0
+#: field:reporder.make.invoice,__last_update:0
+#: field:res.partner.listing,__last_update:0
+msgid "Last Modified on"
+msgstr ""
+
+#. module: crm_repord
+#: view:calendar.event:crm_repord.view_calendar_event_filter
+msgid "Last Month"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,write_uid:0
+#: field:rep.order.line,write_uid:0
+#: field:reporder.make.invoice,write_uid:0
+#: field:res.partner.listing,write_uid:0
+msgid "Last Updated by"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,write_date:0
+#: field:rep.order.line,write_date:0
+#: field:reporder.make.invoice,write_date:0
+#: field:res.partner.listing,write_date:0
+msgid "Last Updated on"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Lerøy"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Leveransdatum"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Lidköping/Skara"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Lindesberg"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Linköping"
+msgstr ""
+
+#. module: crm_repord
+#: view:res.partner.listing:crm_repord.view_partner_listing_form
+msgid "Listing"
+msgstr ""
+
+#. module: crm_repord
+#: view:res.partner.listing:crm_repord.view_partner_listing_form
+msgid "Listing Name"
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner,listing_ids:0
+msgid "Listings"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Ljungby"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Ludvika"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Luleå/Boden"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Lycksele"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Lägga till"
+msgstr ""
+
+#. module: crm_repord
+#: model:product.template,name:crm_repord.discount_product
+msgid "Lämnade rabatter %s"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_rep_order_make_invoice
+msgid "Make Invoice"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Malmö/Lund/Trelleborg"
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner.listing,mandatory:0
+msgid "Mandatory"
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner,m_range_product_ids:0
+msgid "Mandatory Product Range"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Mariestad"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,message_ids:0
+msgid "Messages"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,message_ids:0
+msgid "Messages and communication history"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.search_stores
+msgid "Mina butiker"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Mjölby/Motala"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+msgid "Mobil"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:website.layout
+msgid "Mobilappen"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Mora"
+msgstr ""
+
+#. module: crm_repord
+#: view:calendar.event:crm_repord.view_calendar_event_filter
+msgid "My Meetings"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "My Sales"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "My Sales Order Lines"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Möten"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "NR:"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,nad_by:0
+msgid "Nad by"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,nad_cn:0
+msgid "Nad cn"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,nad_dp:0
+msgid "Nad dp"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,nad_ito:0
+msgid "Nad ito"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,nad_sn:0
+msgid "Nad sn"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,nad_su:0
+msgid "Nad su"
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner.listing,name:0
+msgid "Name"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.meeting_detail
+msgid "Namn"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+msgid "New Mail"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Norrköping"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Norrtälje"
+msgstr ""
+
+#. module: crm_repord
+#: view:calendar.event:crm_repord.view_calendar_event_filter
+msgid "Not Visited"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,number_packages:0
+msgid "Number Packages"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order.line,delay:0
+msgid "Number of days between the order confirmation and the shipping of the products to the customer"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Nyköping"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_order_tree
+msgid "Old Quotations"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.mobile_order_view
+msgid "Omsättning"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_policy:0
+msgid "On Delivery Order"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_policy:0
+msgid "On Demand"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,order_policy:0
+msgid "On demand: A draft invoice can be created from the sales order when needed. \n"
+"On delivery order: A draft invoice can be created from the delivery order when the products have been delivered. \n"
+"Before delivery: A draft invoice is created from the sales order and must be paid before the products can be delivered."
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_type:0
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+#: selection:rep.order.report,order_type:0
+#: view:website:crm_repord.mobile_order_view
+msgid "Order"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+#: field:rep.order,order_line:0
+msgid "Order Lines"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_order_line_tree2
+msgid "Order Lines to Invoice"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Order Month"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Order N°"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,name:0
+#: field:rep.order.line,order_id:0
+msgid "Order Reference"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,state:0
+msgid "Order Status"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,order_type:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,order_type:0
+msgid "Order Type"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Order reference"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Ordered date of the sales order"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Orgnr"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Oskarshamn"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "Other Information"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "PALL:"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,product_packaging:0
+msgid "Packaging"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,invoiced:0
+msgid "Paid"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Paolos Frys"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Paolos Färsk"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,parent_id:0
+msgid "Parent"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_res_partner
+#: field:rep.order.report,partner_id:0
+msgid "Partner"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.ui.menu,name:crm_repord.menu_res_partner_listing
+msgid "Partner Listing"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,payment_term:0
+msgid "Payment Term"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Payment Term:"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,paypal_url:0
+msgid "Paypal Url"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+msgid "Pelle Svensson"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,picking_policy:0
+msgid "Pick 'Deliver each product when available' if you allow partial delivery."
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,picking_ids:0
+msgid "Picking associated to this sale"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Piteå"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,portal_payment_options:0
+msgid "Portal Payment Options"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Presentationer"
+msgstr ""
+
+#. module: crm_repord
+#: view:analytic.entries.report:crm_repord.view_analytic_entries_report_search
+msgid "Presentations"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Price"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,price_reduce:0
+msgid "Price Reduce"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,pricelist_id:0
+#: field:rep.order.report,pricelist_id:0
+msgid "Pricelist"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,pricelist_id:0
+msgid "Pricelist for current sales order."
+msgstr ""
+
+#. module: crm_repord
+#: field:product.product,pricelist_ids:0
+msgid "Pricelists"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "Print"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_product_product
+#: field:rep.order,product_id:0
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+#: field:rep.order.line,product_id:0
+#: field:rep.order.report,product_id:0
+msgid "Product"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_product_category
+msgid "Product Category"
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner,range_product_ids:0
+msgid "Product Range"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,product_tmpl_id:0
+msgid "Product Template"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,product_uos:0
+msgid "Product UoS"
+msgstr ""
+
+#. module: crm_repord
+#: field:res.partner,product_ids:0
+#: view:res.partner.listing:crm_repord.view_partner_listing_form
+#: field:res.partner.listing,product_ids:0
+msgid "Products"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.confirm_modal
+msgid "Produkt"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,purchase_ids:0
+msgid "Purchase ids"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_order_line_tree
+msgid "Qty"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,product_uom_qty:0
+#: view:website:crm_repord.report_reporder_document
+msgid "Quantity"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,product_uos_qty:0
+msgid "Quantity (UoS)"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_quotation_tree
+msgid "Quotation"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.report.xml,name:crm_repord.report_rep_order
+msgid "Quotation / Order"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Quotation Date:"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_quotation_tree
+msgid "Quotation Number"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Quotation N°"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,state:0
+msgid "Quotation Sent"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Quotations"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Rabatt:"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,rangebox:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,rangebox:0
+#: field:res.partner.listing,rangebox:0
+msgid "Rangebox"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.meeting_detail
+#: view:website:crm_repord.todo_detail
+msgid "Redigera"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Redigera info"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,origin:0
+msgid "Reference of the document that generated this sales order request."
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,client_order_ref:0
+msgid "Reference/Description"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,parent_id:0
+msgid "Related Company"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_type:0
+#: selection:rep.order.report,order_type:0
+msgid "Reminder"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,order_id:0
+msgid "Rep Order"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_rep_order_report_all
+#: model:ir.ui.menu,name:crm_repord.menu_report_product_all
+#: view:rep.order.report:crm_repord.view_order_product_graph
+msgid "Rep Order Analysis"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,rep_order_id:0
+#: field:sale.order,rep_order_id:0
+msgid "Rep Order Reference"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_rep_order_report
+#: model:ir.model,name:crm_repord.model_res_partner_listing_report
+msgid "Rep Order Statistics"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_quotations
+#: model:ir.ui.menu,name:crm_repord.menu_sale_quotations
+msgid "Rep Orders"
+msgstr ""
+
+#. module: crm_repord
+#: model:res.groups,name:crm_repord.3rd_party_group
+msgid "Reporder 3rd Party Supplier"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_reporder_make_invoice
+msgid "Reporder Make Invoice"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_rep_order
+#: view:rep.order:crm_repord.view_order_form
+msgid "Representative Order"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_rep_order_line
+msgid "Representative Order Line"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "Representative Quotation"
+msgstr ""
+
+#. module: crm_repord
+#: field:product.category,repord_3p_supplier:0
+msgid "Resell for"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,role:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,role:0
+#: field:res.partner.listing,role:0
+msgid "Role"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,route_id:0
+msgid "Route"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,route_id:0
+msgid "Route id"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Sala"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,order_id:0
+msgid "Sale Order"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,state:0
+#: selection:rep.order.report,state:0
+msgid "Sale to Invoice"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: view:res.company:crm_repord.view_company_inherit_form2
+msgid "Sales"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Sales Analysis"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.filters,name:crm_repord.filter_sale_report_sales_funnel
+msgid "Sales Funnel"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_sale_order
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: selection:rep.order,state:0
+#: selection:rep.order.report,state:0
+msgid "Sales Order"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_order_line_product_tree
+#: view:rep.order:crm_repord.view_order_form
+#: view:rep.order.line:crm_repord.view_order_line_form2
+#: view:rep.order.line:crm_repord.view_order_line_tree
+msgid "Sales Order Lines"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+msgid "Sales Order Lines ready to be invoiced"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+msgid "Sales Order Lines related to a Sales Order of mine"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Sales Order Lines that are confirmed, done or in exception state and haven't yet been invoiced"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Sales Order Lines that are in 'done' state"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+msgid "Sales Order done"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_orders_in_progress
+msgid "Sales Order in Progress"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+msgid "Sales Order ready to be invoiced"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+msgid "Sales Order that haven't yet been confirmed"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sale_order_calendar
+#: view:rep.order:crm_repord.view_sale_order_graph
+msgid "Sales Orders"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,section_id:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,section_id:0
+msgid "Sales Team"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_orders_exception
+msgid "Sales in Exception"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Sales order lines done"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,user_id:0
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+#: field:rep.order.line,salesman_id:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Salesperson"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Salesperson:"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_type:0
+#: selection:rep.order.report,order_type:0
+msgid "Scrap"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+msgid "Search Sales Order"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Search Uninvoiced Lines"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "Send by Email"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,state:0
+msgid "Sent"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,sequence:0
+msgid "Sequence"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Shipped"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,state:0
+#: selection:rep.order.report,state:0
+msgid "Shipping Exception"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,picking_policy:0
+msgid "Shipping Policy"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Shipping address:"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Skapa"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Skapa ny order"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Skapa nytt"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Skellefteå"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.confirm_modal
+msgid "Skicka"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Skicka order"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Skövde"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.meeting_detail
+msgid "Sluttid"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Sollefteå"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Sortiment"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Sortimentsbox"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,source_id:0
+msgid "Source"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,origin:0
+msgid "Source Document"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.meeting_detail
+#: view:website:crm_repord.todo_detail
+msgid "Spara"
+msgstr ""
+
+#. module: crm_repord
+#: help:product.product,hr_expense_ok:0
+msgid "Specify if the product can be selected in an HR expense line."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.meeting_detail
+msgid "Starttid"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+msgid "State"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,state:0
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+#: field:rep.order.line,state:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "Status"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Stockholm"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,store_class:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,store_class:0
+msgid "Store Class"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,nad_sn:0
+msgid "Store keeper,A party keeping a shop or store."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.lead_detail
+msgid "Storsäljare"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,price_subtotal:0
+msgid "Subtotal"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,message_summary:0
+msgid "Summary"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Sundsvall"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,nad_su:0
+msgid "Supplier, party who supplies goods and/or services."
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Säffle/Åmål"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.search_stores
+msgid "Sök..."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.lead_detail
+#: view:website:crm_repord.meeting_detail
+#: view:website:crm_repord.todo_detail
+msgid "Ta bort"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,categ_ids:0
+msgid "Tags"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,amount_tax:0
+#: field:rep.order.line,tax_id:0
+#: view:website:crm_repord.report_reporder_document
+msgid "Taxes"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.contact_detail
+#: view:website:crm_repord.mobile_order_view
+msgid "Telefon"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,note:0
+msgid "Terms and conditions"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "Terms and conditions..."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,amount_untaxed:0
+msgid "The amount without tax."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,project_id:0
+msgid "The analytic account related to a sales order."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,amount_tax:0
+msgid "The tax amount."
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,amount_total:0
+msgid "The total amount."
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,order_type:0
+#: selection:rep.order.report,order_type:0
+msgid "Third Party Order"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,third_party_supplier:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,third_party_supplier:0
+msgid "Third Party Supplier"
+msgstr ""
+
+#. module: crm_repord
+#: view:calendar.event:crm_repord.view_calendar_event_filter
+msgid "This Week"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.report:crm_repord.view_order_product_search
+msgid "This Year"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,campaign_id:0
+msgid "This is a name that helps you keep track of your different campaign efforts Ex: Fall_Drive, Christmas_Special"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,medium_id:0
+msgid "This is the method of delivery. Ex: Postcard, Email, or Banner Ad"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,source_id:0
+msgid "This is the source of the link Ex: Search Engine, another domain, or name of email list"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,help:crm_repord.action_rep_order_report_all
+msgid "This report performs analysis on your rep orders. Analysis check your sales revenues and sort it by different group criteria (salesman, partner, product, etc.) Use this report to perform analysis on sales not having invoiced yet. If you want to analyse your turnover, you should use the Invoice Analysis report in the Accounting application."
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.contact_detail
+msgid "Tjänst"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "To Do"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: view:rep.order.line:crm_repord.view_sales_order_line_filter
+msgid "To Invoice"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.mobile_order_view
+msgid "Todo"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,amount_total:0
+#: view:rep.order.line:crm_repord.view_order_line_tree
+#: view:website:crm_repord.report_reporder_document
+msgid "Total"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_quotation_tree
+#: field:rep.order,amount_discount:0
+msgid "Total Discount"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,price_total:0
+msgid "Total Price"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_quotation_tree
+msgid "Total Tax Included"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Total Without Taxes"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Tranås"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Trollhättan/Vänersborg"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Uddevalla"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Umeå"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,unb_recipient:0
+msgid "Unb recipient"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,unb_sender:0
+msgid "Unb sender"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_sales_order_uninvoiced_line_filter
+msgid "Uninvoiced"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_order_line_tree3
+msgid "Uninvoiced and Delivered Lines"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,price_unit:0
+#: view:website:crm_repord.report_reporder_document
+msgid "Unit Price"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order.line:crm_repord.view_order_line_tree
+#: field:rep.order.report,product_uom:0
+msgid "Unit of Measure"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,product_uom:0
+msgid "Unit of Measure "
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,message_unread:0
+msgid "Unread Messages"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,amount_untaxed:0
+msgid "Untaxed Amount"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_order_form
+msgid "UoS"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Uppsala"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.report,user_id:0
+msgid "User"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "VAT:"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.confirm_modal
+msgid "Vill du skicka denna repord?"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Visby"
+msgstr ""
+
+#. module: crm_repord
+#: view:calendar.event:crm_repord.view_calendar_event_filter
+#: model:calendar.event.type,name:crm_repord.categ_meet6
+msgid "Visited"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Värnamo"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Västervik"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Västerås"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Växjö"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order,state:0
+#: selection:rep.order.report,state:0
+msgid "Waiting Schedule"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,warehouse_id:0
+msgid "Warehouse"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.model,name:crm_repord.model_website
+msgid "Website"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order,website_message_ids:0
+msgid "Website Messages"
+msgstr ""
+
+#. module: crm_repord
+#: help:rep.order,website_message_ids:0
+msgid "Website communication history"
+msgstr ""
+
+#. module: crm_repord
+#: field:rep.order.line,th_weight:0
+msgid "Weight"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.report_reporder_document
+msgid "Your Reference:"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Ystad/Simrishamn"
+msgstr ""
+
+#. module: crm_repord
+#: view:rep.order:crm_repord.view_sales_order_filter
+#: field:rep.order,zip:0
+#: view:rep.order.report:crm_repord.view_order_product_search
+#: field:rep.order.report,zip:0
+msgid "Zip"
+msgstr ""
+
+#. module: crm_repord
+#: view:website:crm_repord.company_detail
+#: view:website:crm_repord.contact_detail
+msgid "exempel@exempel.com"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.line,is_available:0
+msgid "false"
+msgstr ""
+
+#. module: crm_repord
+#: view:reporder.make.invoice:crm_repord.view_rep_order_make_invoice
+msgid "or"
+msgstr ""
+
+#. module: crm_repord
+#: model:ir.actions.act_window,name:crm_repord.action_res_partner_listing
+msgid "res.partner.listing.action"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.line,is_available:0
+msgid "true"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Ängleholm"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Örebro"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Örnsköldsvik"
+msgstr ""
+
+#. module: crm_repord
+#: selection:rep.order.report,areg:0
+msgid "Östersund"
+msgstr ""
+
