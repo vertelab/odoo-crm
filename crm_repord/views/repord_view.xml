@@ -265,6 +265,7 @@
                     <field name="project_id"/>
                     <field name="product_id"/>
                     <field name="state"/>
+                    <field name="invoice_id"/>
                     <separator/>
                     <field name="campaign"/>
 <!--
@@ -280,12 +281,11 @@
                     <field name="zip"/>
                     <field name="city"/>
 
-
                     <filter string="My" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
                     <separator/>
                     <filter string="Quotations" name="draft" domain="[('state','in',('draft','sent'))]" help="Sales Order that haven't yet been confirmed"/>
                     <filter string="Sales" name="sales" domain="[('state','in',('manual','progress'))]"/>
-                    <filter string="To Invoice" domain="[('state','=','manual')]" help="Sales Order ready to be invoiced"/>
+                    <filter string="To Invoice" domain="[('order_type','=',['scrap', 'discount', 'order', 'reminder']), ('invoice_id','=',False), ('third_party_supplier', '=', False), ('state', 'not in', ['draft', 'cancel'])]" help="Sales Order ready to be invoiced"/>
                     <filter string="Done" domain="[('state','=','done')]" help="Sales Order done"/>
                     <separator/>
                     <filter string="New Mail" name="message_unread" domain="[('message_unread','=',True)]"/>
@@ -294,6 +294,7 @@
                         <filter string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Order Month" domain="[]" context="{'group_by':'date_order'}"/>
                         <filter string="State" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Invoice" domain="[]" context="{'group_by':'invoice_id'}"/>
 
                         <filter string="Order Type" domain="[]" context="{'group_by':'order_type'}"/>
                         <filter string="Role" domain="[]" context="{'group_by':'role'}"/>
