@@ -144,6 +144,7 @@
                                     </a>
                                 </t>
                                 <t t-if="order">
+                                    <t t-set="order" t-value="order[0]"/>
                                     <div class="text-center">
                                         <p class="text-center mt4 mb4" style="font-size: 2.3em; font-weight: 300; color: #6a6a6a;" t-field="order.name"/>
                                     </div>
@@ -235,7 +236,7 @@
                                         <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 10px; padding: 0px 10px;">
                                             <select t-att-id="'order_type_%s' % order.id" class="form-control selectpicker dropdown selection_dropdown" data-style="btn-primary" t-att-onchange="'change_order_type(&quot;%s&quot;)' %order.id">
                                                 <t t-foreach="request.env['rep.order'].fields_get(['order_type'])['order_type']['selection']" t-as="order_type">
-                                                    <option t-if="(not brand_categories.repord_3p_supplier and order_type[0] != '3rd_party') or (brand_categories.repord_3p_supplier and order_type[0] != 'order')" t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
+                                                    <option t-if="(not brand_categories.repord_3p_supplier and order_type[0] not in ('3rd_party')) or (brand_categories.repord_3p_supplier and order_type[0] not in ('order', 'direct'))" t-att-value="order_type[0]" t-att="{'selected': 'checked'} if order_type[0] == order.order_type else {}"><t t-raw="order_type[1]"/></option>
                                                 </t>
                                             </select>
                                             <i class="fa fa-caret-down"/>
