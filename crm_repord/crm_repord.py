@@ -873,6 +873,7 @@ class rep_order(models.Model):
             #~ order.action_button_confirm()
         else:
             self.state = 'sent'
+        self.date_confirm = fields.Date.today()
 
     @api.one
     def action_repord_done(self):
