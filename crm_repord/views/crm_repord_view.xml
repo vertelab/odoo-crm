@@ -508,9 +508,11 @@
                 <div id="presentation_div" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <h3 class="text-center">Presentationer</h3>
                     <div class="container">
-                        <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'paolos_farsk(&quot;%s&quot;, &quot;Paolos Färsk&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Paolos Färsk</button>
-                        <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'paolos_frys(&quot;%s&quot;, &quot;Paolos Frys&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Paolos Frys</button>
-                        <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'leroy_farsk(&quot;%s&quot;, &quot;Leröy Färsk&quot;)' %partner.id" class="btn btn-primary btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Lerøy</button>
+                        <button t-att-id="'%s_p_fa' %partner.id" t-att-onclick="'register_presentation(&quot;%s&quot;, &quot;Paolos Färsk&quot;, &quot;_p_fa&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Färsk</button>
+                        <button t-att-id="'%s_p_fr' %partner.id" t-att-onclick="'register_presentation(&quot;%s&quot;, &quot;Paolos Frys&quot;, &quot;_p_fr&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Paolos Fryst</button>
+                        <button t-att-id="'%s_l_fa' %partner.id" t-att-onclick="'register_presentation(&quot;%s&quot;, &quot;Leröy Färsk&quot;, &quot;_l_fa&quot;)' %partner.id" class="btn btn-primary btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Fisk/skaldjur</button>
+                        <button t-att-id="'%s_gavelexponering' %partner.id" t-att-onclick="'register_presentation(&quot;%s&quot;, &quot;Gavelexponering&quot;, &quot;_gavelexponering&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Gavelexponering</button>
+                        <button t-att-id="'%s_hyllexponering' %partner.id" t-att-onclick="'register_presentation(&quot;%s&quot;, &quot;Hyllexponering&quot;, &quot;_hyllexponering&quot;)' %partner.id" class="btn btn-warning btn-lg mt16 mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3">Hyllexponering</button>
                     </div>
                 </div>
                 <!-- buttons for mark meeting done -->
