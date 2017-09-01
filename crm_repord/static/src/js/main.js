@@ -5,9 +5,9 @@ $("#search_button").click(function(){
     $("#my_stores").fadeToggle();
 });
 
-function product_tab()
+function product_tab(categ_id)
 {
-    tab_page_id = "#" + document.getElementById("product_tab").value;
+    tab_page_id = "#" + document.getElementById("product_tab_categs_" + categ_id).value;
     $(".product_tab").removeClass("active");
     $(".product_tab").removeClass("in");
     $(tab_page_id).addClass("active");
