@@ -199,7 +199,7 @@ class MobileSaleView(http.Controller):
             request.env['rep.order'].create({
                 'partner_id': partner.id,
                 'third_party_supplier': supplier and supplier.id or False,
-                'order_type': '3rd_party' if supplier else 'order', 
+                'order_type': '3rd_party' if supplier else 'order',
             })
         return werkzeug.utils.redirect('/crm/%s/repord?category=%s&active_tab=1' %(partner.id, category_id), 302)
 
@@ -1077,3 +1077,14 @@ class product_category(models.Model):
         elif self.parent_id == category:
             return True
         return False
+
+
+class survey_user_input(models.Model):
+    _inherit = 'survey.user_input'
+
+    role = fields.Char(related='partner_id.role', store=True)
+    store_class = fields.Selection(related='partner_id.store_class',store=True)
+    areg = fields.Selection(related='partner_id.areg',store=True)
+    rangebox = fields.Char(related='partner_id.rangebox',store=True)
+    zip = fields.Char(related='partner_id.zip',store=True)
+    city = fields.Char(related='partner_id.city',store=True)

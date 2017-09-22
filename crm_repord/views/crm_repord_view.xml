@@ -73,6 +73,30 @@
 
     <menuitem id="menu_res_partner_listing" name="Partner Listing" parent="base.menu_product" sequence="30" action="action_res_partner_listing" groups="base.group_sale_salesman"/>
 
+    <record id="survey_user_input_search" model="ir.ui.view">
+        <field name="name">survey_user_input_search.inherited.crm_repord</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_search"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="role"/>
+                <field name="store_class"/>
+                <field name="areg"/>
+                <field name="rangebox"/>
+                <field name="zip"/>
+                <field name="city"/>
+            </field>
+            <filter string="Partner" position="after">
+                <filter string="Role" domain="[]" context="{'group_by': ['role']}"/>
+                <filter string="Stor Class" domain="[]" context="{'group_by': ['store_class']}"/>
+                <filter string="Areg" domain="[]" context="{'group_by': ['areg']}"/>
+                <filter string="Rang Box" domain="[]" context="{'group_by': ['rangebox']}"/>
+                <filter string="Zip" domain="[]" context="{'group_by': ['zip']}"/>
+                <filter string="City" domain="[]" context="{'group_by': ['city']}"/>
+            </filter>
+        </field>
+    </record>
+
     <template id="mobile_order_view" name="Repord App">
         <t t-call="website.layout">
             <div id="wrap">
@@ -520,6 +544,18 @@
                         <div t-if="request.env.ref('crm_repord.categ_meet6') not in meeting.categ_ids" class="mt16">
                             <a type="button" class="btn btn-success btn-lg mb16 col-xs-6 col-sm-6 col-xs-offset-3 col-sm-offset-3" t-att-href="'/crm/%s/meeting/visited' %partner.id" onclick="return confirm('Är du säker?')">Kunden besökt</a>
                         </div>
+                    </t>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mb32 text-center">
+                    <t t-set="surveys" t-value="request.env['survey.survey'].search([('stage_id', '=', request.env.ref('survey.stage_in_progress').id)])"/>
+                    <t t-if="len(surveys) &gt; 0">
+                        <h3 class="text-center">Surveys</h3>
+                        <select id="survey_select" class="form-control selectpicker dropdown">
+                            <option value=""></option>
+                            <t t-foreach="surveys" t-as="survey">
+                                <option t-att-value="'/survey/start/%s' %survey.id"><t t-raw="survey.title"/></option>
+                            </t>
+                        </select>
                     </t>
                 </div>
             </div>
