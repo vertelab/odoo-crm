@@ -338,6 +338,10 @@ class MobileSaleView(http.Controller):
             p_account = request.env.ref('crm_repord.analytic_presentations_frozen')
         elif categ == u'Leröy Färsk':
             p_account = request.env.ref('crm_repord.analytic_presentations_leroy')
+        elif categ == u'Gavelexponering':
+            p_account = request.env.ref('crm_repord.analytic_presentations_gavelexpo')
+        elif categ == u'Hyllexponering':
+            p_account = request.env.ref('crm_repord.analytic_presentations_hyllexpo')
         account = request.env['account.analytic.account'].search([('partner_id', '=', partner.id), ('parent_id', '=', p_account.id)])
         if not account:
             account = request.env['account.analytic.account'].create({
@@ -354,6 +358,25 @@ class MobileSaleView(http.Controller):
             'user_id': partner.user_id.id,
             'journal_id': request.env.ref('hr_timesheet.analytic_journal').id,
         })
+        # Register visit
+        v_account = request.env.ref('crm_repord.analytic_visits')
+        account = request.env['account.analytic.account'].search([('partner_id', '=', partner.id), ('parent_id', '=', v_account.id)])
+        if not account:
+            account = request.env['account.analytic.account'].create({
+                'parent_id': v_account.id,
+                'name': partner.name,
+                'partner_id': partner.id,
+            })
+        if not request.env['account.analytic.line'].search([('date', '=', fields.Date.today()), ('account_id', '=', account.id)]):
+            request.env['account.analytic.line'].create({
+                'name': 'Besök %s' % fields.Datetime.now(),
+                'date': fields.Date.today(),
+                'account_id': account.id,
+                'unit_amount': 1,
+                'general_account_id': request.env['account.account'].search([('code', '=', '3000')]).id,
+                'user_id': partner.user_id.id,
+                'journal_id': request.env.ref('hr_timesheet.analytic_journal').id,
+            })
         return 'presentation_done'
 
     #~ @http.route(['/crm/repord/change_category'], type='json', auth="user", methods=['POST'], website=True)
@@ -873,6 +896,7 @@ class rep_order(models.Model):
             #~ order.action_button_confirm()
         else:
             self.state = 'sent'
+        self.date_confirm = fields.Date.today()
 
     @api.one
     def action_repord_done(self):

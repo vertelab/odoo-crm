@@ -5,9 +5,9 @@ $("#search_button").click(function(){
     $("#my_stores").fadeToggle();
 });
 
-function product_tab()
+function product_tab(categ_id)
 {
-    tab_page_id = "#" + document.getElementById("product_tab").value;
+    tab_page_id = "#" + document.getElementById("product_tab_categs_" + categ_id).value;
     $(".product_tab").removeClass("active");
     $(".product_tab").removeClass("in");
     $(tab_page_id).addClass("active");
@@ -254,46 +254,16 @@ function todo_done(note_id){
     });
 }
 
-/* presentation of Paolos färsk */
-function paolos_farsk(partner_id, categ){
+/* Register presentation */
+function register_presentation(partner_id, categ, id){
     if (confirm("Vill du registrera denna presentation?") == true) {
         openerp.jsonRpc("/crm/presentation/done", 'call', {
             'partner_id': partner_id,
             'categ': categ,
         }).done(function(data){
             if(data == "presentation_done"){
-                $("#" + partner_id + "_p_fa").css({"opacity": "0.4", "cursor": "not-allowed"});
-                $("#" + partner_id + "_p_fa").removeAttr("onclick");
-            }
-        });
-    }
-}
-
-/* presentation of Paolos frys */
-function paolos_frys(partner_id, categ){
-    if (confirm("Vill du registrera denna presentation?") == true) {
-        openerp.jsonRpc("/crm/presentation/done", 'call', {
-            'partner_id': partner_id,
-            'categ': categ,
-        }).done(function(data){
-            if(data == "presentation_done"){
-                $("#" + partner_id + "_p_fr").css({"opacity": "0.4", "cursor": "not-allowed"});
-                $("#" + partner_id + "_p_fr").removeAttr("onclick");
-            }
-        });
-    }
-}
-
-/* presentation of Leröy färsk */
-function leroy_farsk(partner_id, categ){
-    if (confirm("Vill du registrera denna presentation?") == true) {
-        openerp.jsonRpc("/crm/presentation/done", 'call', {
-            'partner_id': partner_id,
-            'categ': categ,
-        }).done(function(data){
-            if(data == "presentation_done"){
-                $("#" + partner_id + "_l_fa").css({"opacity": "0.4", "cursor": "not-allowed"});
-                $("#" + partner_id + "_l_fa").removeAttr("onclick");
+                $("#" + partner_id + id).css({"opacity": "0.4", "cursor": "not-allowed"});
+                $("#" + partner_id + id).removeAttr("onclick");
             }
         });
     }

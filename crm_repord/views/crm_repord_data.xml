@@ -2,25 +2,42 @@
 <openerp>
     <data>
         
+        <record id="analytic_visits" model="account.analytic.account">
+        	<field name="name">Besök</field>
+            <field name="type">view</field>
+        </record>
+        
         <record id="analytic_presentations" model="account.analytic.account">
         	<field name="name">Presentationer</field>
             <field name="type">view</field>
         </record>
         
         <record id="analytic_presentations_fresh" model="account.analytic.account">
-        	<field name="name">Paolos Färsk</field>
+        	<field name="name">Färsk</field>
             <field name="parent_id" ref="analytic_presentations"/>
             <field name="type">view</field>
         </record>
         
         <record id="analytic_presentations_frozen" model="account.analytic.account">
-        	<field name="name">Paolos Fryst</field>
+        	<field name="name">Fryst</field>
             <field name="parent_id" ref="analytic_presentations"/>
             <field name="type">view</field>
         </record>
         
         <record id="analytic_presentations_leroy" model="account.analytic.account">
-        	<field name="name">Lerøy</field>
+        	<field name="name">Fisk/skaldjur</field>
+            <field name="parent_id" ref="analytic_presentations"/>
+            <field name="type">view</field>
+        </record>
+        
+        <record id="analytic_presentations_gavelexpo" model="account.analytic.account">
+        	<field name="name">Gavelexponering</field>
+            <field name="parent_id" ref="analytic_presentations"/>
+            <field name="type">view</field>
+        </record>
+        
+        <record id="analytic_presentations_hyllexpo" model="account.analytic.account">
+        	<field name="name">Hyllexponering</field>
             <field name="parent_id" ref="analytic_presentations"/>
             <field name="type">view</field>
         </record>
