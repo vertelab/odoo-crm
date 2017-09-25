@@ -551,7 +551,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mb32 text-center">
                     <t t-set="surveys" t-value="request.env['survey.survey'].search([('stage_id', '=', request.env.ref('survey.stage_in_progress').id)])"/>
                     <t t-if="len(surveys) &gt; 0">
-                        <h3 class="text-center">Surveys</h3>
+                        <h3 class="text-center">Enkät</h3>
                         <select id="survey_select" class="form-control selectpicker dropdown">
                             <option value=""></option>
                             <t t-foreach="surveys" t-as="survey">
