@@ -555,7 +555,7 @@
                         <select id="survey_select" class="form-control selectpicker dropdown">
                             <option value=""></option>
                             <t t-foreach="surveys" t-as="survey">
-                                <option t-att-value="'/survey/start/%s' %survey.id"><t t-raw="survey.title"/></option>
+                                <option t-att-value="'/survey/crmstart/%s/partner/%s' %(survey.id, partner.id)"><t t-raw="survey.title"/></option>
                             </t>
                         </select>
                     </t>

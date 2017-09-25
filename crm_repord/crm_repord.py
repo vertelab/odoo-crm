@@ -789,6 +789,26 @@ class MobileSaleView(http.Controller):
         #~ })
         #~ return 'note_done'
 
+
+from openerp.addons.survey.controllers.main import WebsiteSurvey
+class WebsiteSurvey(WebsiteSurvey):
+
+    @http.route(['/survey/crmstart/<model("survey.survey"):survey>/partner/<model("res.partner"):partner>'],
+                type='http', auth='public', website=True)
+    def start_survey(self, survey, partner=None, **post):
+        user_input = request.env['survey.user_input'].create({'survey_id': survey.id, 'partner_id': partner.id})
+        # Do not open expired survey
+        errpage = self._check_deadline(request.cr, request.uid, user_input)
+        if errpage:
+            return errpage
+        # Select the right page
+        if user_input.state == 'new':  # Intro page
+            data = {'survey': survey, 'page': None, 'token': user_input.token}
+            return request.website.render('survey.survey_init', data)
+        else:
+            return request.redirect('/survey/fill/%s/%s' % (survey.id, user_input.token))
+
+
 class rep_order(models.Model):
     _name = "rep.order"
     _inherit = "sale.order"
