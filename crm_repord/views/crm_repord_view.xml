@@ -375,6 +375,15 @@
                                         <td>Sortimentsbox</td>
                                         <td><span class="pull-right" t-esc="partner.rangebox"/></td>
                                     </tr>
+                                    <tr t-if="partner.bank_ids">
+                                        <td>Bankkonto</td>
+                                        <td><span class="pull-right">
+                                            <b t-if="partner.bank_ids[0].bank">
+                                                <t t-esc="partner.bank_ids[0].bank.name or ''"/>
+                                            </b>
+                                            <t t-esc="partner.bank_ids[0].acc_number"/>
+                                        </span></td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
@@ -672,7 +681,7 @@
         <t t-call="website.layout">
             <t t-if="mode == 'edit'">
                 <div class="container mt32 mb32">
-                    <form method="post">
+                    <form method="post" autocomplete="off">
                         <div class="form-group">
                             <label for="store_class">Butikklass</label>
                             <select name="store_class" class="form-control selectpicker dropdown">
@@ -693,6 +702,39 @@
                             <label for="phone">Telefon</label>
                             <input name="phone" type="text" class="form-control" t-att-value="partner.phone" placeholder="0131234567"/>
                         </div>
+                        <fieldset class="form-group">
+                            <legend class="col-form-legend">Bankkonto</legend>
+                            <div class="form-group">
+                                <label for="bank_ids.state">Kontotyp</label>
+                                <select name="bank_ids.state" class="form-control selectpicker dropdown">
+                                    <t t-foreach="account_types" t-as="option">
+                                        <option t-att-value="option[0]" t-att="{'selected': 'checked'} if account and (option[0] == account.state) else {}"><t t-raw="option[1]"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="bank_ids.acc_number">Kontonummer</label>
+                                <input name="bank_ids.acc_number" type="text" class="form-control" t-att-value="account and account.acc_number or ''"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="bank_ids.bank">Bank</label>
+                                <select name="bank_ids.bank" class="form-control selectpicker dropdown" onchange="onchange_bank_ids_bank()">
+                                    <option value="0" t-att="{'selected': 'checked'} if not account else {}" data-name="" data-bic="">Ny bank</option>
+                                    <t t-foreach="banks" t-as="bank">
+                                        <option t-att-value="bank.id" t-att="{'selected': 'checked'} if account and (bank == account.bank) else {}" t-att-data-name="bank.name or ''" t-att-data-bic="bank.bic or ''"><t t-raw="bank.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                            <p style="color: red;">OBS! Förändringar på <i>Namn</i> och <i>BIC/SWIFT</i> kommer slå igenom på alla kunder med samma bank!</p>
+                            <div class="form-group" id="bank_ids_bank_name">
+                                <label for="bank_ids.bank.name">Namn</label>
+                                <input name="bank_ids.bank.name" type="text" class="form-control" t-att-value="account and account.bank and account.bank.name or ''"/>
+                            </div>
+                            <div class="form-group" id="bank_ids_bank_bic">
+                                <label for="bank_ids.bank.bic">BIC/SWIFT</label>
+                                <input name="bank_ids.bank.bic" type="text" class="form-control" t-att-value="account and account.bank and account.bank.bic or ''"/>
+                            </div>
+                        </fieldset>
                         <div class="container">
                             <a type="button" class="btn btn-default btn-lg mt32 mb32 pull-left" onclick="return window.history.back();">Avbryt</a>
                             <button class="btn btn-warning btn-lg mt32 mb32 pull-right" name="btn-save" value="btn-save" type="submit">Spara</button>
@@ -1010,12 +1052,10 @@
         </div>
     </template>
 
-    <template id="crm_css_js" inherit_id="website.layout">
-        <xpath expr="//t[@t-call-assets='website.assets_frontend']" position="after">
+    <template id="crm_css_js" inherit_id="website.assets_frontend">
+        <xpath expr="." position="inside">
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
             <link href="/crm_repord/static/src/css/main.css" rel="stylesheet"/>
-        </xpath>
-        <xpath expr="//body" position="inside">
             <script src="/crm_repord/static/src/js/main.js" type="text/javascript"/>
         </xpath>
     </template>

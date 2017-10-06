@@ -1,3 +1,7 @@
+fieldset.form-group > div, fieldset.form-group > p{
+    margin-left: 30px;
+}
+
 .navbar-default .navbar-nav &gt; li &gt; a {
     font-size: 12px;
 }

@@ -472,9 +472,43 @@ class MobileSaleView(http.Controller):
                 return request.render('crm_repord.company_detail', {
                     'partner': partner,
                     'mode': 'edit',
-                    'active_tab': post.get('active_tab')
+                    'active_tab': post.get('active_tab'),
+                    'banks': request.env['res.bank'].search([]),
+                    'account': partner.bank_ids and partner.bank_ids[0] or None,
+                    'account_types': request.env['res.partner.bank'].fields_get(['state'])['state']['selection'],
                 })
             else:
+                state = post.get('bank_ids.state')
+                acc_number = post.get('bank_ids.acc_number')
+                bank_id = post.get('bank_ids.bank')
+                bank_name = post.get('bank_ids.bank.name')
+                bank_bic = post.get('bank_ids.bank.bic')
+                if state and acc_number and bank_id and bank_name:
+                    if bank_id == '0':
+                        bank = request.env['res.bank'].create({
+                            'name': bank_name,
+                            'bic': bank_bic,
+                        })
+                    else:
+                        bank = request.env['res.bank'].browse([int(bank_id)])
+                    if bank_name != bank.name:
+                        bank.name = bank_name
+                    if bank_bic != bank.bic:
+                        bank.bic = bank_bic
+                    if partner.bank_ids:
+                        account = partner.bank_ids[0]
+                        if bank != account.bank:
+                            account.bank = bank
+                        if state != account.state:
+                            account.state = state
+                        if acc_number != account.acc_number:
+                            account.acc_number = acc_number
+                    else:
+                        partner.bank_ids = request.env['res.partner.bank'].create({
+                            'state': state,
+                            'acc_number': acc_number,
+                            'bank': bank.id,
+                        })
                 partner.write({
                     'store_class': post.get('store_class'),
                     'size': post.get('size'),

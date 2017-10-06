@@ -5,6 +5,12 @@ $("#search_button").click(function(){
     $("#my_stores").fadeToggle();
 });
 
+function onchange_bank_ids_bank() {
+    bank = $("[name='bank_ids.bank']").find(":selected");
+    $("[name='bank_ids.bank.name']").val(bank.attr("data-name"));
+    $("[name='bank_ids.bank.bic']").val(bank.attr("data-bic"));
+}
+
 function product_tab(categ_id)
 {
     tab_page_id = "#" + document.getElementById("product_tab_categs_" + categ_id).value;
