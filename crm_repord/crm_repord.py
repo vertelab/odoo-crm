@@ -865,7 +865,7 @@ class rep_order(models.Model):
     amount_untaxed = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_tax = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
     amount_total = fields.Float(compute='_repord_amount_all_wrapper', digits=dp.get_precision('Account'), store=True)
-    invoice_id = fields.Many2one(comodel_name='account.invoice', string='Invoice')
+    invoice_id = fields.Many2one(comodel_name='account.invoice', string='Invoice', copy=False)
     invoice_ids = None
     pricelist_id = fields.Many2one('product.pricelist', 'Pricelist', required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, help="Pricelist for current sales order.")
     currency_id = fields.Many2one("res.currency", related='pricelist_id.currency_id', string="Currency", readonly=True, required=True)
@@ -1063,7 +1063,7 @@ class rep_order(models.Model):
                 discount_product = o.env.ref('crm_repord.discount_product')
                 created_lines = []
                 created_lines.append(self.env['account.invoice.line'].create({
-                    #~ 'product_id': discount_product.id or False,
+                    'product_id': discount_product.product_variant_ids[0].id or False,
                     'name': discount_product.name % o.name,
                     'quantity': 1,
                     'account_id': discount_product.property_account_expense.id,
@@ -1089,13 +1089,12 @@ class rep_order(models.Model):
                 if len(origin_ref) >= 1:
                     origin_ref = origin_ref[:-1]
                 invoice = self.env['account.invoice'].browse(res)
-                invoice.write({'origin': origin_ref, 'name': invoice_ref, 'type': 'in_invoice'})
+                invoice.write({'origin': origin_ref, 'name': invoice_ref})
             else:
                 for o, l in val:
                     res = self.pool.get('rep.order')._make_invoice(self._cr, self._uid, o, l, context=self._context)
                     o.write({'state': 'progress', 'invoice_id': res})
                     invoice = self.env['account.invoice'].browse(res)
-                    invoice.write({'type': 'in_invoice'})
         return res
 
     @api.v7
@@ -1104,6 +1103,8 @@ class rep_order(models.Model):
         obj_invoice_line = self.pool.get('account.invoice.line')
         if context is None:
             context = {}
+        else:
+            context = dict(context)
         invoiced_sale_line_ids = self.pool.get('rep.order.line').search(cr, uid, [('order_id', '=', order.id), ('invoiced', '=', True)], context=context)
         from_line_invoice_ids = []
         for invoiced_sale_line_id in self.pool.get('rep.order.line').browse(cr, uid, invoiced_sale_line_ids, context=context):
@@ -1115,7 +1116,9 @@ class rep_order(models.Model):
                 #~ for preline in preinv.invoice_line:
                     #~ inv_line_id = obj_invoice_line.copy(cr, uid, preline.id, {'invoice_id': False, 'price_unit': -preline.price_unit})
                     #~ lines.append(inv_line_id)
+        context['type'] = 'in_invoice'
         inv = self._prepare_invoice(cr, uid, order, lines, context=context)
+        inv['type'] = 'in_invoice'
         inv_id = inv_obj.create(cr, uid, inv, context=context)
         data = inv_obj.onchange_payment_term_date_invoice(cr, uid, [inv_id], inv['payment_term'], time.strftime(DEFAULT_SERVER_DATE_FORMAT))
         if data.get('value', False):
