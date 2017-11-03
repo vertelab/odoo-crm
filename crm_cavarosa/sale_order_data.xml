@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data>
 
         <template id="order_thanks_page" name="Order Thanks Page">
             <t t-call="website.layout">
@@ -58,7 +58,7 @@
         cursor: pointer;">Ja tack!</a>
 
         <a href="/order/${object.id}/reject/${object.access_token}" class="button" style="
-        background-color: #CC0033;
+        background-color: #CC0033;crm
         border: none;
         color: white;
         padding: 15px 32px;
@@ -73,5 +73,22 @@
 </div>
             ]]></field>
         </record>
+        
+        <record id="excel_sale_order_line" model="ir.actions.server">
+            <field name="name">Export Sale Order Lines</field>
+            <field name="model_id" ref="crm.model_crm_tracking_campaign" />
+            <field name="state">code</field>
+            <field name="code">excel = env['crm.tracking.campaign'].excel_order_line(object.browse(context.get('active_ids', [])))
+</field>
+        </record>
+
+        <record id="excel_sale_order_line_value" model="ir.values">
+            <field name="name">Export Sale Order Lines</field>
+            <field name="model">crm.tracking.campaign</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%s' %ref('crm_cavarosa.excel_sale_order_line')" />
+        </record>
+        
+        
     </data>
 </openerp>

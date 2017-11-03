@@ -31,7 +31,7 @@ CRM configuration for Cavarosa AB
 """,
     'author': 'Vertel AB',
     'website': 'https://vertel.se',
-    'depends': ['sale_crm', 'mass_mailing_sale', 'email_template', 'website'],
+    'depends': ['sale_crm', 'mass_mailing_sale', 'email_template', 'website','delivery_pickup','crm_campaign_addons'],
     'data': [
         'res_partner_data.xml',
         'sale_order_view.xml',

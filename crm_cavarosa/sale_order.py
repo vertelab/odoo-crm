@@ -28,11 +28,19 @@ import uuid
 import logging
 _logger = logging.getLogger(__name__)
 
+import tempfile
+
+try:
+    import xlsxwriter
+except:
+    _logger.info('XlsxWriter not installed. sudo pip install XlsxWriter')
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
     access_token = fields.Char(default=lambda self: str(uuid.uuid4()))
+
 
 
 class sale_order_generator(models.TransientModel):
@@ -53,6 +61,58 @@ class sale_order_generator(models.TransientModel):
             values['partner_id'] = p.id
             order = self.order_id.copy(values)
             order.categ_ids = categs
+
+class crm_tracking_campaign(models.Model):
+    _inherit = 'crm.tracking.campaign'
+    
+    @api.model
+    def excel_order_line(self,campaign):
+        #~ raise Warning(campaign)
+        # https://xlsxwriter.readthedocs.io/
+        temp = tempfile.NamedTemporaryFile(mode='w+t',suffix='.xlsx')
+        workbook = xlsxwriter.Workbook(temp.name)
+        worksheet = workbook.add_worksheet()
+        worksheet.write('A1', 'Ordernummer')
+        worksheet.write('B1', 'Orderdatum')
+        worksheet.write('C1', u'Leverantör')
+        worksheet.write('D1', 'Vara')
+        worksheet.write('E1', 'a pris')
+        worksheet.write('F1', 'Antal')
+        worksheet.write('G1', 'Totalt')
+        worksheet.write('H1', 'Namn')
+        worksheet.write('I1', 'Gata')
+        worksheet.write('J1', 'Postnummer')
+        worksheet.write('K1', 'Ort')
+        worksheet.write('L1', 'e-post')
+        worksheet.write('M1', 'kommentar')
+        worksheet.write('N1', u'fraktsätt')
+        
+        row = 2
+        #~ for i,line in self.env['sale.order.line'].search([('campaign_id','=',campaign.id)],order='supplier_id.name,product.name'):
+        for i,line in self.env['sale.order.line'].search([]):
+            for i in range(line.product_uom_qty):
+                worksheet.write('A%d' % row, line.order_id.name)
+                worksheet.write('B%d' % row, line.order_id.date_confirm)
+                worksheet.write('C%d' % row, line.supplier_id.name)
+                worksheet.write('D%d' % row, line.product_id.name)
+                worksheet.write('E%d' % row, line.price_unit)
+                worksheet.write('F%d' % row, 1.0)
+                worksheet.write('G%d' % row, line.price_subtotal)
+                worksheet.write('H%d' % row, line.order_id.partner_id.name)
+                worksheet.write('I%d' % row, line.order_id.partner_id.street)
+                worksheet.write('J%d' % row, line.order_id.partner_id.zip)
+                worksheet.write('K%d' % row, line.order_id.partner_id.city)
+                worksheet.write('L%d' % row, line.order_id.partner_id.mail)
+                worksheet.write('M%d' % row, line.order_id.note)
+                worksheet.write('N%d' % row, line.order_id.carrier_id.name + ' ' + line.order_id.cavarosa_box)
+                row += 1
+        workbook.close() 
+        temp.seek(0)
+        data = temp.read()
+        _logger.warn(temp.name)
+        _logger.warn(data)
+        temp.close()
+        return (data,'xlsx')
 
 
 class response_sale_order(http.Controller):
