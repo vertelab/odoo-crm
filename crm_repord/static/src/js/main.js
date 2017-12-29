@@ -43,7 +43,7 @@ function toggle_cell(product_id)
 }
 
 /* send rep.order */
-function send_rep_order(order_id, res_partner, product_id, ){
+function send_rep_order(order_id, res_partner, product_id){
     quantity = res_partner + "_qty_" +product_id;
     discount = res_partner + "_discount_" +product_id;
     document.getElementById(quantity).value
