@@ -101,6 +101,7 @@
 
     <template id="mobile_order_view" name="Repord App">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-call="crm_repord.search_stores"/>
@@ -603,6 +604,7 @@
 
     <template id="mystores" name="My Stores">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-call="crm_repord.search_stores"/>
@@ -631,6 +633,7 @@
 
     <template id="search_result" name="Search Result">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <div id="wrap">
                 <div class="oe_structure">
                     <t t-call="crm_repord.search_stores"/>
@@ -679,6 +682,7 @@
     <!-- Company Information -->
     <template id="company_detail" name="Butik Information">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <t t-if="mode == 'edit'">
                 <div class="container mt32 mb32">
                     <form method="post" autocomplete="off">
@@ -748,6 +752,7 @@
     <!-- View Contact Information-->
     <template id="contact_detail" name="Kontakt Information">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <t t-if="mode == 'view'">
                 <div class="container mt32 mb32">
                     <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
@@ -820,6 +825,7 @@
     <!-- View Lead Information-->
     <template id="lead_detail" name="Lead Information">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <t t-if="mode == 'view'">
                 <div class="container mt32 mb32">
                     <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
@@ -894,6 +900,7 @@
     <!-- View Meeting Information-->
     <template id="meeting_detail" name="Meeting Information">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <t t-if="mode == 'view'">
                 <div class="container mt32 mb32">
                     <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
@@ -963,6 +970,7 @@
     <!-- View TODO Information-->
     <template id="todo_detail" name="TODO Information">
         <t t-call="website.layout">
+            <t t-set="load_crm_repord_webapp" t-value="True"/>
             <t t-if="mode == 'view'">
                 <div class="container mt32 mb32">
                     <table class="col-xs-12 col-sm-12 col-md-12 col-lg-12 customer_card_table">
@@ -1056,13 +1064,20 @@
         <xpath expr="." position="inside">
             <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet"/>
             <link href="/crm_repord/static/src/css/main.css" rel="stylesheet"/>
+<!--
             <script src="/crm_repord/static/src/js/main.js" type="text/javascript"/>
+-->
         </xpath>
     </template>
 
     <template id="crm_user_menu" inherit_id="website.layout">
         <xpath expr="//ul[@class='dropdown-menu js_usermenu']/*[1]" position="after">
             <li><a href="/crm/mystores" role="menuitem">Mobilappen</a></li>
+        </xpath>
+        <xpath expr="//body" position="inside">
+            <t t-if="load_crm_repord_webapp">
+                <script src="/crm_repord/static/src/js/main.js" type="text/javascript"/>
+            </t>
         </xpath>
     </template>
 

@@ -19,7 +19,9 @@
             <field name="inherit_id" ref="account.view_analytic_entries_report_search"/>
             <field name="arch" type="xml">
                 <field name="account_id" position="after">
-                    <filter string="Presentations" domain="[('account_id','child_of',%(crm_repord.analytic_presentations)d)]"/>
+                    <filter string="Presentationer" domain="[('account_id','child_of',%(crm_repord.analytic_presentations)d)]"/>
+                    <filter string="Besök" domain="[('account_id','child_of',%(crm_repord.analytic_visits)d)]"/>
+                    <filter string="Exponeringar" domain="['|', ('account_id','child_of',%(crm_repord.analytic_presentations_gavelexpo)d), ('account_id','child_of',%(crm_repord.analytic_presentations_hyllexpo)d)]"/>
                 </field>
             </field>
         </record>
