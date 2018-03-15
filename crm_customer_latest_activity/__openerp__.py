@@ -32,6 +32,7 @@
         * sale order
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['account', 'stock','sale', 'server_action_permissions'],
     'data': [

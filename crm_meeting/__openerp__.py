@@ -31,6 +31,7 @@
         * Add field latest meeting for res.partner
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['crm', 'calendar_kanban', 'calendar'],
     'data': [

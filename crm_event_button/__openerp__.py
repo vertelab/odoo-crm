@@ -27,6 +27,7 @@
 Adds an event tracking button to customer form.
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['sale', 'event'], 
     'data': [

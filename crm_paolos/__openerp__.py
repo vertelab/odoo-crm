@@ -31,6 +31,7 @@ CRM Paolos
     * Wizard create internal notes
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['base', 'email_template','crm', 'note', 'marketing_campaign', 'account'],
     'data': [

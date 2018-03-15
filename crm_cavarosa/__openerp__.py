@@ -30,6 +30,7 @@ CRM configuration for Cavarosa AB
 * Controller for email customers to accept or reject order
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'https://vertel.se',
     'depends': ['sale_crm', 'mass_mailing_sale', 'email_template', 'website','delivery_pickup','crm_campaign_addons'],
     'data': [

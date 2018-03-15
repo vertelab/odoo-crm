@@ -28,6 +28,7 @@ CRM Repord for mobile device
 ===================================
 """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['sale', 'product', 'website', 'calendar_ics', 'calendar_kanban', 'crm_meeting', 'product_customer_code','l10n_se', 'sale_crm', 'website_imagemagick','partner_rangebox', 'survey'], # product_customer_code from oca-addons-vauxoo
     'data': [
