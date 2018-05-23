@@ -845,7 +845,7 @@ class WebsiteSurvey(WebsiteSurvey):
 
 class rep_order(models.Model):
     _name = "rep.order"
-    _inherit = "sale.order"
+    _inherit = ["sale.order", 'mail.thread']
     _description = "Representative Order"
 
     @api.multi
