@@ -29,17 +29,17 @@ class res_partner(models.Model):
     _inherit='res.partner'
 
     latest_activity = fields.Datetime(string="Latest activity",help="Last activity by this partner", select=True)
-    
+
     @api.one
     def set_latest_activity(self):
         self.latest_activity = fields.Datetime.now()
         if self.parent_id:
             self.parent_id.set_latest_activity()
-            
+
 
 class sale_order(models.Model):
     _inherit='sale.order'
-    
+
     @api.multi
     def action_button_confirm(self):
         self.partner_id.set_latest_activity()
@@ -65,8 +65,8 @@ class stock_picking(models.Model):
 
     @api.one
     def action_done(self):
-        self.res_partner.set_latest_activity()
-        return super (stock_picking,self).action_done()
+        self.partner_id.set_latest_activity()
+        return super(stock_picking,self).action_done()
 
 
 
