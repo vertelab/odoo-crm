@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution, third party addon
-#    Copyright (C) 2004-2015 Vertel AB (<http://vertel.se>).
+#    Copyright (C) 2004-2019 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -20,25 +20,19 @@
 ##############################################################################
 
 {
-    'name': 'CRM Paolos',
+    'name': 'CRM for BNI',
     'version': '0.1',
-    'category': '',
-    'summary': "Additional fields to partner; Create opportunities and notes",
+    'category': 'Sales',
     'description': """
-CRM Paolos
-===================================
-    * Wizard create crm opportunities
-    * Wizard create internal notes
+
+Financed by Netprospekt
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['base', 'email_template','crm', 'note', 'marketing_campaign', 'account'],
+    'depends': ['crm', ],
     'data': [
-        'views/res_partner_view.xml',
-        'views/crm_campaign_view.xml',
-        'views/crm_campaign_data.xml',
-        'wizard/res_partner_campaign_wizard_view.xml',
+        'crm_view.xml',
     ],
     'application': False,
     'installable': True,
