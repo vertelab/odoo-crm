@@ -23,6 +23,9 @@ from openerp import models, fields, api, _
 import logging
 _logger = logging.getLogger(__name__)
 
+#TODO: Dela upp Credit Safe och BNI, SNI
+#TODO: related-fält t ex vd-Namn -> kontaktperson, org_nr -> company_registry
+#TODO: koncernbolag boolean  Ja/Nej -> computed field
 
 class crm_lead(models.Model):
     _inherit = 'crm.lead'
@@ -34,7 +37,7 @@ class crm_lead(models.Model):
     reg_datum = fields.Date(string="Reg.Datum")
     vd_namn = fields.Char(string="VD Namn")
     branschkod = fields.Char(string="Branschkod")
-    ant_anst_ab = fields.Char(string="Antal Abst, AB")
+    ant_anst_ab = fields.Integer(string="Antal Abst, AB")
     oms_intervall_scb = fields.Char(string="Oms. Intervall, SCB")
     resultat_fore_skatt = fields.Char(string="Resultat före skatt")
 
@@ -42,10 +45,10 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     is_bni = fields.Boolean(string="Is BNI")
-    bni_state = fields.Selection([('lead','Prospektiv'),('member','Medlem'),('first','Första utbild'),('second','Andra utbild'),('former','Fd',)],string="BNI Status",  track_visibility='onchange')
-    bni_member = fields.Boolean(string="BNI medlem", track_visibility='onchange',)
-    bni_mentor = fields.Many2one(comodel_name='res.partner',string="Mentor",  track_visibility='onchange')
+    bni_state = fields.Selection([('member','Medlem'),('first','Första utbild'),('second','Andra utbild'),('former','Fd',)],string="BNI Status",  track_visibility='onchange')
+    bni_partner = fields.Boolean(string="BNI Affärspartner", track_visibility='onchange',)
+    bni_mentor = fields.Many2one(comodel_name='res.partner',string="BNI Mentor",  track_visibility='onchange')
     
     branschkod = fields.Char(string="Branschkod")
-    ant_anst_ab = fields.Char(string="Antal Abst, AB")
+    ant_anst_ab = fields.Integer(string="Antal Anst, AB")
     oms_intervall_scb = fields.Char(string="Oms. Intervall, SCB")
