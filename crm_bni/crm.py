@@ -42,9 +42,9 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     is_bni = fields.Boolean(string="Is BNI")
-    bni_state = fields.Selection([('Prospektiv','lead'),('Medlem','member'),('Första utbild','first'),('Andra utbild','second'),('Fd','former')],string="BNI Status",  track_visibility='always')
-    bni_member = fields.Boolean(string="BNI medlem", track_visibility='always',)
-    bni_mentor = fields.Many2one(comodel_name='res.partner',string="Mentor",  track_visibility='always')
+    bni_state = fields.Selection([('lead','Prospektiv'),('member','Medlem'),('first','Första utbild'),('second','Andra utbild'),('former','Fd',)],string="BNI Status",  track_visibility='onchange')
+    bni_member = fields.Boolean(string="BNI medlem", track_visibility='onchange',)
+    bni_mentor = fields.Many2one(comodel_name='res.partner',string="Mentor",  track_visibility='onchange')
     
     branschkod = fields.Char(string="Branschkod")
     ant_anst_ab = fields.Char(string="Antal Abst, AB")
