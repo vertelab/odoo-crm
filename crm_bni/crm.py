@@ -23,33 +23,29 @@ from openerp import models, fields, api, _
 import logging
 _logger = logging.getLogger(__name__)
 
+
+class crm_lead(models.Model):
+    _inherit = 'crm.lead'
+
+    org_nr = fields.Char(string='Orgnr')
+    bolagsform = fields.Char(string="Bolagdsform")
+    kontor = fields.Char(string="Kontor")
+    koncernbolag = fields.Boolean(string="Koncernbolag")
+    reg_datum = fields.Date(string="Reg.Datum")
+    vd_namn = fields.Char(string="VD Namn")
+    branschkod = fields.Char(string="Branschkod")
+    ant_anst_ab = fields.Char(string="Antal Abst, AB")
+    oms_intervall_scb = fields.Char(string="Oms. Intervall, SCB")
+    resultat_fore_skatt = fields.Char(string="Resultat före skatt")
+
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    visited_last_cycle = fields.Boolean('Visited Last Cycle', compute='_compute_visited_last_cycle', search='_search_visited_last_cycle')
-
-    @api.one
-    @api.depends('last_meeting')
-    def _compute_visited_last_cycle(self):
-        last_date, foo = self.env['sale.cycle']._get_last_cycle_dates()
-        self.visited_last_cycle = last_date == self.last_meeting
-
-    def _search_visited_last_cycle(self, operator, value):
-        _logger.warn("\n\n0\n\n")
-        start_date, stop_date = self.env['sale.cycle']._get_last_cycle_dates()
-        if (operator == '=' and value == False) or (operator == '!=' and value == True):
-            if start_date and stop_date:
-                _logger.warn("\n\n1\n\n")
-                return ['|', '|', ('last_meeting', '<', start_date), ('last_meeting', '>', stop_date), ('last_meeting', '=', False)]
-            else:
-                _logger.warn("\n\n2\n\n")
-                return []
-            
-        else:
-            if start_date and stop_date:
-                _logger.warn("\n\n3\n\n")
-                return ['&', ('last_meeting', '>=', start_date), ('last_meeting', '<=', stop_date)]
-            else:
-                return [('id', '<', 1)]
-                
-
+    is_bni = fields.Boolean(string="Is BNI")
+    bni_state = fields.Selection([('Prospektiv','lead'),('Medlem','member'),('Första utbild','first'),('Andra utbild','second'),('Fd','former')],string="BNI Status",  track_visibility='always')
+    bni_member = fields.Boolean(string="BNI medlem", track_visibility='always',)
+    bni_mentor = fields.Many2one(comodel_name='res.partner',string="Mentor",  track_visibility='always')
+    
+    branschkod = fields.Char(string="Branschkod")
+    ant_anst_ab = fields.Char(string="Antal Abst, AB")
+    oms_intervall_scb = fields.Char(string="Oms. Intervall, SCB")
