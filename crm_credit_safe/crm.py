@@ -31,13 +31,13 @@ class crm_lead(models.Model):
     _inherit = 'crm.lead'
 
     org_nr = fields.Char(string='Orgnr')
-    bolagsform = fields.Char(string="Bolagsform")
+    bolagsform = fields.Char(string="Bolagdsform")
     kontor = fields.Char(string="Kontor")
     koncernbolag = fields.Boolean(string="Koncernbolag")
     reg_datum = fields.Date(string="Reg.Datum")
     vd_namn = fields.Char(string="VD Namn")
     branschkod = fields.Char(string="Branschkod")
-    ant_anst_ab = fields.Integer(string="Antal Anst, AB")
+    ant_anst_ab = fields.Integer(string="Antal Abst, AB")
     oms_intervall_scb = fields.Char(string="Oms. Intervall, SCB")
     resultat_fore_skatt = fields.Char(string="Resultat före skatt")
 
