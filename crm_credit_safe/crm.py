@@ -43,11 +43,6 @@ class crm_lead(models.Model):
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-
-    is_bni = fields.Boolean(string="Is BNI")
-    bni_state = fields.Selection([('member','Medlem'),('first','Första utbild'),('second','Andra utbild'),('former','Fd',)],string="BNI Status",  track_visibility='onchange')
-    bni_partner = fields.Boolean(string="BNI Affärspartner", track_visibility='onchange',)
-    bni_mentor = fields.Many2one(comodel_name='res.partner',string="BNI Mentor",  track_visibility='onchange')
     
     branschkod = fields.Char(string="Branschkod")
     ant_anst_ab = fields.Integer(string="Antal Anst, AB")

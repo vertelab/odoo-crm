@@ -1,41 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
   <data>
+    <record id="crm_team_view_form" model="ir.ui.view">
+      <field name="name">crm.team.form.project</field>
+      <field name="model">crm.team</field>
+      <field name="inherit_id" ref="sales_team.crm_team_view_form" />
+      <field name="arch" type="xml">
+        <field name="alias_contact" position="after">
+          <field name="project_id" />
+        </field>
+      </field>
+    </record>
+    <record id="crm_case_form_view_leads" model="ir.ui.view">
+      <field name="name">crm.lead.form.lead</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_case_form_view_leads" />
+      <field name="arch" type="xml">
+        <field name="team_id" position="after">
+          <field name="project_id" />
+        </field>
+      </field>
+    </record>
     <record id="view_res_partner_search" model="ir.ui.view">
-      <field name="name">res.partner.bni.search</field>
+      <field name="name">res.partner.project.search</field>
       <field name="model">res.partner</field>
       <field name="inherit_id" ref="base.view_res_partner_filter" />
       <field name="arch" type="xml">
         <filter name="supplier" position="after">
-          <separator />
-          <filter string="BNI" name="filter_is_bni" domain="[('is_bni','=', True)]" />
-          <filter string="BNI member" name="filter_bni_member" domain="[('bni_member','=', True)]" />
+          <field string="Project" name="project_id" />
         </filter>
       </field>
     </record>
     <record id="view_partner_form" model="ir.ui.view">
-      <field name="name">view.res.partner.form.bni</field>
+      <field name="name">view.res.partner.form.project</field>
       <field name="model">res.partner</field>
       <field name="inherit_id" ref="base.view_partner_form" />
       <field eval="18" name="priority" />
       <field name="arch" type="xml">
-        <data>
-          <field name="category_id" position="after">
-            <field name="is_bni" />
-          </field>
-          <notebook position='inside'>
-            <page name="bni" string="BNI" attrs="{'invisible': [('is_bni', '=', False)]}">
-              <group>
-                <group string="BNI" name="bni_basic">
-                  <field name="bni_state" />
-                  <field name="bni_member" />
-                  <field name="bni_mentor" />
-                </group>
-              </group>
-            </page>
-          </notebook>
-        </data>
+        <field name="trust" position="after">
+          <field name="project_id" />
+        </field>
+      </field>
+    </record>
+    <record id="edit_project" model="ir.ui.view">
+      <field name="name">project.project.form.crm</field>
+      <field name="model">project.project</field>
+      <field name="inherit_id" ref="project.edit_project" />
+      <field name="arch" type="xml">
+        <div name="button_box" position="inside">
+          <button class="oe_stat_button" name="attachment_tree_view" type="object" icon="fa-files-o">
+            <field string="Documents" name="doc_count" widget="statinfo" />
+          </button>
+          <button class="oe_stat_button" type="action" name="%(crm.crm_case_tree_view_leads)d" icon="fa-tasks">
+            <field string="Leads" name="lead_count" widget="statinfo"  />
+          </button>
+          <button class="oe_stat_button" type="action" name="%(base.view_partner_tree)d" icon="fa-tasks">
+            <field string="Partners" name="partner_count" widget="statinfo"  />
+          </button>
+        </div>
       </field>
     </record>
   </data>
 </openerp>
+
+

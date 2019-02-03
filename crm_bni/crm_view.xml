@@ -9,7 +9,7 @@
         <filter name="supplier" position="after">
           <separator />
           <filter string="BNI" name="filter_is_bni" domain="[('is_bni','=', True)]" />
-          <filter string="BNI member" name="filter_bni_member" domain="[('bni_member','=', True)]" />
+          <filter string="BNI partner" name="filter_bni_partner" domain="[('bni_partner','=', True)]" />
         </filter>
       </field>
     </record>
@@ -28,7 +28,7 @@
               <group>
                 <group string="BNI" name="bni_basic">
                   <field name="bni_state" />
-                  <field name="bni_member" />
+                  <field name="bni_partner" />
                   <field name="bni_mentor" />
                 </group>
               </group>

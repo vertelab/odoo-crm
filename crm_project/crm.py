@@ -23,32 +23,32 @@ from openerp import models, fields, api, _
 import logging
 _logger = logging.getLogger(__name__)
 
-#TODO: Dela upp Credit Safe och BNI, SNI
-#TODO: related-fält t ex vd-Namn -> kontaktperson, org_nr -> company_registry
-#TODO: koncernbolag boolean  Ja/Nej -> computed field
+class crm_team(models.Model):
+    _inherit = 'crm.team'
+
+    project_id = fields.Many2one(comodel_name='project.project',string="Project",)
 
 class crm_lead(models.Model):
     _inherit = 'crm.lead'
 
-    org_nr = fields.Char(string='Orgnr')
-    bolagsform = fields.Char(string="Bolagsform")
-    kontor = fields.Char(string="Kontor")
-    koncernbolag = fields.Boolean(string="Koncernbolag")
-    reg_datum = fields.Date(string="Reg.Datum")
-    vd_namn = fields.Char(string="VD Namn")
-    branschkod = fields.Char(string="Branschkod")
-    ant_anst_ab = fields.Integer(string="Antal Anst, AB")
-    oms_intervall_scb = fields.Char(string="Oms. Intervall, SCB")
-    resultat_fore_skatt = fields.Char(string="Resultat före skatt")
+    project_id = fields.Many2one(comodel_name='project.project',related='team_id.project_id',string="Project",)
 
 class res_partner(models.Model):
     _inherit = 'res.partner'
-
-    is_bni = fields.Boolean(string="Is BNI")
-    bni_state = fields.Selection([('member','Medlem'),('first','Första utbild'),('second','Andra utbild'),('former','Fd',)],string="BNI Status",  track_visibility='onchange')
-    bni_partner = fields.Boolean(string="BNI Affärspartner", track_visibility='onchange',)
-    bni_mentor = fields.Many2one(comodel_name='res.partner',string="BNI Mentor",  track_visibility='onchange')
     
-    branschkod = fields.Char(string="Branschkod")
-    ant_anst_ab = fields.Integer(string="Antal Anst, AB")
-    oms_intervall_scb = fields.Char(string="Oms. Intervall, SCB")
+    project_id = fields.Many2one(comodel_name='project.project',string="Project",)
+    
+class project_project(models.Model):
+    _inherit = 'project.project'
+
+    lead_ids = fields.One2many(comodel_name='crm.lead',inverse_name='project_id',string='Leads')
+    partner_ids = fields.One2many(comodel_name='res.partner',inverse_name="project_id",string='Leads')
+    partner_count = fields.Integer("# Partners", compute='_compute_partner_count')
+    lead_count = fields.Integer("# Leads", compute='_compute_partner_count')
+
+    @api.multi
+    def _compute_partner_count(self):
+        for partner in self:
+            partner.partner_count = len(partner.partner_ids)
+            partner.lead_count = len(partner.lead_ids)
+
