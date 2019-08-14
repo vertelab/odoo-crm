@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="view_crm_case_leads_filter" model="ir.ui.view">
+      <field name="name">crm.lead.search.guldbolag</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_crm_case_leads_filter" />
+      <field name="arch" type="xml">
+        <field name="country_id" position="after">
+          <field name="org_nr" />
+          <field name="bolagsform" />
+          <field name="kontor" />
+          <field name="branschkod" />
+        </field>
+        <filter name="groupby_createmonth" position="after">
+          <filter string="Bolagsform" name="groupby_bolagsform" domain="[]" context="{'group_by':'bolagsform'}" />
+          <filter string="Kontor" name="groupby_kontor" domain="[]" context="{'group_by':'kontor'}" />
+          <filter string="Branschkod" name="groupby_branschkod" domain="[]" context="{'group_by':'branschkod'}" />
+          <filter string="Antal anst" name="groupby_antal_anst" domain="[]" context="{'group_by':'ant_anst_ab'}" />
+        </filter>
+      </field>
+    </record>
+    <record id="crm_case_form_view_leads" model="ir.ui.view">
+      <field name="name">crm.lead.form.guldbolag</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_case_form_view_leads" />
+      <field name="arch" type="xml">
+        <notebook position='inside'>
+          <page name="guldbolag" string="Guldinformation">
+            <group>
+              <group string="Basic" name="basic">
+                <field name="org_nr" />
+                <field name="bolagsform" />
+                <field name="kontor" />
+                <field name="koncernbolag" />
+                <field name="reg_datum" />
+                <field name="vd_namn" />
+              </group>
+              <group string="Statistics" name="statistics">
+                <field name="branschkod" />
+                <field name="ant_anst_ab" />
+              </group>
+            </group>
+          </page>
+        </notebook>
+      </field>
+    </record>
+  </data>
+</odoo>
