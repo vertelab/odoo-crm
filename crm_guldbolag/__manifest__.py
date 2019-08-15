@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution, third party addon
+#    Odoo, Open Source Management Solution, third party addon
 #    Copyright (C) 2004-2019 Vertel AB (<http://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 ##############################################################################
 
 {
-    'name': 'CRM Import Excel from Guldbolag',
+    'name': 'CRM Guldbolag.se',
     'version': '0.1',
     'category': 'Sales',
     'description': """
