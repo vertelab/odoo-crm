@@ -33,7 +33,7 @@ class crm_lead(models.Model):
     hogst_avkastning = fields.Float(string = u"Högst avkastning")
     omsattning_per_anstalld = fields.Integer(string = u"Omsättning per anställd")
     resultat_per_anstalld = fields.Integer(string = u"Resultat per anställd")
-    lon_per_anstalld = fields.Integer(string = u"Lön per anställd")
+    lon_per_anstalld = fields.Integer(strincg = u"Lön per anställd")
     nettoomsattning = fields.Integer(string = u"Nettoomsättning")
     antal_anstallda = fields.Integer(string = u"Antal anställda")
     

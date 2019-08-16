@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_tag_wizard_view_form" model="ir.ui.view">
+        <field name="name">crm.tag.wizard.form</field>
+        <field name="model">crm.tag.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add tags">
+                <group class="oe_title">
+                    <field name="lead_ids" invisible='1' />
+                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" />
+                </group>
+                <footer>
+                    <button name="action_tag_apply" string="Submit" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="crm_tag_wizard_act" model="ir.actions.act_window">
+        <field name="name">Add Tags...</field>
+        <field name="res_model">crm.tag.wizard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="crm_tag_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+     <act_window
+            id="action_crm_tag_wizard"
+            name="Add Tags"
+            multi="True"
+            key2="client_action_multi"
+            res_model="crm.tag.wizard"
+            src_model="crm.lead"
+            view_mode="form"
+            target="new"
+            view_type="form"
+            groups="sales_team.group_sale_salesman" />
+</odoo>
