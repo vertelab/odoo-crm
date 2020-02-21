@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <record id="view_survey" model="ir.ui.view">
+        <field name="name">survey.department_id</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_form" />
+        <field name="arch" type="xml">
+            <notebook position='inside'>
+                <page name="department" string="Department">
+                    <group string="Department" name="department">
+                        <field name="department_id"/>
+                    </group>
+                </page>
+        </notebook>
+        </field>
+        </record>
+        <record id="view_users_form" model="ir.ui.view">
+            <field name="name">res.users.form.survey_department</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form" />
+            <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name='departments' string='Departments'>
+                    <group string="Multi Department">
+                        <field name="department_ids" nolabel='1'> 
+                            <tree>
+                                <field name='display_name' nolabel='1'/>
+                            </tree>  
+                        </field> 
+                    </group> 
+                </page>                        
+            </notebook>
+            </field>
+        </record>
+        <record id="view_employee_form" model="ir.ui.view">
+            <field name="name">hr.employee.form.survey_department</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form" />
+            <field name="arch" type="xml">
+                <field name="user_id" position="attributes">
+                    <attribute name="context">{'default_department_ids': department_id and [department_id] or []}</attribute>
+                </field>
+            </field>
+        </record>
+        <record id="view_users_simple_form" model="ir.ui.view">
+            <field name="name">res.users.form.survey_department</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_simple_form" />
+            <field name="arch" type="xml">
+                <field name="mobile" position="after">
+                    <field name="department_ids" nolabel='1'/> 
+                </field>
+            </field>
+        </record>
+    </odoo>
+
