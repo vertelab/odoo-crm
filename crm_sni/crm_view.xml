@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_crm_case_leads_filter" model="ir.ui.view">
+    <field name="name">crm.lead.search.sni</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.view_crm_case_leads_filter" />
+    <field name="arch" type="xml">
+      <field name="country_id" position="after">
+        <field name="sni_id" />
+      </field>
+    </field>
+  </record>
+  <record id="crm_case_form_view_leads" model="ir.ui.view">
+    <field name="name">crm.lead.form.sni</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_case_form_view_leads" />
+    <field name="arch" type="xml">
+      <field name="website" position='before'>
+        <field name="sni_id" />
+      </field>
+    </field>
+  </record>
+  <record id="crm_case_form_view_oppor" model="ir.ui.view">
+    <field name="name">crm.lead.form.sni</field>
+    <field name="model">crm.lead</field>
+    <field name="inherit_id" ref="crm.crm_case_form_view_oppor" />
+    <field name="arch" type="xml">
+      <field name="website" position='before'>
+        <field name="sni_id" />
+      </field>
+    </field>
+  </record>
+</odoo>
