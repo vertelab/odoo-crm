@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <record id="view_res_partner_search" model="ir.ui.view">
+      <field name="name">res.partner.creditsafe.search</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_res_partner_filter" />
+      <field name="arch" type="xml">
+        <filter name="supplier" position="after">
+          <separator />
+          <field name="branschkod" />
+          <field name="ant_anst_ab" />
+          <filter string="Branschkod" name="groupby_branschkod" domain="[]" context="{'group_by':'branschkod'}" />
+          <filter string="Antal anst" name="groupby_antal_anst" domain="[]" context="{'group_by':'ant_anst_ab'}" />
+        </filter>
+        <field name="user_id" position="after">
+          <field name="branschkod" />
+          <field name="ant_anst_ab" />
+        </field>
+      </field>
+    </record>
+    <record id="view_partner_form" model="ir.ui.view">
+      <field name="name">view.res.partner.form.creditsafe</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form" />
+      <field eval="18" name="priority" />
+      <field name="arch" type="xml">
+        <data>
+          <notebook position='inside'>
+            <page name="Statistics" string="Statistics">
+              <group>
+                <group string="Statistics" name="statistics">
+                  <field name="branschkod" />
+                  <field name="ant_anst_ab" />
+                  <field name="oms_intervall_scb" />
+                </group>
+              </group>
+            </page>
+          </notebook>
+        
+          <!--
+               <div name="button_box" position="inside">
+               <button class="oe_stat_button o_res_partner_tip_opp" type="action"
+               attrs="{'invisible': [('customer', '=', False)]}"
+               name="%(crm.crm_lead_opportunities)d"
+               icon="fa-star"
+               context="{'search_default_partner_id': active_id}">
+               <field string="Opportunities" name="opportunity_count" widget="statinfo"/>
+               </button>
+               <button class="oe_stat_button" type="object"
+               name="schedule_meeting"
+               icon="fa-calendar"
+               context="{'partner_id': active_id, 'partner_name': name}">
+               <field string="Meetings" name="meeting_count" widget="statinfo"/>
+               </button>
+               <button class="oe_stat_button" type="action"
+               name="%(crm.crm_activity_report_action_tree)d"
+               icon="fa-clock-o">
+               <field string="Activities" name="activities_count" widget="statinfo"/>
+               </button>
+               </div>
+          -->
+        </data>
+      </field>
+    </record>
+    <record id="view_crm_case_leads_filter" model="ir.ui.view">
+      <field name="name">crm.lead.search.creditsafe</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_crm_case_leads_filter" />
+      <field name="arch" type="xml">
+        <field name="country_id" position="after">
+          <field name="org_nr" />
+          <field name="bolagsform" />
+          <field name="kontor" />
+          <field name="branschkod" />
+        </field>
+        <filter name="groupby_createmonth" position="after">
+          <filter string="Bolagsform" name="groupby_bolagsform" domain="[]" context="{'group_by':'bolagsform'}" />
+          <filter string="Kontor" name="groupby_kontor" domain="[]" context="{'group_by':'kontor'}" />
+          <filter string="Branschkod" name="groupby_branschkod" domain="[]" context="{'group_by':'branschkod'}" />
+          <filter string="Antal anst" name="groupby_antal_anst" domain="[]" context="{'group_by':'ant_anst_ab'}" />
+        </filter>
+      </field>
+    </record>
+    <record id="crm_case_form_view_leads" model="ir.ui.view">
+      <field name="name">crm.lead.form.creditsafe</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_case_form_view_leads" />
+      <field name="arch" type="xml">
+        <notebook position='inside'>
+          <page name="creditsafe" string="Company Info">
+            <group>
+              <group string="Basic" name="basic">
+                <field name="org_nr" />
+                <field name="bolagsform" />
+                <field name="kontor" />
+                <field name="koncernbolag" />
+                <field name="reg_datum" />
+                <field name="vd_namn" />
+              </group>
+              <group string="Statistics" name="statistics">
+                <field name="branschkod" />
+                <field name="ant_anst_ab" />
+                <field name="oms_intervall_scb" />
+                <field name="resultat_fore_skatt" />
+              </group>
+            </group>
+          </page>
+        </notebook>
+      </field>
+    </record>
+  </data>
+</openerp>
