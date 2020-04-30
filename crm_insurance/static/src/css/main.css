@@ -1,0 +1,38 @@
+﻿h1.b-title{
+    margin: 2%;
+    text-align: center;
+}
+
+h3.p-title {
+}
+
+.get_blog_posts{
+    text-align: center;
+}
+
+.cover_blogpage_styling a{
+	width: 300px;
+	height: 200px;
+}
+
+li a{
+	color:black;
+}
+
+.card-body a {
+    color: black;
+}
+
+.s_three_columns{
+	background: rgba(150, 150, 220, 0.3);
+}
+
+.blog_cover_three{
+background-size: contain !important;
+background-position: center;
+background-repeat: no-repeat;
+}
+
+.card-img-top{
+	/*max-height: 189px;*/
+}
