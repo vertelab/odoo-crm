@@ -6,21 +6,43 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <notebook position="inside">
-                <page string="Company" attrs="{'invisible': [('company_type', '!=', 'company')]}">
+                <page string="Company" attrs="{'required': [('company_type', '=', 'company')]}">
                     <group>
+                        <field name="is_fellowship"/>
+                        <field name="is_accommodator"/>
                         <field name="have_liability_insurance"/>
                     </group>
                 </page>
+<!--
                 <page string="Fellowship" attrs="{'invisible': [('company_type', '!=', 'fellowship')]}">
+-->
+<!--
                     <group>
+-->
+<!--
                         <field name="have_liability_insurance"/>
+-->
+<!--
                     </group>
+-->
+<!--
                 </page>
+-->
+<!--
                 <page string="Accommodator" attrs="{'invisible': [('company_type', '!=', 'accommodator')]}">
+-->
+<!--
                     <group>
+-->
+<!--
                         <field name="have_liability_insurance"/>
+-->
+<!--
                     </group>
+-->
+<!--
                 </page>
+-->
             </notebook>
         </field>
     </record>

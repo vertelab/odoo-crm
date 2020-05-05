@@ -32,11 +32,23 @@ class res_partner(models.Model):
     is_accommodator = fields.Boolean(string = 'Accommodator', help = 'This is an accommodator')
     have_liability_insurance = fields.Boolean(string = 'Liability insurance', help = 'true if the company have a liability insurance, else false')
     
+    # ~ company_type = fields.Selection(selection_add=[('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')])
+    
+    # ~ company_type = fields.Selection(string='Company Type',
+        # ~ selection=[('person', 'Individual'), ('company', 'Company'), ('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')],
+        # ~ compute='_compute_insurance_company_type', inverse='_write_insurance_company_type')
+        
+    # ~ fellowship_id = fields.Many2one('res.fellowship', 'Fellowship', index=True, default=_default_fellowship)
+    
+    
+    
+    
+    
     # ~ company_type = fields.Selection(string='Company Type',
         # ~ selection=[('person', 'Individual'), ('company', 'Company')],
         # ~ compute='_compute_company_type', inverse='_write_company_type')
         
-    @api.depends('is_company','is_fellowship','is_accommodator')
+    """@api.depends('is_company','is_fellowship','is_accommodator')
     def _compute_insurance_company_type(self):
         # ~ for partner in self:
             # ~ partner.company_type = 'company' if partner.is_company else 'person'
@@ -59,6 +71,8 @@ class res_partner(models.Model):
             partner.is_company = (partner.company_type == 'company')
             partner.is_fellowship = (partner.company_type == 'fellowship')
             partner.is_accommodator = (partner.company_type == 'accommodator')
+            
+            
 
     @api.onchange('company_type')
     def onchange_insurance_company_type(self):
@@ -66,9 +80,10 @@ class res_partner(models.Model):
         # ~ raise Warning('Haze onchange')
         self.is_company = (self.company_type == 'company')
         self.is_fellowship = (self.company_type == 'fellowship')
-        self.is_accommodator = (self.company_type == 'accommodator')
+        self.is_accommodator = (self.company_type == 'accommodator')"""
         
-    company_type = fields.Selection(selection_add=[('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')], compute='_compute_insurance_company_type', inverse='_write_insurance_company_type')
+    # ~ company_type = fields.Selection(selection_add=[('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')], 
+    # ~ compute='_compute_insurance_company_type', inverse='_write_insurance_company_type')
     
     def _count_accommodator(self):
         self.count_accommodator = len(self.env['res.partner'].search([('parent_id', '=', self.id),('is_accommodator', '=', True)]))
