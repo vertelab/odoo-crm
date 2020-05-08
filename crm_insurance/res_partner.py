@@ -24,30 +24,48 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    is_fellowship = fields.Boolean(string = 'Fellowship', help = 'This is fellowship of companies.')
-    # ~ is_company = fields.Boolean(string = 'Company', help = 'This is a companies')
-    is_accommodator = fields.Boolean(string = 'Accommodator', help = 'This is an accommodator')
-    have_liability_insurance = fields.Boolean(string = 'Liability insurance', help = 'true if the company have a liability insurance, else false')
+    is_fellowship = fields.Boolean(string='Fellowship', help='This is fellowship of companies.')
+    # ~ is_company = fields.Boolean(string='Company', help='This is a companies')
+    is_accommodator = fields.Boolean(string='Accommodator', help='This is an accommodator')
+    have_liability_insurance = fields.Boolean(string='Liability insurance', help='true if the company have a liability insurance, else false')
+    # ~ insurance_permission_ids = fields.Many2many(comodel_name='res.insurance_permissions', string='Permission')
+    membership_ids = fields.Many2many(comodel_name='res.partner', relation='partner_member_rel', column1='parent_id',column2='member_id', string='Membership ID')
+    
+    
+    @api.multi
+    def accommodator_button(self):
+        partner_ids = self.ids
+        partner_ids.append(self.env.user.partner_id.id)
+        action = self.env.ref('base.view_partner_tree').read()[0]
+        action['domain'] = [('parent_id', 'in', self.search([('parent_id', '=', self.id)]))]
+        action['context'] = {
+            # ~ 'search_default_partner_ids': self._context['partner_name'],
+            'default_partner_ids': partner_ids,
+        }
+        return action
+        
+    @api.multi
+    def company_button(self):
+        partner_ids = self.ids
+        partner_ids.append(self.env.user.partner_id.id)
+        action = self.env.ref('base.view_partner_tree').read()[0]
+        action['domain'] = [('parent_id', 'in', self.search([('parent_id', '=', self.id)]))]
+        action['context'] = {
+            # ~ 'search_default_partner_ids': self._context['partner_name'],
+            'default_partner_ids': partner_ids,
+        }
+        return action
     
     # ~ company_type = fields.Selection(selection_add=[('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')])
-    
-    # ~ company_type = fields.Selection(string='Company Type',
-        # ~ selection=[('person', 'Individual'), ('company', 'Company'), ('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')],
-        # ~ compute='_compute_insurance_company_type', inverse='_write_insurance_company_type')
-        
     # ~ fellowship_id = fields.Many2one('res.fellowship', 'Fellowship', index=True, default=_default_fellowship)
-    
-    
-    
-    
-    
     # ~ company_type = fields.Selection(string='Company Type',
         # ~ selection=[('person', 'Individual'), ('company', 'Company')],
         # ~ compute='_compute_company_type', inverse='_write_company_type')
-        
+    #TODO: Added selection options show in the selection field but can not be clicked. 
     """@api.depends('is_company','is_fellowship','is_accommodator')
     def _compute_insurance_company_type(self):
         # ~ for partner in self:
@@ -85,24 +103,98 @@ class res_partner(models.Model):
     # ~ company_type = fields.Selection(selection_add=[('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')], 
     # ~ compute='_compute_insurance_company_type', inverse='_write_insurance_company_type')
     
-    def _count_accommodator(self):
+    def _compute_count_accommodator(self):
         self.count_accommodator = len(self.env['res.partner'].search([('parent_id', '=', self.id),('is_accommodator', '=', True)]))
-        
-    count_accommodator = fields.Integer(string = 'Count of accommodators',compute = '_count_accommodator')
+    count_accommodator = fields.Integer(string='Count Accommodators',compute ='_compute_count_accommodator')
+    # ~ accommodator_ids = fields.Many2many(comodel_name='res.partner', relation='partner_accommodator_rel', column1='parent_id',column2='accommodator_id',domain='[("parent_id", "=", self.id)]', context='{"default_is_accommodator": True}')
     
-    def _count_life_insurance(self):
+    def _compute_count_life_insurance(self):
         self.count_life_insurance = len(self.env['res.partner'].search([('parent_id', '=', self.id)]))
-    count_life_insurance = fields.Integer(string = 'Count life insurance',compute = '_count_life_insurance')
+    count_life_insurance = fields.Integer(string='Count life insurance',compute ='_compute_count_life_insurance')
     
-    def _count_property_insurance(self):
+    def _compute_count_property_insurance(self):
         self.count_property_insurance = len(self.env['res.partner'].search([('parent_id', '=', self.id)]))
-    count_property_insurance = fields.Integer(string = 'Count property insurance',compute = '_count_property_insurance')
+    count_property_insurance = fields.Integer(string='Count property insurance',compute ='_compute_count_property_insurance')
         
-    def _count_company(self):
+    def _compute_count_company(self):
         self.count_company = len(self.env['res.partner'].search([('parent_id', '=', self.id),('is_company','=', True)]))
-    count_company = fields.Integer(string = 'Count company',compute = '_count_company') 
-        
+    count_company = fields.Integer(string='Count Company',compute ='_compute_count_company')
+    # ~ company_ids = fields.Many2many(comdoel_name='res.partner', realtion='partner_company_rel', column1='parent_id', column2='company_id', domain='[("parent_id", "=", self.id)]', context='{"default_is_company": True}')
     
-    # ~ date_entry = fields.Date(string='Date entry', required=True, help="Computed loggning membership")
-    # ~ date_exit = fields.Date(string='Date exit', required=True, help="Computed membership")
+    
+    
+    # ~ @api.multi
+    # ~ def _compute_meeting_count(self):
+        # ~ for partner in self:
+            # ~ partner.meeting_count = len(partner.meeting_ids)
+    # ~ meeting_ids = fields.Many2many('calendar.event', 'calendar_event_res_partner_rel', 'res_partner_id', 'calendar_event_id', string='Meetings', copy=False)
+    # ~ meeting_count = fields.Integer("# Meetings", compute='_compute_meeting_count')
+    
+    # ~ url_financial_supervisory = fields.Text(string = 'URL')
+    
 
+    # ~ revenue = fields.Float(string = 'Revenue')
+    # ~ revenue_property = fields.Float(string = 'Revenue Property Insurance')
+    # ~ revenue_life = fields.Float(string = 'Revenue Life Insurance')
+    
+    
+# ~ class insurance_permissions(models.Model):
+    # ~ _description = 'Permissions'
+    # ~ _name = "res.insurance.permissions"
+    # ~ _order = "display_name"
+    
+    # ~ date_entry = fields.Date(string='Date entry', required=True, index=True, help="Computed loggning membership")
+    # ~ date_exit = fields.Date(string='Date exit', required=True, index=True, help="Computed membership")
+    
+    
+    
+class member(models.Model):
+    _description = 'Member'
+    _name = "res.member"
+    _order = "display_name"
+    
+    active = fields.Boolean('Active', default=True)
+    
+    partner_id = fields.Many2one('res.partner', string='Partner', index=True)
+    # ~ parent_name = fields.Char(related='partner_id.name', readonly=True, string='Parent name')
+    # ~ child_ids = fields.One2many('res.member', 'parent_id', string='Membership', domain=[('active', '=', True)])
+    
+    # ~ start_date = fields.Date(string='Start Date', required=True, index=True, help="Computed the date join membership")
+    # ~ stop_date = fields.Date(string='Stop Date', required=True, index=True, help="Computed the date stop membmership")
+    # ~ invoice_id = fields.Many2one(comodel_name = 'account.invoice', string='Invoice')
+    
+    
+        
+# ~ class res_partner_invoice(models.Model):
+    # ~ _description = 'Partner Invoice'
+    # ~ _inherit = 'account_invoice'
+    # ~ _name = "res.partner.invoice"
+    # ~ _order = "number desc, id desc"
+    # ~ _track = {
+        # ~ 'type': {
+        # ~ },
+        # ~ 'state': {
+            # ~ 'account.mt_invoice_paid': lambda self, cr, uid, obj, ctx=None: obj.state == 'paid' and obj.type in ('out_invoice', 'out_refund'),
+            # ~ 'account.mt_invoice_validated': lambda self, cr, uid, obj, ctx=None: obj.state == 'open' and obj.type in ('out_invoice', 'out_refund'),
+        # ~ },
+    # ~ }
+
+# ~ class AgentPartnerPage(http.Controller):
+
+    # ~ # Do not use semantic controller due to SUPERUSER_ID
+    # ~ @http.route(['/partners/<partner_id>'], type='http', auth="public", website=True)
+    # ~ def partners_detail(self, partner_id, **post):
+        # ~ _, partner_id = unslug(partner_id)
+        # ~ if partner_id:
+            # ~ partner_sudo = request.env['res.partner'].sudo().browse(partner_id)
+            # ~ is_agent = request.env['res.users'].has_group('website.group_website_publisher')
+            # ~ if partner_sudo.exists() and (partner_sudo.website_published or is_website_publisher):
+                # ~ values = {
+                    # ~ 'main_object': partner_sudo,
+                    # ~ 'partner': partner_sudo,
+                    # ~ 'edit_page': False
+                # ~ }
+                # ~ return request.render("website_partner.partner_page", values)
+        # ~ return request.not_found()
+
+   
