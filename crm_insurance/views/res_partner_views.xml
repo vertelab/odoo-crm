@@ -31,7 +31,6 @@
         <page string="Company" attrs="{'invisible': [('company_type', '!=', 'company')]}">
           <group>
             <field name="is_fellowship" />
-            <field name="is_accommodator" />
             <field name="have_liability_insurance" />
           </group>
         </page>
