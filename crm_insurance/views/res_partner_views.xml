@@ -12,26 +12,31 @@
         <button class="oe_stat_button" name="company_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('is_company', '!=', True)]}">
           <field name="count_company" widget="statinfo" />
         </button>
-        <button class="oe_stat_button"
-            name="accommodator_button"
-            type="object"
-            icon="fa-group"
-            context="{'partner_id': active_id, 'partner_name': name}"
-            attrs="{'invisible': [('company_type', '!=', 'company')]}">
-            <field name="count_accommodator" widget="statinfo" />
+        <button class="oe_stat_button" name="accommodator_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
+          <field name="count_accommodator" widget="statinfo" />
+        </button>
+        <button class="oe_stat_button" name="life_insurance_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
+          <field name="count_life_insurance" widget="statinfo" />
+        </button>
+        <button class="oe_stat_button" name="property_insurance_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
+          <field name="count_property_insurance" widget="statinfo" />
         </button>
       </div>
       <notebook position="inside">
         <page string="Accommodator" attrs="{'invisible': [('company_type', '=', 'company')]}">
           <group>
             <field name="is_accommodator" />
-            <field name="have_liability_insurance" />
+          </group>
+        </page>
+        <page string="Liability Insurance" attrs="{'invisible': [('company_type', '=', 'company')]}">
+          <group>
+            <field name="have_life_insurance" />
+            <field name="have_property_insurance" />
           </group>
         </page>
         <page string="Company" attrs="{'invisible': [('company_type', '!=', 'company')]}">
           <group>
             <field name="is_fellowship" />
-            <field name="have_liability_insurance" />
           </group>
         </page>
         <!--

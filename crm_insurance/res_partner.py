@@ -31,8 +31,10 @@ class res_partner(models.Model):
     is_fellowship = fields.Boolean(string='Fellowship', default=False, help='This is fellowship of companies.')
     # ~ is_company = fields.Boolean(string='Company', default=False, help='This is a companies')
     is_accommodator = fields.Boolean(string='Accommodator', default=False, help='This is an accommodator')
-    have_liability_insurance = fields.Boolean(string='Liability insurance', help='true if the company have a liability insurance, else false')
-    # ~ insurance_permission_ids = fields.Many2many(comodel_name='res.insurance_permissions', string='Permission')
+    have_liability_insurance = fields.Boolean(string='Liability Insurance', help='true if the company have a liability insurance, else false')
+    have_life_insurance = fields.Boolean(string='Life Insurance', default=False, help='This is life insurance')
+    have_property_insurance=fields.Boolean(string='Property Insurance', default=False, help='This is property insurance')
+    # ~ insurance_permission_ids = fields.Many2many(comodel_name='res.partner', string='Permission')
     membership_ids = fields.Many2many(comodel_name='res.partner', relation='partner_member_rel', column1='parent_id',column2='member_id', string='Membership ID')
     count_accommodator = fields.Integer(string='Count Accommodators', compute ='_compute_count_accommodator')
     count_life_insurance = fields.Integer(string='Count life insurance', compute ='_compute_count_life_insurance')
@@ -43,10 +45,10 @@ class res_partner(models.Model):
         self.count_accommodator = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_accommodator', '=', True)])
     
     def _compute_count_life_insurance(self):
-        self.count_life_insurance = self.env['res.partner'].search_count([('id', 'child_of', self.id)])
+        self.count_life_insurance = self.env['res.partner'].search_count([('id', 'child_of', self.id),('have_life_insurance', '=', True)])
     
     def _compute_count_property_insurance(self):
-        self.count_property_insurance = self.env['res.partner'].search_count([('id', 'child_of', self.id)])
+        self.count_property_insurance = self.env['res.partner'].search_count([('id', 'child_of', self.id),('have_property_insurance', '=', True)])
     
         
     def _compute_count_company(self):
@@ -54,27 +56,42 @@ class res_partner(models.Model):
     
     @api.multi
     def accommodator_button(self):
-        _logger.warn('self._context: %s' % self._context)
-        _logger.warn('self.env.context: %s' % self.env.context)
         partner_ids = self.ids
         partner_ids.append(self.env.user.partner_id.id)
         action = self.env['ir.actions.act_window'].for_xml_id('contacts', 'action_contacts')
-        # ~ action['domain'] = [('parent_id', 'in', self.search([('parent_id', '=', self.id)]))]
         action['context'] = {
             'default_partner_ids': partner_ids,
         }
         action['domain'] = [('id', 'child_of', self.id),('is_accommodator', '=', True)]
         return action
+    
+    @api.multi
+    def life_insurance_button(self):
+        partner_ids = self.ids
+        partner_ids.append(self.env.user.partner_id.id)
+        action = self.env['ir.actions.act_window'].for_xml_id('contacts', 'action_contacts')
+        action['context'] = {
+            'default_partner_ids': partner_ids,
+        }
+        action['domain'] = [('id', 'child_of', self.id),('have_life_insurance', '=', True)]
+        return action
         
-   
-        # ~ return action
+    @api.multi
+    def property_insurance_button(self):
+        partner_ids = self.ids
+        partner_ids.append(self.env.user.partner_id.id)
+        action = self.env['ir.actions.act_window'].for_xml_id('contacts', 'action_contacts')
+        action['context'] = {
+            'default_partner_ids': partner_ids,
+        }
+        action['domain'] = [('id', 'child_of', self.id),('have_property_insurance', '=', True)]
+        return action
         
     @api.multi
     def company_button(self):
         partner_ids = self.ids
         partner_ids.append(self.env.user.partner_id.id)
         action = self.env['ir.actions.act_window'].for_xml_id('contacts', 'action_contacts')
-        # ~ action['domain'] = [('parent_id', 'in', self.search([('parent_id', '=', self.id)]))]
         action['context'] = {
             'default_partner_ids': partner_ids,
         }
