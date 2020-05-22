@@ -40,6 +40,8 @@ class res_partner(models.Model):
     count_life_insurance = fields.Integer(string='Count life insurance', compute ='_compute_count_life_insurance')
     count_property_insurance = fields.Integer(string='Count property insurance', compute ='_compute_count_property_insurance')
     count_company = fields.Integer(string='Count Company', compute ='_compute_count_company')
+    vat = fields.Char(string='Tax ID', help="The Tax Identification Number. Complete it if the contact is subjected to government taxes. Used in some legal statements.")
+
     
     def _compute_count_accommodator(self):
         self.count_accommodator = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_accommodator', '=', True)])
@@ -97,6 +99,9 @@ class res_partner(models.Model):
         }
         action['domain'] = [('id', 'child_of', self.id),('is_company', '=', True)]
         return action
+        
+        
+
     
     # ~ company_type = fields.Selection(selection_add=[('fellowship', 'Fellowship'), ('accommodator', 'Accommodator')])
     # ~ fellowship_id = fields.Many2one('res.fellowship', 'Fellowship', index=True, default=_default_fellowship)
@@ -194,19 +199,6 @@ class member(models.Model):
     
     
         
-# ~ class res_partner_invoice(models.Model):
-    # ~ _description = 'Partner Invoice'
-    # ~ _inherit = 'account_invoice'
-    # ~ _name = "res.partner.invoice"
-    # ~ _order = "number desc, id desc"
-    # ~ _track = {
-        # ~ 'type': {
-        # ~ },
-        # ~ 'state': {
-            # ~ 'account.mt_invoice_paid': lambda self, cr, uid, obj, ctx=None: obj.state == 'paid' and obj.type in ('out_invoice', 'out_refund'),
-            # ~ 'account.mt_invoice_validated': lambda self, cr, uid, obj, ctx=None: obj.state == 'open' and obj.type in ('out_invoice', 'out_refund'),
-        # ~ },
-    # ~ }
 
 
    
