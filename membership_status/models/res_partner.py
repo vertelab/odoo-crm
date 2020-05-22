@@ -26,4 +26,4 @@ _logger = logging.getLogger(__name__)
 class res_partner(models.Model):
     _inherit = "res.partner"
 
-    membership_status = fields.Selection([("stage 1", "Stage 1"),("stage 2", "Stage 2"),("stage 3", "Stage 3"), ("stage 4", "Stage 4")], default="Stage 1")
+    membership_status = fields.Selection([("stage 1", "Stage 1"),("stage 2", "Stage 2"),("stage 3", "Stage 3"), ("stage 4", "Stage 4")], default="stage 1")
