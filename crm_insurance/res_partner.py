@@ -142,7 +142,7 @@ class res_partner(models.Model):
     # ~ meeting_ids = fields.Many2many('calendar.event', 'calendar_event_res_partner_rel', 'res_partner_id', 'calendar_event_id', string='Meetings', copy=False)
     # ~ meeting_count = fields.Integer("# Meetings", compute='_compute_meeting_count')
     
-    url_financial_supervisory = fields.Text(string = 'URL')
+    #url_financial_supervisory = fields.Text(string = 'URL')
     
 
     # ~ revenue = fields.Float(string = 'Revenue')
