@@ -7,16 +7,40 @@
     <field name="arch" type="xml">
       <filter name="inactive" position="before">
         <separator />
-        <field name="vat"/>
-        <filter string="Tax ID" name="vat" />
+        <field name="vat" />
+        <filter string="Tax ID" name="vat" domain="[('is_company','=',True)]"/>
+        <field name="personnumber" />
+        <filter string="Person Number" name="personnumber" domain="[('is_company','=',False)]"/>
+        <field name="city" />
+        <filter string="City" name="city" domain="[('is_company','=',True)]"/>
       </filter>
     </field>
   </record>
+  
+  <record id="res_partner_view_tree_inherit_menu" model="ir.ui.view">
+    <field name="name">res.partner.view.tree.inherit.menu</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_tree" />
+    <field name="arch" type="xml">
+      <field name="display_name" position="before">
+        <field name="active" />
+        <field name="company_type" />
+      </field>
+      <field name="phone" position="before" >
+        <field name="org_prn"  />
+        <field name="city" />
+      </field>
+    </field>
+  </record>
+  
   <record id="view_partners_form_crm_insurance" model="ir.ui.view">
     <field name="name">view.res.partner.form.crm.insurance.inherited</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form" />
     <field name="arch" type="xml">
+      <field name="vat" position="before">
+        <field name="personnumber" placeholder="10 or 12 digital" attrs="{'invisible': [('company_type', '=', 'company')]}" />
+      </field>
       <field name="lang" position="after">
         <field name="membership_ids" widget="many2many_tags" placeholder="MembershipID" />
       </field>

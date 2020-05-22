@@ -36,12 +36,20 @@ class res_partner(models.Model):
     have_property_insurance=fields.Boolean(string='Property Insurance', default=False, help='This is property insurance')
     # ~ insurance_permission_ids = fields.Many2many(comodel_name='res.partner', string='Permission')
     membership_ids = fields.Many2many(comodel_name='res.partner', relation='partner_member_rel', column1='parent_id',column2='member_id', string='Membership ID')
-    count_accommodator = fields.Integer(string='Count Accommodators', compute ='_compute_count_accommodator')
-    count_life_insurance = fields.Integer(string='Count life insurance', compute ='_compute_count_life_insurance')
-    count_property_insurance = fields.Integer(string='Count property insurance', compute ='_compute_count_property_insurance')
-    count_company = fields.Integer(string='Count Company', compute ='_compute_count_company')
+    count_accommodator = fields.Integer(string='Accommodators', compute ='_compute_count_accommodator')
+    count_life_insurance = fields.Integer(string='Life Insurance', compute ='_compute_count_life_insurance')
+    count_property_insurance = fields.Integer(string='Property Insurance', compute ='_compute_count_property_insurance')
+    count_company = fields.Integer(string='Company', compute ='_compute_count_company')
     vat = fields.Char(string='Tax ID', help="The Tax Identification Number. Complete it if the contact is subjected to government taxes. Used in some legal statements.")
-
+    personnumber = fields.Char(string='Person Number', help="This is person number")
+    org_prn = fields.Char(string="Org/Person Number", compute ='_compute_org_prn')
+    
+    @api.one
+    def _compute_org_prn(self):
+        if self.company_type == 'company':
+            self.org_prn = self.vat
+        elif self.company_type == 'person':
+            self.org_prn = self.personnumber
     
     def _compute_count_accommodator(self):
         self.count_accommodator = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_accommodator', '=', True)])
