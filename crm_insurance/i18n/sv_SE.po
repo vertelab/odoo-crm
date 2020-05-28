@@ -1,0 +1,231 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* crm_insurance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0-20190808\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-28 14:43+0000\n"
+"PO-Revision-Date: 2020-05-28 14:43+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: crm_insurance
+#: model_terms:ir.ui.view,arch_db:crm_insurance.view_partners_form_crm_insurance
+msgid "10 or 12 digital"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.actions.act_window,name:crm_insurance.action_accommodator_form
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__is_accommodator
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__is_accommodator
+#: model:ir.ui.menu,name:crm_insurance.res_partner_menu_accommodator
+#: model_terms:ir.ui.view,arch_db:crm_insurance.view_partners_form_crm_insurance
+msgid "Accommodator"
+msgstr "Förmedlare"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__count_accommodator
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__count_accommodator
+msgid "Accommodators"
+msgstr "Förmedlare"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__active
+msgid "Active"
+msgstr "Aktiv"
+
+#. module: crm_insurance
+#. openerp-web
+#: code:addons/crm_insurance/static/src/js/blog_backend.js:120
+#: code:addons/crm_insurance/static/src/js/blog_frontend.js:60
+#, python-format
+msgid "An error occured with this latest posts block. If the problem persists, please consider deleting it and adding a new one"
+msgstr ""
+
+#. module: crm_insurance
+#: model_terms:ir.ui.view,arch_db:crm_insurance.res_partner_view_search_inherit_taxid
+msgid "City"
+msgstr "Stad"
+
+#. module: crm_insurance
+#: model:ir.actions.act_window,name:crm_insurance.action_company_form
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__count_company
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__count_company
+#: model:ir.ui.menu,name:crm_insurance.res_partner_menu_company
+#: model_terms:ir.ui.view,arch_db:crm_insurance.view_partners_form_crm_insurance
+msgid "Company"
+msgstr "Bolag"
+
+#. module: crm_insurance
+#: model:ir.model,name:crm_insurance.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__create_uid
+msgid "Created by"
+msgstr "Skapad av"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__create_date
+msgid "Created on"
+msgstr "Skapad den"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__display_name
+msgid "Display Name"
+msgstr "Visningsnamn"
+
+#. module: crm_insurance
+#: model:ir.actions.act_window,name:crm_insurance.action_fellowship_form
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__is_fellowship
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__is_fellowship
+#: model:ir.ui.menu,name:crm_insurance.res_partner_menu_fellowship
+msgid "Fellowship"
+msgstr "Sammanslutning"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__id
+msgid "ID"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member____last_update
+msgid "Last Modified on"
+msgstr "Senast redigerad"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__write_uid
+msgid "Last Updated by"
+msgstr "Senast uppdaterad av"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__write_date
+msgid "Last Updated on"
+msgstr "Senast uppdaterad"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__have_liability_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__have_liability_insurance
+#: model_terms:ir.ui.view,arch_db:crm_insurance.view_partners_form_crm_insurance
+msgid "Liability Insurance"
+msgstr "Ansvarsförsäkring"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__count_life_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__have_life_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__count_life_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__have_life_insurance
+msgid "Life Insurance"
+msgstr "Livförmedlare"
+
+#. module: crm_insurance
+#: model:ir.model,name:crm_insurance.model_res_member
+msgid "Member"
+msgstr "Medlem"
+
+#. module: crm_insurance
+#: model:ir.ui.menu,name:crm_insurance.crm_menu_membership
+msgid "Membership"
+msgstr "Medlemskap"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__membership_ids
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__membership_ids
+msgid "Membership ID"
+msgstr "Medlemskap ID"
+
+#. module: crm_insurance
+#: model_terms:ir.ui.view,arch_db:crm_insurance.view_partners_form_crm_insurance
+msgid "MembershipID"
+msgstr "Medlemskap ID"
+
+#. module: crm_insurance
+#. openerp-web
+#: code:addons/crm_insurance/static/src/js/blog_backend.js:105
+#: code:addons/crm_insurance/static/src/js/blog_frontend.js:45
+#, python-format
+msgid "No blog post was found. Make sure your posts are published."
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__org_prn
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__org_prn
+msgid "Org/Person Number"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_member__partner_id
+msgid "Partner"
+msgstr "Samarbetspartner"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__personnumber
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__personnumber
+#: model_terms:ir.ui.view,arch_db:crm_insurance.res_partner_view_search_inherit_taxid
+msgid "Person Number"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__count_property_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__have_property_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__count_property_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__have_property_insurance
+msgid "Property Insurance"
+msgstr "Sakförmedlare"
+
+#. module: crm_insurance
+#: model:ir.model.fields,field_description:crm_insurance.field_res_partner__vat
+#: model:ir.model.fields,field_description:crm_insurance.field_res_users__vat
+#: model_terms:ir.ui.view,arch_db:crm_insurance.res_partner_view_search_inherit_taxid
+msgid "Tax ID"
+msgstr "Momsregistreringsnummer"
+
+#. module: crm_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_partner__vat
+#: model:ir.model.fields,help:crm_insurance.field_res_users__vat
+msgid "The Tax Identification Number. Complete it if the contact is subjected to government taxes. Used in some legal statements."
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_partner__is_accommodator
+#: model:ir.model.fields,help:crm_insurance.field_res_users__is_accommodator
+msgid "This is an accommodator"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_partner__is_fellowship
+#: model:ir.model.fields,help:crm_insurance.field_res_users__is_fellowship
+msgid "This is fellowship of companies."
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_partner__have_life_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_users__have_life_insurance
+msgid "This is life insurance"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_partner__personnumber
+#: model:ir.model.fields,help:crm_insurance.field_res_users__personnumber
+msgid "This is person number"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_partner__have_property_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_users__have_property_insurance
+msgid "This is property insurance"
+msgstr ""
+
+#. module: crm_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_partner__have_liability_insurance
+#: model:ir.model.fields,help:crm_insurance.field_res_users__have_liability_insurance
+msgid "true if the company have a liability insurance, else false"
+msgstr ""
+

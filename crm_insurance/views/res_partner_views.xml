@@ -23,7 +23,6 @@
     <field name="inherit_id" ref="base.view_partner_tree" />
     <field name="arch" type="xml">
       <field name="display_name" position="before">
-        <field name="active" />
         <field name="company_type" />
       </field>
       <field name="phone" position="before" >
@@ -108,4 +107,62 @@
       </notebook>
     </field>
   </record>
+  
+  <record id="action_fellowship_form" model="ir.actions.act_window">
+    <field name="name">Fellowship</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[("is_fellowship","=", True),("is_company","=",True)]</field>
+    <field name="view_id" ref="base.res_partner_kanban_view" />
+    <field name="search_view_id" ref="base.view_res_partner_filter"/>
+  </record>
+  
+  <record id="action_accommodator_form" model="ir.actions.act_window">
+    <field name="name">Accommodator</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[("is_accommodator","=", True),("is_company","=",False)]</field>
+    <field name="view_id" ref="base.res_partner_kanban_view" />
+    <field name="search_view_id" ref="base.view_res_partner_filter"/>
+  </record>
+  
+  <record id="action_company_form" model="ir.actions.act_window">
+    <field name="name">Company</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[("is_company","=", True)]</field>
+    <field name="view_id" ref="base.res_partner_kanban_view" />
+    <field name="search_view_id" ref="base.view_res_partner_filter"/>
+  </record>
+  
+  <menuitem
+        id="crm_menu_membership"
+        name="Membership"
+        parent="crm.crm_menu_root"
+        sequence="0"/>
+        
+  <menuitem id="res_partner_menu_fellowship"
+        name="Fellowship"
+        parent="crm_menu_membership"
+        action="action_fellowship_form"
+        sequence="1"/>
+        
+  <menuitem id="res_partner_menu_accommodator"
+        name="Accommodator"
+        parent="crm_menu_membership"
+        action="action_accommodator_form"
+        sequence="2"/>
+        
+  <menuitem id="res_partner_menu_company"
+        name="Company"
+        parent="crm_menu_membership"
+        action="action_company_form"
+        sequence="3"/>
+        
+  
+
+
 </odoo>
