@@ -18,7 +18,7 @@ msgstr ""
 #. module: crm_insurance
 #: model_terms:ir.ui.view,arch_db:crm_insurance.view_partners_form_crm_insurance
 msgid "10 or 12 digital"
-msgstr ""
+msgstr "10 eller 12 siffror"
 
 #. module: crm_insurance
 #: model:ir.actions.act_window,name:crm_insurance.action_accommodator_form
@@ -170,7 +170,7 @@ msgstr "Samarbetspartner"
 #: model:ir.model.fields,field_description:crm_insurance.field_res_users__personnumber
 #: model_terms:ir.ui.view,arch_db:crm_insurance.res_partner_view_search_inherit_taxid
 msgid "Person Number"
-msgstr ""
+msgstr "Personnummer"
 
 #. module: crm_insurance
 #: model:ir.model.fields,field_description:crm_insurance.field_res_partner__count_property_insurance
