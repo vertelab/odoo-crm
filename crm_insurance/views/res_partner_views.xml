@@ -150,17 +150,19 @@
         action="action_fellowship_form"
         sequence="1"/>
         
-  <menuitem id="res_partner_menu_accommodator"
-        name="Accommodator"
-        parent="crm_menu_membership"
-        action="action_accommodator_form"
-        sequence="2"/>
-        
   <menuitem id="res_partner_menu_company"
         name="Company"
         parent="crm_menu_membership"
         action="action_company_form"
+        sequence="2"/>
+        
+  <menuitem id="res_partner_menu_accommodator"
+        name="Accommodator"
+        parent="crm_menu_membership"
+        action="action_accommodator_form"
         sequence="3"/>
+        
+  
         
   
 
