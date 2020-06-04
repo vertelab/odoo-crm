@@ -48,6 +48,7 @@ class res_partner(models.Model):
     # ~ have_property_insurance=fields.Boolean(string='Property Insurance', default=False, help='This is property insurance')
     # ~ insurance_permission_ids = fields.Many2many(comodel_name='res.partner', string='Permission')
     membership_ids = fields.Many2many(comodel_name='res.partner', relation='partner_member_rel', column1='parent_id',column2='member_id', string='Membership ID')
+    count_fellowship = fields.Integer(string='Accommodators', compute ='_compute_count_fellowship')
     count_accommodator = fields.Integer(string='Accommodators', compute ='_compute_count_accommodator')
     count_life_insurance = fields.Integer(string='Life Insurance', compute ='_compute_count_life_insurance')
     count_property_insurance = fields.Integer(string='Property Insurance', compute ='_compute_count_property_insurance')
@@ -64,6 +65,9 @@ class res_partner(models.Model):
             self.org_prn = self.vat
         elif self.company_type == 'person':
             self.org_prn = self.personnumber
+            
+    def _compute_count_fellowship(self):
+        self.count_fellowship = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_fellowship', '=', True)])
     
     def _compute_count_accommodator(self):
         self.count_accommodator = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_accommodator', '=', True)])
@@ -86,7 +90,16 @@ class res_partner(models.Model):
     def _compute_life_protperty_permission(self):
         self.count_life_protperty_insurance_permission = self.env['res.partner'].search_count([('id', 'child_of', self.id),('liability_insurance_permission', '=', self.env.ref('crm_insurance.crm_insurance_life_permission').id),('liability_insurance_permission', '=', self.env.ref('crm_insurance.crm_insurance_property_permission').id)])
         
-    
+    @api.multi
+    def fellowship_button(self):
+        partner_ids = self.ids
+        partner_ids.append(self.env.user.partner_id.id)
+        action = self.env['ir.actions.act_window'].for_xml_id('contacts', 'action_contacts')
+        action['context'] = {
+            'default_partner_ids': partner_ids,
+        }
+        action['domain'] = [('id', 'child_of', self.id),('is_fellowship', '=', True)]
+        return action
     
     @api.multi
     def accommodator_button(self):

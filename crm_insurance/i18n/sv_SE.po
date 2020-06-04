@@ -43,7 +43,7 @@ msgstr "Aktiv"
 #: model:ir.actions.act_window,name:crm_insurance.action_all_form
 #: model:ir.ui.menu,name:crm_insurance.res_partner_menu_all
 msgid "All"
-msgstr "Allt"
+msgstr "Alla"
 
 #. module: crm_insurance
 #. openerp-web

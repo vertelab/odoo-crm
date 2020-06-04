@@ -6,13 +6,11 @@
     <field name="inherit_id" ref="base.view_res_partner_filter" />
     <field name="arch" type="xml">
       <filter name="inactive" position="before">
-        <separator />
-        <field name="vat" />
         <filter string="Tax ID" name="vat" domain="[('is_company','=',True)]" />
-        <field name="personnumber" />
         <filter string="Person Number" name="personnumber" domain="[('is_company','=',False)]"/>
-        <field name="city" />
         <filter string="City" name="city" domain="[('is_company','=',True)]"/>
+        <filter string="Fellowship" name="is_fellowship" domain="[('is_fellowship','=',True)]"/>
+        <filter string="Accommodator" name="is_accommodator" domain="[('is_accommodator','=',True)]"/>
       </filter>
     </field>
   </record>
@@ -66,6 +64,9 @@
         </button>
         <button class="oe_stat_button" name="property_insurance_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
           <field name="count_property_insurance" widget="statinfo" />
+        </button>
+        <button class="oe_stat_button" name="fellowship_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
+          <field name="count_fellowship" widget="statinfo" />
         </button>
       </div>
     </field>
@@ -121,7 +122,7 @@
         name="All"
         parent="crm_menu_membership"
         action="action_all_form"
-        sequence="1"/>
+        sequence="99"/>
         
   <menuitem id="res_partner_menu_fellowship"
         name="Fellowship"
