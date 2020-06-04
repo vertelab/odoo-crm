@@ -5,9 +5,11 @@
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form" />
     <field name="arch" type="xml">
-        <field name="category_id" position="after">
-            <field name="membership_status" />
-        </field>
+    <sheet position="before">
+          <header>
+          <field name="membership_status" widget="statusbar" statusbar_visible="stage 1,stage 2,stage 3,stage 4,stage 5"/>
+        </header>
+    </sheet>
     </field>
   </record>
   <record model="ir.ui.view" id="view_res_partner_filter">

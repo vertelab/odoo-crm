@@ -25,5 +25,29 @@ _logger = logging.getLogger(__name__)
 
 class res_partner(models.Model):
     _inherit = "res.partner"
+    membership_status = fields.Selection([("draft", "Draft"),("stage 2", "First Interview"),("stage 3", "Second Interview"), ("stage 4", "Membership Approved") , ("stage 5", "Membership Declined")], default="draft")
+    membership_recruitment_status = fields.Many2one(comodel_name = "membership.recruitment.status")
+ 
+class membership_recruitment_status(models.Model):
+    _name = "membership.recruitment.status"
+    name = fields.Char()
+    _description = "Recruitment Stages"
+    _order = 'sequence'
+	
+    name = fields.Char("Stage name", required=True, translate=True)
+    sequence = fields.Integer(
+        "Sequence", default=10,
+        help="Gives the sequence order when displaying a list of stages.")
 
-    membership_status = fields.Selection([("stage 1", "Stage 1"),("stage 2", "Stage 2"),("stage 3", "Stage 3"), ("stage 4", "Stage 4")], default="stage 1")
+    template_id = fields.Many2one(
+        'mail.template', "Automated Email",
+        help="If set, a message is posted on the applicant using the template when the applicant is set to the stage.")
+    fold = fields.Boolean(
+        "Folded in Recruitment Pipe",
+        help="This stage is folded in the kanban view when there are no records in that stage to display.")
+    legend_blocked = fields.Char(
+        'Red Kanban Label', default=lambda self: _('Blocked'), translate=True, required=True)
+    legend_done = fields.Char(
+        'Green Kanban Label', default=lambda self: _('Ready for Next Stage'), translate=True, required=True)
+    legend_normal = fields.Char(
+        'Grey Kanban Label', default=lambda self: _('In Progress'), translate=True, required=True)
