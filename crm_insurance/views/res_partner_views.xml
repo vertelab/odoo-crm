@@ -65,8 +65,8 @@
         <button class="oe_stat_button" name="property_insurance_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
           <field name="count_property_insurance" widget="statinfo" />
         </button>
-        <button class="oe_stat_button" name="fellowship_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
-          <field name="count_fellowship" widget="statinfo" />
+        <button class="oe_stat_button" name="company_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
+          <field name="count_company" widget="statinfo" />
         </button>
       </div>
     </field>
