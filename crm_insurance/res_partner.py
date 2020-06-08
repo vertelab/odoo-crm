@@ -48,7 +48,7 @@ class res_partner(models.Model):
     # ~ have_property_insurance=fields.Boolean(string='Property Insurance', default=False, help='This is property insurance')
     # ~ insurance_permission_ids = fields.Many2many(comodel_name='res.partner', string='Permission')
     membership_ids = fields.Many2many(comodel_name='res.partner', relation='partner_member_rel', column1='parent_id',column2='member_id', string='Membership ID')
-    count_fellowship = fields.Integer(string='Accommodators', compute ='_compute_count_fellowship')
+    count_fellowship = fields.Integer(string='Fellowship', compute ='_compute_count_fellowship')
     count_accommodator = fields.Integer(string='Accommodators', compute ='_compute_count_accommodator')
     count_life_insurance = fields.Integer(string='Life Insurance', compute ='_compute_count_life_insurance')
     count_property_insurance = fields.Integer(string='Property Insurance', compute ='_compute_count_property_insurance')
