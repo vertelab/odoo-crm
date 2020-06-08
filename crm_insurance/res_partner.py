@@ -67,7 +67,7 @@ class res_partner(models.Model):
             self.org_prn = self.personnumber
             
     def _compute_count_company(self):
-        self.count_company = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_company', '=', True)])
+        self.count_company = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_company', '=', True),('is_fellowship','!=', True)])
     
     def _compute_count_accommodator(self):
         self.count_accommodator = self.env['res.partner'].search_count([('id', 'child_of', self.id),('is_accommodator', '=', True)])
@@ -98,7 +98,7 @@ class res_partner(models.Model):
         action['context'] = {
             'default_partner_ids': partner_ids,
         }
-        action['domain'] = [('id', 'child_of', self.id),('is_company', '=', True)]
+        action['domain'] = [('id', 'child_of', self.id),('is_company', '=', True),('is_fellowship','!=', True)]
         return action
     
     @api.multi
