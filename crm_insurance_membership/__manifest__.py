@@ -24,6 +24,8 @@ invoice and send propositions for membership renewal.
     'data': [
         
         'views/partner_views.xml',
+        'views/product_views.xml',
+        
     ],
     'website': 'https://www.odoo.com/page/community-builder',
 }
