@@ -76,8 +76,8 @@
       </div>
     </field>
   </record>
-  
 <!--
+  
   <record id="action_all_form" model="ir.actions.act_window">
     <field name="name">All</field>
     <field name="res_model">res.partner</field>
@@ -148,9 +148,9 @@
         action="action_accommodator_form"
         sequence="4"/>
         
--->
   
         
+-->
   
 
 
