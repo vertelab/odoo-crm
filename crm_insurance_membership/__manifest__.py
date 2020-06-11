@@ -3,7 +3,7 @@
 
 
 {
-    'name': 'Members',
+    'name': 'Insurance members',
     'version': '1.0',
     'category': 'Sales',
     'description': """
@@ -23,14 +23,8 @@ invoice and send propositions for membership renewal.
     'depends': ['membership'],
     'data': [
         'security/ir.model.access.csv',
-        'wizard/membership_invoice_views.xml',
         'data/membership_data.xml',
-        'views/product_views.xml',
         'views/partner_views.xml',
-        'report/report_membership_views.xml',
     ],
     'website': 'https://www.odoo.com/page/community-builder',
-    'test': [
-        '../account/test/account_minimal_test.xml',
-    ],
 }
