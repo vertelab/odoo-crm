@@ -22,8 +22,7 @@ invoice and send propositions for membership renewal.
     """,
     'depends': ['membership'],
     'data': [
-        'security/ir.model.access.csv',
-        'data/membership_data.xml',
+        
         'views/partner_views.xml',
     ],
     'website': 'https://www.odoo.com/page/community-builder',
