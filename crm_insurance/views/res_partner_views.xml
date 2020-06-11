@@ -70,20 +70,21 @@
           <field name="count_fellowship" widget="statinfo" />
         </button>
 -->
-        <button class="oe_stat_button" name="company_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': [('company_type', '!=', 'company')]}">
+        <button class="oe_stat_button" name="company_button" type="object" icon="fa-group" context="{'partner_id': active_id, 'partner_name': name}" attrs="{'invisible': ['|',('company_type', '!=', 'company'), ('is_fellowship', '=', False)]}">
           <field name="count_company" widget="statinfo" />
         </button>
       </div>
     </field>
   </record>
   
+<!--
   <record id="action_all_form" model="ir.actions.act_window">
     <field name="name">All</field>
     <field name="res_model">res.partner</field>
     <field name="view_type">form</field>
     <field name="view_mode">kanban,tree,form</field>
     <field name="domain"></field>
-    <field name="view_id" ref="base.res_partner_kanban_view" />
+    <field name="view_id" ref="	base.res_partner_kanban_view" />
     <field name="search_view_id" ref="base.view_res_partner_filter"/>
   </record>
   
@@ -147,6 +148,7 @@
         action="action_accommodator_form"
         sequence="4"/>
         
+-->
   
         
   
