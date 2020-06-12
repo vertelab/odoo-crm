@@ -20,16 +20,16 @@
 ##############################################################################
 
 {
-    'name': 'Membership Status',
+    'name': 'Membership Recruitment Status',
     'version': '0.1',
     'category': 'base',
     'description': """
-    Check the status of new employees
+    Check the status of new members
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
-    'depends': ['membership_extension'],
+    'depends': ['membership'],
     'data': [
         'views/membership_status_view.xml','security/ir.model.access.csv',
     ],

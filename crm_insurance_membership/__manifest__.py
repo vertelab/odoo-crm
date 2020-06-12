@@ -20,7 +20,7 @@ It supports different kind of members:
 It is integrated with sales and accounting to allow you to automatically
 invoice and send propositions for membership renewal.
     """,
-    'depends': ['membership'],
+    'depends': ['membership', 'crm_insurance'],
     'data': [
         
         'views/partner_views.xml',

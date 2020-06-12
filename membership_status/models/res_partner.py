@@ -25,15 +25,16 @@ _logger = logging.getLogger(__name__)
 
 class res_partner(models.Model):
     _inherit = "res.partner"
-    membership_status = fields.Selection([("draft", "Draft"),("stage 2", "First Interview"),("stage 3", "Second Interview"), ("stage 4", "Membership Approved") , ("stage 5", "Membership Declined")], default="draft")
-    membership_recruitment_status = fields.Many2one(comodel_name = "membership.recruitment.status")
+    
+    membership_recruitment_status_id = fields.Many2one(comodel_name = "membership.recruitment.status")
  
 class membership_recruitment_status(models.Model):
     _name = "membership.recruitment.status"
+    
     name = fields.Char()
     _description = "Recruitment Stages"
     _order = 'sequence'
-	
+    	
     name = fields.Char("Stage name", required=True, translate=True)
     sequence = fields.Integer(
         "Sequence", default=10,

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <record model="ir.ui.view" id="membership_view_partner_form">
-    <field name="name">Membership extension</field>
+    <field name="name">Membership</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form" />
     <field name="arch" type="xml">
-    <sheet position="before">
-          <header>
-          <field name="membership_status" widget="statusbar" statusbar_visible="stage 1,stage 2,stage 3,stage 4,stage 5"/>
+      <sheet position="before">
+        <header>
+          <field name="membership_recruitment_status_id" widget="statusbar" />
         </header>
-    </sheet>
+      </sheet>
     </field>
   </record>
   <record model="ir.ui.view" id="view_res_partner_filter">
@@ -18,11 +18,23 @@
     <field name="inherit_id" ref="base.view_res_partner_filter" />
     <field name="arch" type="xml">
       <field name="parent_id" positon="after">
-        <field name="membership_status" />
+        <field name="membership_recruitment_status_id" />
       </field>
       <filter name="group_country" position="after">
-        <filter name="group_membership_status" string="Membership Status" context="{'group_by': 'membership_status'}"/>
+        <filter name="group_membership_status" string="Membership Recruitment Status" context="{'group_by': 'membership_recruitment_status_id'}" />
       </filter>
     </field>
   </record>
+  <record id="action_admission_form" model="ir.actions.act_window">
+    <field name="name">Admission</field>
+    <field name="res_model">res.partner</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="domain">[("membership_recruitment_status_id","&lt;&gt;", "closed")]</field>
+    <field name="contect">{"default_membership_recruitment_status_id": True}</field>
+    <field name="view_id" ref="base.res_partner_kanban_view" />
+    <field name="act_window_id" ref="membership.action_membership_members" />
+    <field name="search_view_id" ref="base.view_res_partner_filter" />
+  </record>
+  <menuitem id="res_partner_menu_admission" name="Admission" parent="membership.menu_membership" action="action_admission_form" sequence="5" />
 </odoo>

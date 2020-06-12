@@ -73,9 +73,6 @@
     <field name="search_view_id" ref="base.view_res_partner_filter"/>
   </record>
   
-   
-
-        
   <menuitem id="res_partner_menu_all"
         name="All"
         parent="membership.menu_membership"
@@ -99,5 +96,5 @@
         parent="membership.menu_membership"
         action="action_accommodator_form"
         sequence="4"/>
-        
+              
 </odoo>
