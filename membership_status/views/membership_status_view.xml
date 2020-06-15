@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <record model="ir.ui.view" id="membership_view_partner_form">
-    <field name="name">Membership</field>
+    <field name="name">Membership Process</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form" />
     <field name="arch" type="xml">
       <sheet position="before">
         <header>
+            <button name="start_admission" string="Start Admission" type="object" help="Start the admission process" attrs="{'invisible':[('membership_recruitment_status_id', '!=', False)]}"/>
           <field name="membership_recruitment_status_id" widget="statusbar" />
         </header>
       </sheet>
@@ -30,8 +31,8 @@
     <field name="res_model">res.partner</field>
     <field name="view_type">form</field>
     <field name="view_mode">kanban,tree,form</field>
-    <field name="domain">[("membership_recruitment_status_id","&lt;&gt;", "closed")]</field>
-    <field name="contect">{"default_membership_recruitment_status_id": True}</field>
+    <field name="domain">[("membership_recruitment_status_id","&lt;&gt;", "closed"), ("membership_recruitment_status_id", "!=", False)]</field>
+    <field name="context">{"search_default_group_membership_status": 1}</field>
     <field name="view_id" ref="base.res_partner_kanban_view" />
     <field name="act_window_id" ref="membership.action_membership_members" />
     <field name="search_view_id" ref="base.view_res_partner_filter" />
