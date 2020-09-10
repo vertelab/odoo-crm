@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="order_thanks_page" name="Order Thanks Page">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <h1 class="text-center">Hej! <t t-esc="partner_name if partner_name else ''"/></h1>
+                        <h1 class="text-center">Thanks for your order!</h1>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="order_response_page" name="Order Response Page">
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="oe_structure">
+                        <h1 class="text-center">Hej! <t t-esc="partner_name if partner_name else ''"/></h1>
+                        <h1 class="text-center">Thanks for your answer!</h1>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!--Email template -->
+        <record id="crm_cavarosa_prem_sale_email_quotation" model="email.template">
+            <field name="name">Sales Order (Cavarosa) - Send by Email</field>
+            <field name="email_from">${(object.user_id.email or '')|safe}</field>
+            <field name="subject">${object.company_id.name|safe} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })</field>
+            <field name="partner_to">${object.partner_invoice_id.id}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="sale.report_sale_order"/>
+            <field name="report_name">${(object.name or '').replace('/','_')}_${object.state == 'draft' and 'draft' or ''}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="user_signature" eval="True"/>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, 255, 255); ">
+
+    <p>Hello ${object.partner_id.name},</p>
+
+    <h3 style="text-align:center;">We have a fantastic subscription for you!</h3>
+
+    <div style="text-align:center;">
+        <a href="/order/${object.id}/accept/${object.access_token}"
+        class="button" style="
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;">Ja tack!</a>
+
+        <a href="/order/${object.id}/reject/${object.access_token}" class="button" style="
+        background-color: #CC0033;crm
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;">Nej tack!</a>
+    </div>
+
+</div>
+            ]]></field>
+        </record>
+        
+        <record id="excel_sale_order_line" model="ir.actions.server">
+            <field name="name">Export Sale Order Lines</field>
+            <field name="model_id" ref="crm.model_crm_tracking_campaign" />
+            <field name="state">code</field>
+            <field name="code">excel = env['utm.campaign'].excel_order_line(object.browse(context.get('active_ids', [])))
+</field>
+        </record>
+
+        <record id="excel_sale_order_line_value" model="ir.values">
+            <field name="name">Export Sale Order Lines</field>
+            <field name="model">utm.campaign</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,%s' %ref('crm_cavarosa.excel_sale_order_line')" />
+        </record>
+        
+        
+    </data>
+</odoo>
