@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <record id="generate_so_form" model="ir.ui.view">
+<!--         <record id="generate_so_form" model="ir.ui.view">
             <field name="name">sale.order.generator.crm_cavarosa</field>
             <field name="model">sale.order.generator</field>
             <field name="arch" type="xml">
@@ -33,7 +33,7 @@
                     <field name="categ_ids"/>
                 </field>
             </field>
-        </record>
+        </record> -->
 
     </data>
 </odoo>

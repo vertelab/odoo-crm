@@ -42,23 +42,23 @@ class sale_order(models.Model):
     access_token = fields.Char(default=lambda self: str(uuid.uuid4()))
 
 
-class sale_order_generator(models.TransientModel):
-    _name = 'sale.order.generator'
+# class sale_order_generator(models.TransientModel):
+#     _name = 'sale.order.generator'
 
-    order_id = fields.Many2one(comodel_name='sale.order', string='Sale Order', required=True)
-    categ_ids = fields.Many2many(comodel_name='crm.case.categ', string='Tags', required=True)
-    @api.model
-    def get_default_partner_ids(self):
-        return self.env['res.partner'].browse(self._context.get('active_ids', []))
-    partner_ids = fields.Many2many(comodel_name='res.partner', string='Partners', default=get_default_partner_ids)
+#     order_id = fields.Many2one(comodel_name='sale.order', string='Sale Order', required=True)
+#     categ_ids = fields.Many2many(comodel_name='crm.case.categ', string='Tags', required=True)
+#     @api.model
+#     def get_default_partner_ids(self):
+#         return self.env['res.partner'].browse(self._context.get('active_ids', []))
+#     partner_ids = fields.Many2many(comodel_name='res.partner', string='Partners', default=get_default_partner_ids)
     
-    def generate_sale_orders(self):
-        categs = self.categ_ids
-        for p in self.partner_ids:
-            values = self.order_id.onchange_partner_id(p.id)['value']
-            values['partner_id'] = p.id
-            order = self.order_id.copy(values)
-            order.categ_ids = categs
+#     def generate_sale_orders(self):
+#         categs = self.categ_ids
+#         for p in self.partner_ids:
+#             values = self.order_id.onchange_partner_id(p.id)['value']
+#             values['partner_id'] = p.id
+#             order = self.order_id.copy(values)
+#             order.categ_ids = categs
 
 class crm_tracking_campaign(models.Model): 
     _inherit = 'utm.campaign'

@@ -25,7 +25,7 @@
         </template>
 
         <!--Email template -->
-        <record id="crm_cavarosa_prem_sale_email_quotation" model="email.template">
+       <!--  <record id="crm_cavarosa_prem_sale_email_quotation" model="email.template">
             <field name="name">Sales Order (Cavarosa) - Send by Email</field>
             <field name="email_from">${(object.user_id.email or '')|safe}</field>
             <field name="subject">${object.company_id.name|safe} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })</field>
@@ -73,8 +73,8 @@
 </div>
             ]]></field>
         </record>
-        
-        <record id="excel_sale_order_line" model="ir.actions.server">
+         -->
+ <!--        <record id="excel_sale_order_line" model="ir.actions.server">
             <field name="name">Export Sale Order Lines</field>
             <field name="model_id" ref="crm.model_crm_tracking_campaign" />
             <field name="state">code</field>
@@ -87,7 +87,7 @@
             <field name="model">utm.campaign</field>
             <field name="key2">client_action_multi</field>
             <field name="value" eval="'ir.actions.server,%s' %ref('crm_cavarosa.excel_sale_order_line')" />
-        </record>
+        </record> -->
         
         
     </data>
