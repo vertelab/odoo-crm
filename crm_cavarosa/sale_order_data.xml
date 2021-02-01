@@ -76,7 +76,7 @@
          -->
  <!--        <record id="excel_sale_order_line" model="ir.actions.server">
             <field name="name">Export Sale Order Lines</field>
-            <field name="model_id" ref="crm.model_crm_tracking_campaign" />
+            <field name="model_id" ref="utm.campaign" />
             <field name="state">code</field>
             <field name="code">excel = env['utm.campaign'].excel_order_line(object.browse(context.get('active_ids', [])))
 </field>
