@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <record id="res_company_form_view" model="ir.ui.view">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='general_info']" position="after">
+                    <page string="LinkedIn" name="linkedin_info">
+                        <group>
+                            <group>
+                                <field name="linkedin_client_id"/>
+                                <field name="linkedin_client_secret"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
