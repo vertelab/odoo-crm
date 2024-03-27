@@ -1,7 +1,8 @@
-################################################################################
+# -*- coding: utf-8 -*-
+##############################################################################
 #
-#    OpenERP, Open Source Management Solution
-#    Copyright (C) 2019 N-Development (<https://n-development.com>).
+#    Odoo SA, Open Source Management Solution, third party addon
+#    Copyright (C) 2024- Vertel AB (<https://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -14,14 +15,14 @@
 #    GNU Affero General Public License for more details.
 #
 #    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-################################################################################
+##############################################################################
 
 {
     'name': 'CRM: Activity Date Deadline',
     'version': '14.0.0.0.1',
-    'summary': 'Add feature stored = true to this field',
+    'summary': 'Add feature < stored = true > to this field',
     'category': 'CRM',
     'description': """
     Add feature stored = true to this field
