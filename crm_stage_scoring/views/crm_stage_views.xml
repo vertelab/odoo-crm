@@ -1,0 +1,18 @@
+<odoo>
+	<data>
+		<record id="crm_stage_inherit" model="ir.ui.view">
+			<field name="name">crm.stage.form.inherit</field>
+			<field name="model">crm.stage</field>
+			<field name="inherit_id" ref="crm.crm_stage_form" />
+			<field name="arch" type="xml">
+				<field name="is_won" position="replace">
+					<field name="is_won" invisible="is_zero_stage == 1"/>
+				</field>
+				<field name="fold" position="after">
+					<field name="is_zero_stage" invisible="is_won == 1" />
+					<field name="manual_probability" widget="float"/>
+				</field>
+			</field>
+		</record>
+	</data>
+</odoo>
