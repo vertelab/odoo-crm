@@ -21,7 +21,7 @@
 
 {
     'name': 'CRM: Allabolag',
-    'version': '14.0.0.0.0',
+    'version': '0.1',
     # Version ledger: 14.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
     'summary': 'Adding valuable internet-data to CRM contacts.',
     'category': 'Website',
@@ -38,9 +38,9 @@ Adding interesting and valuable internet-data to customer information in CRM.
     'repository': 'https://github.com/vertelab/odoo-crm',
     'depends': ['crm_enrich_base', 'partner_allabolag' , 'utm'],
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'views/crm_allabolag_mining_views.xml',
-        'security/ir.model.access.csv',
     ],
     'application': False,
 }

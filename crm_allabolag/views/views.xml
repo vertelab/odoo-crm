@@ -31,7 +31,7 @@
                 <field name="kpi_revenue_employees" widget="integer" class="oe_right"/>
               </group>
               <group string="Business and Purpose" name="business_summary" priority="3">
-                <field name="summary_purpose" nolabel="1" />
+                <field name="summary_purpose" nolabel="1" colspan="2" />
               </group>
               <group name="mining" string="Mining" priority="3">
                 <field name="mining_corporate_form" />

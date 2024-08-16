@@ -53,8 +53,8 @@
                 <field name="revenue_from" class="oe_inline" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
                 <span class="oe_grey p-2">-</span>
                 <field name="revenue_to" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+                <span />
               </div>
-              <span />
               <field name="corporate_form" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
               <field name="leads_url" readonly="1" />
             </group>
