@@ -31,7 +31,7 @@ class CRMBolagsfakta(models.Model):
     municipality = fields.Selection(selection=MUNICIPALITY, required=True)
     industry = fields.Selection(selection=INDUSTRY, required=True)
 
-    sni_id = fields.Many2one('res.sni', string="SNI")
+    # sni_id = fields.Many2one('res.sni', string="SNI")
 
     user_id = fields.Many2one("res.users", string="Salesperson")
     team_id = fields.Many2one("crm.team", string="Team")
