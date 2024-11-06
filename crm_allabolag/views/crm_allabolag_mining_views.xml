@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="crm_iap_lead_mining_request_form" model="ir.ui.view">
+    <field name="name">crm.allabolag.mining.request.form</field>
+    <field name="model">crm.allabolag.mining</field>
+    <field name="arch" type="xml">
+      <form>
+        <header>
+          <button name="action_draft" type="object" string="Draft" states="list,error,done" class="oe_highlight" />
+          <button name="action_check" type="object" string="Check" states="draft,error" class="oe_highlight" />
+          <button name="action_enrich" type="object" string="Enrich" states="list" class="oe_highlight" />
+          <button name="action_submit" type="object" string="Submit" states="draft" class="oe_highlight" />
+          <button name="action_submit" type="object" string="Retry Submit" states="error" class="oe_highlight" />
+          <button name="action_enrich" type="object" string="Retry Enrich" states="error" class="oe_highlight" />
+          <button name="action_allabolag_url" type="object" string="Allabolag" />
+          <field name="state" widget="statusbar" statusbar_visible="draft,list,done" />
+        </header>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_get_opportunity_action" class="oe_stat_button" type="object" icon="fa-handshake-o" attrs="{'invisible': ['|', ('type', '!=', 'opportunity'), ('state', '=' , 'draft')]}">
+              <div class="o_stat_info">
+                <field name="lead_count" />
+                <span class="o_stat_text">Opportunities</span>
+              </div>
+            </button>
+            <button name="action_get_lead_action" class="oe_stat_button" type="object" icon="fa-handshake-o" groups="crm.group_use_lead" attrs="{'invisible': ['|', ('type', '!=', 'lead'), ('state', 'in' , ['draft'])]}">
+              <div class="o_stat_info">
+                <field name="lead_count" />
+                <span class="o_stat_text">Leads</span>
+              </div>
+            </button>
+          </div>
+          <h2>What do you need ?</h2>
+          <group>
+            <group>
+              <field name="name" />
+              <field name="max_no_leads" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+            </group>
+            <group>
+              <field name="date" readonly="1" />
+              <field name="selected_count" readonly="1" />
+            </group>
+          </group>
+          <group name="requests_for_allabolag">
+            <group string="Company Requests" name="requests" priority="1">
+              <field name="request_type" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="industry" attrs="{'invisible': [('request_type', '!=', 'industry')], 'required': [('request_type', '=' , 'industry')], 'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="industry_xv" attrs="{'invisible': [('request_type', '=', 'industry')], 'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="lan" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="no_employees" attrs="{'readonly':[('state', '!=' , 'draft')]}" widget="selection_badge"/>
+              <label for="revenue_from" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <div class="o_row">
+                <field name="revenue_from" class="oe_inline" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+                <span class="oe_grey p-2">-</span>
+                <field name="revenue_to" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              </div>
+              <span />
+              <field name="corporate_form" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="leads_url" readonly="1" />
+            </group>
+            <group string="Metadata to save on leads" name="metadata" priority="2">
+              <field name="tag_ids" widget="many2many_tags" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="type" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="user_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="team_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="description" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="campaign_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="source_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="medium_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+            </group>
+            <group />
+            <group string="Revenue" name="revenue" priority="3">
+              <field name="company_currency" invisible="1" />
+              <field name="expected_revenue" widget="monetary" options="{'currency_field': 'company_currency'}" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="recurring_revenue" widget="monetary" options="{'currency_field': 'company_currency'}" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="recurring_plan" placeholder="E.g. Monthly" attrs="{'required': [('recurring_revenue', '!=', 0)],'readonly':[('state', '!=' , 'draft')]}" options="{'no_create': True, 'no_open': True}" />
+            </group>
+          </group>
+          <group />
+          <footer>
+            <!--
+                 <button string="Generate Leads" name="action_submit" type="object" default_focus="1" class="btn-primary" attrs="{'invisible': [('state', 'in' , ['list','done'])]}" />
+                 <button string="Enrich Leads" name="action_enrich" type="object" default_focus="1" class="btn-primary" attrs="{'invisible': [('state', 'in' , ['draft','done'])]}" />
+                 <button string="Cancel" class="btn-secondary" special="cancel" />
+            -->
+          </footer>
+        </sheet>
+        <div class="oe_chatter">
+          <field name="message_follower_ids" />
+          <field name="activity_ids" />
+          <field name="message_ids" options="{'post_refresh': 'recipients'}" />
+        </div>
+      </form>
+    </field>
+  </record>
+  <record id="crm_allabolag_mining_request_tree" model="ir.ui.view">
+    <field name="name">crm.allabolag.mining.tree</field>
+    <field name="model">crm.allabolag.mining</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="date" decoration-bf="1" />
+        <field name="name" decoration-bf="1" />
+        <field name="user_id" />
+        <field name="lead_count" string="Count" optional="show" />
+        <field name="request_type" optional="show" />
+        <field name="type" optional="show" />
+        <field name="industry" optional="show" />
+        <field name="lan" optional="show" />
+        <field name="no_employees" optional="show" />
+        <field name="revenue_from" string="Revenue from" optional="hide" />
+        <field name="revenue_to" string="to" optional="hide" />
+        <field name="team_id" optional="hide" />
+        <field name="tag_ids" widget="many2many_tags" optional="hide" />
+        <field name="state" readonly="1" decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-danger="state == 'error'" widget="badge" />
+      </tree>
+    </field>
+  </record>
+  <record id="crm_allabolag_mining_request_search" model="ir.ui.view">
+    <field name="name">crm.allabolag.mining.search</field>
+    <field name="model">crm.allabolag.mining</field>
+    <field name="arch" type="xml">
+      <search string="Lead Mining Request">
+        <field name="name" />
+        <field name="team_id" />
+        <field name="user_id" />
+        <field name="tag_ids" />
+        <field name="request_type" />
+        <field name="industry" />
+        <field name="industry_xv" />
+        <field name="lan" />
+        <field name="campaign_id" />
+        <filter name="state_is_draft" string="Draft" domain="[('state', '=', 'draft')]" />
+        <filter name="state_is_list" string="List" domain="[('state', '=', 'list')]" />
+        <filter name="state_is_done" string="Done" domain="[('state', '=', 'done')]" />
+        <filter name="state_is_error" string="Error" domain="[('state', '=', 'error')]" />
+        <separator />
+        <filter name="type_is_lead" string="Leads" domain="[('type', '=', 'lead')]" />
+        <filter name="type_is_opportunity" string="Opportunities" domain="[('type', '=', 'opportunity')]" />
+        <filter string="My Requests" name="assigned_to_me" domain="[('user_id', '=', uid)]" help="Requests that are assigned to me" />
+        <group expand="0" string="Group By">
+          <filter string="Type" name="groupby_lead_type" domain="[]" context="{'group_by':'type'}" />
+          <filter string="Sales Team" name="groupby_team_id" domain="[]" context="{'group_by':'team_id'}" />
+          <filter string="Salesperson" name="groupby_user_id" domain="[]" context="{'group_by':'user_id'}" />
+          <filter string="Campaign" name="groupby_campaign_id" domain="[]" context="{'group_by':'campaign_id'}" />
+          <filter string="Request Type" name="groupby_request_type" domain="[]" context="{'group_by':'request_type'}" />
+          <filter string="Industry" name="groupby_industry" domain="[]" context="{'group_by':'industry'}" />
+          <filter string="Industry Request Type" name="groupby_industry_xv" domain="[]" context="{'group_by':'industry_xv'}" />
+        </group>
+      </search>
+    </field>
+  </record>
+  <record id="crm_allabolag_mining_request_action" model="ir.actions.act_window">
+    <field name="name">Lead Mining Requests</field>
+    <field name="res_model">crm.allabolag.mining</field>
+    <field name="view_mode">tree,form</field>
+              <field name="context">{'default_type': 'lead',
+                    'search_default_assigned_to_me': 1}
+            </field>
+  
+  </record>
+  <!-- This menu is display in CRM app -->
+  
+  <menuitem id="crm_menu_lead_generation" name="Lead Generation" parent="crm.crm_menu_sales" sequence="20" />
+  <menuitem id="crm_allabolag_mining_request_menu_action" action="crm_allabolag_mining_request_action" parent="crm_menu_lead_generation" sequence="0" />
+</odoo>

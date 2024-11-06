@@ -1,0 +1,331 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_builtwith
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0-20231205\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-31 09:03+0000\n"
+"PO-Revision-Date: 2024-07-31 09:06+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: sv\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_myai
+msgid "AI Sweden"
+msgstr "AI Sweden"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_analytics
+msgid "Analytics"
+msgstr "Objekt"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_leads_filter
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_opportunities_filter
+msgid "Analytics Type"
+msgstr "Objekt"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_blogs
+msgid "Blogs"
+msgstr "Bloggar"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_brainville
+msgid "Brainville"
+msgstr "Brainville"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_cdn
+msgid "CDN"
+msgstr "CDN"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_cms
+msgid "CMS"
+msgstr "CMS"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_leads_filter
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_opportunities_filter
+msgid "CMS Type"
+msgstr "Typ av CMS"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_dns_cname
+msgid "CNAME"
+msgstr "CNAME"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_cache_tools
+msgid "Cache Tools"
+msgstr "Chachning"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_creation_date
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_updated_date
+msgid "Creation Date"
+msgstr "Datum skapat"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.crm_lead_view_form
+msgid "DNS and Mail"
+msgstr "DNS och E-post"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_database_managers
+msgid "Database Managers"
+msgstr "Databashanterare"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_databases
+msgid "Databases"
+msgstr "Databas"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__display_name
+msgid "Display Name"
+msgstr "Visningsnamn"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_dnssec
+msgid "Dnssec"
+msgstr "Dnssec"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_documentation_tools
+msgid "Documentation Tools"
+msgstr "Dokumentationsverktyg"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_domain_name
+msgid "Domain Name"
+msgstr "Domännamn"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_ecommerce
+msgid "Ecommerce"
+msgstr "E-handel"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_expiration_date
+msgid "Expiration Date"
+msgstr "Utgångsdatum"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_facebook
+msgid "Facebook"
+msgstr "Facebook"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_font_scripts
+msgid "Font Scripts"
+msgstr "Typsnittskript"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_github
+msgid "Github"
+msgstr "Github"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__id
+msgid "ID"
+msgstr "ID"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_instagram
+msgid "Instagram"
+msgstr "Instagram"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_issue_trackers
+msgid "Issue Trackers"
+msgstr "Supportsystem"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_javascript_frameworks
+msgid "Javascript Frameworks"
+msgstr "Javaskriptramverk"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_lms
+msgid "LMS"
+msgstr "LMS"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead____last_update
+msgid "Last Modified on"
+msgstr "Senaste ändring"
+
+#. module: crm_builtwith
+#: model:ir.model,name:crm_builtwith.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Kundämne/möjlighet"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_linkedin
+msgid "Linkedin"
+msgstr "Linkedin"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_linkopingsciencepark
+msgid "Linköping Science Park"
+msgstr "Linköping Science Park"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_dns_mx
+msgid "MX"
+msgstr "MX"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_mail_server
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_leads_filter
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_opportunities_filter
+msgid "Mail Server"
+msgstr "E-postserver"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_marketing_automation
+msgid "Marketing Automation"
+msgstr "Marketing Automation"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_miscellaneous
+msgid "Miscellaneous"
+msgstr "Övrigt"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_mobile_frameworks
+msgid "Mobile Frameworks"
+msgstr "Mobila ramverk"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_dns_ns
+msgid "NS"
+msgstr "NS"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_name_servers
+msgid "Name Servers"
+msgstr "Namnservrar"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_odoo_community
+msgid "Odoo Community"
+msgstr "Odoo Community"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_operating_systems
+msgid "Operating Systems"
+msgstr "Operativsystem"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_programming_languages
+msgid "Programming Languages"
+msgstr "Programmeringsspråk"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_registrant_name
+msgid "Registrant Name"
+msgstr "Registrerare"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_registrar
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_leads_filter
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_opportunities_filter
+msgid "Registrar"
+msgstr "Registrar"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_dns_soa
+msgid "SOA"
+msgstr "SOA"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_search_engines
+msgid "Search Engines"
+msgstr "Sökmotor"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.crm_lead_view_form
+msgid "Social Media"
+msgstr "Sociala media"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.crm_lead_view_form
+msgid "Social Media Tech"
+msgstr "Sociala media teknik"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_status
+msgid "Status"
+msgstr "Status"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_dns_txt
+msgid "TXT"
+msgstr "TXT"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.crm_lead_view_form
+msgid "Tech 1"
+msgstr "Teknik 1"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.crm_lead_view_form
+msgid "Tech 2"
+msgstr "Teknik 2"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.crm_lead_view_form
+msgid "Technical Information"
+msgstr "Teknisk infortmation"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_transfer_date
+msgid "Transfer Date"
+msgstr "Överföringsdatum"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_leads_filter
+msgid "Web Framework"
+msgstr "Webbramverk"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_web_frameworks
+msgid "Web Frameworks"
+msgstr "Webbramverk"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_web_mail
+msgid "Web Mail"
+msgstr "Webbmail"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_leads_filter
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.view_crm_case_opportunities_filter
+msgid "Web Server"
+msgstr "E-postserver"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_web_servers
+msgid "Web Servers"
+msgstr "Webbserver"
+
+#. module: crm_builtwith
+#: model_terms:ir.ui.view,arch_db:crm_builtwith.crm_lead_view_form
+msgid "WhoIs"
+msgstr "WhoIs"
+
+#. module: crm_builtwith
+#: model:ir.model.fields,field_description:crm_builtwith.field_crm_lead__bw_wikis
+msgid "Wikis"
+msgstr "Wikis"

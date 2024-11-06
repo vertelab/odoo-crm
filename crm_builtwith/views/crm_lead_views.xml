@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="crm_lead_view_form" model="ir.ui.view">
+      <field name="name">crm.lead.form.builtwith</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_lead_view_form" />
+      <field name="arch" type="xml">
+        <notebook position="inside">
+          <page name="tech_information" string="Technical Information">
+            <group name="container_row_2">
+              <group name="tech1" string="Tech 1" priority="1">
+                <field name="bw_analytics" />
+                <field name="bw_blogs" />
+                <field name="bw_cache_tools" />
+                <field name="bw_cdn" />
+                <field name="bw_cms" />
+                <field name="bw_database_managers" />
+                <field name="bw_databases" />
+                <field name="bw_documentation_tools" />
+                <field name="bw_ecommerce" />
+                <field name="bw_font_scripts" />
+                <field name="bw_issue_trackers" />
+                <field name="bw_javascript_frameworks" />
+              </group>
+              <group name="tech2" string="Tech 2" priority="2">
+                <field name="bw_lms" />
+                <field name="bw_marketing_automation" />
+                <field name="bw_miscellaneous" />
+                <field name="bw_mobile_frameworks" />
+                <field name="bw_operating_systems" />
+                <field name="bw_programming_languages" />
+                <field name="bw_search_engines" />
+                <field name="bw_web_frameworks" />
+                <field name="bw_web_mail" />
+                <field name="bw_web_servers" />
+                <field name="bw_wikis" />
+              </group>
+            </group>
+            <group name="container_row_3">
+              <group name="whois" string="WhoIs" priority="3">
+                <field name="bw_domain_name" />
+                <field name="bw_registrant_name" />
+                <field name="bw_creation_date" />
+                <field name="bw_updated_date" />
+                <field name="bw_expiration_date" />
+                <field name="bw_transfer_date" />
+                <field name="bw_name_servers" />
+                <field name="bw_dnssec" />
+                <field name="bw_status" />
+                <field name="bw_registrar" />
+              </group>
+              <group name="dns_mail" string="DNS and Mail" priority="4">
+                <field name="bw_mail_server" />
+                <field name="bw_dns_soa" />
+                <field name="bw_dns_ns" />
+                <field name="bw_dns_a" />
+                <field name="bw_dns_mx" />
+                <field name="bw_dns_txt" />
+              </group>
+            </group>
+            <group name="container_row_4">
+              <group name="social_media" string="Social Media" priority="5">
+                <field name="bw_facebook" />
+                <field name="bw_instagram" />
+                <field name="bw_linkedin" />
+                <field name="bw_x" />
+              </group>
+              <group name="social_media_tech" string="Social Media Tech" priority="6">
+                <field name="bw_brainville" />
+                <field name="bw_github" />
+                <field name="bw_linkopingsciencepark" />
+                <field name="bw_myai" />
+                <field name="bw_odoo_community" />
+              </group>
+            </group>
+          </page>
+        </notebook>
+      </field>
+    </record>
+    <record id="view_crm_case_leads_filter" model="ir.ui.view">
+      <field name="name">crm.lead.search.lead</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_crm_case_leads_filter" />
+      <field name="arch" type="xml">
+        <field name="campaign_id" position="after">
+          <field name="bw_analytics" />
+          <field name="bw_blogs" />
+          <field name="bw_cache_tools" />
+          <field name="bw_cdn" />
+          <field name="bw_cms" />
+          <field name="bw_database_managers" />
+          <field name="bw_databases" />
+          <field name="bw_documentation_tools" />
+          <field name="bw_ecommerce" />
+          <field name="bw_font_scripts" />
+          <field name="bw_issue_trackers" />
+          <field name="bw_javascript_frameworks" />
+          <field name="bw_lms" />
+          <field name="bw_marketing_automation" />
+          <field name="bw_miscellaneous" />
+          <field name="bw_mobile_frameworks" />
+          <field name="bw_operating_systems" />
+          <field name="bw_programming_languages" />
+          <field name="bw_search_engines" />
+          <field name="bw_web_mail" />
+          <field name="bw_web_frameworks" />
+          <field name="bw_web_servers" />
+          <field name="bw_wikis" />
+          <field name="bw_registrar" />
+          <field name="bw_mail_server" />
+        </field>
+        <filter name="date_closed" position="after">
+          <filter string="Analytics Type" name="groupby_bw_analytics" domain="[]" context="{'group_by':'bw_analytics'}" />
+          <filter string="CMS Type" name="groupby_bw_cms" domain="[]" context="{'group_by':'bw_cms'}" />
+          <filter string="Web Server" name="groupby_web_servers" domain="[]" context="{'group_by':'bw_web_servers'}" />
+          <filter string="Web Framework" name="groupby_web_frameworks" domain="[]" context="{'group_by':'bw_web_frameworks'}" />
+          <filter string="Registrar" name="groupby_bw_registrar" domain="[]" context="{'group_by':'bw_registrar'}" />
+          <filter string="Mail Server" name="groupby_bw_mail_server" domain="[]" context="{'group_by':'bw_mail_server'}" />
+        </filter>
+      </field>
+    </record>
+    <record id="view_crm_case_opportunities_filter" model="ir.ui.view">
+      <field name="name">crm.oportunity.search.lead</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter" />
+      <field name="arch" type="xml">
+        <field name="phone_mobile_search" position="after">
+          <field name="bw_analytics" />
+          <field name="bw_blogs" />
+          <field name="bw_cache_tools" />
+          <field name="bw_cdn" />
+          <field name="bw_cms" />
+          <field name="bw_database_managers" />
+          <field name="bw_databases" />
+          <field name="bw_documentation_tools" />
+          <field name="bw_ecommerce" />
+          <field name="bw_font_scripts" />
+          <field name="bw_issue_trackers" />
+          <field name="bw_javascript_frameworks" />
+          <field name="bw_lms" />
+          <field name="bw_marketing_automation" />
+          <field name="bw_miscellaneous" />
+          <field name="bw_mobile_frameworks" />
+          <field name="bw_operating_systems" />
+          <field name="bw_programming_languages" />
+          <field name="bw_search_engines" />
+          <field name="bw_web_mail" />
+          <field name="bw_web_frameworks" />
+          <field name="bw_web_servers" />
+          <field name="bw_wikis" />
+          <field name="bw_registrar" />
+          <field name="bw_mail_server" />
+        </field>
+        <filter name="date_closed" position="after">
+          <filter string="Analytics Type" name="groupby_bw_analytics" domain="[]" context="{'group_by':'bw_analytics'}" />
+          <filter string="CMS Type" name="groupby_bw_cms" domain="[]" context="{'group_by':'bw_cms'}" />
+          <filter string="Web Server" name="groupby_web_servers" domain="[]" context="{'group_by':'bw_web_servers'}" />
+          <filter string="Registrar" name="groupby_bw_registrar" domain="[]" context="{'group_by':'bw_registrar'}" />
+          <filter string="Mail Server" name="groupby_bw_mail_server" domain="[]" context="{'group_by':'bw_mail_server'}" />
+        </filter>
+      </field>
+    </record>
+  </data>
+</odoo>
