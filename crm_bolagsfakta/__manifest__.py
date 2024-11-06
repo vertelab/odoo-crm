@@ -44,7 +44,8 @@
     'data': [
         "security/ir.model.access.csv",
         "views/crm_bolagsfakta_views.xml",
-        "views/crm_view.xml"
+        "views/crm_view.xml",
+        "data/enrich_data.xml",
     ],
     'demo': [],
     'application': False,

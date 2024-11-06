@@ -13,7 +13,7 @@ reqex_site_header = re.compile(r"\(([\d,]+)")
 class CRMBolagsfakta(models.Model):
     _name = 'crm.bolagsfakta'
     _description = 'Bolagsfakta'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'utm.mixin']
 
     @api.depends('municipality', 'industry')
     def _compute_name(self):
@@ -32,6 +32,15 @@ class CRMBolagsfakta(models.Model):
     industry = fields.Selection(selection=INDUSTRY, required=True)
 
     sni_id = fields.Many2one('res.sni', string="SNI")
+
+    user_id = fields.Many2one("res.users", string="Salesperson")
+    team_id = fields.Many2one("crm.team", string="Team")
+    type = fields.Selection([('opportunity', 'Opportunity'), ('lead', 'Lead')])
+    tag_ids = fields.Many2many('crm.tag', string="Tags")
+    description = fields.Text('Notes')
+    state = fields.Selection(
+        selection=[('draft', 'Draft'), ('list', 'List'), ('done', 'Done'), ('error', 'Error'), ('cancel', 'Cancel')],
+        default='draft', tracking=True)
 
     def action_submit(self):
         base_url = "https://www.bolagsfakta.se/"
@@ -74,7 +83,6 @@ class CRMBolagsfakta(models.Model):
         else:
             companies_data = self.process_companies_data(soup=soup)
 
-        print(len(companies_data))
         self.create_leads(companies_data)
 
     def get_sub_categories_links(self, soup) -> list:
@@ -149,18 +157,20 @@ class CRMBolagsfakta(models.Model):
                 company_record = {
                     "name": name,
                     "partner_name": name,
-                    # "bolagsfakta_address": address,
                     "street": address,
-                    # "bolagsfakta_org_number": org_number,
                     "org_number": org_number,
-                    # "bolagsfakta_corporate_form": corporate_form,
                     "corporate_form": corporate_form,
                     "bolagsfakta_company_link": link,
                     "crm_bolagsfakta_id": self.id,
-                    # "bolagsfakta_industry": self.industry,
                     "industry": self.industry,
-                    # "bolagsfakta_municipality": self.municipality,
                     "municipality": self.municipality,
+                    "type": self.type,
+                    "tag_ids": self.tag_ids.ids,
+                    "user_id": self.user_id.id,
+                    "team_id": self.team_id.id,
+                    "campaign_id": self.campaign_id.id,
+                    "source_id": self.source_id.id,
+                    "medium_id": self.medium_id.id,
                 }
                 companies_data.append(company_record)
 
