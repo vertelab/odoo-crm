@@ -292,7 +292,7 @@ MUNICIPALITY = [
 ]
 
 INDUSTRY = [
-['00-huvudgrupp-saknas', '00 -Huvudgrupp saknas'],
+        ['00-huvudgrupp-saknas', '00 -Huvudgrupp saknas'],
         ['01-jordbruk-och-jakt-samt-service-i-anslutning-härtill',
          '01 -Jordbruk och jakt samt service i anslutning härtill'],
         ['02-skogsbruk', '02 -Skogsbruk'],

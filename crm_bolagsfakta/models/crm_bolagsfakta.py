@@ -15,20 +15,12 @@ class CRMBolagsfakta(models.Model):
     _description = 'Bolagsfakta'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'utm.mixin']
 
-    @api.depends('municipality', 'industry')
-    def _compute_name(self):
-        for rec in self:
-            if rec.municipality and rec.industry:
-                rec.name = f"{rec.municipality} - {rec.industry}"
-            else:
-                rec.name = False
-
-    name = fields.Char(compute=_compute_name)
+    name = fields.Char(string="Name")
     information = fields.Text(default=False)
     company_link = fields.Char(default=False)
     crm_lead_ids = fields.One2many(comodel_name="crm.lead", inverse_name="crm_bolagsfakta_id")
     leads_count = fields.Integer(compute="compute_leads_count")
-    municipality = fields.Selection(selection=MUNICIPALITY, required=True)
+    municipality_ids = fields.Many2many('res.kommun', required=True)
     industry = fields.Selection(selection=INDUSTRY, required=True)
 
     # sni_id = fields.Many2one('res.sni', string="SNI")
@@ -74,16 +66,16 @@ class CRMBolagsfakta(models.Model):
     def get_companies_data(self, base_url, detailed_category_name="", full_sni=""):
         sni = self.industry[:2]
         category_name = self.industry[3:]
+        for municipality in self.municipality_ids:
+            response = requests.get(f"{base_url}bransch/{municipality.code}/{category_name}/{sni}")
+            soup = BeautifulSoup(response.content, 'html.parser')
 
-        response = requests.get(f"{base_url}bransch/{self.municipality}/{category_name}/{sni}")
-        soup = BeautifulSoup(response.content, 'html.parser')
+            if self._has_over_1000(soup=soup):
+                companies_data = self.process_sub_categories(soup=soup, municipality=municipality)
+            else:
+                companies_data = self.process_companies_data(soup=soup, municipality=municipality)
 
-        if self._has_over_1000(soup=soup):
-            companies_data = self.process_sub_categories(soup=soup)
-        else:
-            companies_data = self.process_companies_data(soup=soup)
-
-        self.create_leads(companies_data)
+            self.create_leads(companies_data)
 
     def get_sub_categories_links(self, soup) -> list:
         """Extracts and returns links to subcategories."""
@@ -94,7 +86,7 @@ class CRMBolagsfakta(models.Model):
             )
         )
 
-    def process_sub_categories(self, soup):
+    def process_sub_categories(self, soup, municipality):
         """Process each subcategory if more than 1000 companies."""
         sub_categories_links = self.get_sub_categories_links(soup)
 
@@ -104,10 +96,10 @@ class CRMBolagsfakta(models.Model):
             sub_response = requests.get(sub_category_link)
             sub_soup = BeautifulSoup(sub_response.content, 'html.parser')
 
-            companies_data.extend(self.process_companies_data(soup=sub_soup))
+            companies_data.extend(self.process_companies_data(soup=sub_soup, municipality=municipality))
         return companies_data
 
-    def process_companies_data(self, soup):
+    def process_companies_data(self, soup, municipality):
         # Find all company content-boxes on the current page
         company_boxes = soup.find_all("div", class_="content-box content-box--no-hover mt-2")
         companies_data = []
@@ -163,7 +155,7 @@ class CRMBolagsfakta(models.Model):
                     "bolagsfakta_company_link": link,
                     "crm_bolagsfakta_id": self.id,
                     "industry": self.industry,
-                    "municipality": self.municipality,
+                    "municipality": municipality.id,
                     "type": self.type,
                     "tag_ids": self.tag_ids.ids,
                     "user_id": self.user_id.id,
@@ -181,7 +173,7 @@ class CRMBolagsfakta(models.Model):
             if next_page_link:
                 next_page_response = requests.get(next_page_link)
                 next_page_soup = BeautifulSoup(next_page_response.content, 'html.parser')
-                companies_data.extend(self.process_companies_data(soup=next_page_soup))
+                companies_data.extend(self.process_companies_data(soup=next_page_soup, municipality=municipality))
 
         return companies_data
 
