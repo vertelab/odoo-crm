@@ -2,8 +2,10 @@ from odoo import models, fields, api, _
 
 import logging, requests
 from bs4 import BeautifulSoup
+from .constant import MUNICIPALITY, INDUSTRY
 
 _logger = logging.getLogger(__name__)
+
 
 class CRMBolagsfakta(models.Model):
     _name = 'crm.bolagsfakta'
@@ -15,391 +17,17 @@ class CRMBolagsfakta(models.Model):
     company_link = fields.Char(default=False)
     crm_lead_ids = fields.One2many(comodel_name="crm.lead", inverse_name="crm_bolagsfakta_id")
     leads_count = fields.Integer(compute="compute_leads_count")
-    is_1000 = fields.Boolean(compute="compute_check_1000")
+    is_1000 = fields.Boolean()  # compute="compute_check_1000"
 
-    municipality = fields.Selection(selection=[
-        ['ale-kommun', 'Ale kommun'], 
-        ['alingsås-kommun', 'Alingsås kommun'], 
-        ['alvesta-kommun', 'Alvesta kommun'], 
-        ['aneby-kommun', 'Aneby kommun'], 
-        ['arboga-kommun', 'Arboga kommun'], 
-        ['arjeplogs-kommun', 'Arjeplogs kommun'], 
-        ['arvidsjaurs-kommun', 'Arvidsjaurs kommun'], 
-        ['arvika-kommun', 'Arvika kommun'], 
-        ['askersunds-kommun', 'Askersunds kommun'], 
-        ['avesta-kommun', 'Avesta kommun'], 
-        ['bengtsfors-kommun', 'Bengtsfors kommun'], 
-        ['bergs-kommun', 'Bergs kommun'], 
-        ['bjurholms-kommun', 'Bjurholms kommun'], 
-        ['bjuvs-kommun', 'Bjuvs kommun'], 
-        ['bodens-kommun', 'Bodens kommun'], 
-        ['bollebygds-kommun', 'Bollebygds kommun'], 
-        ['bollnäs-kommun', 'Bollnäs kommun'], 
-        ['borgholms-kommun', 'Borgholms kommun'], 
-        ['borlänge-kommun', 'Borlänge kommun'], 
-        ['borås-kommun', 'Borås kommun'], 
-        ['botkyrka-kommun', 'Botkyrka kommun'], 
-        ['boxholms-kommun', 'Boxholms kommun'], 
-        ['bromölla-kommun', 'Bromölla kommun'], 
-        ['bräcke-kommun', 'Bräcke kommun'], 
-        ['burlövs-kommun', 'Burlövs kommun'], 
-        ['båstads-kommun', 'Båstads kommun'], 
-        ['dals-eds-kommun', 'Dals-Eds kommun'], 
-        ['danderyds-kommun', 'Danderyds kommun'], 
-        ['degerfors-kommun', 'Degerfors kommun'], 
-        ['dorotea-kommun', 'Dorotea kommun'], 
-        ['eda-kommun', 'Eda kommun'], 
-        ['ekerö-kommun', 'Ekerö kommun'], 
-        ['eksjö-kommun', 'Eksjö kommun'], 
-        ['emmaboda-kommun', 'Emmaboda kommun'], 
-        ['enköpings-kommun', 'Enköpings kommun'], 
-        ['eskilstuna-kommun', 'Eskilstuna kommun'],
-        ['eslövs-kommun', 'Eslövs kommun'], 
-        ['essunga-kommun', 'Essunga kommun'], 
-        ['fagersta-kommun', 'Fagersta kommun'], 
-        ['falkenbergs-kommun', 'Falkenbergs kommun'], 
-        ['falköpings-kommun', 'Falköpings kommun'], 
-        ['falu-kommun', 'Falu kommun'], 
-        ['filipstads-kommun', 'Filipstads kommun'], 
-        ['finspångs-kommun', 'Finspångs kommun'], 
-        ['flens-kommun', 'Flens kommun'], 
-        ['forshaga-kommun', 'Forshaga kommun'], 
-        ['färgelanda-kommun', 'Färgelanda kommun'], 
-        ['gagnefs-kommun', 'Gagnefs kommun'], 
-        ['gislaveds-kommun', 'Gislaveds kommun'], 
-        ['gnesta-kommun', 'Gnesta kommun'], 
-        ['gnosjö-kommun', 'Gnosjö kommun'], 
-        ['gotlands-kommun', 'Gotlands kommun'], 
-        ['grums-kommun', 'Grums kommun'], 
-        ['grästorps-kommun', 'Grästorps kommun'], 
-        ['gullspångs-kommun', 'Gullspångs kommun'], 
-        ['gällivare-kommun', 'Gällivare kommun'], 
-        ['gävle-kommun', 'Gävle kommun'], 
-        ['göteborgs-kommun', 'Göteborgs kommun'], 
-        ['götene-kommun', 'Götene kommun'], 
-        ['habo-kommun', 'Habo kommun'], 
-        ['hagfors-kommun', 'Hagfors kommun'], 
-        ['hallsbergs-kommun', 'Hallsbergs kommun'], 
-        ['hallstahammars-kommun', 'Hallstahammars kommun'], 
-        ['halmstads-kommun', 'Halmstads kommun'], 
-        ['hammarö-kommun', 'Hammarö kommun'], 
-        ['haninge-kommun', 'Haninge kommun'], 
-        ['haparanda-kommun', 'Haparanda kommun'], 
-        ['heby-kommun', 'Heby kommun'], 
-        ['hedemora-kommun', 'Hedemora kommun'], 
-        ['helsingborgs-kommun', 'Helsingborgs kommun'], 
-        ['herrljunga-kommun', 'Herrljunga kommun'], 
-        ['hjo-kommun', 'Hjo kommun'], 
-        ['hofors-kommun', 'Hofors kommun'], 
-        ['huddinge-kommun', 'Huddinge kommun'], 
-        ['hudiksvalls-kommun', 'Hudiksvalls kommun'], 
-        ['hultsfreds-kommun', 'Hultsfreds kommun'], 
-        ['hylte-kommun', 'Hylte kommun'], 
-        ['håbo-kommun', 'Håbo kommun'], 
-        ['hällefors-kommun', 'Hällefors kommun'], 
-        ['härjedalens-kommun', 'Härjedalens kommun'], 
-        ['härnösands-kommun', 'Härnösands kommun'], 
-        ['härryda-kommun', 'Härryda kommun'], 
-        ['hässleholms-kommun', 'Hässleholms kommun'], 
-        ['höganäs-kommun', 'Höganäs kommun'], 
-        ['högsby-kommun', 'Högsby kommun'], 
-        ['hörby-kommun', 'Hörby kommun'], 
-        ['höörs-kommun', 'Höörs kommun'], 
-        ['jokkmokks-kommun', 'Jokkmokks kommun'], 
-        ['järfälla-kommun', 'Järfälla kommun'], 
-        ['jönköpings-kommun', 'Jönköpings kommun'], 
-        ['kalix-kommun', 'Kalix kommun'], 
-        ['kalmar-kommun', 'Kalmar kommun'], 
-        ['karlsborgs-kommun', 'Karlsborgs kommun'], 
-        ['karlshamns-kommun', 'Karlshamns kommun'], 
-        ['karlskoga-kommun', 'Karlskoga kommun'], 
-        ['karlskrona-kommun', 'Karlskrona kommun'], 
-        ['karlstads-kommun', 'Karlstads kommun'], 
-        ['katrineholms-kommun', 'Katrineholms kommun'], 
-        ['kils-kommun', 'Kils kommun'], 
-        ['kinda-kommun', 'Kinda kommun'], 
-        ['kiruna-kommun', 'Kiruna kommun'], 
-        ['klippans-kommun', 'Klippans kommun'], 
-        ['knivsta-kommun', 'Knivsta kommun'], 
-        ['kramfors-kommun', 'Kramfors kommun'], 
-        ['kristianstads-kommun', 'Kristianstads kommun'], 
-        ['kristinehamns-kommun', 'Kristinehamns kommun'], 
-        ['krokoms-kommun', 'Krokoms kommun'], 
-        ['kumla-kommun', 'Kumla kommun'], 
-        ['kungsbacka-kommun', 'Kungsbacka kommun'], 
-        ['kungsörs-kommun', 'Kungsörs kommun'], 
-        ['kungälvs-kommun', 'Kungälvs kommun'], 
-        ['kävlinge-kommun', 'Kävlinge kommun'], 
-        ['köpings-kommun', 'Köpings kommun'], 
-        ['laholms-kommun', 'Laholms kommun'], 
-        ['landskrona-kommun', 'Landskrona kommun'], 
-        ['laxå-kommun', 'Laxå kommun'], 
-        ['lekebergs-kommun', 'Lekebergs kommun'], 
-        ['leksands-kommun', 'Leksands kommun'], 
-        ['lerums-kommun', 'Lerums kommun'], 
-        ['lessebo-kommun', 'Lessebo kommun'], 
-        ['lidingö-kommun', 'Lidingö kommun'], 
-        ['lidköpings-kommun', 'Lidköpings kommun'], 
-        ['lilla-edets-kommun', 'Lilla Edets kommun'], 
-        ['lindesbergs-kommun', 'Lindesbergs kommun'], 
-        ['linköpings-kommun', 'Linköpings kommun'], 
-        ['ljungby-kommun', 'Ljungby kommun'], 
-        ['ljusdals-kommun', 'Ljusdals kommun'], 
-        ['ljusnarsbergs-kommun', 'Ljusnarsbergs kommun'], 
-        ['lomma-kommun', 'Lomma kommun'], 
-        ['ludvika-kommun', 'Ludvika kommun'], 
-        ['luleå-kommun', 'Luleå kommun'], 
-        ['lunds-kommun', 'Lunds kommun'], 
-        ['lycksele-kommun', 'Lycksele kommun'], 
-        ['lysekils-kommun', 'Lysekils kommun'], 
-        ['malmö-kommun', 'Malmö kommun'], 
-        ['malung-sälens-kommun', 'Malung-Sälens kommun'], 
-        ['malå-kommun', 'Malå kommun'], 
-        ['mariestads-kommun', 'Mariestads kommun'], 
-        ['markaryds-kommun', 'Markaryds kommun'], 
-        ['marks-kommun', 'Marks kommun'], 
-        ['melleruds-kommun', 'Melleruds kommun'], 
-        ['mjölby-kommun', 'Mjölby kommun'], 
-        ['mora-kommun', 'Mora kommun'], 
-        ['motala-kommun', 'Motala kommun'], 
-        ['mullsjö-kommun', 'Mullsjö kommun'], 
-        ['munkedals-kommun', 'Munkedals kommun'], 
-        ['munkfors-kommun', 'Munkfors kommun'], 
-        ['mölndals-kommun', 'Mölndals kommun'], 
-        ['mönsterås-kommun', 'Mönsterås kommun'], 
-        ['mörbylånga-kommun', 'Mörbylånga kommun'], 
-        ['nacka-kommun', 'Nacka kommun'], 
-        ['nora-kommun', 'Nora kommun'], 
-        ['norbergs-kommun', 'Norbergs kommun'], 
-        ['nordanstigs-kommun', 'Nordanstigs kommun'], 
-        ['nordmalings-kommun', 'Nordmalings kommun'], 
-        ['norrköpings-kommun', 'Norrköpings kommun'], 
-        ['norrtälje-kommun', 'Norrtälje kommun'], 
-        ['norsjö-kommun', 'Norsjö kommun'], 
-        ['nybro-kommun', 'Nybro kommun'], 
-        ['nykvarns-kommun', 'Nykvarns kommun'], 
-        ['nyköpings-kommun', 'Nyköpings kommun'], 
-        ['nynäshamns-kommun', 'Nynäshamns kommun'], 
-        ['nässjö-kommun', 'Nässjö kommun'], 
-        ['ockelbo-kommun', 'Ockelbo kommun'], 
-        ['olofströms-kommun', 'Olofströms kommun'], 
-        ['orsa-kommun', 'Orsa kommun'], 
-        ['orust-kommun', 'Orust kommun'], 
-        ['osby-kommun', 'Osby kommun'], 
-        ['oskarshamns-kommun', 'Oskarshamns kommun'], 
-        ['ovanåkers-kommun', 'Ovanåkers kommun'], 
-        ['oxelösunds-kommun', 'Oxelösunds kommun'], 
-        ['pajala-kommun', 'Pajala kommun'], 
-        ['partille-kommun', 'Partille kommun'], 
-        ['perstorps-kommun', 'Perstorps kommun'], 
-        ['piteå-kommun', 'Piteå kommun'], 
-        ['ragunda-kommun', 'Ragunda kommun'], 
-        ['robertsfors-kommun', 'Robertsfors kommun'], 
-        ['ronneby-kommun', 'Ronneby kommun'], 
-        ['rättviks-kommun', 'Rättviks kommun'], 
-        ['sala-kommun', 'Sala kommun'], 
-        ['salems-kommun', 'Salems kommun'], 
-        ['sandvikens-kommun', 'Sandvikens kommun'], 
-        ['sigtuna-kommun', 'Sigtuna kommun'], 
-        ['simrishamns-kommun', 'Simrishamns kommun'], 
-        ['sjöbo-kommun', 'Sjöbo kommun'], 
-        ['skara-kommun', 'Skara kommun'], 
-        ['skellefteå-kommun', 'Skellefteå kommun'], 
-        ['skinnskattebergs-kommun', 'Skinnskattebergs kommun'], 
-        ['skurups-kommun', 'Skurups kommun'], 
-        ['skövde-kommun', 'Skövde kommun'], 
-        ['smedjebackens-kommun', 'Smedjebackens kommun'],
-        ['sollefteå-kommun', 'Sollefteå kommun'], 
-        ['sollentuna-kommun', 'Sollentuna kommun'], 
-        ['solna-kommun', 'Solna kommun'], 
-        ['sorsele-kommun', 'Sorsele kommun'], 
-        ['sotenäs-kommun', 'Sotenäs kommun'], 
-        ['staffanstorps-kommun', 'Staffanstorps kommun'], 
-        ['stenungsunds-kommun', 'Stenungsunds kommun'], 
-        ['stockholms-kommun', 'Stockholms kommun'], 
-        ['storfors-kommun', 'Storfors kommun'], 
-        ['storumans-kommun', 'Storumans kommun'], 
-        ['strängnäs-kommun', 'Strängnäs kommun'],
-        ['strömstads-kommun', 'Strömstads kommun'], 
-        ['strömsunds-kommun', 'Strömsunds kommun'], 
-        ['sundbybergs-kommun', 'Sundbybergs kommun'], 
-        ['sundsvalls-kommun', 'Sundsvalls kommun'], 
-        ['sunne-kommun', 'Sunne kommun'], 
-        ['surahammars-kommun', 'Surahammars kommun'], 
-        ['svalövs-kommun', 'Svalövs kommun'], 
-        ['svedala-kommun', 'Svedala kommun'], 
-        ['svenljunga-kommun', 'Svenljunga kommun'], 
-        ['säffle-kommun', 'Säffle kommun'], 
-        ['säters-kommun', 'Säters kommun'], 
-        ['sävsjö-kommun', 'Sävsjö kommun'], 
-        ['söderhamns-kommun', 'Söderhamns kommun'], 
-        ['söderköpings-kommun', 'Söderköpings kommun'], 
-        ['södertälje-kommun', 'Södertälje kommun'], 
-        ['sölvesborgs-kommun', 'Sölvesborgs kommun'], 
-        ['tanums-kommun', 'Tanums kommun'], 
-        ['tibro-kommun', 'Tibro kommun'], 
-        ['tidaholms-kommun', 'Tidaholms kommun'], 
-        ['tierps-kommun', 'Tierps kommun'], 
-        ['timrå-kommun', 'Timrå kommun'], 
-        ['tingsryds-kommun', 'Tingsryds kommun'], 
-        ['tjörns-kommun', 'Tjörns kommun'], 
-        ['tomelilla-kommun', 'Tomelilla kommun'], 
-        ['torsby-kommun', 'Torsby kommun'], 
-        ['torsås-kommun', 'Torsås kommun'], 
-        ['tranemo-kommun', 'Tranemo kommun'], 
-        ['tranås-kommun', 'Tranås kommun'], 
-        ['trelleborg-kommun', 'Trelleborg kommun'], 
-        ['trollhättans-kommun', 'Trollhättans kommun'], 
-        ['trosa-kommun', 'Trosa kommun'], 
-        ['tyresö-kommun', 'Tyresö kommun'], 
-        ['täby-kommun', 'Täby kommun'], 
-        ['töreboda-kommun', 'Töreboda kommun'], 
-        ['uddevalla-kommun', 'Uddevalla kommun'], 
-        ['ulricehamn-kommun', 'Ulricehamn kommun'], 
-        ['umeå-kommun', 'Umeå kommun'], 
-        ['upplands-bro-kommun', 'Upplands-Bro kommun'], 
-        ['upplands-väsby-kommun', 'Upplands Väsby kommun'], 
-        ['uppsala-kommun', 'Uppsala kommun'], 
-        ['uppvidinge-kommun', 'Uppvidinge kommun'], 
-        ['vadstena-kommun', 'Vadstena kommun'], 
-        ['vaggeryds-kommun', 'Vaggeryds kommun'], 
-        ['valdemarsviks-kommun', 'Valdemarsviks kommun'], 
-        ['vallentuna-kommun', 'Vallentuna kommun'], 
-        ['vansbro-kommun', 'Vansbro kommun'], 
-        ['vara-kommun', 'Vara kommun'], 
-        ['varbergs-kommun', 'Varbergs kommun'], 
-        ['vaxholms-kommun', 'Vaxholms kommun'], 
-        ['vellinge-kommun', 'Vellinge kommun'], 
-        ['vetlanda-kommun', 'Vetlanda kommun'], 
-        ['vilhelmina-kommun', 'Vilhelmina kommun'], 
-        ['vimmerby-kommun', 'Vimmerby kommun'], 
-        ['vindelns-kommun', 'Vindelns kommun'], 
-        ['vingåkers-kommun', 'Vingåkers kommun'], 
-        ['vårgårda-kommun', 'Vårgårda kommun'], 
-        ['vänersborgs-kommun', 'Vänersborgs kommun'], 
-        ['vännäs-kommun', 'Vännäs kommun'], 
-        ['värmdö-kommun', 'Värmdö kommun'], 
-        ['värnamo-kommun', 'Värnamo kommun'], 
-        ['västerviks-kommun', 'Västerviks kommun'], 
-        ['västerås-kommun', 'Västerås kommun'], 
-        ['växjö-kommun', 'Växjö kommun'], 
-        ['ydre-kommun', 'Ydre kommun'], 
-        ['ystads-kommun', 'Ystads kommun'], 
-        ['åmåls-kommun', 'Åmåls kommun'], 
-        ['ånge-kommun', 'Ånge kommun'], 
-        ['åre-kommun', 'Åre kommun'], 
-        ['årjängs-kommun', 'Årjängs kommun'], 
-        ['åsele-kommun', 'Åsele kommun'], 
-        ['åstorps-kommun', 'Åstorps kommun'], 
-        ['åtvidabergs-kommun', 'Åtvidabergs kommun'], 
-        ['älmhults-kommun', 'Älmhults kommun'], 
-        ['älvdalens-kommun', 'Älvdalens kommun'], 
-        ['älvkarleby-kommun', 'Älvkarleby kommun'], 
-        ['älvsbyns-kommun', 'Älvsbyns kommun'], 
-        ['ängelholms-kommun', 'Ängelholms kommun'], 
-        ['öckerö-kommun', 'Öckerö kommun'], 
-        ['ödeshögs-kommun', 'Ödeshögs kommun'], 
-        ['örebro-kommun', 'Örebro kommun'], 
-        ['örkelljunga-kommun', 'Örkelljunga kommun'], 
-        ['örnsköldsviks-kommun', 'Örnsköldsviks kommun'], 
-        ['östersunds-kommun', 'Östersunds kommun'], 
-        ['österåkers-kommun', 'Österåkers kommun'], 
-        ['östhammars-kommun', 'Östhammars kommun'], 
-        ['östra-göinge-kommun', 'Östra Göinge kommun'], 
-        ['överkalix-kommun', 'Överkalix kommun'], 
-        ['övertorneå-kommun', 'Övertorneå kommun']
-        ])
+    municipality = fields.Selection(selection=MUNICIPALITY)
 
-    industry = fields.Selection(selection=[
-        ['00-huvudgrupp-saknas', '00 -Huvudgrupp saknas'], 
-        ['01-jordbruk-och-jakt-samt-service-i-anslutning-härtill', '01 -Jordbruk och jakt samt service i anslutning härtill'], 
-        ['02-skogsbruk', '02 -Skogsbruk'], 
-        ['03-fiske-och-vattenbruk', '03 -Fiske och vattenbruk'], 
-        ['08-annan-utvinning-av-mineral', '08 -Annan utvinning av mineral'], 
-        ['10-livsmedelsframställning', '10 -Livsmedelsframställning'], 
-        ['11-framställning-av-drycker', '11 -Framställning av drycker'], 
-        ['12-tobaksvarutillverkning', '12 -Tobaksvarutillverkning'], 
-        ['13-textilvarutillverkning', '13 -Textilvarutillverkning'], 
-        ['14-tillverkning-av-kläder', '14 -Tillverkning av kläder'], 
-        ['15-tillverkning-av-läder-läder-och-skinnvaror-mm', '15 -Tillverkning av läder, läder- och skinnvaror m.m.'], 
-        ['16-tillverkning-av-trä-och-varor-av-trä-kork-rotting-o-d-utom-möbler', '16 -Tillverkning av trä och varor av trä; kork, rotting o.d. utom möbler'], 
-        ['17-pappers-och-pappersvarutillverkning', '17 -Pappers- och pappersvarutillverkning'], 
-        ['18-grafisk-produktion-och-reproduktion-av-inspelningar', '18 -Grafisk produktion och reproduktion av inspelningar'], 
-        ['20-tillverkning-av-kemikalier-och_kemiska_produkter', '20 -Tillverkning av kemikalier och kemiska produkter'], 
-        ['21-tillverkning-av-farmaceutiska-basprodukter-och-läkemedel', '21 -Tillverkning av farmaceutiska basprodukter och läkemedel'], 
-        ['22-tillverkning-av-gummi-och-plastvaror', '22 -Tillverkning av gummi- och plastvaror'], 
-        ['23-tillverkning-av-andra-ickemetalliska-mineraliska-produkter', '23 -Tillverkning av andra icke-metalliska mineraliska produkter'], 
-        ['24-stål-och-metallframställning', '24 -Stål- och metallframställning'], 
-        ['25-tillverkning-av-metallvaror-utom-maskiner-och-apparater', '25 -Tillverkning av metallvaror utom maskiner och apparater'], 
-        ['26-tillverkning-av-datorer-elektronikvaror-och-optik', '26 -Tillverkning av datorer, elektronikvaror och optik'], 
-        ['27-tillverkning-av-elapparatur', '27 -Tillverkning av elapparatur'], 
-        ['28-tillverkning-av-övriga-maskiner', '28 -Tillverkning av övriga maskiner'], 
-        ['29-tillverkning-av-motorfordon-släpfordon-och-påhängsvagnar', '29 -Tillverkning av motorfordon, släpfordon och påhängsvagnar'], 
-        ['30-tillverkning-av-andra-transportmedel', '30 -Tillverkning av andra transportmedel'], 
-        ['31-tillverkning-av-möbler', '31 -Tillverkning av möbler'], ['32-anan-tillverkning', '32 -Anan tillverkning'], 
-        ['33-reparation-och-installation-av-maskiner-och-apparater', '33 -Reparation och installation av maskiner och apparater'], 
-        ['35-försörjning-av-el-gas-värme-och-kyla', '35 -Försörjning av el, gas, värme och kyla'], 
-        ['36-vattenförsörjning', '36 -Vattenförsörjning'], 
-        ['37-avloppsrening', '37 -Avloppsrening'],
-        ['38-avfallshantering-återvinning', '38 -Avfallshantering; återvinning'], 
-        ['39-sanering-efterbehandling-av-jord-och-vatten-samt-annan-verksamhet-för-föroreningsbekämpning', '39 -Sanering, efterbehandling av jord och vatten samt annan verksamhet för föroreningsbekämpning'], 
-        ['41-byggande-av-hus', '41 -Byggande av hus'], 
-        ['42-anläggningsarbeten', '42 -Anläggningsarbeten'], 
-        ['43-specialiserad-bygg-och-anläggningsverksamhet', '43 -Specialiserad bygg- och anläggningsverksamhet'], 
-        ['45-handel-samt-reparation-av-motorfordon-och-motorcyklar', '45 -Handel samt reparation av motorfordon och motorcyklar'], 
-        ['46-parti-och-provisionshandel-utom-med-motorfordon', '46 -Parti- och provisionshandel utom med motorfordon'], 
-        ['47-detaljhandel-utom-med-motorfordon-och-motorcyklar', '47 -Detaljhandel utom med motorfordon och motorcyklar'], 
-        ['49-landtransport-transport-i-rörsystem', '49 -Landtransport; transport i rörsystem'], 
-        ['50-sjötransport', '50 -Sjötransport'], 
-        ['51-lufttransport', '51 -Lufttransport'], 
-        ['52-magasinering-och-stödtjänster-till-transport', '52 -Magasinering och stödtjänster till transport'], 
-        ['53-post-och-kurirverksamhet', '53 -Post- och kurirverksamhet'], 
-        ['55-hotell-och-logiverksamhet', '55 -Hotell- och logiverksamhet'], 
-        ['56-restaurang-catering-och-barverksamhet', '56 -Restaurang-, catering- och barverksamhet'], 
-        ['58-förlagsverksamhet', '58 -Förlagsverksamhet'], 
-        ['59-film-video-och-tvprogramverksamhet-ljudinspelningar-och-fonogramutgivning', '59 -Film-, video- och tv-programverksamhet, ljudinspelningar och fonogramutgivning'], 
-        ['60-planering-och-sändning-av-program', '60 -Planering och sändning av program'], 
-        ['61-telekommunikation', '61 -Telekommunikation'], 
-        ['62-dataprogrammering-datakonsultverksamhet-od', '62 -Dataprogrammering, datakonsultverksamhet o.d.'], 
-        ['63-informationstjänster', '63 -Informationstjänster'], 
-        ['64-finansiella-tjänster-utom-försäkring-och-pensionsfondsverksamhet', '64 -Finansiella tjänster utom försäkring och pensionsfondsverksamhet'], 
-        ['65-försäkring-återförsäkring-och-pensionsfondsverksamhet-utom-obligatorisk-socialförsäkring', '65 -Försäkring, återförsäkring och pensionsfondsverksamhet utom obligatorisk socialförsäkring'], 
-        ['66-stödtjänster-till-finansiella-tjänster-och-försäkring', '66 -Stödtjänster till finansiella tjänster och försäkring'], 
-        ['68-fastighetsverksamhet', '68 -Fastighetsverksamhet'], 
-        ['69-juridisk-och-ekonomisk-konsultverksamhet', '69 -Juridisk och ekonomisk konsultverksamhet'], 
-        ['70-verksamheter-som-utövas-av-huvudkontor-konsulttjänster-till-företag', '70 -Verksamheter som utövas av huvudkontor; konsulttjänster till företag'], 
-        ['71-arkitekt-och-teknisk-konsultverksamhet-teknisk-provning-och-analys', '71 -Arkitekt- och teknisk konsultverksamhet; teknisk provning och analys'], 
-        ['72-vetenskaplig-forskning-och-utveckling', '72 -Vetenskaplig forskning och utveckling'], 
-        ['73-reklam-och-marknadsundersökning', '73 -Reklam och marknadsundersökning'], 
-        ['74-annan-verksamhet-inom-juridik-ekonomi-vetenskap-och-teknik', '74 -Annan verksamhet inom juridik, ekonomi, vetenskap och teknik'], 
-        ['75-veterinärverksamhet', '75 -Veterinärverksamhet'], 
-        ['77-uthyrning-och-leasing', '77 -Uthyrning och leasing'], 
-        ['78-arbetsförmedling-bemanning-och-andra-personalrelaterade-tjänster', '78 -Arbetsförmedling, bemanning och andra personalrelaterade tjänster'], 
-        ['79-resebyrå-och-researrangörsverksamhet-och-andra-resetjänster-och-relaterade-tjänster', '79 -Resebyrå- och researrangörsverksamhet och andra resetjänster och relaterade tjänster'], 
-        ['80-säkerhets-och-bevakningsverksamhet', '80 -Säkerhets- och bevakningsverksamhet'], 
-        ['81-fastighetsservice-samt-skötsel-och-underhåll-av-grönytor', '81 -Fastighetsservice samt skötsel och underhåll av grönytor'], 
-        ['82-kontorstjänster-och-andra-företagstjänster', '82 -Kontorstjänster och andra företagstjänster'], 
-        ['84-offentlig-förvaltning-och-försvar-obligatorisk-socialförsäkring', '84 -Offentlig förvaltning och försvar;  obligatorisk socialförsäkring'], 
-        ['85-utbildning', '85 -Utbildning'], 
-        ['86-hälso-och-sjukvård', '86 -Hälso- och sjukvård'], 
-        ['87-vård-och-omsorg-med-boende', '87 -Vård och omsorg med boende'], 
-        ['88-öppna-sociala-insatser', '88 -Öppna sociala insatser'], 
-        ['90-konstnärlig-och-kulturell-verksamhet-samt-underhållningsverksamhet', '90 -Konstnärlig och kulturell verksamhet samt underhållningsverksamhet'], 
-        ['91-biblioteks-arkiv-och-museiverksamhet-mm', '91 -Biblioteks-, arkiv- och museiverksamhet m.m.'], 
-        ['92-spel-och-vadhållningsverksamhet', '92 -Spel- och vadhållningsverksamhet'], 
-        ['93-sport-fritids-och-nöjesverksamhet', '93 -Sport-, fritids- och nöjesverksamhet'], 
-        ['94-intressebevakning-religiös-verksamhet', '94 -Intressebevakning; religiös verksamhet'], 
-        ['95-reparation-av-datorer-hushållsartiklar-och-personliga-artiklar', '95 -Reparation av datorer, hushållsartiklar och personliga artiklar'], 
-        ['96-andra-konsumenttjänster', '96 -Andra konsumenttjänster'], 
-        ['99-verksamhet-vid-internationella-organisationer-utländska-ambassader-od', '99 -Verksamhet vid internationella organisationer, utländska ambassader o.d.']
-    ])
-    
+    industry = fields.Selection(selection=INDUSTRY)
+
     def action_submit(self):
-        
+
         url = "https://www.bolagsfakta.se/"
 
         if self.is_1000 == False:
-
             action_or_request = self.check_1000()
 
         self.get_companies(url)
@@ -412,10 +40,10 @@ class CRMBolagsfakta(models.Model):
                 'type': 'warning',
                 'message': _("This is the detailed warning"),
                 'sticky': True,
-                },
+            },
         }
 
-    def get_companies_request(self,url,detailed_category_name="",full_sni=""):
+    def get_companies_request(self, url, detailed_category_name="", full_sni=""):
 
         sni = self.industry[:2]
         category_name = self.industry[3:]
@@ -426,22 +54,23 @@ class CRMBolagsfakta(models.Model):
 
         soup = BeautifulSoup(response.content, 'html.parser')
 
-    def get_companies_data(self,soup):
+    def get_companies_data(self, soup):
 
-        a_tags = self.extract_links(list(map(lambda div: div.find("a"), soup.find_all("div",class_="content-box content-box--no-hover mt-2"))))
-        names = self.extract_content(soup.find_all("h2",class_="mt-0 site-h3"))
-        addresses = self.extract_content(soup.find_all("div",class_="mt-0 bolagsfakta-color--charcole-black"))
-        org_numbers = self.extract_content(soup.find_all("span",class_="mt-1 bolagsfakta-color--charcole-black"))
-        corporate_forms = self.extract_content(list(map(lambda div: div.find("span"), soup.find_all("div",class_="col-sm-6 text-sm-right"))))
+        a_tags = self.extract_links(
+            list(map(lambda div: div.find("a"), soup.find_all("div", class_="content-box content-box--no-hover mt-2"))))
+        names = self.extract_content(soup.find_all("h2", class_="mt-0 site-h3"))
+        addresses = self.extract_content(soup.find_all("div", class_="mt-0 bolagsfakta-color--charcole-black"))
+        org_numbers = self.extract_content(soup.find_all("span", class_="mt-1 bolagsfakta-color--charcole-black"))
+        corporate_forms = self.extract_content(
+            list(map(lambda div: div.find("span"), soup.find_all("div", class_="col-sm-6 text-sm-right"))))
 
         for company_num in range(len(a_tags)):
-            
             _logger.error(a_tags[company_num])
             _logger.error(names[company_num])
             _logger.error(addresses[company_num])
             _logger.error(org_numbers[company_num])
             _logger.error(corporate_forms[company_num])
-            _logger.error("-"*100)
+            _logger.error("-" * 100)
 
             record = {
                 "name": names[company_num],
@@ -456,63 +85,50 @@ class CRMBolagsfakta(models.Model):
 
             self.create_lead(record)
 
-
     def check_1000(self, soup):
-            
-        count_companies = soup.find("h1",class_="site-h2")
+
+        count_companies = soup.find("h1", class_="site-h2")
 
         _logger.error(f"{count_companies=}")
 
-        count_companies = int(count_companies.text.split("(")[1].split(" st")[0].replace("\xa0",""))
+        count_companies = int(count_companies.text.split("(")[1].split(" st")[0].replace("\xa0", ""))
 
         _logger.error(f"{count_companies=}")
 
         if count_companies >= 1000:
 
-            _logger.error("running??????"*50)
+            _logger.error("running??????" * 50)
 
             self.check_1000 = True
-        
+
         elif count_companies < 1000:
 
             pass
 
-
-
-    def create_lead(self,record):
+    def create_lead(self, record):
         self.env["crm.lead"].create(record)
 
-    def extract_content(self,element_list):
+    def extract_content(self, element_list):
         return list(map(lambda element: element.text.strip(), element_list))
 
-    def extract_links(self,a_element_list):
+    def extract_links(self, a_element_list):
         return list(map(lambda element: element['href'], a_element_list))
 
     def get_leads(self):
         return {
-        'name': 'Leads',
-        'type': 'ir.actions.act_window',
-        'res_model': 'crm.lead',
-        'view_mode': 'tree,form',
-        "domain": [("crm_bolagsfakta_id", "=", self.id)],
-        "context": {"default_crm_bolagsfakta_id": self.id},
+            'name': 'Leads',
+            'type': 'ir.actions.act_window',
+            'res_model': 'crm.lead',
+            'view_mode': 'tree,form',
+            "domain": [("crm_bolagsfakta_id", "=", self.id)],
+            "context": {"default_crm_bolagsfakta_id": self.id},
         }
 
-    @api.depends("asd")
-    def compute_check_1000(self):
-        pass
+    # @api.depends("asd")
+    # def compute_check_1000(self):
+    #     pass
 
     @api.depends("crm_lead_ids")
     def compute_leads_count(self):
         for rec in self:
             rec.leads_count = len(rec.crm_lead_ids)
-
-
-
-
-
-
-
-
-
-
