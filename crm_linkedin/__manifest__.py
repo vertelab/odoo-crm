@@ -7,8 +7,6 @@
     'category': 'Sales/CRM',
     'version': '1.2',
     'depends': [
-        # 'iap_crm',
-        # 'iap_mail',
         'crm',
         'base',
         'automation_oca'
