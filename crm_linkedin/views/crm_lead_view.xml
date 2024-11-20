@@ -11,9 +11,6 @@
                         string="Generate LinkedIn Leads" groups="sales_team.group_sale_manager" display="always"
                         invisible="context.get('active_model', 'crm.lead') != 'crm.lead'"/>
             </xpath>
-            <button name="action_generate_leads" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </button>
         </field>
     </record>
 
@@ -29,9 +26,6 @@
                             invisible="context.get('active_model', 'crm.lead') != 'crm.lead'"/>
                 </header>
             </xpath>
-            <button name="action_generate_leads" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </button>
         </field>
     </record>
 
@@ -69,9 +63,6 @@
                             groups="sales_team.group_sale_manager" display="always" invisible="context.get('active_model', 'crm.lead') != 'crm.lead'"/>
                 </header>
             </xpath>
-            <button name="action_generate_leads" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </button>
         </field>
     </record>
 
@@ -86,9 +77,6 @@
                             groups="sales_team.group_sale_manager" display="always" invisible="context.get('active_model', 'crm.lead') != 'crm.lead'"/>
                 </header>
             </xpath>
-            <button name="action_generate_leads" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </button>
         </field>
     </record>
 
