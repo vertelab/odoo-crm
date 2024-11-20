@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="linkedin_company_employee_wizard_tree_view" model="ir.ui.view">
+            <field name="name">linkedin.employee.wizard.tree.lead</field>
+            <field name="model">linkedin.employee.wizard</field>
+            <field name="arch" type="xml">
+                <tree string="LinkedIn Employees" create="false" delete="false" duplicate="false">
+                    <header>
+                        <button name="action_create_leads" type="object" class="btn btn-primary"
+                            string="Generate Leads" groups="sales_team.group_sale_manager" display="always"/>
+                    </header>
+                    <field name="name"/>
+                    <field name="company_name"/>
+                    <field name="position"/>
+                    <field name="public_profile"/>
+                    <field name="profile_urn"/>
+                    <field name="profile_url" optional="hide"/>
+                    <field name="email"/>
+                    <field name="location"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

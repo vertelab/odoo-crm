@@ -31,7 +31,7 @@ class CRMLeadMiningRequest(models.Model):
                              default='draft')
 
     # Request Data
-    lead_number = fields.Integer(string='Number of Leads', required=True, default=3)
+    lead_number = fields.Integer(string='Number of Leads', required=True, default=10)
     search_type = fields.Selection([('companies', 'Companies and their Contacts'),
                                     ('people', 'People and their Contacts')],
                                    string='Target', required=True, default='companies')
@@ -108,8 +108,8 @@ class CRMLeadMiningRequest(models.Model):
         )
 
     def _linkedin_client(self):
-        api = Linkedin('erik.petersson1991@gmail.com', 'f9zHjKmXxeZ')
-        return api
+        client = self.env.user._linkedin_client()
+        return client
 
     def _enrich_profile(self, client, basic_profile_data):
         enriched_profile_data = client.get_profile(urn_id=basic_profile_data.get('urn_id'))
@@ -129,11 +129,7 @@ class CRMLeadMiningRequest(models.Model):
         if self.search_type == 'people':
             profile = client.get_profile(
                 self.linkedin_profile).get('urn_id') if self.linkedin_profile else False
-            data = client.search_people(
-                keywords=self.keywords,
-                limit=self.lead_number,
-                connection_of=profile
-            )
+            data = client.search_people(keywords=self.keywords, limit=self.lead_number, connection_of=profile)
         else:
             data = client.search_companies(limit=self.lead_number)
         return client, data
@@ -189,20 +185,20 @@ class CRMLeadMiningRequest(models.Model):
         self.env['crm.lead'].create(lead_vals_list)
 
     # Methods responsible for format response data into valid odoo lead data
-    @api.model
-    def _lead_vals_from_response(self, data):
-        self.ensure_one()
-        lead_vals = self.env['crm.lead.linkedin.helpers'].lead_vals_from_response(
-            self.lead_type, self.team_id.id, self.tag_ids.ids,
-            self.user_id.id, data
-        )
-        lead_vals['linkedin_lead_mining_request_id'] = self.id
-        return lead_vals
+    # @api.model
+    # def _lead_vals_from_response(self, data):
+    #     self.ensure_one()
+    #     lead_vals = self.env['crm.lead.linkedin.helpers'].lead_vals_from_response(
+    #         self.lead_type, self.team_id.id, self.tag_ids.ids,
+    #         self.user_id.id, data
+    #     )
+    #     lead_vals['linkedin_lead_mining_request_id'] = self.id
+    #     return lead_vals
 
-    def action_draft(self):
-        self.ensure_one()
-        self.name = _('New')
-        self.state = 'draft'
+    # def action_draft(self):
+    #     self.ensure_one()
+    #     self.name = _('New')
+    #     self.state = 'draft'
 
     def action_mine_leads(self):
         self.ensure_one()

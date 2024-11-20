@@ -1,118 +1,57 @@
 from odoo import models, fields, api, _
 
+import re
 import logging, requests
 from bs4 import BeautifulSoup
 from .constant import MUNICIPALITY, INDUSTRY
 
 _logger = logging.getLogger(__name__)
 
+reqex_site_header = re.compile(r"\(([\d,]+)")
+
 
 class CRMBolagsfakta(models.Model):
     _name = 'crm.bolagsfakta'
-    _description = 'scaffold_test.scaffold_test'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'Bolagsfakta'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'utm.mixin']
 
-    name = fields.Char(default=False)
+    name = fields.Char(string="Name")
     information = fields.Text(default=False)
     company_link = fields.Char(default=False)
     crm_lead_ids = fields.One2many(comodel_name="crm.lead", inverse_name="crm_bolagsfakta_id")
     leads_count = fields.Integer(compute="compute_leads_count")
-    is_1000 = fields.Boolean()  # compute="compute_check_1000"
+    municipality_ids = fields.Many2many('res.kommun', required=True)
+    industry = fields.Selection(selection=INDUSTRY, required=True)
 
-    municipality = fields.Selection(selection=MUNICIPALITY)
+    # sni_id = fields.Many2one('res.sni', string="SNI")
 
-    industry = fields.Selection(selection=INDUSTRY)
+    user_id = fields.Many2one("res.users", string="Salesperson")
+    team_id = fields.Many2one("crm.team", string="Team")
+    type = fields.Selection([('opportunity', 'Opportunity'), ('lead', 'Lead')])
+    tag_ids = fields.Many2many('crm.tag', string="Tags")
+    description = fields.Text('Notes')
+    state = fields.Selection(
+        selection=[('draft', 'Draft'), ('list', 'List'), ('done', 'Done'), ('error', 'Error'), ('cancel', 'Cancel')],
+        default='draft', tracking=True)
 
     def action_submit(self):
+        base_url = "https://www.bolagsfakta.se/"
+        self.get_companies_data(base_url)
 
-        url = "https://www.bolagsfakta.se/"
+    def _has_over_1000(self, soup) -> bool:
+        """Check if the number of companies is over 1000."""
+        site_h2 = soup.find("h1", {"class": "site-h2"}).text
+        match = reqex_site_header.search(site_h2)
 
-        if self.is_1000 == False:
-            action_or_request = self.check_1000()
+        if match:
+            # Remove commas and convert to an integer
+            number_of_companies = int(match.group(1).replace(',', ''))
+            # Check if the number is greater than or equal to 1000
+            return number_of_companies >= 1000
+        return False
 
-        self.get_companies(url)
-
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _("Warning head"),
-                'type': 'warning',
-                'message': _("This is the detailed warning"),
-                'sticky': True,
-            },
-        }
-
-    def get_companies_request(self, url, detailed_category_name="", full_sni=""):
-
-        sni = self.industry[:2]
-        category_name = self.industry[3:]
-
-        _logger.error(f"{url}bransch/{self.municipality}/{category_name}/{sni}/{detailed_category_name}/{full_sni}")
-
-        response = requests.get(f"{url}bransch/{self.municipality}/{category_name}/{sni}")
-
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-    def get_companies_data(self, soup):
-
-        a_tags = self.extract_links(
-            list(map(lambda div: div.find("a"), soup.find_all("div", class_="content-box content-box--no-hover mt-2"))))
-        names = self.extract_content(soup.find_all("h2", class_="mt-0 site-h3"))
-        addresses = self.extract_content(soup.find_all("div", class_="mt-0 bolagsfakta-color--charcole-black"))
-        org_numbers = self.extract_content(soup.find_all("span", class_="mt-1 bolagsfakta-color--charcole-black"))
-        corporate_forms = self.extract_content(
-            list(map(lambda div: div.find("span"), soup.find_all("div", class_="col-sm-6 text-sm-right"))))
-
-        for company_num in range(len(a_tags)):
-            _logger.error(a_tags[company_num])
-            _logger.error(names[company_num])
-            _logger.error(addresses[company_num])
-            _logger.error(org_numbers[company_num])
-            _logger.error(corporate_forms[company_num])
-            _logger.error("-" * 100)
-
-            record = {
-                "name": names[company_num],
-                "crm_bolagsfakta_id": self.id,
-                "bolagsfakta_company_link": a_tags[company_num],
-                "bolagsfakta_address": addresses[company_num],
-                "bolagsfakta_org_number": org_numbers[company_num],
-                "bolagsfakta_corporate_form": corporate_forms[company_num],
-                "bolagsfakta_industry": self.industry,
-                "bolagsfakta_municipality": self.municipality,
-            }
-
-            self.create_lead(record)
-
-    def check_1000(self, soup):
-
-        count_companies = soup.find("h1", class_="site-h2")
-
-        _logger.error(f"{count_companies=}")
-
-        count_companies = int(count_companies.text.split("(")[1].split(" st")[0].replace("\xa0", ""))
-
-        _logger.error(f"{count_companies=}")
-
-        if count_companies >= 1000:
-
-            _logger.error("running??????" * 50)
-
-            self.check_1000 = True
-
-        elif count_companies < 1000:
-
-            pass
-
-    def create_lead(self, record):
-        self.env["crm.lead"].create(record)
-
-    def extract_content(self, element_list):
-        return list(map(lambda element: element.text.strip(), element_list))
-
-    def extract_links(self, a_element_list):
-        return list(map(lambda element: element['href'], a_element_list))
+    def create_leads(self, companies_data: list):
+        self.env['crm.lead'].create(companies_data)
 
     def get_leads(self):
         return {
@@ -124,9 +63,136 @@ class CRMBolagsfakta(models.Model):
             "context": {"default_crm_bolagsfakta_id": self.id},
         }
 
-    # @api.depends("asd")
-    # def compute_check_1000(self):
-    #     pass
+    def get_companies_data(self, base_url, detailed_category_name="", full_sni=""):
+        sni = self.industry[:2]
+        category_name = self.industry[3:]
+        for municipality in self.municipality_ids:
+            response = requests.get(f"{base_url}bransch/{municipality.code}/{category_name}/{sni}")
+            soup = BeautifulSoup(response.content, 'html.parser')
+
+            if self._has_over_1000(soup=soup):
+                companies_data = self.process_sub_categories(soup=soup, municipality=municipality)
+            else:
+                companies_data = self.process_companies_data(soup=soup, municipality=municipality)
+
+            self.create_leads(companies_data)
+
+    def get_sub_categories_links(self, soup) -> list:
+        """Extracts and returns links to subcategories."""
+        return self.extract_links(
+            list(
+                map(lambda div: div.find("a"),
+                    soup.find_all("div", class_="content-box content-box--no-hover mt-2"))
+            )
+        )
+
+    def process_sub_categories(self, soup, municipality):
+        """Process each subcategory if more than 1000 companies."""
+        sub_categories_links = self.get_sub_categories_links(soup)
+
+        companies_data = []
+
+        for sub_category_link in sub_categories_links:
+            sub_response = requests.get(sub_category_link)
+            sub_soup = BeautifulSoup(sub_response.content, 'html.parser')
+
+            companies_data.extend(self.process_companies_data(soup=sub_soup, municipality=municipality))
+        return companies_data
+
+    def process_companies_data(self, soup, municipality):
+        # Find all company content-boxes on the current page
+        company_boxes = soup.find_all("div", class_="content-box content-box--no-hover mt-2")
+        companies_data = []
+
+        for box in company_boxes:
+            # Extract the link from the <a> tag
+            a_tag = box.find("a")
+            link = a_tag['href'] if a_tag else None
+
+            # Extract content inside the inner content box
+            inner_box = box.find("div", class_="content-box-inner content-box--no-hover")
+            if inner_box:
+                # Extract the name and address from the left column
+                left_column = inner_box.find("div", class_="col-sm-6")
+                name = left_column.find("h2", class_="mt-0 site-h3").get_text(strip=True) if left_column else None
+
+                # Safely extract address, checking if it's None
+                address = None
+                if left_column:
+                    address_element = left_column.find("div", class_="mt-1 bolagsfakta-color--charcole-black")
+                    address = address_element.get_text(strip=True) if address_element else None
+
+                # Initialize right_column as None
+                right_column = None
+                # Check for org number in both left and right columns
+                org_number = None
+                org_number_element = left_column.find(
+                    "span", class_="mt-1 bolagsfakta-color--charcole-black"
+                ) if left_column else None
+                if not org_number_element:
+                    right_column = inner_box.find("div", class_="col-sm-6 text-sm-right")
+                    org_number_element = right_column.find(
+                        "span", class_="mt-1 bolagsfakta-color--charcole-black"
+                    ) if right_column else None
+
+                if org_number_element:
+                    org_number = org_number_element.get_text(strip=True) if org_number_element else None
+
+                # Extract corporate form from the right column
+                corporate_form = None
+                if right_column:
+                    corporate_form_elements = right_column.find_all("span")
+                    if corporate_form_elements:
+                        corporate_form = corporate_form_elements[-1].get_text(strip=True)
+
+                # Create a dictionary for each company
+                company_record = {
+                    "name": name,
+                    "partner_name": name,
+                    "street": address,
+                    "org_number": org_number,
+                    "corporate_form": corporate_form,
+                    "bolagsfakta_company_link": link,
+                    "crm_bolagsfakta_id": self.id,
+                    "industry": self.industry,
+                    "municipality": municipality.id,
+                    "type": self.type,
+                    "tag_ids": self.tag_ids.ids,
+                    "user_id": self.user_id.id,
+                    "team_id": self.team_id.id,
+                    "campaign_id": self.campaign_id.id,
+                    "source_id": self.source_id.id,
+                    "medium_id": self.medium_id.id,
+                }
+                companies_data.append(company_record)
+
+        # Check for pagination
+        pagination = soup.find("div", class_="pagination-standard")
+        if pagination:
+            next_page_link = self.get_next_page_link(pagination)
+            if next_page_link:
+                next_page_response = requests.get(next_page_link)
+                next_page_soup = BeautifulSoup(next_page_response.content, 'html.parser')
+                companies_data.extend(self.process_companies_data(soup=next_page_soup, municipality=municipality))
+
+        return companies_data
+
+    def get_next_page_link(self, pagination):
+        """Extracts the link to the next page from the pagination."""
+        next_page_link = None
+        next_page = pagination.find("li", class_="pagination-standard-list__item--active").find_next_sibling("li")
+        if next_page:
+            next_page_link = next_page.find("a")['href'] if next_page.find("a") else None
+        return next_page_link
+
+    def create_lead(self, record):
+        self.env["crm.lead"].create(record)
+
+    def extract_content(self, element_list):
+        return list(map(lambda element: element.text.strip(), element_list))
+
+    def extract_links(self, a_element_list):
+        return list(map(lambda element: element['href'], a_element_list))
 
     @api.depends("crm_lead_ids")
     def compute_leads_count(self):

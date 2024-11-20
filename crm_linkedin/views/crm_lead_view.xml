@@ -35,6 +35,29 @@
         </field>
     </record>
 
+    <record id="linkedin_company_employee_tree_view_leads" model="ir.ui.view">
+        <field name="name">crm.lead.tree.lead</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <tree string="Leads">
+                <field name="company_id" column_invisible="True"/>
+                <field name="user_company_ids" column_invisible="True"/>
+                <field name="name" string="Lead" readonly="1"/>
+                <field name="contact_name"/>
+                <field name="function"/>
+                <field name="email_from" optional="hide"/>
+                <field name="phone" class="o_force_ltr"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="street" optional="show"/>
+                <field name="city" optional="hide"/>
+                <field name="state_id" optional="hide"/>
+                <field name="country_id" optional="hide" options="{'no_open': True, 'no_create': True}"/>
+                <field name="partner_id" column_invisible="True"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="view_crm_linkedin_lead_kanban" model="ir.ui.view">
         <field name="name">crm.lead.kanban.inherit.linkedin</field>
         <field name="model">crm.lead</field>
@@ -75,9 +98,36 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='lead']//field[@name='function']" position="after">
-                <field name="linkedin_url"/>
+                <field name="linkedin_url" widget="url"/>
                 <field name="urn_id"/>
+                <field name="employee_leads_count" invisible="1"/>
+                <field name="parent_lead_id" invisible="1"/>
             </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_employees" type="object" class="oe_stat_button" icon="fa-users" invisible="not id or parent_lead_id or type != 'lead'">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Employees</span>
+                        <field name="employee_leads_count" class="o_stat_value"/>
+                    </div>
+                </button>
+            </xpath>
+
+             <xpath expr="//button[last()]" position="after">
+                 <button name="fetch_company_employees" class="btn btn-primary" string="Fetch Employees" type="object" invisible="parent_lead_id or urn_id == False"/>
+             </xpath>
+        </field>
+    </record>
+
+        <record id="view_crm_case_leads_filter" model="ir.ui.view">
+        <field name="name">crm.lead</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <filter name="inactive" position="after">
+                <separator/>
+                <filter string="Leads on LinkedIn" name="linkedin_leads" domain="[('urn_id', '!=', False)]"/>
+            </filter>
         </field>
     </record>
 </odoo>

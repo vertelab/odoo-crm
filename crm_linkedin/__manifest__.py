@@ -9,25 +9,17 @@
     'depends': [
         'iap_crm',
         'iap_mail',
+        'base'
     ],
     'data': [
-        # 'data/crm.iap.lead.industry.csv',
-        # 'data/crm.iap.lead.role.csv',
-        # 'data/crm.iap.lead.seniority.csv',
-        # 'data/mail_template_data.xml',
-        # 'data/ir_sequence_data.xml',
+        'data/enrich_data.xml',
         'security/ir.model.access.csv',
         'views/linkedin_crm_lead_mining_request_views.xml',
-        'views/crm_lead_views.xml'
-        # 'views/res_config_settings_views.xml',
-        # 'views/mail_templates.xml',
-        # 'views/crm_menus.xml',
+        'views/crm_lead_view.xml',
+        'views/res_user_view.xml',
+        'data/ir_cron.xml',
+        'wizard/linkedin_employee_wizard_view.xml',
     ],
     'auto_install': True,
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         'crm_iap_mine/static/src/js/**/*',
-    #     ],
-    # },
     'license': 'LGPL-3',
 }
