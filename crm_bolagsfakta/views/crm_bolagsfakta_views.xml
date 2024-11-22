@@ -8,6 +8,7 @@
                 <form>
                     <header>
                         <button name="action_submit" type="object" string="Submit" class="oe_highlight" />
+                        <button name="check_leads_count" type="object" string="Check Leads Count" class="oe_highlight" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -21,6 +22,9 @@
                                 <field name="name" />
                                 <field name="municipality_ids" widget="many2many_tags" />
                                 <field name="industry" />
+                                <field name="number_of_result" />
+                                <field name="turn_over" />
+                                <field name="number_of_employees" />
 <!--                                <field name="sni_id" />-->
                                 <field name="state" invisible="1" />
                             </group>

@@ -1,13 +1,16 @@
-from odoo import models, fields, api, _
-
+import logging
 import re
-import logging, requests
+import requests
+
 from bs4 import BeautifulSoup
-from .constant import MUNICIPALITY, INDUSTRY
+
+from odoo import models, fields, api, _
+from .constant import INDUSTRY
+from .utils import extract_companies
 
 _logger = logging.getLogger(__name__)
 
-reqex_site_header = re.compile(r"\(([\d,]+)")
+regex_site_header = re.compile(r"\(([\d,]+)")
 
 
 class CRMBolagsfakta(models.Model):
@@ -22,6 +25,9 @@ class CRMBolagsfakta(models.Model):
     leads_count = fields.Integer(compute="compute_leads_count")
     municipality_ids = fields.Many2many('res.kommun', required=True)
     industry = fields.Selection(selection=INDUSTRY, required=True)
+    number_of_result = fields.Integer(string="Number of Result")
+    turn_over = fields.Float(string="Turnover")
+    number_of_employees = fields.Integer(string="Number of Employees")
 
     # sni_id = fields.Many2one('res.sni', string="SNI")
 
@@ -41,7 +47,7 @@ class CRMBolagsfakta(models.Model):
     def _has_over_1000(self, soup) -> bool:
         """Check if the number of companies is over 1000."""
         site_h2 = soup.find("h1", {"class": "site-h2"}).text
-        match = reqex_site_header.search(site_h2)
+        match = regex_site_header.search(site_h2)
 
         if match:
             # Remove commas and convert to an integer
@@ -63,7 +69,7 @@ class CRMBolagsfakta(models.Model):
             "context": {"default_crm_bolagsfakta_id": self.id},
         }
 
-    def get_companies_data(self, base_url, detailed_category_name="", full_sni=""):
+    def get_companies_data(self, base_url):
         sni = self.industry[:2]
         category_name = self.industry[3:]
         for municipality in self.municipality_ids:
@@ -73,8 +79,12 @@ class CRMBolagsfakta(models.Model):
             if self._has_over_1000(soup=soup):
                 companies_data = self.process_sub_categories(soup=soup, municipality=municipality)
             else:
-                companies_data = self.process_companies_data(soup=soup, municipality=municipality)
-
+                companies_data = extract_companies(
+                    soup=soup,
+                    municipality=municipality,
+                    crm_data=self._base_metadata(),
+                    filter_params=self._filter_params()
+                )
             self.create_leads(companies_data)
 
     def get_sub_categories_links(self, soup) -> list:
@@ -86,6 +96,25 @@ class CRMBolagsfakta(models.Model):
             )
         )
 
+    def _base_metadata(self):
+        return {
+            "type": self.type,
+            "crm_bolagsfakta_id": self.id,
+            "industry": self.industry,
+            "tag_ids": self.tag_ids.ids,
+            "user_id": self.user_id.id,
+            "team_id": self.team_id.id,
+            "campaign_id": self.campaign_id.id,
+            "source_id": self.source_id.id,
+            "medium_id": self.medium_id.id,
+        }
+
+    def _filter_params(self):
+        return {
+            "turn_over": self.turn_over,
+            "number_of_employees": self.number_of_employees,
+        }
+
     def process_sub_categories(self, soup, municipality):
         """Process each subcategory if more than 1000 companies."""
         sub_categories_links = self.get_sub_categories_links(soup)
@@ -96,94 +125,13 @@ class CRMBolagsfakta(models.Model):
             sub_response = requests.get(sub_category_link)
             sub_soup = BeautifulSoup(sub_response.content, 'html.parser')
 
-            companies_data.extend(self.process_companies_data(soup=sub_soup, municipality=municipality))
+            companies_data.extend(extract_companies(
+                soup=sub_soup,
+                municipality=municipality,
+                crm_data=self._base_metadata(),
+                filter_params=self._filter_params()
+            ))
         return companies_data
-
-    def process_companies_data(self, soup, municipality):
-        # Find all company content-boxes on the current page
-        company_boxes = soup.find_all("div", class_="content-box content-box--no-hover mt-2")
-        companies_data = []
-
-        for box in company_boxes:
-            # Extract the link from the <a> tag
-            a_tag = box.find("a")
-            link = a_tag['href'] if a_tag else None
-
-            # Extract content inside the inner content box
-            inner_box = box.find("div", class_="content-box-inner content-box--no-hover")
-            if inner_box:
-                # Extract the name and address from the left column
-                left_column = inner_box.find("div", class_="col-sm-6")
-                name = left_column.find("h2", class_="mt-0 site-h3").get_text(strip=True) if left_column else None
-
-                # Safely extract address, checking if it's None
-                address = None
-                if left_column:
-                    address_element = left_column.find("div", class_="mt-1 bolagsfakta-color--charcole-black")
-                    address = address_element.get_text(strip=True) if address_element else None
-
-                # Initialize right_column as None
-                right_column = None
-                # Check for org number in both left and right columns
-                org_number = None
-                org_number_element = left_column.find(
-                    "span", class_="mt-1 bolagsfakta-color--charcole-black"
-                ) if left_column else None
-                if not org_number_element:
-                    right_column = inner_box.find("div", class_="col-sm-6 text-sm-right")
-                    org_number_element = right_column.find(
-                        "span", class_="mt-1 bolagsfakta-color--charcole-black"
-                    ) if right_column else None
-
-                if org_number_element:
-                    org_number = org_number_element.get_text(strip=True) if org_number_element else None
-
-                # Extract corporate form from the right column
-                corporate_form = None
-                if right_column:
-                    corporate_form_elements = right_column.find_all("span")
-                    if corporate_form_elements:
-                        corporate_form = corporate_form_elements[-1].get_text(strip=True)
-
-                # Create a dictionary for each company
-                company_record = {
-                    "name": name,
-                    "partner_name": name,
-                    "street": address,
-                    "org_number": org_number,
-                    "corporate_form": corporate_form,
-                    "bolagsfakta_company_link": link,
-                    "crm_bolagsfakta_id": self.id,
-                    "industry": self.industry,
-                    "municipality": municipality.id,
-                    "type": self.type,
-                    "tag_ids": self.tag_ids.ids,
-                    "user_id": self.user_id.id,
-                    "team_id": self.team_id.id,
-                    "campaign_id": self.campaign_id.id,
-                    "source_id": self.source_id.id,
-                    "medium_id": self.medium_id.id,
-                }
-                companies_data.append(company_record)
-
-        # Check for pagination
-        pagination = soup.find("div", class_="pagination-standard")
-        if pagination:
-            next_page_link = self.get_next_page_link(pagination)
-            if next_page_link:
-                next_page_response = requests.get(next_page_link)
-                next_page_soup = BeautifulSoup(next_page_response.content, 'html.parser')
-                companies_data.extend(self.process_companies_data(soup=next_page_soup, municipality=municipality))
-
-        return companies_data
-
-    def get_next_page_link(self, pagination):
-        """Extracts the link to the next page from the pagination."""
-        next_page_link = None
-        next_page = pagination.find("li", class_="pagination-standard-list__item--active").find_next_sibling("li")
-        if next_page:
-            next_page_link = next_page.find("a")['href'] if next_page.find("a") else None
-        return next_page_link
 
     def create_lead(self, record):
         self.env["crm.lead"].create(record)
@@ -198,3 +146,30 @@ class CRMBolagsfakta(models.Model):
     def compute_leads_count(self):
         for rec in self:
             rec.leads_count = len(rec.crm_lead_ids)
+
+    def check_leads_count(self):
+        base_url = "https://www.bolagsfakta.se/"
+        sni = self.industry[:2]
+        category_name = self.industry[3:]
+        count = 0
+        for municipality in self.municipality_ids:
+            response = requests.get(f"{base_url}bransch/{municipality.code}/{category_name}/{sni}")
+            soup = BeautifulSoup(response.content, 'html.parser')
+
+            site_h2 = soup.find("h1", {"class": "site-h2"}).text
+            match = regex_site_header.search(site_h2)
+
+            if match:
+                # Remove commas and convert to an integer
+                count += int(match.group(1).replace(',', ''))
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Number of Leads"),
+                'type': "success",
+                'message': f"The number of leads is {count}",
+                'sticky': True,
+            }
+        }
