@@ -25,15 +25,11 @@
                                 <field name="number_of_result" />
                                 <field name="turn_over" />
                                 <field name="number_of_employees" />
-<!--                                <field name="sni_id" />-->
                                 <field name="state" invisible="1" />
                             </group>
                         </group>
 
                         <group name="requests_for_allabolag">
-<!--                            <group string="Company Requests" name="requests" priority="1">-->
-<!--                            </group>-->
-
                             <group string="Metadata to save on leads" name="metadata" priority="2">
                                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" ttrs="{'readonly':[('state', '!=' , 'draft')]}"/>
                                 <field name="type" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
