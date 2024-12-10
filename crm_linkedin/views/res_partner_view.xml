@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <record id="res_partner_view_form" model="ir.ui.view">
+            <field name="name">res.partner</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[last()]" position="after">
+                    <page string="LinkedIn" name="linkedin">
+                        <group>
+                            <group>
+                                <field name="linkedin_url" widget="url"/>
+                                <field name="urn_id"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//page[@name='contact_addresses']/field[@name='child_ids']" position="before">
+                    <button name="fetch_company_employees" class="btn btn-primary" string="Fetch Employees" type="object" invisible="urn_id == False"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

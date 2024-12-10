@@ -8,6 +8,7 @@
                 <form>
                     <header>
                         <button name="action_submit" type="object" string="Submit" class="oe_highlight" />
+                        <button name="check_leads_count" type="object" string="Check Leads Count" class="oe_highlight" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -21,15 +22,14 @@
                                 <field name="name" />
                                 <field name="municipality_ids" widget="many2many_tags" />
                                 <field name="industry" />
-<!--                                <field name="sni_id" />-->
+                                <field name="number_of_result" />
+                                <field name="turn_over" />
+                                <field name="number_of_employees" />
                                 <field name="state" invisible="1" />
                             </group>
                         </group>
 
                         <group name="requests_for_allabolag">
-<!--                            <group string="Company Requests" name="requests" priority="1">-->
-<!--                            </group>-->
-
                             <group string="Metadata to save on leads" name="metadata" priority="2">
                                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" ttrs="{'readonly':[('state', '!=' , 'draft')]}"/>
                                 <field name="type" readonly="state != 'draft'"  />

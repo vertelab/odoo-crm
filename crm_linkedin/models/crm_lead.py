@@ -6,6 +6,9 @@ from odoo.exceptions import ValidationError, UserError
 from ast import literal_eval
 from linkedin_api import Linkedin
 from linkedin_api.utils import helpers
+from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
+
+CRM_LEAD_FIELDS_TO_MERGE.extend(['linkedin_url', 'urn_id'])
 
 
 class Lead(models.Model):
@@ -56,27 +59,16 @@ class Lead(models.Model):
     def linkedin_enrich(self):
         client = self._linkedin_client()
         active_ids = self.env.context.get('active_ids')
-        print(active_ids)
         lead_ids = self.env['crm.lead'].browse(active_ids).exists()
-        print(len(lead_ids))
-        print(lead_ids)
         for lead in lead_ids:
-            print(f"lead: {lead}, lead name: {lead.name}")
-            # vals = self._search_company(client, lead)
             if vals := self._search_company(client, lead):
                 lead.write(vals)
 
     def _search_company(self, client, rec):
         result = client.search_companies(rec.name, limit=1)
-        print("result", result)
-        # if not result:
-        #     result = client.search_companies(rec.name)
         if result:
             company_details = client.get_company(result[0].get('urn_id'))
-            print("company_details", company_details)
             address = company_details.get('headquarter', {})
-            print("address", address)
-            # if country := company_details.get('headquarter', {}).get('country'):
             if address.get('country') in ['SE', 'Sweden']:
                 vals = {
                     'urn_id': result[0].get('urn_id'),
@@ -105,11 +97,6 @@ class Lead(models.Model):
             current_company=[self.urn_id], limit=30, include_private_profiles=True
         )
         return self._serialize_employees(employees)
-        # print("employees", employees)
-        # vals = []
-        # for employee in employees:
-        #     vals.append(self._serialize_employee_vals(employee))
-        # self.sync_leads(vals)
 
     def _serialize_employees(self, employees):
         vals = []
@@ -122,7 +109,6 @@ class Lead(models.Model):
                 'location': linked_employee.get('location'),
             })
         linkedin_employee_ids = self.env['linkedin.employee.wizard'].create(vals)
-        print("ids===", linkedin_employee_ids)
         return self.view_linkedin_company_employee_wizard(linkedin_employee_ids)
 
     def view_linkedin_company_employee_wizard(self, linkedin_employee_ids):
@@ -136,24 +122,8 @@ class Lead(models.Model):
             'view_id': view_id.id,
             'target': 'new',
             'domain': [('id', 'in', linkedin_employee_ids.ids)],
-            'context': {'create': False, 'default_parent_lead_id': self.id}
+            'context': {'create': False, 'default_rec_id': self.id, 'default_rec_model': self._name}
         }
-
-    # def _serialize_employee_vals(self, linked_employee):
-    #     return {
-    #         'name': f"{linked_employee.get('name') or False} - {self.name}",
-    #         'urn_id': linked_employee.get('urn_id'),
-    #         'function': linked_employee.get('jobtitle'),
-    #         'contact_name': linked_employee.get('name'),
-    #         'street': linked_employee.get('location'),
-    #         'parent_lead_id': self.id
-    #     }
-
-    # def sync_leads(self, leads):
-    #     for lead_vals in leads:
-    #         crm_lead_id = self.env['crm.lead'].search([('urn_id', '=', lead_vals.get('urn_id'))])
-    #         if not crm_lead_id:
-    #             self.env['crm.lead'].create(lead_vals)
 
     def action_view_employees(self):
         view_id = self.env.ref('crm_linkedin.linkedin_company_employee_tree_view_leads')
@@ -170,10 +140,6 @@ class Lead(models.Model):
 
     def _cron_send_linkedin_invitation(self):
         client = self._linkedin_client()
-
-        # leads = self._crm_leads()
-        # for lead in leads:
-        #     self._send_connection(client, lead)
 
         self._send_linkedin_messages(client)
 
@@ -199,3 +165,11 @@ class Lead(models.Model):
         crm_ids = self.env['crm.lead'].search(literal_eval(config_id.editable_domain))
         leads = crm_ids.mapped('employee_leads')
         return leads
+
+    def _prepare_customer_values(self, partner_name, is_company=False, parent_id=False):
+        vals = super(Lead, self)._prepare_customer_values(partner_name, is_company=is_company, parent_id=parent_id)
+        vals.update({
+            'linkedin_url': self.linkedin_url,
+            'urn_id': self.urn_id,
+        })
+        return vals

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="crm_campaign_object_view" model="ir.ui.view">
+            <field name="name">crm.campaign.object.form</field>
+            <field name="model">crm.campaign.object</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Object CRM Campaign">
+                    <sheet string="Object CRM Campaign">
+                        <field name="image" widget="image" class="oe_avatar oe_right" />
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="object_id"/>
+                            </group>
+                            <group>
+                                <field name="campaign_id" invisible="1" />
+                                <field name="color" invisible="1" />
+                                <field name="sequence" invisible="1" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Information">
+                                <field name="description" />
+                                <field name="website_short_description" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_campaign_object_kanban" model="ir.ui.view">
+            <field name="name">crm.campaign.object.kanban</field>
+            <field name="model">crm.campaign.object</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="campaign_id">
+                    <field name="color" />
+                    <field name="campaign_id" />
+                    <field name="name" />
+                    <field name="object_id" />
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_dropdown_toggle oe_dropdown_kanban" groups="base.group_user">
+                                    <span class="oe_e">í</span>
+                                    <ul class="oe_dropdown_menu">
+                                        <t t-if="widget.view.is_action_enabled('edit')">
+                                            <li>
+                                                <a type="edit">Edit...</a>
+                                            </li>
+                                        </t>
+                                        <t t-if="widget.view.is_action_enabled('delete')">
+                                            <li>
+                                                <a type="delete">Delete</a>
+                                            </li>
+                                        </t>
+                                        <li>
+                                            <ul class="oe_kanban_colorpicker" data-field="color" />
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="oe_kanban_content">
+                                    <div>
+                                        <b>Campaign:</b>
+                                        <field name="campaign_id" />
+                                    </div>
+                                    <div>
+                                        <b>Name:</b>
+                                        <field name="name" />
+                                    </div>
+                                    <div>
+                                        <b>Object:</b>
+                                        <field name="object_id" />
+                                    </div>
+                                </div>
+                                <div class="oe_clear" />
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="action_crm_campaign_object_view" model="ir.actions.act_window">
+            <field name="name">CRM Campaign Object</field>
+            <field name="res_model">crm.campaign.object</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="context">{"search_default_current": 1}</field>
+        </record>
+
+
+<!--        <record id="extend_crm_tracking_campaign_form" model="ir.ui.view">-->
+<!--            <field name="name">utm.campaign.view.form</field>-->
+<!--            <field name="model">utm.campaign</field>-->
+<!--            <field name="inherit_id" ref="utm.utm_campaign_view_form" />-->
+<!--            <field name="arch" type="xml">-->
+<!--                <field name="name" position="after">-->
+<!--                    <field name="date_start" />-->
+<!--                    <field name="date_stop" />-->
+<!--                    <field name="state" />-->
+<!--                </field>-->
+<!--                <notebook position="inside">-->
+<!--                    <page string="Information">-->
+<!--                        <field name="description" />-->
+<!--                        <field name="sequence" invisible="1" />-->
+<!--                        <field name="object_id" />-->
+<!--                        <field name="name" />-->
+<!--                        <field name="campaign_id" invisible="1" />-->
+<!--                        <field name="color" invisible="1" />-->
+<!--                        <field name="image" widget="image" class="oe_avatar oe_right" />-->
+<!--                    </page>-->
+<!--                </notebook>-->
+
+<!--            </field>-->
+<!--        </record>-->
+
+        <record id="crm_tracking_campaign_form" model="ir.ui.view">
+            <field name="name">utm.campaign.view.form</field>
+            <field name="model">utm.campaign</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="utm.utm_campaign_view_form" />
+            <field name="arch" type="xml">
+                <!-- <field position="after"> -->
+                <xpath expr="//form" position="replace">
+                    <form string="Campaign">
+                        <header>
+<!--                            <button name="invoice_open" type="object" invisible="state not in ('draft', 'proforma2')" string="Validate" class="oe_highlight" groups="account.group_account_invoice"/>-->
+                            <field name="state" widget="statusbar" clickable="True" statusbar_colors='{"draft":"blue","open":"red"}' />
+                        </header>
+                        <sheet>
+                            <div class="oe_button_box d-flex justify-content-end" name="button_box">
+                                <button class="oe_inline oe_stat_button" type="action" icon="fa-dropbox" name="%(action_crm_campaign_object_view)d" context="{'search_default_campaign_id': active_id}">
+                                    <field string="Objects" name="object_count" widget="statinfo"/>
+                                </button>
+                            </div>
+
+                            <field name="image" widget="image" class="oe_avatar oe_right" />
+
+                            <h1>
+                                <field name="name" default_focus="1" placeholder="Campaign" class="oe_inline"/><span class="oe_inline"> </span>
+                            </h1>
+
+                            <group>
+                                <group>
+                                    <field name="date_start" string="Date" widget="daterange" options="{'end_date_field': 'date_stop'}" />
+                                    <field name="date_stop" invisible="1" />
+                                </group>
+                            </group>
+                            <notebook>
+                                <page string="Objects">
+                                    <field name="object_ids">
+                                        <tree>
+                                            <field name="sequence" widget="handle" />
+                                            <field name="name" />
+                                            <field name="object_id"/>
+<!--                                            <field name="object_ref" />-->
+                                        </tree>
+                                    </field>
+                                </page>
+
+                                <page string="Information">
+                                    <field name="description" />
+                                </page>
+                            </notebook>
+                        </sheet>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers" />
+                            <field name="message_ids" widget="mail_thread" />
+                        </div>
+                    </form>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="crm_tracking_campaign_calendar" model="ir.ui.view">
+            <field name="name">utm.campaign.calendar</field>
+            <field name="model">utm.campaign</field>
+            <field name="arch" type="xml">
+                <calendar string="CRM Tracking Campaign" color="object_names" date_start="date_start" date_stop="date_stop">
+                    <field name="name" />
+                    <field name="object_names" />
+                </calendar>
+            </field>
+        </record>
+
+        <record id="crm_tracking_campaign_gantt" model="ir.ui.view">
+            <field name="name">utm.campaign.gantt</field>
+            <field name="model">utm.campaign</field>
+            <field name="type">gantt</field>
+            <field name="arch" type="xml">
+                <gantt date_start="date_start" date_stop="date_stop" string="Campaigns" />
+            </field>
+        </record>
+    </data>
+</odoo>

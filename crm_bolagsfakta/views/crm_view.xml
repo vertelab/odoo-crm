@@ -16,13 +16,13 @@
                     <field name="bolagsfakta_company_link"/>
                     <field name="municipality"/>
                     <field name="industry"/>
+                    <field name="employee_range"/>
                 </xpath>
                 <field name="team_id" position="after">
                     <field name="crm_bolagsfakta_id"/>
                 </field>
                 <xpath expr="//page[@name='lead']" position="after">
                     <page string="Financial Data" name="fin_data">
-<!--                        <field name="fin_data"/>-->
                         <group>
                             <group>
                                 <field name="omsattning"/>

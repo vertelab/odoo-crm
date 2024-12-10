@@ -18,7 +18,7 @@ class CRMLead(models.Model):
     corporate_form = fields.Char()
     industry = fields.Char()
     municipality = fields.Many2one('res.kommun')
-    fin_data = fields.Html(string="Fin Data", sanitize_attributes=False, translate=html_translate, sanitize_form=False)
+    employee_range = fields.Char(string="Employee Range", readonly=True)
 
     omsattning = fields.Float(string="Omsattning")
     arets_resultat = fields.Float(string="Arets Resultat")

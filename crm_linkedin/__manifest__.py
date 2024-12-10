@@ -9,14 +9,17 @@
     'depends': [
         'crm',
         'base',
-        'automation_oca'
+        'automation_oca',
+        'hr'
     ],
     'data': [
         'data/enrich_data.xml',
         'security/ir.model.access.csv',
         'views/linkedin_crm_lead_mining_request_views.xml',
         'views/crm_lead_view.xml',
+        'views/res_partner_view.xml',
         'views/res_user_view.xml',
+        'views/hr_employee_view.xml',
         'data/ir_cron.xml',
         'wizard/linkedin_employee_wizard_view.xml',
     ],

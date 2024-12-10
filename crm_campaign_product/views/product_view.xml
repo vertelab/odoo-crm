@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="product_template_form_view" model="ir.ui.view">
+            <field name="name">product.template.common.form.inherited.crm_campaign_product</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <group name="group_general" position="after">
+                    <group string="Campaign">
+                        <field name="campaign_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+        <record id="crm_tracking_campaign_form2" model="ir.ui.view">
+            <field name="name">utm.campaign.form.inherited.crm_campaign_product</field>
+            <field name="model">utm.campaign</field>
+            <field name="inherit_id" ref="crm_campaign_vrtl.crm_tracking_campaign_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                    <page string="Products">
+                        <button name="update_campaign_product_ids" type="object" class="oe_highlight" style="margin-top: 15px;" string="Get Products" help="Create campaign products from the list of objects"/>
+                        <field name="campaign_product_ids">
+                            <tree default_order="sequence" editable='bottom'>
+                                <field name="sequence" widget="handle"/>
+                                <field name="product_id"/>
+                                <field name="default_code" readonly="1"/>
+                                <field name="name" readonly="1"/>
+                                <field name="type" readonly="1"/>
+                                <field name="list_price" readonly="1"/>
+                                <field name="qty_available" readonly="1"/>
+                                <field name="virtual_available" readonly="1"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page string="Products Real">
+                        <field name="product_ids"/>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</odoo>
