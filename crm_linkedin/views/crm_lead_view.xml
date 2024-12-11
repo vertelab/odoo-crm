@@ -93,7 +93,7 @@
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_view_employees" type="object" class="oe_stat_button" icon="fa-users" invisible="not id or parent_lead_id or type != 'lead'">
+                <button name="action_view_employees" type="object" class="oe_stat_button" icon="fa-users" invisible="not id or parent_lead_id or employee_leads_count == 0">
                     <div class="o_stat_info">
                         <span class="o_stat_text">Employees</span>
                         <field name="employee_leads_count" class="o_stat_value"/>

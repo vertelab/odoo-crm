@@ -25,12 +25,12 @@ class Lead(models.Model):
 
     employee_leads = fields.One2many('crm.lead', 'parent_lead_id', string="Employee Leads")
 
-    def linkedin_user_profile(self):
-        client = self._linkedin_client()
-        urn = helpers.get_id_from_urn(
-            client.get_user_profile().get('miniProfile', {}).get('entityUrn')
-        )
-        return client, urn
+    # def linkedin_user_profile(self):
+    #     client = self._linkedin_client()
+    #     urn = helpers.get_id_from_urn(
+    #         client.get_user_profile().get('miniProfile', {}).get('entityUrn')
+    #     )
+    #     return client, urn
 
     @api.depends('employee_leads')
     def _compute_employee_leads_count(self):
@@ -99,30 +99,30 @@ class Lead(models.Model):
         return self._serialize_employees(employees)
 
     def _serialize_employees(self, employees):
-        vals = []
-        for linked_employee in employees:
-            vals.append({
+        wizard_id = self.env['linkedin.employee.wizard'].create({
+            'res_id': self.id,
+            'res_model': self._name,
+            'company_name': self.name,
+            'line_ids': [(0, 0, {
                 'name': linked_employee.get('name'),
-                'company_name': self.name,
                 'profile_urn': linked_employee.get('urn_id'),
                 'position': linked_employee.get('jobtitle'),
                 'location': linked_employee.get('location'),
-            })
-        linkedin_employee_ids = self.env['linkedin.employee.wizard'].create(vals)
-        return self.view_linkedin_company_employee_wizard(linkedin_employee_ids)
+            }) for linked_employee in employees]
+        })
+        return self.view_linkedin_company_employee_wizard(wizard_id)
 
-    def view_linkedin_company_employee_wizard(self, linkedin_employee_ids):
-        view_id = self.env.ref('crm_linkedin.linkedin_company_employee_wizard_tree_view')
+    def view_linkedin_company_employee_wizard(self, wizard_id):
+        view_id = self.env.ref('crm_linkedin.linkedin_company_employee_wizard_form_view')
         return {
             'type': 'ir.actions.act_window',
             'name': f"{self.name} Employees",
             'view_mode': 'tree',
             'res_model': 'linkedin.employee.wizard',
-            'views': [(False, 'tree'), (False, 'form')],
+            'views': [(view_id.id, 'form')],
             'view_id': view_id.id,
             'target': 'new',
-            'domain': [('id', 'in', linkedin_employee_ids.ids)],
-            'context': {'create': False, 'default_rec_id': self.id, 'default_rec_model': self._name}
+            'res_id': wizard_id.id,
         }
 
     def action_view_employees(self):
@@ -153,12 +153,12 @@ class Lead(models.Model):
             recipients=crm_lead_urns
         )
 
-    def _check_who_accepted_connection(self):
-        # def _cron_send_linkedin_invitation(self):
-        crm_lead_urns = self._crm_leads().mapped('urn_id')
-        client, urn = self.linkedin_user_profile()
-        connections = client.get_profile_connections(urn)
-        connected_persons = list(filter(lambda connection: connection.get('urn_id') not in crm_lead_urns, connections))
+    # def _check_who_accepted_connection(self):
+    #     # def _cron_send_linkedin_invitation(self):
+    #     crm_lead_urns = self._crm_leads().mapped('urn_id')
+    #     client, urn = self.linkedin_user_profile()
+    #     connections = client.get_profile_connections(urn)
+    #     connected_persons = list(filter(lambda connection: connection.get('urn_id') not in crm_lead_urns, connections))
 
     def _crm_leads(self):
         config_id = self.env['automation.configuration'].search([('model_id.model', '=', 'crm.lead')])

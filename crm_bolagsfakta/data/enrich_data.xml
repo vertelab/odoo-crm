@@ -12,5 +12,17 @@
             </field>
         </record>
 
+        <record id="action_bolagsfakta_enrich_partner" model="ir.actions.server" >
+            <field name="name">Enrich with Bolagsfakta</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_view_types">form</field>
+            <field name="state">code</field>
+            <field name="code">
+    if records:
+        records.bolagsfakta_enrich()
+            </field>
+        </record>
+
     </data>
 </odoo>

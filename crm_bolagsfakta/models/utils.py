@@ -259,56 +259,89 @@ def is_employee_count_in_range(employee_count: int, employee_range: str) -> bool
     # If the range is not clear or parsing fails, return False
     return False
 
-# old way to get financial statement
-# def financial_statements(self, soup) -> Dict[str, float]:
-#     metrics = {
-#         'omsattning': None,
-#         'arets_resultat': None,
-#         'ebitda': None,
-#         'utdelning': None
-#     }
-#
-#     def safe_float_conversion(value):
-#         """Safely convert string to float, handling any errors"""
-#         if value is None:
-#             return None
-#         try:
-#             # Remove commas and convert to float
-#             return float(str(value).replace(',', ''))
-#         except (ValueError, TypeError, AttributeError):
-#             _logger.error(f"Could not convert value to float: {value}")
-#             return None
-#
-#     try:
-#         # 1. Find EBITDA
-#         for row in soup.find_all('tr', class_='d-none d-lg-table-row'):
-#             tooltip = row.find('span', class_='tooltip__text')
-#             if tooltip and 'EBITDA' in tooltip.text:
-#                 value_text = row.find_all('td')[1].get_text(strip=True)
-#                 metrics['ebitda'] = safe_float_conversion(value_text)
-#
-#         # 2. Find Rörelsens omsättning
-#         omsattning_row = soup.find('u', text='Rörelsens omsättning')
-#         if omsattning_row:
-#             row = omsattning_row.find_parent('tr')
-#             value_text = row.find_all('td')[1].get_text(strip=True)
-#             metrics['omsattning'] = safe_float_conversion(value_text)
-#
-#         # 3. Find Årets resultat
-#         resultat_rows = soup.find_all('tr', class_='d-none d-lg-table-row table--bgcolor')
-#         for row in resultat_rows:
-#             tooltip = row.find('span', class_='tooltip__text')
-#             if tooltip and tooltip.text.strip() == 'Årets resultat':
-#                 value_text = row.find_all('td')[1].get_text(strip=True)
-#                 metrics['arets_resultat'] = safe_float_conversion(value_text)
-#                 break
-#
-#     except Exception as e:
-#         _logger.error(f"Error parsing financial statements: {e}")
-#
-#     # Final check to ensure all non-None values are floats
-#     for key in metrics:
-#         if metrics[key] is not None:
-#             metrics[key] = safe_float_conversion(metrics[key])
-#
-#     return metrics
+
+def extract_company_info(soup) -> dict:
+    """
+    Extract company information from the left side of the page.
+
+    Args:
+        soup: BeautifulSoup object containing the page HTML
+
+    Returns:
+        Dictionary containing company information
+    """
+    # Initialize dictionary to store company info
+    company_info = {}
+
+    try:
+        # First find the main container
+        main_container = soup.find("div", {"id": "uppgifter"})
+        if not main_container:
+            return company_info
+
+        # Find the table-info div within the left column
+        table_info = main_container.find("div", {"class": "table-info"})
+        if not table_info:
+            return company_info
+
+        # Find all tables
+        table = table_info.find("table")
+        if not table:
+            return company_info
+
+        # Process each row in the table
+        rows = table.find_all("tr")
+
+        for row in rows:
+            # Get the text content of the row for debugging
+            row.get_text(strip=True)
+
+            # Check if this is a section header row (has strong tag)
+            strong_tag = row.find("strong")
+            if strong_tag:
+                strong_tag.get_text(strip=True)
+                continue
+
+            # Get the columns
+            cols = row.find_all("td")
+            if len(cols) == 2:
+                key = cols[0].get_text(strip=True)
+                value = cols[1].get_text(strip=True)
+
+                # Store all fields in a flattened structure
+                if key == "Organisationsnummer":
+                    company_info["org_number"] = value
+                elif key == "Firmanamn":
+                    company_info["company_name"] = value
+                elif key == "Bolagsform":
+                    company_info["company_type"] = value
+                elif key == "Status":
+                    company_info["status"] = value
+                elif key == "Gatuadress":
+                    company_info["street_address"] = value
+                elif key == "Postadress":
+                    company_info["postal_address"] = value
+                elif key == "Säte":
+                    company_info["headquarters"] = value
+                elif key == "Bolaget bildat":
+                    company_info["formation_date"] = value
+                elif key == "Bolaget registrerat":
+                    company_info["registration_date"] = value
+                elif key == "Firmanamn registrerat":
+                    company_info["name_registration_date"] = value
+                elif key == "Bolagsordning":
+                    company_info["articles_of_association_date"] = value
+                elif key == "Arbetsgivare":
+                    company_info["employer_status"] = value
+                elif key == "F-skatt":
+                    company_info["tax_status"] = value
+                elif key == "Moms":
+                    company_info["vat_status"] = value
+                elif key == "Momsregistreringsnummer" or key == "Momsregistreringsnummer(VAT-nummer)":
+                    company_info["vat_number"] = value
+
+    except Exception as e:
+        print(f"Error extracting company info: {e}")
+
+    # print(f"Debug: Final company_info dictionary: {company_info}")
+    return company_info

@@ -40,6 +40,7 @@
         "security/ir.model.access.csv",
         "views/crm_bolagsfakta_views.xml",
         "views/crm_view.xml",
+        "views/res_partner_view.xml",
         "views/res_kommun_view.xml",
         "data/enrich_data.xml",
         "data/res.kommun.csv",
