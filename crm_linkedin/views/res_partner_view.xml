@@ -11,6 +11,7 @@
                             <group>
                                 <field name="linkedin_url" widget="url"/>
                                 <field name="urn_id"/>
+                                <field name="public_profile"/>
                             </group>
                         </group>
                     </page>

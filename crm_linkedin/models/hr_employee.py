@@ -8,3 +8,5 @@ class Employee(models.Model):
     linkedin_url = fields.Char(string="LinkedIn URL", readonly=True)
 
     urn_id = fields.Char(string="LinkedIn URN ID", readonly=True)
+
+    public_profile = fields.Char(string="LinkedIn Public Profile", readonly=True)

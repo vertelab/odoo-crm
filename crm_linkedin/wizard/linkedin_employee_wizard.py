@@ -18,7 +18,7 @@ class LinkedInEmployeeWizard(models.TransientModel):
             else:
                 wizard.resource_ref = None
 
-    name = fields.Char(string="Name", required=True)
+    # name = fields.Char(string="Name", required=True)
     company_name = fields.Char(string="Company")
 
     res_id = fields.Char(string="Rec", required=True)
@@ -26,40 +26,11 @@ class LinkedInEmployeeWizard(models.TransientModel):
     resource_ref = fields.Reference('_selection_target_model', 'Related Document', compute='_compute_resource_ref')
     line_ids = fields.One2many("linkedin.employee.wizard.line", "wizard_id", string="LinkedIn Employees")
 
-    # def action_create_leads(self):
-    #
-    #
-    #     vals = []
-    #     for employee in self.env['linkedin.employee.wizard'].browse(active_ids).exists():
-    #         vals.append(self._serialize_employee_vals(employee))
-    #     return self.sync_leads(vals)
-    #
-    # def _serialize_employee_vals(self, linked_employee):
-    #     return {
-    #         'name': f"{linked_employee.name or False} - {linked_employee.company_name}",
-    #         'urn_id': linked_employee.profile_urn,
-    #         'function': linked_employee.position,
-    #         'contact_name': linked_employee.name,
-    #         'street': linked_employee.location,
-    #         'parent_lead_id': self.env.context.get('default_parent_lead_id')
-    #     }
-    #
-    # def sync_leads(self, leads):
-    #     for lead_vals in leads:
-    #         crm_lead_id = self.env['crm.lead'].search([('urn_id', '=', lead_vals.get('urn_id'))])
-    #         if not crm_lead_id:
-    #             self.env['crm.lead'].create(lead_vals)
-    #     return {
-    #         'type': 'ir.actions.act_window',
-    #         'view_mode': 'form',
-    #         'res_model': 'crm.lead',
-    #         'res_id': self.env.context.get('default_parent_lead_id')
-    #     }
-
     def _serialize_leads_vals(self, linked_employee):
         return {
             'name': linked_employee.name,
             'urn_id': linked_employee.profile_urn,
+            'public_profile': linked_employee.public_profile,
             'function': linked_employee.position,
             'street': linked_employee.location,
             'contact_name': linked_employee.name,
@@ -70,6 +41,7 @@ class LinkedInEmployeeWizard(models.TransientModel):
         return {
             'name': linked_employee.name,
             'urn_id': linked_employee.profile_urn,
+            'public_profile': linked_employee.public_profile,
             'function': linked_employee.position,
             'street': linked_employee.location,
             'parent_id': self.resource_ref.id,
@@ -100,6 +72,9 @@ class LinkedInEmployeeWizard(models.TransientModel):
             rec_id = self.env[res_model].search([('urn_id', '=', val.get('urn_id'))])
             if not rec_id:
                 rec_id = self.env[res_model].create(val)
+            else:
+                rec_id.write(val)
+
             if res_model == 'hr.employee':
                 rec_id.work_contact_id.write({
                     'parent_id': self.resource_ref.id,
@@ -125,6 +100,7 @@ class LinkedInEmployeeWizard(models.TransientModel):
             'name': linked_employee.name,
             'urn_id': linked_employee.profile_urn,
             'job_title': linked_employee.position,
+            'public_profile': linked_employee.public_profile
         }
 
 

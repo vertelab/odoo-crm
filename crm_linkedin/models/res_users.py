@@ -3,7 +3,6 @@ import os
 from odoo import models, fields, api, _
 from linkedin_api import Linkedin
 from linkedin_api.settings import COOKIE_PATH
-from linkedin_api.cookie_repository import CookieRepository
 
 LINKEDIN_SESSION = False
 

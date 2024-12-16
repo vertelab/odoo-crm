@@ -9,6 +9,8 @@ class Partner(models.Model):
 
     urn_id = fields.Char(string="LinkedIn URN ID", readonly=True)
 
+    public_profile = fields.Char(string="LinkedIn Public Profile", readonly=True)
+
     employee_leads = fields.One2many('crm.lead', 'parent_lead_id', string="Employee Leads")
 
     def _linkedin_client(self):
@@ -55,6 +57,7 @@ class Partner(models.Model):
         return self._serialize_employees(employees)
 
     def _serialize_employees(self, employees):
+        print(employees)
         wizard_id = self.env['linkedin.employee.wizard'].create({
             'res_id': self.id,
             'res_model': self._name,
@@ -64,6 +67,7 @@ class Partner(models.Model):
                 'profile_urn': linked_employee.get('urn_id'),
                 'position': linked_employee.get('jobtitle'),
                 'location': linked_employee.get('location'),
+                'public_profile': self.get_linkedin_profile(linked_employee.get('urn_id'))
             }) for linked_employee in employees]
         })
 
@@ -81,3 +85,8 @@ class Partner(models.Model):
             'target': 'new',
             'res_id': wizard_id.id,
         }
+
+    def get_linkedin_profile(self, urn_id):
+        client = self._linkedin_client()
+        profile = client.get_profile(urn_id)
+        return profile.get('public_id', False)

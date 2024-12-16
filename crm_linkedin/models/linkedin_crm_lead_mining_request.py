@@ -4,11 +4,7 @@
 import logging
 
 from odoo import api, fields, models, _
-from odoo.addons.iap.tools import iap_tools
-from odoo.exceptions import UserError
 from odoo.tools import is_html_empty
-from linkedin_api import Linkedin
-from linkedin_api.utils import helpers
 
 _logger = logging.getLogger(__name__)
 

@@ -53,7 +53,6 @@
                         <group name="companies">
                             <field name="keywords"/>
                             <field name="linkedin_profile"/>
-<!--                            <field name="country_ids" widget="many2many_tags" required="True" readonly="state == 'done'" options="{'no_create': True, 'no_open': True}"/>-->
                             <field name="country_id" required="True" readonly="state == 'done'" options="{'no_create': True, 'no_open': True}"/>
                             <field name="filter_on_size" readonly="state == 'done'"/>
                             <label for="company_size_min" invisible="not filter_on_size"/>

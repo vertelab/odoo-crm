@@ -4,8 +4,6 @@
 from odoo import fields, models, _, tools, api
 from odoo.exceptions import ValidationError, UserError
 from ast import literal_eval
-from linkedin_api import Linkedin
-from linkedin_api.utils import helpers
 from odoo.addons.crm.models.crm_lead import CRM_LEAD_FIELDS_TO_MERGE
 
 CRM_LEAD_FIELDS_TO_MERGE.extend(['linkedin_url', 'urn_id'])
@@ -20,6 +18,8 @@ class Lead(models.Model):
     linkedin_url = fields.Char(string="LinkedIn URL", readonly=True)
 
     urn_id = fields.Char(string="LinkedIn URN ID", readonly=True)
+
+    public_profile = fields.Char(string="LinkedIn Public Profile", readonly=True)
 
     parent_lead_id = fields.Many2one('crm.lead', string="Parent Lead")
 
