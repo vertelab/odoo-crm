@@ -29,7 +29,7 @@ Base class that bind together utm.campaign with different object
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
-    'website': 'https://vertel.se/apps/odoo-industries/l10n_se_payroll',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_vrtl',
     'images': ['static/description/banner.png'], # 560x280 px.
     'depends': ['crm'],
     'data': [
