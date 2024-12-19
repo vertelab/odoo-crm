@@ -20,7 +20,7 @@
 ##############################################################################
 
 {
-    'name': 'CRM Campaign',
+    'name': 'CRM: Campaign',
     'version': '0.3',
     'category': 'crm',
     'description': """
