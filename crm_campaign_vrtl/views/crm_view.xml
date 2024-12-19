@@ -87,7 +87,7 @@
         <record id="action_crm_campaign_object_view" model="ir.actions.act_window">
             <field name="name">CRM Campaign Object</field>
             <field name="res_model">crm.campaign.object</field>
-            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_mode">tree,form,kanban,calendar</field>
             <field name="context">{"search_default_current": 1}</field>
         </record>
 
