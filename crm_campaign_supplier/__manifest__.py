@@ -30,7 +30,7 @@ Extends Crm Campaign with supplier
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
-    'website': 'https://vertel.se/apps/odoo-industries/l10n_se_payroll',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_supplier',
     'images': ['static/description/banner.png'], # 560x280 px.
     'depends': ['crm_campaign_product'],
     'data': [
