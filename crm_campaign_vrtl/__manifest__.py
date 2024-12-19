@@ -2,7 +2,7 @@
 ##############################################################################
 #
 # OpenERP, Open Source Management Solution, third party addon
-# Copyright (C) 2017- Vertel AB (<http://vertel.se>).
+# Copyright (C) 2024- Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,8 @@ Base class that bind together utm.campaign with different object
 """,
     'author': 'Vertel AB',
     'license': 'AGPL-3',
-    'website': 'http://www.vertel.se',
+    'website': 'https://vertel.se/apps/odoo-industries/l10n_se_payroll',
+    'images': ['static/description/banner.png'], # 560x280 px.
     'depends': ['crm'],
     'data': [
         'views/crm_view.xml',
