@@ -1,0 +1,74 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_website_campaign
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0-20241219\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-20 09:58+0000\n"
+"PO-Revision-Date: 2024-12-20 11:01+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#. module: crm_website_campaign
+#: model:ir.model.fields,field_description:crm_website_campaign.field_utm_campaign__website_published
+msgid "Available in the website"
+msgstr "Tillgängligt på webbplatsen"
+
+#. module: crm_website_campaign
+#: model:ir.model,name:crm_website_campaign.model_crm_campaign_object
+msgid "CRM Campaign Object"
+msgstr "CRM-kampanjobjekt"
+
+#. module: crm_website_campaign
+#: model:ir.model.fields,field_description:crm_website_campaign.field_product_public_category__description
+#: model_terms:ir.ui.view,arch_db:crm_website_campaign.crm_tracking_campaign_form
+msgid "Description"
+msgstr "Beskrivning"
+
+#. module: crm_website_campaign
+#: model:ir.model.fields,field_description:crm_website_campaign.field_product_public_category__mobile_icon
+msgid "Mobile Icon"
+msgstr "Mobilikon"
+
+#. module: crm_website_campaign
+#: model:ir.model.fields,field_description:crm_website_campaign.field_crm_campaign_object__object_id
+msgid "Record Reference"
+msgstr "Referens för post"
+
+#. module: crm_website_campaign
+#: model:ir.model,name:crm_website_campaign.model_sale_order
+msgid "Sales Order"
+msgstr "Order"
+
+#. module: crm_website_campaign
+#: model:ir.model.fields,help:crm_website_campaign.field_product_public_category__mobile_icon
+msgid "This icon will display on smaller devices"
+msgstr "Den här ikonen kommer att visas på mindre enheter"
+
+#. module: crm_website_campaign
+#: model:ir.model,name:crm_website_campaign.model_utm_campaign
+msgid "UTM Campaign"
+msgstr "UTM kampanj"
+
+#. module: crm_website_campaign
+#: model:ir.model.fields,field_description:crm_website_campaign.field_utm_campaign__website_description
+msgid "Website Description"
+msgstr "Webbplatsbeskrivning"
+
+#. module: crm_website_campaign
+#: model:ir.model,name:crm_website_campaign.model_product_public_category
+msgid "Website Product Category"
+msgstr "Webbplats Produktkategori"
+
+#. module: crm_website_campaign
+#: model:ir.model.fields,field_description:crm_website_campaign.field_utm_campaign__website_url
+msgid "Website url"
+msgstr "Webbplats url"
