@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0-20241219\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 06:52+0000\n"
-"PO-Revision-Date: 2024-12-20 08:42+0100\n"
+"POT-Creation-Date: 2024-12-20 09:48+0000\n"
+"PO-Revision-Date: 2024-12-20 10:51+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sv\n"
@@ -48,7 +48,7 @@ msgstr "<b>Objekt:</b>"
 #. module: crm_campaign_vrtl
 #: model_terms:ir.ui.view,arch_db:crm_campaign_vrtl.crm_campaign_object_kanban
 msgid "<span class=\"oe_e\">í</span>"
-msgstr "<span class=\"oe_e\">í</span>"
+msgstr ""
 
 #. module: crm_campaign_vrtl
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_utm_campaign__message_needaction
@@ -74,6 +74,8 @@ msgstr "CRM-spårningskampanj"
 #. module: crm_campaign_vrtl
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_crm_campaign_object__campaign_id
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_utm_campaign__campaign_id
+#: model:ir.ui.menu,name:crm_campaign_vrtl.campaign_menu_root
+#: model:ir.ui.menu,name:crm_campaign_vrtl.menu_crm_campaigns2
 #: model_terms:ir.ui.view,arch_db:crm_campaign_vrtl.crm_tracking_campaign_form
 msgid "Campaign"
 msgstr "Kampanj"
@@ -163,7 +165,7 @@ msgstr "Har meddelande"
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_campaign_overview__id
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_crm_campaign_object__id
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #. module: crm_campaign_vrtl
 #: model:ir.model.fields,help:crm_campaign_vrtl.field_utm_campaign__message_needaction
@@ -194,6 +196,12 @@ msgid "Is Follower"
 msgstr "Är följare"
 
 #. module: crm_campaign_vrtl
+#: model:ir.actions.act_window,name:crm_campaign_vrtl.action_crm_campaigns
+#: model:ir.model.fields,field_description:crm_campaign_vrtl.field_utm_campaign__kampanjer_
+msgid "Campaignes"
+msgstr "Kampanjer"
+
+#. module: crm_campaign_vrtl
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_campaign_overview__write_uid
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_crm_campaign_object__write_uid
 msgid "Last Updated by"
@@ -219,7 +227,7 @@ msgstr "Meddelanden"
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_crm_campaign_object__name
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_utm_campaign__name
 msgid "Name"
-msgstr "Kampanjidentifierare"
+msgstr "Namn"
 
 #. module: crm_campaign_vrtl
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_utm_campaign__message_needaction_counter
@@ -273,6 +281,11 @@ msgid "Open"
 msgstr "Öppna"
 
 #. module: crm_campaign_vrtl
+#: model:ir.model.fields,field_description:crm_campaign_vrtl.field_utm_campaign__rating_ids
+msgid "Ratings"
+msgstr "Betyg"
+
+#. module: crm_campaign_vrtl
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_crm_campaign_object__object_id
 msgid "Record Reference"
 msgstr "Referens för post"
@@ -301,7 +314,7 @@ msgstr "Start Stopp"
 #. module: crm_campaign_vrtl
 #: model:ir.model.fields,field_description:crm_campaign_vrtl.field_utm_campaign__state
 msgid "Status"
-msgstr "Status"
+msgstr ""
 
 #. module: crm_campaign_vrtl
 #: model:ir.model,name:crm_campaign_vrtl.model_utm_campaign
@@ -326,4 +339,4 @@ msgstr "Webbplatsens kommunikationshistorik"
 #. module: crm_campaign_vrtl
 #: model:ir.model,name:crm_campaign_vrtl.model_campaign_overview
 msgid "campaign.overview"
-msgstr "kampanj.översikt"
+msgstr "campaign.overview"
