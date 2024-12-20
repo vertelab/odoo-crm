@@ -94,12 +94,25 @@
 		<record id="action_crm_campaigns" model="ir.actions.act_window">
 			<field name="name">Kampanjer</field>
 			<field name="res_model">utm.campaign</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">kanban,tree,form,calendar</field>
 		</record>
 
-		<menuitem id="menu_crm_campaigns"
+		<menuitem id="menu_crm_campaigns2"
 			name="Kampanjer"
 			parent="crm.crm_menu_root"
+			action="action_crm_campaigns"
+			sequence="10"/>
+
+		<menuitem
+			id="campaign_menu_root"
+			name="Campaign"
+			web_icon="crm,static/description/icon.png"
+			groups="sales_team.group_sale_salesman,sales_team.group_sale_manager"
+			sequence="25"/>
+			
+		<menuitem id="menu_crm_campaigns2"
+			name="Campaign"
+			parent="campaign_menu_root"
 			action="action_crm_campaigns"
 			sequence="10"/>
 
