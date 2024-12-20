@@ -41,7 +41,8 @@ class CrmTrackingCampaign(models.Model):
     object_id = fields.Reference(selection=[], string='Object')
 
     object_ids = fields.One2many(comodel_name='crm.campaign.object', inverse_name='campaign_id', string='Objects')
-
+    kampanjer_ = fields.Char(string='Kampanjer')
+    
     def _object_names(self):
         for obj in self:
             obj.object_names = ', '.join(obj.object_ids.mapped('name'))

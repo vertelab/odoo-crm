@@ -90,7 +90,18 @@
             <field name="view_mode">tree,form,kanban,calendar</field>
             <field name="context">{"search_default_current": 1}</field>
         </record>
+        <!-- ## Added... -->
+		<record id="action_crm_campaigns" model="ir.actions.act_window">
+			<field name="name">Kampanjer</field>
+			<field name="res_model">utm.campaign</field>
+			<field name="view_mode">tree,form</field>
+		</record>
 
+		<menuitem id="menu_crm_campaigns"
+			name="Kampanjer"
+			parent="crm.crm_menu_root"
+			action="action_crm_campaigns"
+			sequence="10"/>
 
 <!--        <record id="extend_crm_tracking_campaign_form" model="ir.ui.view">-->
 <!--            <field name="name">utm.campaign.view.form</field>-->
