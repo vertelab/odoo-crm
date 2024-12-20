@@ -45,7 +45,7 @@ class CRMCampaignObject(models.Model):
     def create_campaign_product(self, campaign):
         for objects in self.object_id:
             if objects._name == 'res.partner':
-                for product in self.env['product.template'].search([('seller_ids.name', '=', objects.id)]):
+                for product in self.env['product.template'].search([('seller_ids.partner_id', '=', objects.id)]):
                     self.env['crm.campaign.product'].create({
                         'campaign_id': campaign.id,
                         'product_id': product.id,
