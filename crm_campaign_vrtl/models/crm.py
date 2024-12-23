@@ -85,7 +85,7 @@ class CrmCampaignObject(models.Model):
 
     name = fields.Char(string='Name')
     description = fields.Text(string='Description', translate=True)
-    website_short_description = fields.Text(string='Website Short Description', translate=True)
+    website_short_description = fields.Html(string='Website Short Description', translate=True)
     image = fields.Binary(string='Image')
     sequence = fields.Integer()
     color = fields.Integer('Color Index')

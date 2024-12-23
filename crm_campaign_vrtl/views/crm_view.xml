@@ -21,8 +21,10 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="Information">
+                            <page string="Description">
                                 <field name="description" />
+                            </page>
+                            <page string="Website description">
                                 <field name="website_short_description" />
                             </page>
                         </notebook>
