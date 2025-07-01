@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="crm_lead_view_form" model="ir.ui.view">
+      <field name="name">crm.lead.form.allabolag</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_lead_view_form" />
+      <field name="arch" type="xml">
+        <field name="team_id" position="after">
+          <field name="company_registry" />
+        </field>
+        <field name="tag_ids" position="after">
+          <field name="linkTo" widget="url" />
+        </field>
+        <notebook position="inside">
+          <page name="financial_information" string="Financial Information">
+            <group name="container_row_2">
+              <group string="Summary" name="summary" priority="1">
+                <field name="summary_revenue" widget="integer" class="oe_right" />
+                <field name="summary_profit_ebit" widget="integer" class="oe_right" />
+                <field name="summary_state" />
+                <field name="summary_registry_year" />
+                <field name="summary_parent_company" />
+              </group>
+              <group name="kpi" string="KPI" priority="2">
+                <field name="summary_net_sales_change" widget="percentage" class="oe_right" />
+                <field name="summary_profit_margin" widget="percentage" class="oe_right" />
+                <field name="summary_solvency" widget="percentage" class="oe_right" />
+                <field name="summary_cash_flow" widget="percentage" class="oe_right" />
+                <field name="kpi_no_employees" class="oe_right" />
+                <field name="kpi_revenue_employees" widget="integer" class="oe_right"/>
+              </group>
+              <group string="Business and Purpose" name="business_summary" priority="3">
+                <field name="summary_purpose" nolabel="1" />
+              </group>
+              <group name="mining" string="Mining" priority="3">
+                <field name="mining_corporate_form" />
+                <field name="mining_industry" />
+                <field name="mining_industry_xv" />
+                <field name="mining_lan" />
+                <field name="mining_request_type" />
+              </group>
+            </group>
+          </page>
+        </notebook>
+      </field>
+    </record>
+    <record id="view_crm_case_leads_filter" model="ir.ui.view">
+      <field name="name">crm.lead.search.lead</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_crm_case_leads_filter" />
+      <field name="arch" type="xml">
+        <field name="campaign_id" position="after">
+          <field name="mining_industry" />
+          <field name="mining_industry_xv" string="Insustry Request Type" />
+          <field name="mining_lan" />
+          <field name="mining_request_type" />
+        </field>
+        <filter name="date_closed" position="after">
+          <filter string="Request Type" name="groupby_request_type" domain="[]" context="{'group_by':'mining_request_type'}" />
+          <filter string="Industry" name="groupby_industry" domain="[]" context="{'group_by':'mining_industry'}" />
+          <filter string="Industry Request Type" name="groupby_industry_xv" domain="[]" context="{'group_by':'mining_industry_xv'}" />
+          <filter string="County" name="groupby_lan" domain="[]" context="{'group_by':'mining_lan'}" />
+        </filter>
+      </field>
+    </record>
+    <record id="view_crm_case_opportunities_filter" model="ir.ui.view">
+      <field name="name">crm.oportunity.search.lead</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter" />
+      <field name="arch" type="xml">
+        <field name="phone_mobile_search" position="after">
+          <field name="mining_industry" />
+          <field name="mining_industry_xv" string="Industry Request Type" />
+          <field name="mining_lan" />
+          <field name="mining_request_type" />
+        </field>
+        <filter name="date_closed" position="after">
+          <filter string="Request Type" name="groupby_request_type" domain="[]" context="{'group_by':'mining_request_type'}" />
+          <filter string="Industry" name="groupby_industry" domain="[]" context="{'group_by':'mining_industry'}" />
+          <filter string="Industry Request Type" name="groupby_industry_xv" domain="[]" context="{'group_by':'mining_industry_xv'}" />
+          <filter string="County" name="groupby_lan" domain="[]" context="{'group_by':'mining_lan'}" />
+        </filter>
+      </field>
+    </record>
+  </data>
+</odoo>
