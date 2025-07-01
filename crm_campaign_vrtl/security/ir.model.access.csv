@@ -1,3 +1,0 @@
-id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
-access_crm_campaign_object,crm.campaign.object,model_crm_campaign_object,,1,1,1,1
-access_campaign_overview,access_campaign_overview,model_campaign_overview,base.group_user,1,1,1,1

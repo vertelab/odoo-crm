@@ -91,7 +91,7 @@
     <field name="name">crm.allabolag.mining.tree</field>
     <field name="model">crm.allabolag.mining</field>
     <field name="arch" type="xml">
-      <tree>
+      <list>
         <field name="date" decoration-bf="1" />
         <field name="name" decoration-bf="1" />
         <field name="user_id" />
@@ -106,7 +106,7 @@
         <field name="team_id" optional="hide" />
         <field name="tag_ids" widget="many2many_tags" optional="hide" />
         <field name="state" readonly="1" decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-danger="state == 'error'" widget="badge" />
-      </tree>
+      </list>
     </field>
   </record>
   <record id="crm_allabolag_mining_request_search" model="ir.ui.view">
@@ -146,7 +146,7 @@
   <record id="crm_allabolag_mining_request_action" model="ir.actions.act_window">
     <field name="name">Lead Mining Requests</field>
     <field name="res_model">crm.allabolag.mining</field>
-    <field name="view_mode">tree,form</field>
+    <field name="view_mode">list,form</field>
     <field name="context">
       {'default_type': 'lead',
       'search_default_assigned_to_me': 1}

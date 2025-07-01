@@ -21,7 +21,7 @@
 
 {
     'name': 'CRM: Enrich Base',
-    'version': '17.0.1.1.0',
+    'version': '1.1',
     'description': """
       Base module for Enrich CRM-leads records with updated data. This module 
       does nothin but are a base fpr other enrichement modules

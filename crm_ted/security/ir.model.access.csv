@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-crm_ted.access_crm_ted,access_crm_ted,crm_ted.model_crm_ted,base.group_user,1,1,1,1
