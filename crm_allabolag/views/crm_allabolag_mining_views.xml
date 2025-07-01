@@ -6,24 +6,24 @@
     <field name="arch" type="xml">
       <form>
         <header>
-          <button name="action_draft" type="object" string="Draft" states="list,error,done" class="oe_highlight" />
-          <button name="action_check" type="object" string="Check" states="draft,error" class="oe_highlight" />
-          <button name="action_enrich" type="object" string="Enrich" states="list" class="oe_highlight" />
-          <button name="action_submit" type="object" string="Submit" states="draft" class="oe_highlight" />
-          <button name="action_submit" type="object" string="Retry Submit" states="error" class="oe_highlight" />
-          <button name="action_enrich" type="object" string="Retry Enrich" states="error" class="oe_highlight" />
+          <button name="action_draft" type="object" string="Draft" invisible="state not in ['list','error','done']" class="oe_highlight" />
+          <button name="action_check" type="object" string="Check" invisible="state not in ['draft','error']" class="oe_highlight" />
+          <button name="action_enrich" type="object" string="Enrich" invisible="state not in ['list']" class="oe_highlight" />
+          <button name="action_submit" type="object" string="Submit" invisible="state not in ['draft']"  class="oe_highlight" />
+          <button name="action_submit" type="object" string="Retry Submit" invisible="state not in ['error']"  class="oe_highlight" />
+          <button name="action_enrich" type="object" string="Retry Enrich" invisible="state not in ['error']"  class="oe_highlight" />
           <button name="action_allabolag_url" type="object" string="Allabolag" />
           <field name="state" widget="statusbar" statusbar_visible="draft,list,done" />
         </header>
         <sheet>
           <div class="oe_button_box" name="button_box">
-            <button name="action_get_opportunity_action" class="oe_stat_button" type="object" icon="fa-handshake-o" attrs="{'invisible': ['|', ('type', '!=', 'opportunity'), ('state', '=' , 'draft')]}">
+            <button name="action_get_opportunity_action" invisible="type!='opportunity' or state=='draft'" class="oe_stat_button" type="object" icon="fa-handshake-o">
               <div class="o_stat_info">
                 <field name="lead_count" />
                 <span class="o_stat_text">Opportunities</span>
               </div>
             </button>
-            <button name="action_get_lead_action" class="oe_stat_button" type="object" icon="fa-handshake-o" groups="crm.group_use_lead" attrs="{'invisible': ['|', ('type', '!=', 'lead'), ('state', 'in' , ['draft'])]}">
+            <button name="action_get_lead_action" class="oe_stat_button" type="object" icon="fa-handshake-o" groups="crm.group_use_lead" invisible="type != 'lead' or state == 'draft'">
               <div class="o_stat_info">
                 <field name="lead_count" />
                 <span class="o_stat_text">Leads</span>
@@ -34,7 +34,7 @@
           <group>
             <group>
               <field name="name" />
-              <field name="max_no_leads" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="max_no_leads" readonly="state != 'draft'" />
             </group>
             <group>
               <field name="date" readonly="1" />
@@ -43,47 +43,41 @@
           </group>
           <group name="requests_for_allabolag">
             <group string="Company Requests" name="requests" priority="1">
-              <field name="request_type" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="industry" attrs="{'invisible': [('request_type', '!=', 'industry')], 'required': [('request_type', '=' , 'industry')], 'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="industry_xv" attrs="{'invisible': [('request_type', '=', 'industry')], 'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="lan" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="no_employees" attrs="{'readonly':[('state', '!=' , 'draft')]}" widget="selection_badge"/>
-              <label for="revenue_from" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="request_type" readonly="state != 'draft'" />
+              <field name="industry" readonly="state != 'draft'" invisible="request_type != 'industry'" required="request_type == 'industry'" />
+              <field name="industry_xv" readonly="state != 'draft'" invisible="request_type == 'industry'" required="request_type != 'industry'" />
+              <field name="lan" readonly="state != 'draft'" />
+              <field name="no_employees" readonly="state != 'draft'" widget="selection_badge" />
+              <label for="revenue_from" readonly="state != 'draft'" />
               <div class="o_row">
-                <field name="revenue_from" class="oe_inline" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+                <field name="revenue_from" class="oe_inline" readonly="state != 'draft'" />
                 <span class="oe_grey p-2">-</span>
-                <field name="revenue_to" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+                <field name="revenue_to" readonly="state != 'draft'" />
               </div>
               <span />
-              <field name="corporate_form" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="corporate_form" readonly="state != 'draft'" />
               <field name="leads_url" readonly="1" />
             </group>
             <group string="Metadata to save on leads" name="metadata" priority="2">
-              <field name="tag_ids" widget="many2many_tags" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="type" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="user_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="team_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="description" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="campaign_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="source_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="medium_id" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
+              <field name="tag_ids" widget="many2many_tags" readonly="state != 'draft'" />
+              <field name="type" readonly="state != 'draft'" />
+              <field name="user_id" readonly="state != 'draft'" />
+              <field name="team_id" readonly="state != 'draft'" />
+              <field name="description" readonly="state != 'draft'" />
+              <field name="campaign_id" readonly="state != 'draft'" />
+              <field name="source_id" readonly="state != 'draft'" />
+              <field name="medium_id" readonly="state != 'draft'" />
             </group>
             <group />
             <group string="Revenue" name="revenue" priority="3">
               <field name="company_currency" invisible="1" />
-              <field name="expected_revenue" widget="monetary" options="{'currency_field': 'company_currency'}" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="recurring_revenue" widget="monetary" options="{'currency_field': 'company_currency'}" attrs="{'readonly':[('state', '!=' , 'draft')]}" />
-              <field name="recurring_plan" placeholder="E.g. Monthly" attrs="{'required': [('recurring_revenue', '!=', 0)],'readonly':[('state', '!=' , 'draft')]}" options="{'no_create': True, 'no_open': True}" />
+              <field name="expected_revenue" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="state != 'draft'" />
+              <field name="recurring_revenue" widget="monetary" options="{'currency_field': 'company_currency'}" readonly="state != 'draft'" />
+              <field name="recurring_plan" placeholder="E.g. Monthly" readonly="state != 'draft'" required="recurring_revenue!=0" options="{'no_create': True, 'no_open': True}" />
             </group>
           </group>
           <group />
-          <footer>
-            <!--
-                 <button string="Generate Leads" name="action_submit" type="object" default_focus="1" class="btn-primary" attrs="{'invisible': [('state', 'in' , ['list','done'])]}" />
-                 <button string="Enrich Leads" name="action_enrich" type="object" default_focus="1" class="btn-primary" attrs="{'invisible': [('state', 'in' , ['draft','done'])]}" />
-                 <button string="Cancel" class="btn-secondary" special="cancel" />
-            -->
-          </footer>
+          <footer />
         </sheet>
         <div class="oe_chatter">
           <field name="message_follower_ids" />
@@ -153,13 +147,12 @@
     <field name="name">Lead Mining Requests</field>
     <field name="res_model">crm.allabolag.mining</field>
     <field name="view_mode">tree,form</field>
-              <field name="context">{'default_type': 'lead',
-                    'search_default_assigned_to_me': 1}
-            </field>
-  
+    <field name="context">
+      {'default_type': 'lead',
+      'search_default_assigned_to_me': 1}
+    </field>
   </record>
   <!-- This menu is display in CRM app -->
-  
   <menuitem id="crm_menu_lead_generation" name="Lead Generation" parent="crm.crm_menu_sales" sequence="20" />
   <menuitem id="crm_allabolag_mining_request_menu_action" action="crm_allabolag_mining_request_action" parent="crm_menu_lead_generation" sequence="0" />
 </odoo>

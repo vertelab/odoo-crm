@@ -4,7 +4,8 @@ import requests
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from allabolag import Company, iter_liquidated_companies
+from allabolag import Company
+from allabolag.liquidated_companies import iter_liquidated_companies
 from allabolag.list import iter_list
 from bs4 import BeautifulSoup
 import json
@@ -371,15 +372,26 @@ class CrmAllabolagMining(models.Model):
                                 'medium_id': self.medium_id.id if self.medium_id else None,
                                 'expected_revenue': self.expected_revenue,
                             }) 
+                        if self.recurring_revenue:
+                            lead.write({'recurring_revenue': self.recurring_revenue,
+                                       'recurring_plan': self.recurring_plan.id if self.recurring_plan else None,})
+                    else:
+                        lead=self.env['crm.lead'].search([('company_registry', '=', item['orgnr'])], limit=1 )
+                        lead.write({'mining_id': self.id,
+                                'linkTo': f"https://allabolag.se/{item['linkTo']}",
+# TODO utöka med nya taggar     'tag_ids': self.tag_ids,
+                                'user_id': self.user_id.id if self.user_id else None,
+                                'team_id': self.team_id.id if self.team_id else None,
+                                'campaign_id': self.campaign_id.id if self.campaign_id else None,
+                                'source_id': self.source_id.id if self.source_id else None,
+                                'medium_id': self.medium_id.id if self.medium_id else None,
+                                'expected_revenue': self.expected_revenue,
+                        })
+                        
+                    i += 1
+                    if i > self.max_no_leads:
+                        break
 
-                        # ~ if self.recurring_revenue:
-                            # ~ lead.write({'recurring_revenue': self.recurring_revenue,
-                                        # ~ 'recurring_plan': self.recurring_plan.id if self.recurring_plan else None,})
-
-
-                        i += 1
-                        if i > self.max_no_leads:
-                            break 
         except Exception as e:
             _logger.warning(f"Allabolag: An unexpected error occurred: {e}")    
             self.message_post(body=_(f"An unexpected error occurred: {e}"),message_type='notification')
