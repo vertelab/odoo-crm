@@ -4,7 +4,8 @@ import requests
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from allabolag import Company, iter_liquidated_companies
+from allabolag import Company
+from allabolag.liquidated_companies import iter_liquidated_companies
 from allabolag.list import iter_list
 from bs4 import BeautifulSoup
 import json
