@@ -14,29 +14,370 @@ import json
 import logging
 _logger = logging.getLogger(__name__)
 
+MINING_CORPORATE_FORM = [
+    ('AB','Aktiebolag'),
+    ('Bankaktiebolag','Bankaktiebolag'),
+    ('Europabolag','Europabolag'),
+    ('Försäkringsaktiebolag','Försäkringsaktiebolag'),
+    ('Medlemsbank','Medlemsbank'),
+    ('Publikt aktiebolag','Publikt aktiebolag'),
+    ('Publikt bankaktiebolag','Publikt bankaktiebolag'),
+    ('Publikt försäkringsaktiebolag','Publikt försäkringsaktiebolag'),
+    ('Sparbank','Sparbank'),
+    ('Tjänstepensionsaktiebolag','Tjänstepensionsaktiebolag'),
+    ('Utländsk banks filial','Utländsk banks filial'),
+    ('Ömsesidigt försäkringsbolag','Ömsesidigt försäkringsbolag'),
+    ('Ömsesidigt tjänstepensionsbolag','Ömsesidigt tjänstepensionsbolag'),
+    ('OVR','Övriga bolagsformer'),
+    ('Allmänna försäkringskassor','Allmänna försäkringskassor'),
+    ('Arbetslöshetskassa','Arbetslöshetskassa'),
+    ('Bostadsförening','Bostadsförening'),
+    ('Bostadsrättsförening','Bostadsrättsförening'),
+    ('Ekonomisk förening','Ekonomisk förening'),
+    ('Enkelt bolag','Enkelt bolag'),
+    ('Europakooperativ','Europakooperativ'),
+    ('Europeiska Grupperingar för Territoriellt Samarbete (EGTS)','Europeiska Grupperingar för Territoriellt Samarbete (EGTS)'),
+    ('Familjestiftelser','Familjestiftelser'),
+    ('Filial','Filial'),
+    ('Försäkringsförening','Försäkringsförening'),
+    ('Hypoteksförening','Hypoteksförening'),
+    ('Ideell förening','Ideell förening'),
+    ('Juridisk form ej utredd','Juridisk form ej utredd'),
+    ('Kommun','Kommun'),
+    ('Kommunförbund','Kommunförbund'),
+    ('Kooperativ hyresrättsförening','Kooperativ hyresrättsförening'),
+    ('Landsting','Landsting'),
+    ('Offentliga korporationer och anstalter','Offentliga korporationer och anstalter'),
+    ('Oskiftat dödsbo','Oskiftat dödsbo'),
+    ('Partrederi','Partrederi'),
+    ('Regional statlig myndighet','Regional statlig myndighet'),
+    ('Registrerat trossamfund','Registrerat trossamfund'),
+    ('Sambruksförening','Sambruksförening'),
+    ('Samfällighet','Samfällighet'),
+    ('Statlig enhet','Statlig enhet'),
+    ('Tjänstepensionsförening','Tjänstepensionsförening'),
+    ('Understödsföreningar och försäkringsföreningar','Understödsföreningar och försäkringsföreningar'),
+    ('Utländsk juridisk person','Utländsk juridisk person'),
+    ('Värdepappersfonder','Värdepappersfonder'),
+    ('Övriga stiftelser eller fonder','Övriga stiftelser eller fonder'),
+    ('Övriga svenska juridiska personer bildade enligt särskild lagstiftning','Övriga svenska juridiska personer bildade enligt särskild lagstiftning'),
+    ('EF','Enskild näringsidkare'),
+    ('HB/KB','Handelsbolag eller kommanditbolag'),
+    ('Gruvbolag','Gruvbolag'),
+    ('Handelsbolag','Handelsbolag'),
+    ('Kommanditbolag','Kommanditbolag'),
+]
+
 MINING_LAN = [
-            (('xl/10'),('Blekinge')),
-            (('xl/20'),('Dalarna')),
-            (('xl/9'),('Gotland')),
-            (('xl/21'),('Gävleborg')),
-            (('xl/13'),('Halland')),
-            (('xl/23'),('Jämtland')),
-            (('xl/6'),('Jönköping')),
-            (('xl/8'),('Kalmar')),
-            (('xl/7'),('Kronoberg')),
-            (('xl/25'),('Norrbotten')),
-            (('xl/12'),('Skåne')),
-            (('xl/1'),('Stockholm')),
-            (('xl/4'),('Södermanland')),
-            (('xl/3'),('Uppsala')),
-            (('xl/17'),('Värmland')),
-            (('xl/24'),('Västerbotten')),
-            (('xl/22'),('Västernorrland')),
-            (('xl/19'),('Västmanland')),
-            (('xl/14'),('Västra götaland')),
-            (('xl/18'),('Örebro')),
-            (('xl/5'),('Östergötland')),
-    ]
+    ('Blekinge','Blekinge'),
+    ('Dalarna','Dalarna'),
+    ('Gotland','Gotland'),
+    ('Gävleborg','Gävleborg'),
+    ('Halland','Halland'),
+    ('Jämtland','Jämtland'),
+    ('Jönköping','Jönköping'),
+    ('Kalmar','Kalmar'),
+    ('Kronoberg','Kronoberg'),
+    ('Norrbotten','Norrbotten'),
+    ('Skåne','Skåne'),
+    ('Stockholm','Stockholm'),
+    ('Södermanland','Södermanland'),
+    ('Uppsala','Uppsala'),
+    ('Värmland','Värmland'),
+    ('Västerbotten','Västerbotten'),
+    ('Västernorrland','Västernorrland'),
+    ('Västmanland','Västmanland'),
+    ('Västra Götaland','Västra Götaland'),
+    ('Örebro','Örebro'),
+    ('Östergötland','Östergötland'),
+]
+
+MINING_KOMMUN = [
+    ('Hällefors','Hällefors'),
+    ('Skövde','Skövde'),
+    ('Eskilstuna','Eskilstuna'),
+    ('Vindeln','Vindeln'),
+    ('Stenungsund','Stenungsund'),
+    ('Nora','Nora'),
+    ('Timrå','Timrå'),
+    ('Lysekil','Lysekil'),
+    ('Nordanstig','Nordanstig'),
+    ('Trollhättan','Trollhättan'),
+    ('Höör','Höör'),
+    ('Färgelanda','Färgelanda'),
+    ('Piteå','Piteå'),
+    ('Skara','Skara'),
+    ('Järfälla','Järfälla'),
+    ('Lessebo','Lessebo'),
+    ('Habo','Habo'),
+    ('Östra Göinge','Östra Göinge'),
+    ('Vaxholm','Vaxholm'),
+    ('Sala','Sala'),
+    ('Degerfors','Degerfors'),
+    ('Sollentuna','Sollentuna'),
+    ('Ludvika','Ludvika'),
+    ('Uddevalla','Uddevalla'),
+    ('Falköping','Falköping'),
+    ('Hedemora','Hedemora'),
+    ('Laholm','Laholm'),
+    ('Åtvidaberg','Åtvidaberg'),
+    ('Lund','Lund'),
+    ('Sundbyberg','Sundbyberg'),
+    ('Härjedalen','Härjedalen'),
+    ('Karlstad','Karlstad'),
+    ('Gnosjö','Gnosjö'),
+    ('Svedala','Svedala'),
+    ('Malå','Malå'),
+    ('Strömsund','Strömsund'),
+    ('Landskrona','Landskrona'),
+    ('Åmål','Åmål'),
+    ('Borås','Borås'),
+    ('Fagersta','Fagersta'),
+    ('Falun','Falun'),
+    ('Kristianstad','Kristianstad'),
+    ('Surahammar','Surahammar'),
+    ('Högsby','Högsby'),
+    ('Vansbro','Vansbro'),
+    ('Umeå','Umeå'),
+    ('Norsjö','Norsjö'),
+    ('Jokkmokk','Jokkmokk'),
+    ('Örnsköldsvik','Örnsköldsvik'),
+    ('Upplands Väsby','Upplands Väsby'),
+    ('Övertorneå','Övertorneå'),
+    ('Bollebygd','Bollebygd'),
+    ('Östersund','Östersund'),
+    ('Pajala','Pajala'),
+    ('Vetlanda','Vetlanda'),
+    ('Kristinehamn','Kristinehamn'),
+    ('Södertälje','Södertälje'),
+    ('Ljusdal','Ljusdal'),
+    ('Ängelholm','Ängelholm'),
+    ('Vårgårda','Vårgårda'),
+    ('Kungsör','Kungsör'),
+    ('Tranemo','Tranemo'),
+    ('Munkfors','Munkfors'),
+    ('Sundsvall','Sundsvall'),
+    ('Orsa','Orsa'),
+    ('Göteborg','Göteborg'),
+    ('Ekerö','Ekerö'),
+    ('Eksjö','Eksjö'),
+    ('Vingåker','Vingåker'),
+    ('Norrköping','Norrköping'),
+    ('Nässjö','Nässjö'),
+    ('Ovanåker','Ovanåker'),
+    ('Ydre','Ydre'),
+    ('Säffle','Säffle'),
+    ('Emmaboda','Emmaboda'),
+    ('Kil','Kil'),
+    ('Ödeshög','Ödeshög'),
+    ('Värnamo','Värnamo'),
+    ('Töreboda','Töreboda'),
+    ('Arvidsjaur','Arvidsjaur'),
+    ('Flen','Flen'),
+    ('Grums','Grums'),
+    ('Arjeplog','Arjeplog'),
+    ('Ronneby','Ronneby'),
+    ('Ljusnarsberg','Ljusnarsberg'),
+    ('Kinda','Kinda'),
+    ('Tranås','Tranås'),
+    ('Ulricehamn','Ulricehamn'),
+    ('Trelleborg','Trelleborg'),
+    ('Hofors','Hofors'),
+    ('Norrtälje','Norrtälje'),
+    ('Oxelösund','Oxelösund'),
+    ('Västerås','Västerås'),
+    ('Sandviken','Sandviken'),
+    ('Åre','Åre'),
+    ('Götene','Götene'),
+    ('Sollefteå','Sollefteå'),
+    ('Hylte','Hylte'),
+    ('Gällivare','Gällivare'),
+    ('Lycksele','Lycksele'),
+    ('Skellefteå','Skellefteå'),
+    ('Motala','Motala'),
+    ('Knivsta','Knivsta'),
+    ('Kungsbacka','Kungsbacka'),
+    ('Markaryd','Markaryd'),
+    ('Kiruna','Kiruna'),
+    ('Gagnef','Gagnef'),
+    ('Vallentuna','Vallentuna'),
+    ('Oskarshamn','Oskarshamn'),
+    ('Simrishamn','Simrishamn'),
+    ('Linköping','Linköping'),
+    ('Partille','Partille'),
+    ('Kävlinge','Kävlinge'),
+    ('Heby','Heby'),
+    ('Dorotea','Dorotea'),
+    ('Vännäs','Vännäs'),
+    ('Nynäshamn','Nynäshamn'),
+    ('Vilhelmina','Vilhelmina'),
+    ('Karlshamn','Karlshamn'),
+    ('Katrineholm','Katrineholm'),
+    ('Kalix','Kalix'),
+    ('Sölvesborg','Sölvesborg'),
+    ('Bjurholm','Bjurholm'),
+    ('Alvesta','Alvesta'),
+    ('Haparanda','Haparanda'),
+    ('Svalöv','Svalöv'),
+    ('Västervik','Västervik'),
+    ('Alingsås','Alingsås'),
+    ('Bengtsfors','Bengtsfors'),
+    ('Filipstad','Filipstad'),
+    ('Ystad','Ystad'),
+    ('Lidingö','Lidingö'),
+    ('Älvdalen','Älvdalen'),
+    ('Årjäng','Årjäng'),
+    ('Köping','Köping'),
+    ('Trosa','Trosa'),
+    ('Sjöbo','Sjöbo'),
+    ('Osby','Osby'),
+    ('Ockelbo','Ockelbo'),
+    ('Hässleholm','Hässleholm'),
+    ('Växjö','Växjö'),
+    ('Torsby','Torsby'),
+    ('Aneby','Aneby'),
+    ('Håbo','Håbo'),
+    ('Lindesberg','Lindesberg'),
+    ('Värmdö','Värmdö'),
+    ('Gnesta','Gnesta'),
+    ('Strängnäs','Strängnäs'),
+    ('Tomelilla','Tomelilla'),
+    ('Härryda','Härryda'),
+    ('Nybro','Nybro'),
+    ('Vänersborg','Vänersborg'),
+    ('Rättvik','Rättvik'),
+    ('Säter','Säter'),
+    ('Sotenäs','Sotenäs'),
+    ('Burlöv','Burlöv'),
+    ('Eda','Eda'),
+    ('Helsingborg','Helsingborg'),
+    ('Bräcke','Bräcke'),
+    ('Huddinge','Huddinge'),
+    ('Nacka','Nacka'),
+    ('Boxholm','Boxholm'),
+    ('Örkelljunga','Örkelljunga'),
+    ('Hörby','Hörby'),
+    ('Grästorp','Grästorp'),
+    ('Salem','Salem'),
+    ('Mjölby','Mjölby'),
+    ('Haninge','Haninge'),
+    ('Luleå','Luleå'),
+    ('Mark','Mark'),
+    ('Olofström','Olofström'),
+    ('Hallstahammar','Hallstahammar'),
+    ('Strömstad','Strömstad'),
+    ('Sunne','Sunne'),
+    ('Karlskoga','Karlskoga'),
+    ('Hammarö','Hammarö'),
+    ('Valdemarsvik','Valdemarsvik'),
+    ('Kumla','Kumla'),
+    ('Åsele','Åsele'),
+    ('Laxå','Laxå'),
+    ('Sävsjö','Sävsjö'),
+    ('Vadstena','Vadstena'),
+    ('Mariestad','Mariestad'),
+    ('Skurup','Skurup'),
+    ('Vaggeryd','Vaggeryd'),
+    ('Östhammar','Östhammar'),
+    ('Botkyrka','Botkyrka'),
+    ('Arvika','Arvika'),
+    ('Staffanstorp','Staffanstorp'),
+    ('Överkalix','Överkalix'),
+    ('Nordmaling','Nordmaling'),
+    ('Gävle','Gävle'),
+    ('Leksand','Leksand'),
+    ('Lilla Edet','Lilla Edet'),
+    ('Vara','Vara'),
+    ('Orust','Orust'),
+    ('Hagfors','Hagfors'),
+    ('Forshaga','Forshaga'),
+    ('Mullsjö','Mullsjö'),
+    ('Svenljunga','Svenljunga'),
+    ('Varberg','Varberg'),
+    ('Sorsele','Sorsele'),
+    ('Malmö','Malmö'),
+    ('Karlskrona','Karlskrona'),
+    ('Norberg','Norberg'),
+    ('Borlänge','Borlänge'),
+    ('Mölndal','Mölndal'),
+    ('Hallsberg','Hallsberg'),
+    ('Nyköping','Nyköping'),
+    ('Ale','Ale'),
+    ('Storfors','Storfors'),
+    ('Bollnäs','Bollnäs'),
+    ('Hudiksvall','Hudiksvall'),
+    ('Borgholm','Borgholm'),
+    ('Storuman','Storuman'),
+    ('Boden','Boden'),
+    ('Essunga','Essunga'),
+    ('Tingsryd','Tingsryd'),
+    ('Lidköping','Lidköping'),
+    ('Enköping','Enköping'),
+    ('Öckerö','Öckerö'),
+    ('Torsås','Torsås'),
+    ('Munkedal','Munkedal'),
+    ('Ljungby','Ljungby'),
+    ('Hultsfred','Hultsfred'),
+    ('Vimmerby','Vimmerby'),
+    ('Tidaholm','Tidaholm'),
+    ('Falkenberg','Falkenberg'),
+    ('Arboga','Arboga'),
+    ('Sigtuna','Sigtuna'),
+    ('Gullspång','Gullspång'),
+    ('Vellinge','Vellinge'),
+    ('Mörbylånga','Mörbylånga'),
+    ('Eslöv','Eslöv'),
+    ('Bjuv','Bjuv'),
+    ('Ånge','Ånge'),
+    ('Tyresö','Tyresö'),
+    ('Hjo','Hjo'),
+    ('Upplands-Bro','Upplands-Bro'),
+    ('Robertsfors','Robertsfors'),
+    ('Tanum','Tanum'),
+    ('Mönsterås','Mönsterås'),
+    ('Halmstad','Halmstad'),
+    ('Tierp','Tierp'),
+    ('Kramfors','Kramfors'),
+    ('Gislaved','Gislaved'),
+    ('Söderköping','Söderköping'),
+    ('Lomma','Lomma'),
+    ('Finspång','Finspång'),
+    ('Malung-Sälen','Malung-Sälen'),
+    ('Mellerud','Mellerud'),
+    ('Avesta','Avesta'),
+    ('Lekeberg','Lekeberg'),
+    ('Höganäs','Höganäs'),
+    ('Smedjebacken','Smedjebacken'),
+    ('Båstad','Båstad'),
+    ('Söderhamn','Söderhamn'),
+    ('Älmhult','Älmhult'),
+    ('Mora','Mora'),
+    ('Nykvarn','Nykvarn'),
+    ('Perstorp','Perstorp'),
+    ('Österåker','Österåker'),
+    ('Karlsborg','Karlsborg'),
+    ('Täby','Täby'),
+    ('Dals-Ed','Dals-Ed'),
+    ('Danderyd','Danderyd'),
+    ('Älvkarleby','Älvkarleby'),
+    ('Berg','Berg'),
+    ('Härnösand','Härnösand'),
+    ('Lerum','Lerum'),
+    ('Klippan','Klippan'),
+    ('Solna','Solna'),  
+    ('Tibro','Tibro'),
+    ('Älvsbyn','Älvsbyn'),
+    ('Krokom','Krokom'),
+    ('Skinnskatteberg','Skinnskatteberg'),
+    ('Uppvidinge','Uppvidinge'),
+    ('Kungälv','Kungälv'),
+    ('Tjörn','Tjörn'),
+    ('Herrljunga','Herrljunga'),
+    ('Ragunda','Ragunda'),
+    ('Åstorp','Åstorp'),
+    ('Askersund','Askersund'),
+    ('Bromölla','Bromölla'),
+]
 
 MINING_INDUSTRY = [
             (("bransch/ambassader-internationella-org/29/_"),("Ambassader & Internationella Org.")),
@@ -138,8 +479,8 @@ class CrmLead(models.Model):
     mining_industry = fields.Selection(selection=MINING_INDUSTRY,string='industry',related='mining_id.industry', readonly=True,store=True)
     mining_industry_xv = fields.Selection(selection=MINING_INDUSTRY_XV,string='industry',related='mining_id.industry_xv', readonly=True,store=True)
     mining_lan = fields.Selection(selection=MINING_LAN,string='County',related='mining_id.lan', readonly=True,store=True)
+    mining_kommun = fields.Selection(selection=MINING_KOMMUN,string='Municipality',related='mining_id.kommun',readonly=True,store=True)
     mining_request_type = fields.Selection(selection=MINING_REQUEST_TYPE,string='Request Type',store=True,related='mining_id.request_type', readonly=True)
-
 
 class CrmAllabolagMining(models.Model):
     _name = 'crm.allabolag.mining'
@@ -153,6 +494,8 @@ class CrmAllabolagMining(models.Model):
     date = fields.Date(string='Date',default=fields.Date.today()) # fields.date.add|context_today|end_of|start_of|substract|to_date|to_string|today
     description = fields.Text('Notes')
     expected_revenue = fields.Monetary('Expected Revenue', currency_field='company_currency', tracking=True)
+    employees_from = fields.Integer("Revenue From")
+    employees_to = fields.Integer("Revenue To")
     industry = fields.Selection(selection=MINING_INDUSTRY,string='Industry',required=False)
     industry_xv = fields.Selection(selection=MINING_INDUSTRY_XV,string='Industry')
     lan = fields.Selection(selection=MINING_LAN,string='County')
@@ -174,6 +517,7 @@ class CrmAllabolagMining(models.Model):
             (('xe/8'),('200 - 999')),
             (('xe/9'),('> 1000')),
         ],string='Number of Employees')
+    kommun = fields.Selection(selection=MINING_KOMMUN,string='Municipality')
     recurring_plan = fields.Many2one('crm.recurring.plan', string="Recurring Plan", groups="crm.group_use_recurring_revenues")
     recurring_revenue = fields.Monetary('Recurring Revenues', currency_field='company_currency', groups="crm.group_use_recurring_revenues")
     request_type = fields.Selection(selection=MINING_REQUEST_TYPE,string='Request Type',required=True,default='industry')
@@ -212,27 +556,54 @@ class CrmAllabolagMining(models.Model):
     def _compute_leads_url(self):
         """ When changing the request info also update url """
         for lead in self:
-            # ~ lead.leads_url = 'https://allabolag.se'
-            lead.leads_url = ''
-            if lead.request_type != 'industry':
-                lead.leads_url += lead.request_type if lead.request_type else ''
-                if lead.industry_xv:
-                    lead.leads_url += '/' + lead.industry_xv
-            elif lead.industry:
-                lead.leads_url += lead.industry
+            lead.leads_url = '/segmentering'
+           
             if lead.corporate_form:
-                lead.leads_url += '/' + lead.corporate_form
-            if lead.no_employees:
-                lead.leads_url += '/' + lead.no_employees
-            if lead.lan:
-                lead.leads_url += '/' + lead.lan
-            if lead.revenue_from or lead.revenue_to:
-                lead.leads_url += '/xr/'
-                if  lead.revenue_from > 0:
-                    lead.leads_url += str(lead.revenue_from)
-                lead.leads_url += '-'
-                if  lead.revenue_to > 0:
-                    lead.leads_url += str(lead.revenue_to)
+                lead.leads_url += '&companyType=' + lead.corporate_form
+            
+            if lead.employees_from:
+                lead.leads_url += '&numEmployeesFrom=' + lead.employees_from
+            if lead.employees_to:
+                lead.leads_url += '&numEmployeesTo=' + lead.employees_to
+            
+            if lead.revenue_from:
+                lead.leads_url += f"revenueFrom={lead.revenue_from}"
+            if lead.revenue_to:
+                lead.leads_url += f"revenueTo={lead.revenue_to}"
+
+            if lead.kommun and lead.lan:
+                lead.leads_url += f'&location={lead.kommun},{lead.lan}'
+            elif lead.kommun:
+                lead.leads_url += '&location=' + lead.kommun
+            elif lead.lan:
+                lead.leads_url += '&location=' + lead.lan
+
+    # @api.depends('request_type','corporate_form', 'no_employees','lan','industry','revenue_from','revenue_to','industry_xv')
+    # def _compute_leads_url(self):
+    #     """ When changing the request info also update url """
+    #     for lead in self:
+    #         # ~ lead.leads_url = 'https://allabolag.se'
+    #         lead.leads_url = '/segmentering'
+    #         if lead.request_type != 'industry':
+    #             lead.leads_url += lead.request_type if lead.request_type else ''
+    #             if lead.industry_xv:
+    #                 _logger.error(f"{lead.industry_xv}")
+    #                 lead.leads_url += f"?{lead.industry_xv}"
+    #         elif lead.industry:
+    #             lead.leads_url += lead.industry
+    #         if lead.corporate_form:
+    #             lead.leads_url += '/' + lead.corporate_form
+    #         if lead.no_employees:
+    #             lead.leads_url += '/' + lead.no_employees
+    #         if lead.lan:
+    #             lead.leads_url += '/' + lead.lan
+    #         if lead.revenue_from or lead.revenue_to:
+    #             lead.leads_url += '/xr/'
+    #             if  lead.revenue_from > 0:
+    #                 lead.leads_url += str(lead.revenue_from)
+    #             lead.leads_url += '-'
+    #             if  lead.revenue_to > 0:
+    #                 lead.leads_url += str(lead.revenue_to)
 
 
     @api.depends('user_id', 'type')
