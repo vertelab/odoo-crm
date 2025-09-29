@@ -45,7 +45,10 @@
             <group string="Company Requests" name="requests" priority="1">
               <field name="request_type" readonly="state != 'draft'" />
               <field name="industry" readonly="state != 'draft'" invisible="request_type != 'industry'" required="request_type == 'industry'" />
+<!--
+              <field name="industry_sub" readonly="state != 'draft'" invisible="request_type != 'industry'" required="request_type == 'industry'" />
               <field name="industry_xv" readonly="state != 'draft'" invisible="request_type == 'industry'" required="request_type != 'industry'" />
+-->
               <field name="lan" readonly="state != 'draft'" />
               <field name="no_employees" readonly="state != 'draft'" widget="selection_badge" />
               <label for="revenue_from" readonly="state != 'draft'" />
@@ -53,6 +56,11 @@
                 <field name="revenue_from" class="oe_inline" readonly="state != 'draft'" />
                 <span class="oe_grey p-2">-</span>
                 <field name="revenue_to" readonly="state != 'draft'" />
+              </div>
+                            <div class="o_row">
+                <field name="profit_from" class="oe_inline" readonly="state != 'draft'" />
+                <span class="oe_grey p-2">-</span>
+                <field name="profit_to" readonly="state != 'draft'" />
               </div>
               <span />
               <field name="corporate_form" readonly="state != 'draft'" />
