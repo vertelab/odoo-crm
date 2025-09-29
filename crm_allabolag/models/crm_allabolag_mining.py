@@ -5,7 +5,7 @@ import requests
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from allabolag import Company
-from allabolag.liquidated_companies import iter_liquidated_companies
+# ~ from allabolag.liquidated_companies import iter_liquidated_companies
 from allabolag.list import iter_list
 from bs4 import BeautifulSoup
 import json
@@ -450,8 +450,154 @@ MINING_REQUEST_TYPE =[  ('industry','Industry'),
                         ('lista/omsatter-mest/11','Turns over the most'),
                         ('lista/hogst-resultat/12','Highest result'),('lista/storsta-arbetsgivarna/13','Largest employers'),
                         ('lista/flest-bilar/14','Most cars'),('lista/bolag-med-varumarken/15','Companies with brands'),
-                        ('lista/bostads-och-bostadsrattfor/25','Housing Cooperatives'),('lista/statliga-och-kommunala-bolag/33','State and Municipal Companies')
+                        ('lista/bostads-och-bostadsrattfor/25','Housing Cooperatives'),
+                        ('lista/statliga-och-kommunala-bolag/33','State and Municipal Companies')
                     ]
+
+
+SNI_MAPPED = {
+            'A': ['01', '02', '03'],
+            'B': ['05', '06', '07', '08', '09'],
+            'C': [str(i).zfill(2) for i in range(10, 34)],
+            'D': ['35'],
+            'E': ['36', '37', '38', '39'],
+            'F': ['41', '42', '43'],
+            'G': ['46', '47'],
+            'H': ['49', '50', '51', '52', '53'],
+            'I': ['55', '56'],
+            'J': ['58', '59', '60'],
+            'K': ['61', '62', '63'],
+            'L': ['64', '65', '66'],
+            'M': ['68'],
+            'N': [str(i).zfill(2) for i in range(69, 76)],
+            'O': [str(i).zfill(2) for i in range(77, 83)],
+            'P': ['84'],
+            'Q': ['85'],
+            'R': ['86', '87', '88'],
+            'S': ['90', '91', '92', '93'],
+            'T': ['94', '95', '96'],
+            'U': ['97', '98'],
+            'V': ['99']
+        }
+        
+SNI_MAIN=[
+        ('A', 'Jordbruk, skogsbruk och fiske'),
+        ('B', 'Utvinning av mineral'),
+        ('C', 'Tillverkning'),
+        ('D', 'Försörjning av el, gas, värme och kyla'),
+        ('E', 'Vattenförsörjning; avloppsrening, avfallshantering och sanering'),
+        ('F', 'Byggverksamhet'),
+        ('G', 'Handel'),
+        ('H', 'Transport och magasinering'),
+        ('I', 'Hotell- och restaurangverksamhet'),
+        ('J', 'Förlagsverksamhet, Radio- och TV-sändning och distribution'),
+        ('K', 'Telekommunikation och dataverksamhet'),
+        ('L', 'Finansiell verksamhet och försäkring'),
+        ('M', 'Fastighetsverksamhet'),
+        ('N', 'Juridik, ekonomi, vetenskap och teknik'),
+        ('O', 'Uthyrning, fastighetsservice och stödverksamhet'),
+        ('P', 'Offentlig förvaltning och försvar'),
+        ('Q', 'Utbildning'),
+        ('R', 'Vård och omsorg; social verksamhet'),
+        ('S', 'Kultur, idrott och fritid'),
+        ('T', 'Annan serviceverksamhet'),
+        ('U', 'Förvärvsarbete i hushåll'),
+        ('V', 'Internationella organisationer och ambassader')
+    ]
+    
+
+SNI_TWO = {
+                '01': "Jordbruk och jakt samt stödverksamhet i anslutning härtill",
+                '02': "Skogsbruk",
+                '03': "Fiske och vattenbruk",
+                '05': "Kolutvinning",
+                '06': "Utvinning av råpetroleum och naturgas",
+                '07': "Utvinning av metallmalmer",
+                '08': "Annan utvinning av mineral",
+                '09': "Stödverksamhet avseende utvinning",
+                '10': "Livsmedelsframställning",
+                '11': "Framställning av drycker",
+                '12': "Tobaksvarutillverkning",
+                '13': "Textilvarutillverkning",
+                '14': "Tillverkning av kläder",
+                '15': "Tillverkning av läder- och skinnvaror och liknande varor av andra material",
+                '16': "Tillverkning av trä och varor av trä och kork, utom möbler",
+                '17': "Pappers- och pappersvarutillverkning",
+                '18': "Grafisk produktion och reproduktion av inspelningar",
+                '19': "Tillverkning av stenkolsprodukter och raffinerade petroleumprodukter",
+                '20': "Tillverkning av kemikalier och kemiska produkter",
+                '21': "Tillverkning av farmaceutiska basprodukter och läkemedel",
+                '22': "Tillverkning av gummi- och plastvaror",
+                '23': "Tillverkning av andra icke-metalliska mineraliska produkter",
+                '24': "Stål- och metallframställning",
+                '25': "Tillverkning av metallvaror utom maskiner och apparater",
+                '26': "Tillverkning av datorer, elektronikvaror och optik",
+                '27': "Tillverkning av elapparatur",
+                '28': "Tillverkning av övriga maskiner",
+                '29': "Tillverkning av motorfordon, släpfordon och påhängsvagnar",
+                '30': "Tillverkning av andra transportmedel",
+                '31': "Tillverkning av möbler",
+                '32': "Annan tillverkning",
+                '33': "Reparation, underhåll och installation av maskiner och utrustning",
+                '35': "El-, gas- och ångförsörjning samt luftkonditionering",
+                '36': "Vattenförsörjning",
+                '37': "Avloppsrening",
+                '38': "Insamling av avfall, återvinning och bortskaffande",
+                '39': "Sanering, efterbehandling av jord och vatten samt annan verksamhet för föroreningsbekämpning",
+                '41': "Byggande av bostadshus och andra byggnader",
+                '42': "Anläggningsarbeten",
+                '43': "Specialiserad bygg- och anläggningsverksamhet",
+                '46': "Parti- och provisionshandel",
+                '47': "Detaljhandel",
+                '49': "Landtransport; transport i rörsystem",
+                '50': "Sjötransport",
+                '51': "Lufttransport",
+                '52': "Magasinering, varulagring och stödverksamhet avseende transport",
+                '53': "Post- och kurirverksamhet",
+                '55': "Hotell- och logiverksamhet",
+                '56': "Restaurang-, catering- och barverksamhet",
+                '58': "Förlagsverksamhet",
+                '59': "Film-, video- och tv-programverksamhet, ljudinspelning och musikutgivning",
+                '60': "Planering, radio- och tv-sändning, nyhetsbyråer och annan distribution av medieinnehåll",
+                '61': "Telekommunikation",
+                '62': "Dataprogrammering, datakonsultverksamhet o.d.",
+                '63': "Datainfrastruktur, databehandling, hosting och annan informationsverksamhet",
+                '64': "Finansiell verksamhet utom försäkrings- och pensionsfondsverksamhet",
+                '65': "Försäkrings-, återförsäkrings- och pensionsfondsverksamhet utom obligatorisk socialförsäkring",
+                '66': "Stödverksamhet avseende finansiella tjänster och försäkringsverksamhet",
+                '68': "Fastighetsverksamhet",
+                '69': "Juridisk och ekonomisk konsultverksamhet",
+                '70': "Verksamheter som utövas av huvudkontor samt konsultverksamhet avseende företag",
+                '71': "Arkitekt- och teknisk konsultverksamhet; teknisk provning och analys",
+                '72': "Vetenskaplig forskning och utveckling",
+                '73': "Reklamverksamhet, marknadsundersökningar och PR",
+                '74': "Annan verksamhet inom juridik, ekonomi, vetenskap och teknik",
+                '75': "Veterinärverksamhet",
+                '77': "Uthyrning och leasing",
+                '78': "Arbetsförmedling, bemanning och annan personalrelaterad verksamhet",
+                '79': "Resebyrå- och researrangörsverksamhet samt annan boknings- och reserelaterad verksamhet",
+                '80': "Säkerhets- och bevakningsverksamhet",
+                '81': "Fastighetsrelaterad stödverksamhet samt skötsel och underhåll av grönytor",
+                '82': "Kontorstjänster och annan stödverksamhet till företag",
+                '84': "Offentlig förvaltning och försvar; obligatorisk socialförsäkring",
+                '85': "Utbildning",
+                '86': "Hälso- och sjukvård",
+                '87': "Vård och omsorg med boende",
+                '88': "Öppna sociala insatser",
+                '90': "Konstnärligt skapande och scenkonst",
+                '91': "Biblioteks-, arkiv- och museiverksamhet m.m.",
+                '92': "Spel- och vadhållningsverksamhet",
+                '93': "Sport-, fritids- och nöjesverksamhet",
+                '94': "Intressebevakning; religiös verksamhet",
+                '95': "Reparation och underhåll av datorer, hushållsartiklar och varor för personligt bruk samt motorfordon och motorcyklar",
+                '96': "Konsumenttjänster",
+                '97': "Förvärvsarbete i hushåll",
+                '98': "Hushållens produktion av diverse varor och tjänster för eget bruk",
+                '99': "Verksamhet vid internationella organisationer, utländska ambassader o.d."
+            }
+            
+
+
 
 MINING_CORPORATE_FORM = [
         (('xb/EF'),('Enskild firma')),
@@ -470,13 +616,14 @@ MINING_CORPORATE_FORM = [
     ]
 
 
+
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
     mining_id = fields.Many2one(comodel_name='crm.allabolag.mining')
 
     mining_corporate_form = fields.Selection(selection=MINING_CORPORATE_FORM,string='Company form',related='mining_id.corporate_form', readonly=True,store=True)
-    mining_industry = fields.Selection(selection=MINING_INDUSTRY,string='industry',related='mining_id.industry', readonly=True,store=True)
+    mining_industry = fields.Selection(selection=SNI_MAIN,string='industry',related='mining_id.industry', readonly=True,store=True)
     mining_industry_xv = fields.Selection(selection=MINING_INDUSTRY_XV,string='industry',related='mining_id.industry_xv', readonly=True,store=True)
     mining_lan = fields.Selection(selection=MINING_LAN,string='County',related='mining_id.lan', readonly=True,store=True)
     mining_kommun = fields.Selection(selection=MINING_KOMMUN,string='Municipality',related='mining_id.kommun',readonly=True,store=True)
@@ -488,6 +635,18 @@ class CrmAllabolagMining(models.Model):
     _description = 'CRM Allabolag Mining'
     _order = "date desc"
 
+
+    def dynamic_industry_sub(self):
+        _logger.warning(f"dynamic_industry_sub {self=}")
+        result = []
+        for main_code, main_name in SNI_MAIN:
+            result.append((main_code, f"{main_code}  {main_name}"))
+            for sub_code in SNI_MAPPED.get(main_code, []):
+                sub_name = SNI_TWO.get(sub_code, 'Okänt')
+                result.append((sub_code, f"{sub_code} {sub_name}"))
+        return result
+
+
     company_currency = fields.Many2one("res.currency", string='Currency', related='company_id.currency_id', readonly=True)
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company.id)
     corporate_form = fields.Selection(selection=MINING_CORPORATE_FORM,string='Company form')
@@ -496,7 +655,8 @@ class CrmAllabolagMining(models.Model):
     expected_revenue = fields.Monetary('Expected Revenue', currency_field='company_currency', tracking=True)
     employees_from = fields.Integer("Revenue From")
     employees_to = fields.Integer("Revenue To")
-    industry = fields.Selection(selection=MINING_INDUSTRY,string='Industry',required=False)
+    industry = fields.Selection(selection=dynamic_industry_sub,string='Industry',required=False)
+    # ~ industry_sub = fields.Selection(selection=dynamic_industry_sub,string='Industry two numbers',Xcompute='_industry_sub',required=False)
     industry_xv = fields.Selection(selection=MINING_INDUSTRY_XV,string='Industry')
     lan = fields.Selection(selection=MINING_LAN,string='County')
     lead_count = fields.Integer(string='Number of Leads',compute='_compute_lead_count',readonly=True)
@@ -507,15 +667,15 @@ class CrmAllabolagMining(models.Model):
         'Request', index=True, required=True,
         compute='_compute_name', readonly=False, store=True)
     no_employees = fields.Selection(selection=[
-            (('xe/1'),('0')),
-            (('xe/2'),('1 - 4')),
-            (('xe/3'),('5 - 9')),
-            (('xe/4'),('10 - 19')),
-            (('xe/5'),('20 - 49')),
-            (('xe/6'),('50 - 99')),
-            (('xe/7'),('100 - 199')),
-            (('xe/8'),('200 - 999')),
-            (('xe/9'),('> 1000')),
+            (('0-0'),('0')),
+            (('1-4'),('1 - 4')),
+            (('5-9'),('5 - 9')),
+            (('10-19'),('10 - 19')),
+            (('20-49'),('20 - 49')),
+            (('50-99'),('50 - 99')),
+            (('100-199'),('100 - 199')),
+            (('200-999'),('200 - 999')),
+            (('1000-1000000'),('> 1000')),
         ],string='Number of Employees')
     kommun = fields.Selection(selection=MINING_KOMMUN,string='Municipality')
     recurring_plan = fields.Many2one('crm.recurring.plan', string="Recurring Plan", groups="crm.group_use_recurring_revenues")
@@ -523,6 +683,8 @@ class CrmAllabolagMining(models.Model):
     request_type = fields.Selection(selection=MINING_REQUEST_TYPE,string='Request Type',required=True,default='industry')
     revenue_from = fields.Integer(string='Revenue')
     revenue_to = fields.Integer(string='Revenue')
+    profit_from = fields.Integer(string='Profit')
+    profit_to = fields.Integer(string='Profit')
     selected_count = fields.Integer(string='Max Number of Leads')
     state = fields.Selection(selection=[('draft','Draft'),('list','List'),('done','Done'),('error','Error'),('cancel','Cancel')],default='draft',tracking=True)
     tag_ids = fields.Many2many(comodel_name='crm.tag',string='Tags',help="Set this tags to created leads") # relation|column1|column2
@@ -531,7 +693,7 @@ class CrmAllabolagMining(models.Model):
         comodel_name='crm.team', string='Sales Team', index=True,
         compute='_compute_team_id', readonly=False, store=True)
     user_id = fields.Many2one('res.users', string='Salesperson', index=True, tracking=True, default=lambda self: self.env.user)
-
+    
 
     @api.depends('user_id','industry','request_type')
     def _compute_name(self):
@@ -540,12 +702,16 @@ class CrmAllabolagMining(models.Model):
                 # ~ raise UserError(f"{[a for a in s.fields_get(allfields=['request_type'])['request_type']['selection'] if a[0] == s.request_type][0][1]}")
                 request_name = [a for a in s.fields_get(allfields=['request_type'])['request_type']['selection'] if a[0] == s.request_type][0][1]
                 s.name = _(f"[{s.user_id.name}] {request_name}")
-            else:
-                if s.industry:
-                    industry_name = [a for a in s.fields_get(allfields=['industry'])['industry']['selection'] if a[0] == s.industry][0][1]
-                else:
-                    industry_name = ''
-                s.name = _(f"[{s.user_id.name}] {industry_name}")
+            # ~ else:
+                # ~ _logger.warning(f'SNI_MAPPED {s.industry=} {SNI_MAPPED[s.industry]=}   {SNI_TWO.get("10")=}  {[(code, SNI_TWO.get(code)) for code in SNI_MAPPED[s.industry]]} ')
+                # ~ s.industry_sub = False
+                # ~ s._fields['industry_sub'].selection = [(code, SNI_TWO.get(code)) for code in SNI_MAPPED[s.industry]]
+                
+                # ~ if s.industry:
+                    # ~ industry_name = [a for a in s.fields_get(allfields=['industry'])['industry']['selection'] if a[0] == s.industry][0][1]
+                # ~ else:
+                    # ~ industry_name = ''
+                # ~ s.name = _(f"[{s.user_id.name}] {industry_name}")
 
     @api.depends('lead_ids')
     def _compute_lead_count(self):
@@ -555,55 +721,37 @@ class CrmAllabolagMining(models.Model):
     @api.depends('request_type','corporate_form', 'no_employees','lan','industry','revenue_from','revenue_to','industry_xv')
     def _compute_leads_url(self):
         """ When changing the request info also update url """
-        for lead in self:
-            lead.leads_url = '/segmentering'
-           
+        for lead in self:            
+            segment = []
+            if lead.industry:
+                segment.append('naceIndustry=' + lead.industry)            
             if lead.corporate_form:
-                lead.leads_url += '&companyType=' + lead.corporate_form
+                segment.append('companyType=' + lead.corporate_form)
             
+            if lead.no_employees:
+                (lead.employees_from,lead.employees_to) = lead.no_employees.split('-')
             if lead.employees_from:
-                lead.leads_url += '&numEmployeesFrom=' + lead.employees_from
+                segment.append(f'numEmployeesFrom={lead.employees_from}')
             if lead.employees_to:
-                lead.leads_url += '&numEmployeesTo=' + lead.employees_to
+                segment.append(f"numEmployeesTo={lead.employees_to}")
             
             if lead.revenue_from:
-                lead.leads_url += f"revenueFrom={lead.revenue_from}"
+                segment.append(f"revenueFrom={lead.revenue_from}")
             if lead.revenue_to:
-                lead.leads_url += f"revenueTo={lead.revenue_to}"
+                segment.append(f"revenueTo={lead.revenue_to}")
+            if lead.profit_from:
+                segment.append(f"profitFrom={lead.profit_from}")
+            if lead.profit_to:
+                segment.append(f"profitTo={lead.profit_to}")
 
             if lead.kommun and lead.lan:
-                lead.leads_url += f'&location={lead.kommun},{lead.lan}'
+                segment.append(f'location={lead.kommun},{lead.lan}')
             elif lead.kommun:
-                lead.leads_url += '&location=' + lead.kommun
+                segment.append('location=' + lead.kommun)
             elif lead.lan:
-                lead.leads_url += '&location=' + lead.lan
+                segment.append('location=' + lead.lan)
 
-    # @api.depends('request_type','corporate_form', 'no_employees','lan','industry','revenue_from','revenue_to','industry_xv')
-    # def _compute_leads_url(self):
-    #     """ When changing the request info also update url """
-    #     for lead in self:
-    #         # ~ lead.leads_url = 'https://allabolag.se'
-    #         lead.leads_url = '/segmentering'
-    #         if lead.request_type != 'industry':
-    #             lead.leads_url += lead.request_type if lead.request_type else ''
-    #             if lead.industry_xv:
-    #                 _logger.error(f"{lead.industry_xv}")
-    #                 lead.leads_url += f"?{lead.industry_xv}"
-    #         elif lead.industry:
-    #             lead.leads_url += lead.industry
-    #         if lead.corporate_form:
-    #             lead.leads_url += '/' + lead.corporate_form
-    #         if lead.no_employees:
-    #             lead.leads_url += '/' + lead.no_employees
-    #         if lead.lan:
-    #             lead.leads_url += '/' + lead.lan
-    #         if lead.revenue_from or lead.revenue_to:
-    #             lead.leads_url += '/xr/'
-    #             if  lead.revenue_from > 0:
-    #                 lead.leads_url += str(lead.revenue_from)
-    #             lead.leads_url += '-'
-    #             if  lead.revenue_to > 0:
-    #                 lead.leads_url += str(lead.revenue_to)
+            lead.leads_url = 'segmentering?'+'&'.join(segment)
 
 
     @api.depends('user_id', 'type')
@@ -682,13 +830,20 @@ class CrmAllabolagMining(models.Model):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
         }
-        _logger.warning(f"https://allabolag.se/{self.leads_url}?page=1")
+        _logger.warning(f"(scrape_traffar_number) https://allabolag.se/{self.leads_url}")
 
         r = requests.get(f"https://allabolag.se/{self.leads_url}?page=1", headers=headers)
         r.raise_for_status()
         html = r.text
         soup = BeautifulSoup(html, 'html.parser')
-        return int(soup.select_one(".page.search-results search").attrs[":total-hits-default"])
+        header = soup.find(class_='SearchResultList-listHeader')
+        #TODO: Number of companies updates by js so it will always be 0
+        if header:
+            text = header.get_text(strip=True)
+            _logger.warning(f"Soup {header.get_text(strip=True)=}")
+            return(int(''.join(filter(str.isdigit, text))))
+        else:
+            return 0
 
 
     def action_check(self):
