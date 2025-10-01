@@ -1139,6 +1139,8 @@ class CrmAllabolagMining(models.Model):
         search_data = self._get_max_companies_from_search()
         try:
             for data in search_data:
+                print(data)
+                print(data.get("org_nr", False))
                 if company_data := self._get_company_details(data.get("org_nr", False)):
                     company_vals = self._set_company_details(company_data)
                     company_vals["linkTo"] = f"https://allabolag.se/{data['url']}"
@@ -1174,7 +1176,7 @@ class CrmAllabolagMining(models.Model):
             "partner_name": company_data.get("name", False),
             "company_registry": company_data.get("orgnr", False),
             "mining_id": self.id,
-            "city": company_data.get("postalAddress", {}).get("postPlace", False),
+            "city": company_data.get("postalAddress").get("postPlace") if company_data.get("postalAddress") else False,
             "tag_ids": self.tag_ids,
             "type": self.type,
             "user_id": self.user_id.id if self.user_id else None,
