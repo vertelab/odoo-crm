@@ -1174,7 +1174,7 @@ class CrmAllabolagMining(models.Model):
             "partner_name": company_data.get("name", False),
             "company_registry": company_data.get("orgnr", False),
             "mining_id": self.id,
-            "city": company_data.get("postalAddress", {}).get("postPlace", False),
+            "city": company_data.get("postalAddress").get("postPlace") if company_data.get("postalAddress") else False,
             "tag_ids": self.tag_ids,
             "type": self.type,
             "user_id": self.user_id.id if self.user_id else None,
