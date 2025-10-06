@@ -5,7 +5,7 @@ from .constants import (
 )
 
 
-class CrmLead(models.Model):
+class CRMLead(models.Model):
     _inherit = "crm.lead"
 
     mining_id = fields.Many2one(comodel_name="crm.allabolag.mining")
