@@ -47,6 +47,7 @@ class CrmLead(models.Model):
     #
     #         record = crm.env['res.partner'].partner_enrich_allabolag(crm.company_registry)
     #         crm.write(record)
+
             
     def crm_enrich(self):
         for crm in self:

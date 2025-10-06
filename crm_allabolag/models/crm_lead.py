@@ -19,14 +19,14 @@ class CRMLead(models.Model):
     )
     mining_industry = fields.Selection(
         selection=SNI_MAIN,
-        string="Industry",
+        string="industry",
         related="mining_id.industry",
         readonly=True,
         store=True,
     )
     mining_industry_xv = fields.Selection(
         selection=MINING_INDUSTRY_XV,
-        string="Industry",
+        string="industry",
         related="mining_id.industry_xv",
         readonly=True,
         store=True,
@@ -52,4 +52,3 @@ class CRMLead(models.Model):
         related="mining_id.request_type",
         readonly=True,
     )
-    allabolag_json_data = fields.Text(string="Allabolag Data", readonly=True)
