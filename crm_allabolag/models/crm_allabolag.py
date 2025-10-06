@@ -18,15 +18,15 @@ class CrmLead(models.Model):
 
     company_registry = fields.Char(string='Company Registry', size=64, trim=True, )
     vat = fields.Char(string='VAT', size=64, trim=True, )
-    linkTo = fields.Char(string='Link', size=64, trim=True, help="Link to Allabolag")
+    linkTo = fields.Char(string='Link', help="Link to Allabolag")
  
     def enrich_allabolag(self):
         for crm in self:
             _logger.warning('%s' % crm._fields['summary_revenue'])
             if not crm.company_registry:
-                crm.company_registry,item=self.env['res.partner'].name2orgno(crm.partner_name or crm.name)
+                crm.company_registry, item=self.env['res.partner'].name2orgno(crm.partner_name or crm.name)
 
-            record=crm.env['res.partner'].partner_enrich_allabolag(crm.company_registry)
+            record = crm.env['res.partner'].partner_enrich_allabolag(crm.company_registry)
             crm.write(record)
             
     def crm_enrich(self):

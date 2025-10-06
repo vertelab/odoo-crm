@@ -10,17 +10,11 @@ class CrmLead(models.Model):
     _inherit = 'crm.lead'
     
     def crm_enrich(self):
-        mro = self.__class__.__mro__
-        _logger.warning(f'{self.__class__.__name__=}  {type(self).__mro__=}\n{mro=}')
-
         for crm in self:
             _logger.warning(f'crm_enrich_base {crm.name=}')
         if hasattr(super(CrmLead, self), 'crm_enrich'):
             super(CrmLead, self).crm_enrich()
-        # ~ if hasattr(self.env['crm.lead'], 'crm_enrich'):
-            # ~ super(CrmLead,self).crm_enrich()
 
-        # ~ super(CrmLead,self).crm_enrich()
         
     @api.model
     def orgnr2vat(self,company_registry):
