@@ -64,7 +64,6 @@
                                 <field name="profit_to" readonly="state != 'draft'" />
                             </div>
                             <span />
-                            <field name="sort_option" readonly="state != 'draft'" />
                             <field name="corporate_form" readonly="state != 'draft'" />
                             <field name="leads_url" readonly="1" />
                         </group>
