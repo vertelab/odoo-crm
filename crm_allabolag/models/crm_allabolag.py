@@ -12,14 +12,14 @@ from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
+
 class CrmLead(models.Model):
     _name = 'crm.lead'
-    _inherit = ['crm.lead',"res.partner.allabolag.mixin"]
+    _inherit = ['crm.lead', "res.partner.allabolag.mixin"]
 
     company_registry = fields.Char(string='Company Registry', size=64, trim=True, )
     vat = fields.Char(string='VAT', size=64, trim=True, )
     linkTo = fields.Char(string='Link', help="Link to Allabolag")
-
 
     def _enrich_lead(self):
         if company_data := Company(self.company_registry).data:
@@ -38,7 +38,7 @@ class CrmLead(models.Model):
             "kpi_no_employees": employee,
             "allabolag_json_data": company_data,
         }
- 
+
     # def enrich_allabolag(self):
     #     for crm in self:
     #         _logger.warning('%s' % crm._fields['summary_revenue'])
@@ -48,12 +48,8 @@ class CrmLead(models.Model):
     #         record = crm.env['res.partner'].partner_enrich_allabolag(crm.company_registry)
     #         crm.write(record)
 
-            
     def crm_enrich(self):
         for crm in self:
             crm._enrich_lead()
             # crm.enrich_allabolag()
-        super(CrmLead,self).crm_enrich()
-            
-
-
+        super(CrmLead, self).crm_enrich()
