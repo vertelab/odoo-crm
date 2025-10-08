@@ -38,7 +38,7 @@ Adding interesting and valuable internet-data to customer information in CRM.
     'repository': 'https://github.com/vertelab/odoo-crm',
     'depends': ['crm_enrich_base', 'partner_allabolag' , 'utm'],
     'data': [
-        'views/views.xml',
+        'views/crm_lead_views.xml',
         'views/crm_allabolag_mining_views.xml',
         'security/ir.model.access.csv',
     ],
