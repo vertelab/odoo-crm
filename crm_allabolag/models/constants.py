@@ -137,17 +137,17 @@ SNI_TWO = {
     "98": "Hushållens produktion av diverse varor och tjänster för eget bruk",
     "99": "Verksamhet vid internationella organisationer, utländska ambassader o.d.",
 }
-
-MINING_REQUEST_TYPE = [
-    ("industry", "Industry"),
-    ("lista/omsatter-mest/11", "Turns over the most"),
-    ("lista/hogst-resultat/12", "Highest result"),
-    ("lista/storsta-arbetsgivarna/13", "Largest employers"),
-    ("lista/flest-bilar/14", "Most cars"),
-    ("lista/bolag-med-varumarken/15", "Companies with brands"),
-    ("lista/bostads-och-bostadsrattfor/25", "Housing Cooperatives"),
-    ("lista/statliga-och-kommunala-bolag/33", "State and Municipal Companies"),
-]
+##Not used
+# ~ MINING_REQUEST_TYPE = [
+    # ~ ("industry", "Industry"),
+    # ~ ("lista/omsatter-mest/11", "Turns over the most"),
+    # ~ ("lista/hogst-resultat/12", "Highest result"),
+    # ~ ("lista/storsta-arbetsgivarna/13", "Largest employers"),
+    # ~ ("lista/flest-bilar/14", "Most cars"),
+    # ~ ("lista/bolag-med-varumarken/15", "Companies with brands"),
+    # ~ ("lista/bostads-och-bostadsrattfor/25", "Housing Cooperatives"),
+    # ~ ("lista/statliga-och-kommunala-bolag/33", "State and Municipal Companies"),
+# ~ ]
 
 MINING_CORPORATE_FORM = [
     ("AB", "Aktiebolag"),
