@@ -6,7 +6,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from allabolag import Company
 from .constants import (
-    SNI_MAPPED, SNI_MAIN, SNI_TWO, MINING_CORPORATE_FORM, MINING_REQUEST_TYPE,
+    SNI_MAPPED, SNI_MAIN, SNI_TWO, MINING_CORPORATE_FORM,
     MINING_KOMMUN, MINING_INDUSTRY_XV, MINING_LAN, SORT_OPTIONS
 )
 import traceback
@@ -107,12 +107,7 @@ class CrmAllabolagMining(models.Model):
         currency_field="company_currency",
         groups="crm.group_use_recurring_revenues",
     )
-    request_type = fields.Selection(
-        selection=MINING_REQUEST_TYPE,
-        string="Request Type",
-        required=True,
-        default="industry",
-    )
+
     revenue_from = fields.Integer(string="Revenue")
     revenue_to = fields.Integer(string="Revenue")
     profit_from = fields.Integer(string="Profit")
@@ -159,15 +154,11 @@ class CrmAllabolagMining(models.Model):
         selection = self.fields_get(allfields=[field_name])[field_name]["selection"]
         return next((label for key, label in selection if key == field_key), field_key)
 
-    @api.depends("user_id", "industry", "request_type")
+    @api.depends("user_id")
     def _compute_name(self):
         for s in self:
-            if s.request_type != "industry":
-                request_name = s._get_selection_label("request_type", s.request_type)
-                s.name = _(f"[{s.user_id.name}] {request_name}")
-            else:
-                industry_name = s._get_selection_label("industry", s.industry)
-                s.name = f"{industry_name} - {s.lan}"
+            industry_name = s._get_selection_label("industry", s.industry)
+            s.name = f"{industry_name} {'-' + s.lan if s.lan else ''}"
 
     @api.depends("lead_ids")
     def _compute_lead_count(self):
@@ -175,7 +166,6 @@ class CrmAllabolagMining(models.Model):
             s.lead_count = len(s.lead_ids)
 
     @api.depends(
-        "request_type",
         "corporate_form",
         "no_employees",
         "lan",
