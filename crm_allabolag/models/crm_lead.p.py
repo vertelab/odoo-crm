@@ -52,3 +52,4 @@ class CRMLead(models.Model):
         related="mining_id.request_type",
         readonly=True,
     )
+    allabolag_json_data = fields.Json()
