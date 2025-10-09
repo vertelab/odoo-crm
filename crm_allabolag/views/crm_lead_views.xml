@@ -41,7 +41,6 @@
                                 <field name="mining_industry" />
                                 <field name="mining_industry_xv" />
                                 <field name="mining_lan" />
-                                <field name="mining_request_type" />
                             </group>
                         </group>
                     </page>
@@ -57,10 +56,8 @@
                     <field name="mining_industry" />
                     <field name="mining_industry_xv" string="Insustry Request Type" />
                     <field name="mining_lan" />
-                    <field name="mining_request_type" />
                 </field>
                 <filter name="date_closed" position="after">
-                    <filter string="Request Type" name="groupby_request_type" domain="[]" context="{'group_by':'mining_request_type'}" />
                     <filter string="Industry" name="groupby_industry" domain="[]" context="{'group_by':'mining_industry'}" />
                     <filter string="Industry Request Type" name="groupby_industry_xv" domain="[]" context="{'group_by':'mining_industry_xv'}" />
                     <filter string="County" name="groupby_lan" domain="[]" context="{'group_by':'mining_lan'}" />
@@ -76,10 +73,8 @@
                     <field name="mining_industry" />
                     <field name="mining_industry_xv" string="Industry Request Type" />
                     <field name="mining_lan" />
-                    <field name="mining_request_type" />
                 </field>
                 <filter name="date_closed" position="after">
-                    <filter string="Request Type" name="groupby_request_type" domain="[]" context="{'group_by':'mining_request_type'}" />
                     <filter string="Industry" name="groupby_industry" domain="[]" context="{'group_by':'mining_industry'}" />
                     <filter string="Industry Request Type" name="groupby_industry_xv" domain="[]" context="{'group_by':'mining_industry_xv'}" />
                     <filter string="County" name="groupby_lan" domain="[]" context="{'group_by':'mining_lan'}" />
