@@ -43,12 +43,9 @@
                     </group>
                     <group name="requests_for_allabolag">
                         <group string="Company Requests" name="requests" priority="1">
-                            <field name="request_type" readonly="state != 'draft'" />
-                            <field name="industry" readonly="state != 'draft'" invisible="request_type != 'industry'" required="request_type == 'industry'" />
-                            <!--
-                                          <field name="industry_sub" readonly="state != 'draft'" invisible="request_type != 'industry'" required="request_type == 'industry'" />
-                                          <field name="industry_xv" readonly="state != 'draft'" invisible="request_type == 'industry'" required="request_type != 'industry'" />
-                            -->
+                            <field name="corporate_form" readonly="state != 'draft'" />
+                            <field name="sort_option" readonly="state != 'draft'" />
+                            <field name="industry" readonly="state != 'draft'"  />
                             <field name="lan" readonly="state != 'draft'" />
                             <field name="no_employees" readonly="state != 'draft'" widget="selection_badge" />
                             <label for="revenue_from" readonly="state != 'draft'" />
@@ -64,7 +61,6 @@
                                 <field name="profit_to" readonly="state != 'draft'" />
                             </div>
                             <span />
-                            <field name="corporate_form" readonly="state != 'draft'" />
                             <field name="leads_url" readonly="1" />
                         </group>
                         <group string="Metadata to save on leads" name="metadata" priority="2">
@@ -105,7 +101,6 @@
                 <field name="name" decoration-bf="1" />
                 <field name="user_id" />
                 <field name="lead_count" string="Count" optional="show" />
-                <field name="request_type" optional="show" />
                 <field name="type" optional="show" />
                 <field name="industry" optional="show" />
                 <field name="lan" optional="show" />
@@ -127,7 +122,6 @@
                 <field name="team_id" />
                 <field name="user_id" />
                 <field name="tag_ids" />
-                <field name="request_type" />
                 <field name="industry" />
                 <field name="industry_xv" />
                 <field name="lan" />
@@ -145,7 +139,6 @@
                     <filter string="Sales Team" name="groupby_team_id" domain="[]" context="{'group_by':'team_id'}" />
                     <filter string="Salesperson" name="groupby_user_id" domain="[]" context="{'group_by':'user_id'}" />
                     <filter string="Campaign" name="groupby_campaign_id" domain="[]" context="{'group_by':'campaign_id'}" />
-                    <filter string="Request Type" name="groupby_request_type" domain="[]" context="{'group_by':'request_type'}" />
                     <filter string="Industry" name="groupby_industry" domain="[]" context="{'group_by':'industry'}" />
                     <filter string="Industry Request Type" name="groupby_industry_xv" domain="[]" context="{'group_by':'industry_xv'}" />
                 </group>
