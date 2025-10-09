@@ -9,7 +9,7 @@ from .constants import (
     SNI_MAPPED, SNI_MAIN, SNI_TWO, MINING_CORPORATE_FORM, MINING_REQUEST_TYPE,
     MINING_KOMMUN, MINING_INDUSTRY_XV, MINING_LAN, SORT_OPTIONS
 )
-
+import traceback
 from bs4 import BeautifulSoup
 import json
 
@@ -282,7 +282,7 @@ class CrmAllabolagMining(models.Model):
         for lead in self.lead_ids:
             if lead.summary_revenue == 0.0:
                 try:
-                    lead.enrich_allabolag()
+                    lead._enrich_lead()
                 except Exception as e:
                     _logger.warning(f"Allabolag: An unexpected error occurred: {e}")
                     self.state = "error"
@@ -462,7 +462,8 @@ class CrmAllabolagMining(models.Model):
                     # self.env['crm.lead'].create(company_vals)
                     self.env.cr.commit()
         except Exception as e:
-            _logger.warning(f"Allabolag: An unexpected error occurred: {e}")
+            tb_str = traceback.format_exc()
+            _logger.warning(f"Allabolag: An unexpected error occurred: {e}, {tb_str}")
             self.message_post(
                 body=_(f"An unexpected error occurred: {e}"),
                 message_type="notification",
