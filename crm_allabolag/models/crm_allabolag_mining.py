@@ -108,10 +108,10 @@ class CrmAllabolagMining(models.Model):
         groups="crm.group_use_recurring_revenues",
     )
 
-    revenue_from = fields.Integer(string="Revenue")
-    revenue_to = fields.Integer(string="Revenue")
-    profit_from = fields.Integer(string="Profit")
-    profit_to = fields.Integer(string="Profit")
+    revenue_from = fields.Float(string="Revenue")
+    revenue_to = fields.Float(string="Revenue")
+    profit_from = fields.Float(string="Profit")
+    profit_to = fields.Float(string="Profit")
     selected_count = fields.Integer(string="Max Number of Leads")
     state = fields.Selection(
         selection=[
