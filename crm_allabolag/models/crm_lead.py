@@ -46,4 +46,4 @@ class CRMLead(models.Model):
         store=True,
     )
 
-    allabolag_json_data = fields.Text(string="Allabolag Data", readonly=True)
+    allabolag_json_data = fields.Json()

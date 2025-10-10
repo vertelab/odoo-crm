@@ -70,7 +70,7 @@ class CrmAllabolagMining(models.Model):
     lead_ids = fields.One2many(
         comodel_name="crm.lead", inverse_name="mining_id", string="Leads", help=""
     )
-    leads_url = fields.Char(string="Url", compute="_compute_leads_url")
+    leads_url = fields.Char(string="Url", trim=True, compute="_compute_leads_url")
     max_no_leads = fields.Integer(string="Number of Wanted Leads", default=50)
     name = fields.Char(
         "Request",
@@ -158,7 +158,7 @@ class CrmAllabolagMining(models.Model):
     def _compute_name(self):
         for s in self:
             industry_name = s._get_selection_label("industry", s.industry)
-            s.name = f"{industry_name} {' - ' + s.lan if s.lan else ''} {' - ' + s.user_id.name if s.user_id else ''}"
+            s.name = f"{industry_name} {'-' + s.lan if s.lan else ''} {'-' + s.user_id.name if s.user_id else ''}"
 
     @api.depends("lead_ids")
     def _compute_lead_count(self):
@@ -206,7 +206,7 @@ class CrmAllabolagMining(models.Model):
             elif lead.lan:
                 segment.append("location=" + lead.lan)
 
-            if lead.sort_option:
+            if lead.sort_option:  # Changed from elif to if
                 segment.append("sort=" + lead.sort_option)
 
             lead.leads_url = "segmentering?" + "&".join(segment)
