@@ -154,11 +154,11 @@ class CrmAllabolagMining(models.Model):
         selection = self.fields_get(allfields=[field_name])[field_name]["selection"]
         return next((label for key, label in selection if key == field_key), field_key)
 
-    @api.depends("user_id")
+    @api.depends("user_id", "industry", "lan")
     def _compute_name(self):
         for s in self:
             industry_name = s._get_selection_label("industry", s.industry)
-            s.name = f"{industry_name} {'-' + s.lan if s.lan else ''}"
+            s.name = f"{industry_name} {'-' + s.lan if s.lan else ''} {'-' + s.user_id.name if s.user_id else ''}"
 
     @api.depends("lead_ids")
     def _compute_lead_count(self):
@@ -173,6 +173,7 @@ class CrmAllabolagMining(models.Model):
         "revenue_from",
         "revenue_to",
         "industry_xv",
+        "sort_option"
     )
     def _compute_leads_url(self):
         """When changing the request info also update url"""
@@ -204,7 +205,8 @@ class CrmAllabolagMining(models.Model):
                 segment.append("location=" + lead.kommun)
             elif lead.lan:
                 segment.append("location=" + lead.lan)
-            elif lead.sort_option:
+
+            if lead.sort_option:  # Changed from elif to if
                 segment.append("sort=" + lead.sort_option)
 
             lead.leads_url = "segmentering?" + "&".join(segment)
