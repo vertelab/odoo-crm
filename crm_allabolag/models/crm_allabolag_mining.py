@@ -154,7 +154,7 @@ class CrmAllabolagMining(models.Model):
         selection = self.fields_get(allfields=[field_name])[field_name]["selection"]
         return next((label for key, label in selection if key == field_key), field_key)
 
-    @api.depends("user_id")
+    @api.depends("user_id","industry")
     def _compute_name(self):
         for s in self:
             industry_name = s._get_selection_label("industry", s.industry)
