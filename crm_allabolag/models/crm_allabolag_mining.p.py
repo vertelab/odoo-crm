@@ -6,10 +6,10 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from allabolag import Company
 from .constants import (
-    SNI_MAPPED, SNI_MAIN, SNI_TWO, MINING_CORPORATE_FORM, MINING_REQUEST_TYPE,
+    SNI_MAPPED, SNI_MAIN, SNI_TWO, MINING_CORPORATE_FORM,
     MINING_KOMMUN, MINING_INDUSTRY_XV, MINING_LAN, SORT_OPTIONS
 )
-
+import traceback
 from bs4 import BeautifulSoup
 import json
 
@@ -107,16 +107,11 @@ class CrmAllabolagMining(models.Model):
         currency_field="company_currency",
         groups="crm.group_use_recurring_revenues",
     )
-    request_type = fields.Selection(
-        selection=MINING_REQUEST_TYPE,
-        string="Request Type",
-        required=True,
-        default="industry",
-    )
-    revenue_from = fields.Integer(string="Revenue")
-    revenue_to = fields.Integer(string="Revenue")
-    profit_from = fields.Integer(string="Profit")
-    profit_to = fields.Integer(string="Profit")
+
+    revenue_from = fields.Float(string="Revenue")
+    revenue_to = fields.Float(string="Revenue")
+    profit_from = fields.Float(string="Profit")
+    profit_to = fields.Float(string="Profit")
     selected_count = fields.Integer(string="Max Number of Leads")
     state = fields.Selection(
         selection=[
@@ -159,15 +154,11 @@ class CrmAllabolagMining(models.Model):
         selection = self.fields_get(allfields=[field_name])[field_name]["selection"]
         return next((label for key, label in selection if key == field_key), field_key)
 
-    @api.depends("user_id", "industry", "request_type")
+    @api.depends("user_id", "industry", "lan")
     def _compute_name(self):
         for s in self:
-            if s.request_type != "industry":
-                request_name = s._get_selection_label("request_type", s.request_type)
-                s.name = _(f"[{s.user_id.name}] {request_name}")
-            else:
-                industry_name = s._get_selection_label("industry", s.industry)
-                s.name = f"{industry_name} - {s.lan}"
+            industry_name = s._get_selection_label("industry", s.industry)
+            s.name = f"{industry_name} {'-' + s.lan if s.lan else ''} {'-' + s.user_id.name if s.user_id else ''}"
 
     @api.depends("lead_ids")
     def _compute_lead_count(self):
@@ -175,7 +166,6 @@ class CrmAllabolagMining(models.Model):
             s.lead_count = len(s.lead_ids)
 
     @api.depends(
-        "request_type",
         "corporate_form",
         "no_employees",
         "lan",
@@ -183,6 +173,7 @@ class CrmAllabolagMining(models.Model):
         "revenue_from",
         "revenue_to",
         "industry_xv",
+        "sort_option"
     )
     def _compute_leads_url(self):
         """When changing the request info also update url"""
@@ -214,7 +205,8 @@ class CrmAllabolagMining(models.Model):
                 segment.append("location=" + lead.kommun)
             elif lead.lan:
                 segment.append("location=" + lead.lan)
-            elif lead.sort_option:
+
+            if lead.sort_option:  # Changed from elif to if
                 segment.append("sort=" + lead.sort_option)
 
             lead.leads_url = "segmentering?" + "&".join(segment)
@@ -282,7 +274,7 @@ class CrmAllabolagMining(models.Model):
         for lead in self.lead_ids:
             if lead.summary_revenue == 0.0:
                 try:
-                    lead.enrich_allabolag()
+                    lead._enrich_lead()
                 except Exception as e:
                     _logger.warning(f"Allabolag: An unexpected error occurred: {e}")
                     self.state = "error"
@@ -462,7 +454,8 @@ class CrmAllabolagMining(models.Model):
                     # self.env['crm.lead'].create(company_vals)
                     self.env.cr.commit()
         except Exception as e:
-            _logger.warning(f"Allabolag: An unexpected error occurred: {e}")
+            tb_str = traceback.format_exc()
+            _logger.warning(f"Allabolag: An unexpected error occurred: {e}, {tb_str}")
             self.message_post(
                 body=_(f"An unexpected error occurred: {e}"),
                 message_type="notification",

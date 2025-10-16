@@ -1,6 +1,6 @@
 from odoo import models, fields
 from .constants import (
-    SNI_MAIN, MINING_CORPORATE_FORM, MINING_REQUEST_TYPE,
+    SNI_MAIN, MINING_CORPORATE_FORM,
     MINING_KOMMUN, MINING_INDUSTRY_XV, MINING_LAN
 )
 
@@ -45,10 +45,5 @@ class CRMLead(models.Model):
         readonly=True,
         store=True,
     )
-    mining_request_type = fields.Selection(
-        selection=MINING_REQUEST_TYPE,
-        string="Request Type",
-        store=True,
-        related="mining_id.request_type",
-        readonly=True,
-    )
+
+    allabolag_json_data = fields.Text()

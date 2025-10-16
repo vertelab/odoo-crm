@@ -12,7 +12,7 @@ from datetime import datetime
 
 _logger = logging.getLogger(__name__)
 
-
+##Dokumentera snikod,bolagsform,valuta
 class CrmLead(models.Model):
     _name = 'crm.lead'
     _inherit = ['crm.lead', "res.partner.allabolag.mixin"]
@@ -27,17 +27,44 @@ class CrmLead(models.Model):
             self.write(company_vals)
 
     def _set_company_details(self, company_data):
-        employee = company_data.get("employees", 0)
-        return {
+        revenue = int(company_data.get('revenue', 0))
+        employees = int(company_data.get("employees", 0))
+
+        # Estimate employees if missing but has revenue
+        if employees == 0 and revenue > 0:
+            employees = max(1, revenue // 200_000)
+
+        # Calculate revenue per employee safely
+        revenue_per_employee = round(revenue / employees, 2) if employees > 0 else 0
+
+        res1 = {
             "name": company_data.get("name"),
             "partner_name": company_data.get("name", False),
             "company_registry": company_data.get("orgnr", False),
             "city": company_data.get("postalAddress").get("postPlace") if company_data.get("postalAddress") else False,
             "summary_parent_company": company_data.get("foundationYear"),
             "summary_state": company_data.get("status", {}).get("status"),
-            "kpi_no_employees": employee,
-            "allabolag_json_data": company_data,
+            "kpi_no_employees": employees,
+            "summary_revenue": revenue,
+            "kpi_revenue_employees": revenue_per_employee,
+            "summary_purpose": company_data.get('purpose', ""),
+            "summary_profit_ebit": company_data.get("profit", 0),
+            "contact_name": company_data.get("contactPerson", {}).get('name', ""),
+            "function": company_data.get("contactPerson", {}).get('role', ""),
+            "summary_registry_year": company_data.get('registrationDate'),
+            "email_from": company_data.get("email"),
+            "phone": company_data.get("phone"),
+            "mobile": company_data.get("mobile"),
+            "website": company_data.get("homePage"),
+            "street": company_data.get("postalAddress", {}).get("addressLine"),
+            "zip": company_data.get("postalAddress", {}).get("zipCode"),
         }
+        _logger.warning(f"{res1=}")
+        return res1
+
+        
+        
+
 
     # def enrich_allabolag(self):
     #     for crm in self:
