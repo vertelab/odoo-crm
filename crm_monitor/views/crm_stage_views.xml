@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="crm_lead_stage_search" model="ir.ui.view">
+    <field name="name">Stage - Search</field>
+    <field name="model">crm.stage</field>
+    <field name="inherit_id" ref="crm.crm_lead_stage_search" />
+    <field name="arch" type="xml">
+      <field name="team_id" position="after">
+        <!-- Onchange Fields -->
+        <field name="onchange_activity_type" />
+        <field name="onchange_code" />
+        <field name="onchange_esc_user" />
+        <field name="onchange_message" />
+        <field name="onchange_new_stage_id" />
+        <field name="onchange_type" />
+        <!-- Group By Section -->
+        <group expand="0" string="Group By">
+          <filter name="group_by_onchange_activity_type" string="Onchange Activity Type" context="{'group_by': 'onchange_activity_type'}" />
+          <filter name="group_by_onchange_new_stage_id" string="Onchange New Stage" context="{'group_by': 'onchange_new_stage_id'}" />
+        </group>
+      </field>
+    </field>
+  </record>
+  <!-- STAGES LIST VIEW + MUTI_EDIT -->
+  <record id="crm_stage_tree" model="ir.ui.view">
+    <field name="name">crm.stage.list</field>
+    <field name="model">crm.stage</field>
+    <field name="inherit_id" ref="crm.crm_stage_tree" />
+    <field name="arch" type="xml">
+      <field name="team_id" position="after">
+        <field name="onchange_activity_type" optional="hide" />
+        <field name="onchange_code" optional="hide" />
+        <field name="onchange_esc_user" optional="hide" />
+        <field name="onchange_message" optional="hide" />
+        <field name="onchange_new_stage_id" optional="hide" />
+        <field name="onchange_type" optional="hide" />
+      </field>
+    </field>
+  </record>
+  <record id="crm_stage_form" model="ir.ui.view">
+    <field name="name">crm.stage.form</field>
+    <field name="model">crm.stage</field>
+    <field name="inherit_id" ref="crm.crm_stage_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//sheet" position="inside">
+        <notebook>
+          <page string="On Change" id="onchange">
+            <group>
+              <field name="onchange_type" />
+              <field name="onchange_esc_user" invisible="onchange_type != 'esc'" />
+              <field name="onchange_activity_type" invisible="onchange_type != 'activity'" />
+              <field name="onchange_activity_user" invisible="onchange_type != 'activity'" />
+              <field name="onchange_summary" invisible="onchange_type != 'activity'" />
+              <field name="onchange_message" invisible="onchange_type != 'message'" />
+              <field name="onchange_code" no-label="1" invisible="onchange_type != 'code'" required="onchange_type == 'code'" />
+              <field name="onchange_new_stage_id" invisible="onchange_type != 'stage'" required="onchange_type == 'stage'" />
+            </group>
+          </page>
+          <page string="On Time" id="trigger">
+            <field name="stage_monitor_ids" context="{'default_stage_id': id}">
+              <list>
+                <field name="sequence" widget="handle" />
+                <field name="trigger_type" />
+                <field name="trigger_date_info"  />
+                <field name="trigger_info"  nolabel="1" />
+              </list>
+              <form>
+                <group>
+                  <label for="trigger_days" />
+                  <div class="d-flex flex-wrap align-items-baseline">
+                    <field name="trigger_days" class="oe_inline" placeholder="days before/after" />
+                    <span class="oe_grey p-2" groups="crm.group_use_recurring_revenues">before(-)/after</span>
+                    <field name="trigger_date" required="1" class="oe_inline" />
+                  </div>
+                  <field name="trigger_type" required="1" />
+                  <field name="activity_type" invisible="trigger_type != 'activity'" required="trigger_type == 'activity'" />
+                  <field name="activity_user" invisible="trigger_type != 'activity'" required="trigger_type == 'activity'" />
+                  <field name="summary" invisible="trigger_type != 'activity'" required="trigger_type == 'activity'" />
+                  <field name="esc_user" invisible="trigger_type != 'esc'" required="trigger_type == 'esc'" />
+                  <field name="new_stage_id" invisible="trigger_type != 'stage'" required="trigger_type == 'stage'" />
+                  <field name="message" invisible="trigger_type != 'message'" required="trigger_type == 'message'" />
+                  <field name="code" nolabel="1" invisible="trigger_type != 'code'" required="trigger_type == 'code'" />
+                </group>
+              </form>
+            </field>
+          </page>
+        </notebook>
+      </xpath>
+    </field>
+  </record>
+</odoo>
