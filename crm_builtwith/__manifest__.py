@@ -24,7 +24,7 @@
     'version': '1.0',
     # Version ledger: 14.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
     'summary': 'Adding valuable internet-data to CRM contacts.',
-    'category': 'Website',
+    'category': 'CRM',
     'description': """
 Adding interesting and valuable internet-data to customer information in CRM. 
 """,

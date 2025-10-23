@@ -22,6 +22,7 @@
 {
     'name': 'CRM: Enrich Base',
     'version': '1.1',
+    'summary': 'Adding data ',
     'description': """
       Base module for Enrich CRM-leads records with updated data. This module 
       does nothin but are a base fpr other enrichement modules
@@ -29,7 +30,7 @@
     """,
     'sequence': '999',
     'author': 'Vertel AB',
-    'category': 'Hidden/Tools',
+    'category': 'CRM',
     'website': 'https://vertel.se/apps/odoo-crm/crm_enrich_base',
     'images': ['static/description/banner.png'], # 560x280 px.
     'license': 'AGPL-3',

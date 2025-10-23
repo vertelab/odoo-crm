@@ -22,12 +22,13 @@
 {
     'name': 'CRM: Enrich Phonemail',
     'version': '1.1',
+    'summary': 'Enrich CRM-leads records with companys website',
     'description': """
       Base module for Enrich CRM-leads records with company's website and contact details
     """,
     'sequence': '999',
     'author': 'Vertel AB',
-    'category': 'Hidden/Tools',
+    'category': 'CRM',
     'website': 'https://vertel.se/apps/odoo-crm/crm_enrich_phonemail',
     'images': ['static/description/banner.png'],  # 560x280 px.
     'license': 'AGPL-3',
@@ -41,4 +42,4 @@
     'application': False,
     'installable': True,
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+

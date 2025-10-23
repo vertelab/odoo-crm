@@ -24,15 +24,14 @@
 {
     'name': 'CRM Bolagsfakta',
     'version': '1.0',
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.odoo.com""",
+    'summary': 'Adding data to CRM contacts',
     'category': 'CRM',
     'description': """
         Long description of module's purpose
     """,
     'author': 'Vertel AB',
     'website': 'https://vertel.se/apps/odoo-crm',
+    'repository': 'https://github.com/vertelab/odoo-crm',
     'images': ['static/description/banner.png'],  # 560x280
     'license': 'AGPL-3',
     'depends': ["crm"],
