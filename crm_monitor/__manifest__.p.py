@@ -23,12 +23,13 @@
     'name': 'CRM: Lead/opportunity Monitor',
     'version': '1.0',
     'summary': 'Add montitor capabilities to leads and opportunity',
-    'category': 'Productivity',
+    'category': 'CRM',
     'description': """
         This module adds cron-jobs and triggers that looks for stale tasks and take action using rules on the opportunity
     """,
     'author': 'Vertel AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_monitor',
+    'repository': 'https://github.com/vertelab/odoo-crm',
     'license': 'AGPL-3',
     'contributor': '',
     'maintainer': 'Vertel AB',
@@ -41,4 +42,4 @@
     ],
     'application': True,
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+
