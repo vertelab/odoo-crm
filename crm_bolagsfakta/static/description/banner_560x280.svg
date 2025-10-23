@@ -9,7 +9,7 @@
    id="SVGRoot"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    sodipodi:docname="banner_560x280.svg"
-   inkscape:export-filename="icon.png"
+   inkscape:export-filename="banner.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xml:space="preserve"
@@ -57,15 +57,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="89"
-     inkscape:cy="111.5"
+     inkscape:cx="60"
+     inkscape:cy="106.5"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1452"
      inkscape:window-height="1011"
-     inkscape:window-x="2043"
-     inkscape:window-y="0"
+     inkscape:window-x="2046"
+     inkscape:window-y="32"
      inkscape:window-maximized="0"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
@@ -142,7 +142,7 @@
          x="296.89337"
          y="73.199997"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:26.6667px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:1px"
-         id="tspan847">Monitor</tspan></text><image
+         id="tspan847">Bolagsfakta</tspan></text><image
        width="41.019466"
        height="35.686935"
        preserveAspectRatio="none"
@@ -150,13 +150,4 @@
        xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABXCAYAAADyDOBXAAAABHNCSVQICAgIfAhkiAAABAVJREFU eJztnUtrFEEUhU/HJIJgfOzcijvxsXCrggFBQUTBnSsFXYg/QHcG3ClIRAR/gaAg/gtRRHxicKOC SzVq8BGj7aJnYk/1rZ6q6uruO9Png5JYuXX6Vp2prn5MdxLIzAD4YvkdicMkgD9mZWL8fxrAr0bS IX0GPJjI/bwbNKMNUmSzBcB/d6YALLeSDumTrP6DzCXSPgkAbEZmiFkOt5fX2HMb8pgDll8caj7H zvEYxXG/kkDeXZlHX6QeCmM/IUWR9qAhGdcB7B0Ssw/AvIPWPID9VZKxLi4dYBKD/f5siftoxE0K MWuMGJcrHeLYd9mQN3DruxnzQ4hZcNQq0027vsu6F9juvlB3p0oiebo8Q4DBfp+2xByE2/jkY855 bjsFkPKwt1142KsdGqIMGqIMGqIM26JOWoIzRBk0RBk0RBk0RBnSVUuAZ+pNwTN17dAQZdAQZdAQ ZdAQZdAQZdAQZdAQZdAQZdAQZdAQZdAQZdAQZdAQZdAQZdAQZdRlyDYAS5C/N2yWLSU6fx01UgDv PfL72muz4tFmmFbhJQChxPyytfm8hWuR8DEjX54OyfG74/ZdMHP0NaXW50NuWrRCDQnVSlH+AgSf HMqIoVObIVtLEmzDkBTAbICuKzE0RJ1YjyOEzqpFAJsia+aR+jFMd1jfq7Yv1bJ968QH25NDMwC+ RdDPU9ZZaaAmkO3nfUhLthPjQ+KUQPT9YAt5zQrxuxx1XbZVZfdro9C+jsPeRj5FAq+FuukKeqnl 59qJ7XKsVzz55vVTiN/oqPvSUh9SKvUxxqJutl8GsNYzMRddALgo1K0HcMGi4bqoJ8jOX3a6pbba JvbYrVaOygzxKbc8dPs8cdR20Qrt49ga4qObR3pLjy2WhjiU3wG6Jo8c42iIQwnRlcibYrtGFd2Q UVvUzbykmA3IrsBW0XUl9tiN/P2QOaFusfEsIlLHDEkRx2jXvHxnydjPEFM0AXAmgq4r0iwZ6bdy V12YDlg03jWYlxQrnaX76sbM0bl9jARD7+6lAPb4JGthziNetSExX89UpWM+lzh8tr8Oxbe/jf0a EpJICMPuV18W6rbXkUiOKh/CUtFYUxjIbkr57rYkPhkxJx227aJ73ohZcNC1cdbQeuvZvrY1ROIU gFfIvmpjM+LhEI0byM78j3ps9xmAD8jeEmrjRE/3qoeujeM9rWsBbWtdQ4g/ta4hJAI0RBk0RBk0 RBk0RBk0RBk0RBk0RBk0RBk0RBk0RBk0RBk0RBk0RBk2Q+42mkU3WRLqjgDFP/fWLw8aS6172J7h 51+LVsQLADvydwZpSrskwOAaMtVSIiR3yzxvyAp4L71pnsMYc+koK+mVS01k1FGOIRvjwjON/wDf Bx2MBLLApQAAAABJRU5ErkJggg== "
        id="image2066"
        x="247"
-       y="41.5" /><text
-       xml:space="preserve"
-       style="fill:#ffffff;stroke-width:1.88976"
-       x="186.93384"
-       y="-156.84299"
-       id="text1693"><tspan
-         sodipodi:role="line"
-         id="tspan1691"
-         x="186.93384"
-         y="-156.84299" /></text></g></svg>
+       y="41.5" /></g></svg>

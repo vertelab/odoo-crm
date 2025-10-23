@@ -42,15 +42,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="-203.64675"
-     inkscape:cy="-32.880464"
+     inkscape:cx="-33.941125"
+     inkscape:cy="-32.173358"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1452"
      inkscape:window-height="1011"
      inkscape:window-x="2221"
-     inkscape:window-y="32"
+     inkscape:window-y="68"
      inkscape:window-maximized="0"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="0"
@@ -70,22 +70,36 @@
        width="145.39145"
        style="stroke-width:4.60939169" /><text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.2111px;line-height:125%;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.859472px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="70.592422"
-       y="103.19337"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.0295px;line-height:125%;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.955553px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="71.6045"
+       y="101.38042"
        id="text2035"
        inkscape:export-xdpi="92"
        inkscape:export-ydpi="92"><tspan
          sodipodi:role="line"
-         x="70.592422"
-         y="103.19337"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.2111px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.859472px"
-         id="tspan901">Monitor</tspan></text><image
+         x="71.6045"
+         y="101.38042"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:28.0295px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.955553px"
+         id="tspan833">Alla Bolag</tspan></text><image
        width="50"
        height="43"
        preserveAspectRatio="none"
        style="image-rendering:optimizeQuality"
-       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAArCAYAAAA65tviAAAABHNCSVQICAgIfAhkiAAAApxJREFU aIHtmL1rFFEUxX8nrlgYC60UsUupiGhlgl0q/wRFsUkjSBAiARc2X+AHoqVNGkVU/BNsJEhQlEAw pgk2ogTURhMxCcYci33LjpPZ3ZmYZHbDHri8eXfuu/ecmffePAYA27I95tbDCAGyLWAKOEFrYlJS TwEYpSriBvAtP06ZcBy4CHTbLhF5TXfzZpYVtp8F7vMdEf+PnMgctX0g5juTELfOB8yG9lBHws1t g+1eYAb4GvEVgQnbUxHfy+Ar1sqVqxDKIgCmI75XCb6ZWLsekTVS2jx+2wPbpQr5vN/IpkG2Ha4/ BGsldAX7R0hLY8dMrfZibza0hTQb2kKaDW0hzYbUQmzvt71oeyVmnZGYYsL9FdtXEvJds72Uou6C 7etpCDb8INp+W+cHQCkhVxJWa9SteURqFJPpg2h7CDgVuqsx+ylpOGHYWiwOYFethxW4KNLPfAZM M7UqxYck7Y7ZvhpjRqJxwIPgP1inzprtgu0C5QeRCVkW+58MsQXbe4J1AueC/3tC7GeqxH8Hq2A5 bcGt2rWKgcQysAgUgv9FQuw4cIn1D2oAuJm24HZuv/2SnifdkPQQuEBZjIGrku5kSb5VQoYkCRiM +J7UGyDpsaSCpA5J97IWTCOksnvszZpc0i3gV+iOZh2fBWmEjId20PZt28diVqg7urrr9dk+snGq 9dFQiKQ+YD50B4B3Mav71Q1zfTF0L2+YaQOkWiOSDgMTwBeqUw1gBfgU6U9T/gn+KJaiH1gC5iK+ +8AC8L5O6ach35uGJNMcUZoVmY4orYK2kGZDW0izYUcK6cqNxcZxMrRzBWCY8jHifDhuvM6NVjb0 AmfD9bgAbE8Cp3Oj9H+YlNTTASCpGxgDPubLKRNmgUFJPQB/AVk9jUyTiBSgAAAAAElFTkSuQmCC  "
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAArCAYAAAA65tviAAAABHNCSVQICAgIfAhkiAAAApxJREFU
+aIHtmL1rFFEUxX8nrlgYC60UsUupiGhlgl0q/wRFsUkjSBAiARc2X+AHoqVNGkVU/BNsJEhQlEAw
+pgk2ogTURhMxCcYci33LjpPZ3ZmYZHbDHri8eXfuu/ecmffePAYA27I95tbDCAGyLWAKOEFrYlJS
+TwEYpSriBvAtP06ZcBy4CHTbLhF5TXfzZpYVtp8F7vMdEf+PnMgctX0g5juTELfOB8yG9lBHws1t
+g+1eYAb4GvEVgQnbUxHfy+Ar1sqVqxDKIgCmI75XCb6ZWLsekTVS2jx+2wPbpQr5vN/IpkG2Ha4/
+BGsldAX7R0hLY8dMrfZibza0hTQb2kKaDW0hzYbUQmzvt71oeyVmnZGYYsL9FdtXEvJds72Uou6C
+7etpCDb8INp+W+cHQCkhVxJWa9SteURqFJPpg2h7CDgVuqsx+ylpOGHYWiwOYFethxW4KNLPfAZM
+M7UqxYck7Y7ZvhpjRqJxwIPgP1inzprtgu0C5QeRCVkW+58MsQXbe4J1AueC/3tC7GeqxH8Hq2A5
+bcGt2rWKgcQysAgUgv9FQuw4cIn1D2oAuJm24HZuv/2SnifdkPQQuEBZjIGrku5kSb5VQoYkCRiM
++J7UGyDpsaSCpA5J97IWTCOksnvszZpc0i3gV+iOZh2fBWmEjId20PZt28diVqg7urrr9dk+snGq
+9dFQiKQ+YD50B4B3Mav71Q1zfTF0L2+YaQOkWiOSDgMTwBeqUw1gBfgU6U9T/gn+KJaiH1gC5iK+
++8AC8L5O6ach35uGJNMcUZoVmY4orYK2kGZDW0izYUcK6cqNxcZxMrRzBWCY8jHifDhuvM6NVjb0
+AmfD9bgAbE8Cp3Oj9H+YlNTTASCpGxgDPubLKRNmgUFJPQB/AVk9jUyTiBSgAAAAAElFTkSuQmCC
+
+"
        id="image3398"
        x="9.9634171"
        y="10.926405" /></g></svg>

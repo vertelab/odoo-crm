@@ -1,4 +1,4 @@
-odoo-crm / crm_monitor
+odoo-crm / crm_allabolag
 2025-10-23
 
 
