@@ -1,0 +1,981 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_bolagsfakta
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20251110\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-13 13:16+0000\n"
+"PO-Revision-Date: 2025-11-13 14:49+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: sv_SE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.2\n"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__00-huvudgrupp-saknas
+msgid "00 -Huvudgrupp saknas"
+msgstr "00 -Huvudgrupp saknas"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__01-jordbruk-och-jakt-samt-service-i-anslutning-härtill
+msgid "01 -Jordbruk och jakt samt service i anslutning härtill"
+msgstr "01 -Jordbruk och jakt samt service i anslutning härtill"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__02-skogsbruk
+msgid "02 -Skogsbruk"
+msgstr "02 -Skogsbruk"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__03-fiske-och-vattenbruk
+msgid "03 -Fiske och vattenbruk"
+msgstr "03 -Fiske och vattenbruk"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__08-annan-utvinning-av-mineral
+msgid "08 -Annan utvinning av mineral"
+msgstr "08 -Annan utvinning av mineral"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__10-livsmedelsframställning
+msgid "10 -Livsmedelsframställning"
+msgstr "10 -Livsmedelsframställning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__11-framställning-av-drycker
+msgid "11 -Framställning av drycker"
+msgstr "11 -Framställning av drycker"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__12-tobaksvarutillverkning
+msgid "12 -Tobaksvarutillverkning"
+msgstr "12 -Tobaksvarutillverkning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__13-textilvarutillverkning
+msgid "13 -Textilvarutillverkning"
+msgstr "13 -Textilvarutillverkning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__14-tillverkning-av-kläder
+msgid "14 -Tillverkning av kläder"
+msgstr "14 -Tillverkning av kläder"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__15-tillverkning-av-läder-läder-och-skinnvaror-mm
+msgid "15 -Tillverkning av läder, läder- och skinnvaror m.m."
+msgstr "15 -Tillverkning av läder, läder- och skinnvaror m.m."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__16-tillverkning-av-trä-och-varor-av-trä-kork-rotting-o-d-utom-möbler
+msgid ""
+"16 -Tillverkning av trä och varor av trä; kork, rotting o.d. utom möbler"
+msgstr ""
+"16 -Tillverkning av trä och varor av trä; kork, rotting o.d. utom möbler"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__17-pappers-och-pappersvarutillverkning
+msgid "17 -Pappers- och pappersvarutillverkning"
+msgstr "17 -Pappers- och pappersvarutillverkning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__18-grafisk-produktion-och-reproduktion-av-inspelningar
+msgid "18 -Grafisk produktion och reproduktion av inspelningar"
+msgstr "18 -Grafisk produktion och reproduktion av inspelningar"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__20-tillverkning-av-kemikalier-och_kemiska_produkter
+msgid "20 -Tillverkning av kemikalier och kemiska produkter"
+msgstr "20 -Tillverkning av kemikalier och kemiska produkter"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__21-tillverkning-av-farmaceutiska-basprodukter-och-läkemedel
+msgid "21 -Tillverkning av farmaceutiska basprodukter och läkemedel"
+msgstr "21 -Tillverkning av farmaceutiska basprodukter och läkemedel"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__22-tillverkning-av-gummi-och-plastvaror
+msgid "22 -Tillverkning av gummi- och plastvaror"
+msgstr "22 -Tillverkning av gummi- och plastvaror"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__23-tillverkning-av-andra-ickemetalliska-mineraliska-produkter
+msgid "23 -Tillverkning av andra icke-metalliska mineraliska produkter"
+msgstr "23 -Tillverkning av andra icke-metalliska mineraliska produkter"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__24-stål-och-metallframställning
+msgid "24 -Stål- och metallframställning"
+msgstr "24 -Stål- och metallframställning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__25-tillverkning-av-metallvaror-utom-maskiner-och-apparater
+msgid "25 -Tillverkning av metallvaror utom maskiner och apparater"
+msgstr "25 -Tillverkning av metallvaror utom maskiner och apparater"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__26-tillverkning-av-datorer-elektronikvaror-och-optik
+msgid "26 -Tillverkning av datorer, elektronikvaror och optik"
+msgstr "26 -Tillverkning av datorer, elektronikvaror och optik"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__27-tillverkning-av-elapparatur
+msgid "27 -Tillverkning av elapparatur"
+msgstr "27 -Tillverkning av elapparatur"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__28-tillverkning-av-övriga-maskiner
+msgid "28 -Tillverkning av övriga maskiner"
+msgstr "28 -Tillverkning av övriga maskiner"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__29-tillverkning-av-motorfordon-släpfordon-och-påhängsvagnar
+msgid "29 -Tillverkning av motorfordon, släpfordon och påhängsvagnar"
+msgstr "29 -Tillverkning av motorfordon, släpfordon och påhängsvagnar"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__30-tillverkning-av-andra-transportmedel
+msgid "30 -Tillverkning av andra transportmedel"
+msgstr "30 -Tillverkning av andra transportmedel"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__31-tillverkning-av-möbler
+msgid "31 -Tillverkning av möbler"
+msgstr "31 -Tillverkning av möbler"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__32-anan-tillverkning
+msgid "32 -Anan tillverkning"
+msgstr "32 -Anan tillverkning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__33-reparation-och-installation-av-maskiner-och-apparater
+msgid "33 -Reparation och installation av maskiner och apparater"
+msgstr "33 -Reparation och installation av maskiner och apparater"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__35-försörjning-av-el-gas-värme-och-kyla
+msgid "35 -Försörjning av el, gas, värme och kyla"
+msgstr "35 -Försörjning av el, gas, värme och kyla"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__36-vattenförsörjning
+msgid "36 -Vattenförsörjning"
+msgstr "36 -Vattenförsörjning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__37-avloppsrening
+msgid "37 -Avloppsrening"
+msgstr "37 -Avloppsrening"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__38-avfallshantering-återvinning
+msgid "38 -Avfallshantering; återvinning"
+msgstr "38 -Avfallshantering; återvinning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__39-sanering-efterbehandling-av-jord-och-vatten-samt-annan-verksamhet-för-föroreningsbekämpning
+msgid ""
+"39 -Sanering, efterbehandling av jord och vatten samt annan verksamhet för "
+"föroreningsbekämpning"
+msgstr ""
+"39 -Sanering, efterbehandling av jord och vatten samt annan verksamhet för "
+"föroreningsbekämpning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__41-byggande-av-hus
+msgid "41 -Byggande av hus"
+msgstr "41 -Byggande av hus"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__42-anläggningsarbeten
+msgid "42 -Anläggningsarbeten"
+msgstr "42 -Anläggningsarbeten"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__43-specialiserad-bygg-och-anläggningsverksamhet
+msgid "43 -Specialiserad bygg- och anläggningsverksamhet"
+msgstr "43 -Specialiserad bygg- och anläggningsverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__45-handel-samt-reparation-av-motorfordon-och-motorcyklar
+msgid "45 -Handel samt reparation av motorfordon och motorcyklar"
+msgstr "45 -Handel samt reparation av motorfordon och motorcyklar"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__46-parti-och-provisionshandel-utom-med-motorfordon
+msgid "46 -Parti- och provisionshandel utom med motorfordon"
+msgstr "46 -Parti- och provisionshandel utom med motorfordon"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__47-detaljhandel-utom-med-motorfordon-och-motorcyklar
+msgid "47 -Detaljhandel utom med motorfordon och motorcyklar"
+msgstr "47 -Detaljhandel utom med motorfordon och motorcyklar"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__49-landtransport-transport-i-rörsystem
+msgid "49 -Landtransport; transport i rörsystem"
+msgstr "49 -Landtransport; transport i rörsystem"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__50-sjötransport
+msgid "50 -Sjötransport"
+msgstr "50 -Sjötransport"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__51-lufttransport
+msgid "51 -Lufttransport"
+msgstr "51 -Air transport"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__52-magasinering-och-stödtjänster-till-transport
+msgid "52 -Magasinering och stödtjänster till transport"
+msgstr "52 -Magasinering och stödtjänster till transport"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__53-post-och-kurirverksamhet
+msgid "53 -Post- och kurirverksamhet"
+msgstr "53 -Post- och kurirverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__55-hotell-och-logiverksamhet
+msgid "55 -Hotell- och logiverksamhet"
+msgstr "55 -Hotell- och logiverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__56-restaurang-catering-och-barverksamhet
+msgid "56 -Restaurang-, catering- och barverksamhet"
+msgstr "56 -Restaurang-, catering- och barverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__58-förlagsverksamhet
+msgid "58 -Förlagsverksamhet"
+msgstr "58 -Förlagsverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__59-film-video-och-tvprogramverksamhet-ljudinspelningar-och-fonogramutgivning
+msgid ""
+"59 -Film-, video- och tv-programverksamhet, ljudinspelningar och "
+"fonogramutgivning"
+msgstr ""
+"59 -Film-, video- och tv-programverksamhet, ljudinspelningar och "
+"fonogramutgivning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__60-planering-och-sändning-av-program
+msgid "60 -Planering och sändning av program"
+msgstr "60 -Planering och sändning av program"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__61-telekommunikation
+msgid "61 -Telekommunikation"
+msgstr "61 -Telekommunikation"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__62-dataprogrammering-datakonsultverksamhet-od
+msgid "62 -Dataprogrammering, datakonsultverksamhet o.d."
+msgstr "62 -Dataprogrammering, datakonsultverksamhet o.d."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__63-informationstjänster
+msgid "63 -Informationstjänster"
+msgstr "63 -Informationstjänster"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__64-finansiella-tjänster-utom-försäkring-och-pensionsfondsverksamhet
+msgid "64 -Finansiella tjänster utom försäkring och pensionsfondsverksamhet"
+msgstr "64 -Finansiella tjänster utom försäkring och pensionsfondsverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__65-försäkring-återförsäkring-och-pensionsfondsverksamhet-utom-obligatorisk-socialförsäkring
+msgid ""
+"65 -Försäkring, återförsäkring och pensionsfondsverksamhet utom "
+"obligatorisk socialförsäkring"
+msgstr ""
+"65 -Försäkring, återförsäkring och pensionsfondsverksamhet utom "
+"obligatorisk socialförsäkring"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__66-stödtjänster-till-finansiella-tjänster-och-försäkring
+msgid "66 -Stödtjänster till finansiella tjänster och försäkring"
+msgstr "66 -Stödtjänster till finansiella tjänster och försäkring"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__68-fastighetsverksamhet
+msgid "68 -Fastighetsverksamhet"
+msgstr "68 -Fastighetsverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__69-juridisk-och-ekonomisk-konsultverksamhet
+msgid "69 -Juridisk och ekonomisk konsultverksamhet"
+msgstr "69 -Juridisk och ekonomisk konsultverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__70-verksamheter-som-utövas-av-huvudkontor-konsulttjänster-till-företag
+msgid ""
+"70 -Verksamheter som utövas av huvudkontor; konsulttjänster till företag"
+msgstr ""
+"70 -Verksamheter som utövas av huvudkontor; konsulttjänster till företag"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__71-arkitekt-och-teknisk-konsultverksamhet-teknisk-provning-och-analys
+msgid ""
+"71 -Arkitekt- och teknisk konsultverksamhet; teknisk provning och analys"
+msgstr ""
+"71 -Arkitekt- och teknisk konsultverksamhet; teknisk provning och analys"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__72-vetenskaplig-forskning-och-utveckling
+msgid "72 -Vetenskaplig forskning och utveckling"
+msgstr "72 -Vetenskaplig forskning och utveckling"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__73-reklam-och-marknadsundersökning
+msgid "73 -Reklam och marknadsundersökning"
+msgstr "73 -Reklam och marknadsundersökning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__74-annan-verksamhet-inom-juridik-ekonomi-vetenskap-och-teknik
+msgid "74 -Annan verksamhet inom juridik, ekonomi, vetenskap och teknik"
+msgstr "74 -Annan verksamhet inom juridik, ekonomi, vetenskap och teknik"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__75-veterinärverksamhet
+msgid "75 -Veterinärverksamhet"
+msgstr "75 -Veterinärverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__77-uthyrning-och-leasing
+msgid "77 -Uthyrning och leasing"
+msgstr "77 -Uthyrning och leasing"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__78-arbetsförmedling-bemanning-och-andra-personalrelaterade-tjänster
+msgid "78 -Arbetsförmedling, bemanning och andra personalrelaterade tjänster"
+msgstr "78 -Arbetsförmedling, bemanning och andra personalrelaterade tjänster"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__79-resebyrå-och-researrangörsverksamhet-och-andra-resetjänster-och-relaterade-tjänster
+msgid ""
+"79 -Resebyrå- och researrangörsverksamhet och andra resetjänster och "
+"relaterade tjänster"
+msgstr ""
+"79 -Resebyrå- och researrangörsverksamhet och andra resetjänster och "
+"relaterade tjänster"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__80-säkerhets-och-bevakningsverksamhet
+msgid "80 -Säkerhets- och bevakningsverksamhet"
+msgstr "80 -Säkerhets- och bevakningsverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__81-fastighetsservice-samt-skötsel-och-underhåll-av-grönytor
+msgid "81 -Fastighetsservice samt skötsel och underhåll av grönytor"
+msgstr "81 -Fastighetsservice samt skötsel och underhåll av grönytor"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__82-kontorstjänster-och-andra-företagstjänster
+msgid "82 -Kontorstjänster och andra företagstjänster"
+msgstr "82 -Kontorstjänster och andra företagstjänster"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__84-offentlig-förvaltning-och-försvar-obligatorisk-socialförsäkring
+msgid "84 -Offentlig förvaltning och försvar;  obligatorisk socialförsäkring"
+msgstr "84 -Offentlig förvaltning och försvar; obligatorisk socialförsäkring"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__85-utbildning
+msgid "85 -Utbildning"
+msgstr "85 -Utbildning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__86-hälso-och-sjukvård
+msgid "86 -Hälso- och sjukvård"
+msgstr "86 -Hälso- och sjukvård"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__87-vård-och-omsorg-med-boende
+msgid "87 -Vård och omsorg med boende"
+msgstr "87 -Vård och omsorg med boende"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__88-öppna-sociala-insatser
+msgid "88 -Öppna sociala insatser"
+msgstr "88 -Öppna sociala insatser"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__90-konstnärlig-och-kulturell-verksamhet-samt-underhållningsverksamhet
+msgid "90 -Konstnärlig och kulturell verksamhet samt underhållningsverksamhet"
+msgstr ""
+"90 -Konstnärlig och kulturell verksamhet samt underhållningsverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__91-biblioteks-arkiv-och-museiverksamhet-mm
+msgid "91 -Biblioteks-, arkiv- och museiverksamhet m.m."
+msgstr "91 -Biblioteks-, arkiv- och museiverksamhet m.m."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__92-spel-och-vadhållningsverksamhet
+msgid "92 -Spel- och vadhållningsverksamhet"
+msgstr "92 -Spel- och vadhållningsverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__93-sport-fritids-och-nöjesverksamhet
+msgid "93 -Sport-, fritids- och nöjesverksamhet"
+msgstr "93 -Sport-, fritids- och nöjesverksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__94-intressebevakning-religiös-verksamhet
+msgid "94 -Intressebevakning; religiös verksamhet"
+msgstr "94 -Intressebevakning; religiös verksamhet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__95-reparation-av-datorer-hushållsartiklar-och-personliga-artiklar
+msgid "95 -Reparation av datorer, hushållsartiklar och personliga artiklar"
+msgstr "95 -Reparation av datorer, hushållsartiklar och personliga artiklar"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__96-andra-konsumenttjänster
+msgid "96 -Andra konsumenttjänster"
+msgstr "96 -Andra konsumenttjänster"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__industry__99-verksamhet-vid-internationella-organisationer-utländska-ambassader-od
+msgid ""
+"99 -Verksamhet vid internationella organisationer, utländska ambassader o.d."
+msgstr ""
+"99 -Verksamhet vid internationella organisationer, utländska ambassader o.d."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_needaction
+msgid "Action Needed"
+msgstr "Aktivitet behövs"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_ids
+msgid "Activities"
+msgstr "Aktiviteter"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Aktivitet Undantag Dekoration"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_state
+msgid "Activity State"
+msgstr "Aktivitetsläge"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivitetstyp Ikon"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__arets_resultat
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__arets_resultat
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__arets_resultat
+msgid "Arets Resultat"
+msgstr "Årets resultat"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_attachment_count
+msgid "Attachment Count"
+msgstr "Antal bifogade filer"
+
+#. module: crm_bolagsfakta
+#: model:ir.model,name:crm_bolagsfakta.model_crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.res_partner_view_form
+msgid "Bolagsfakta"
+msgstr "Bolagsfakta"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__bolagsfakta_company_link
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__bolagsfakta_company_link
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__bolagsfakta_company_link
+msgid "Bolagsfakta Company Link"
+msgstr "Bolagsfakta Company Link"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__campaign_id
+msgid "Campaign"
+msgstr "Kampanj"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__state__cancel
+msgid "Cancel"
+msgstr "Avbryt"
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.crm_iap_lead_mining_request_form
+msgid "Check Leads Count"
+msgstr "Kontrollera antalet kundämnen"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__code
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.view_kommun_tree
+msgid "Code"
+msgstr "Kod"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__company_link
+msgid "Company Link"
+msgstr "Företagslänk"
+
+#. module: crm_bolagsfakta
+#: model:ir.model,name:crm_bolagsfakta.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__corporate_form
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__corporate_form
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__corporate_form
+msgid "Corporate Form"
+msgstr "Företagsform"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__create_uid
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__create_uid
+msgid "Created by"
+msgstr "Skapad av"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__create_date
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__create_date
+msgid "Created on"
+msgstr "Skapad på"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__crm_bolagsfakta_id
+msgid "Crm Bolagsfakta"
+msgstr "Crm Bolagsfakta"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__crm_lead_ids
+msgid "Crm Lead"
+msgstr "Crm kundämne"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__display_name
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__display_name
+msgid "Display Name"
+msgstr "Visningsnamn"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__state__done
+msgid "Done"
+msgstr "Klar"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__state__draft
+msgid "Draft"
+msgstr "Utkast"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__ebitda
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__ebitda
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__ebitda
+msgid "Ebitda"
+msgstr "Ebitda"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__employee_range
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__employee_range
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__employee_range
+msgid "Employee Range"
+msgstr "Anställdas intervall"
+
+#. module: crm_bolagsfakta
+#: model:ir.actions.server,name:crm_bolagsfakta.action_bolagsfakta_enrich_lead
+#: model:ir.actions.server,name:crm_bolagsfakta.action_bolagsfakta_enrich_partner
+msgid "Enrich with Bolagsfakta"
+msgstr "Berika med Bolagsfakta"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__state__error
+msgid "Error"
+msgstr "Fel"
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.crm_lead_view_form
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.res_partner_view_form
+msgid "Financial Data"
+msgstr "Finansiell information"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_follower_ids
+msgid "Followers"
+msgstr "Följare"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Följare (Partners)"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome-ikon, t.ex. fa-tasks"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__has_message
+msgid "Has Message"
+msgstr "Har meddelande"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__id
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__id
+msgid "ID"
+msgstr "ID"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_exception_icon
+msgid "Icon"
+msgstr "Ikon"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ikon för att indikera en undantagsaktivitet."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Om markerad, nya meddelanden kräver din uppmärksamhet."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__message_has_error
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Om markerad, vissa meddelanden har ett leveransfel."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__industry
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__industry
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__industry
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__industry
+msgid "Industry"
+msgstr "Industri"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__information
+msgid "Information"
+msgstr "Information om"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_is_follower
+msgid "Is Follower"
+msgstr "Är följare"
+
+#. module: crm_bolagsfakta
+#: model:ir.actions.act_window,name:crm_bolagsfakta.action_kommun_form
+#: model:ir.ui.menu,name:crm_bolagsfakta.menu_kommun_form
+msgid "Kommun"
+msgstr "Kommun"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__write_uid
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__write_uid
+msgid "Last Updated by"
+msgstr "Senast uppdaterad av"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__write_date
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__write_date
+msgid "Last Updated on"
+msgstr "Senast uppdaterad den"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__type__lead
+msgid "Lead"
+msgstr "Kundämne"
+
+#. module: crm_bolagsfakta
+#: model:ir.ui.menu,name:crm_bolagsfakta.crm_menu_lead_generation
+msgid "Lead Generation"
+msgstr "Kundämnegenerering"
+
+#. module: crm_bolagsfakta
+#: model:ir.actions.act_window,name:crm_bolagsfakta.crm_allabolag_mining_request_action
+#: model:ir.ui.menu,name:crm_bolagsfakta.crm_allabolag_mining_request_menu_action
+msgid "Lead Mining Requests"
+msgstr "Ansökan om kundämnesgrävande"
+
+#. module: crm_bolagsfakta
+#: model:ir.model,name:crm_bolagsfakta.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Kundämne/möjlighet"
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.crm_iap_lead_mining_request_form
+msgid "Leads"
+msgstr "Kundämne"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__leads_count
+msgid "Leads Count"
+msgstr "Antalet kundämnen"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__state__list
+msgid "List"
+msgstr "Lista"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__medium_id
+msgid "Medium"
+msgstr "Medium"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_has_error
+msgid "Message Delivery error"
+msgstr "Fel vid leverans av meddelande"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_ids
+msgid "Messages"
+msgstr "Meddelanden"
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.crm_iap_lead_mining_request_form
+msgid "Metadata to save on leads"
+msgstr "Metadata för att spara på kundämne"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__municipality_ids
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__municipality
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__municipality
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__municipality
+msgid "Municipality"
+msgstr "Kommun"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Min aktivitetstidsfrist"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__name
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_kommun__name
+msgid "Name"
+msgstr "Namn"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Nästa kalenderaktivitet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Tidsfrist för nästa aktivitet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_summary
+msgid "Next Activity Summary"
+msgstr "Nästa aktivitetsöversikt"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_type_id
+msgid "Next Activity Type"
+msgstr "Nästa aktivitetstyp"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__description
+msgid "Notes"
+msgstr "Anteckningar"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Antal åtgärder"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__number_of_employees
+msgid "Number of Employees"
+msgstr "Antal anställda"
+
+#. module: crm_bolagsfakta
+#. odoo-python
+#: code:addons/crm_bolagsfakta/models/crm_bolagsfakta.py:0
+msgid "Number of Leads"
+msgstr "Antal potentiella kunder"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__number_of_result
+msgid "Number of Result"
+msgstr "Antal resultat"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_has_error_counter
+msgid "Number of errors"
+msgstr "Antal fel"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Antal meddelanden som kräver åtgärder"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Antal meddelanden med leveransfel"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__omsattning
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__omsattning
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__omsattning
+msgid "Omsattning"
+msgstr "Omsattning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields.selection,name:crm_bolagsfakta.selection__crm_bolagsfakta__type__opportunity
+msgid "Opportunity"
+msgstr "Möjlighet"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__org_number
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__org_number
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__org_number
+msgid "Org Number"
+msgstr "Org nummer"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__rating_ids
+msgid "Ratings"
+msgstr "Betyg"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__activity_user_id
+msgid "Responsible User"
+msgstr "Ansvarig användare"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Fel vid leverans av SMS"
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.view_kommun_form
+msgid "SNI"
+msgstr "SNI"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__user_id
+msgid "Salesperson"
+msgstr "Säljare"
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.view_kommun_filter
+msgid "Search SNI"
+msgstr "Sök SNI"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__source_id
+msgid "Source"
+msgstr "Källa"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__state
+msgid "State"
+msgstr "Stat"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status baserad på aktiviteter\n"
+"Försenad: Förfallodatumet har redan passerats\n"
+"Idag: Aktivitetsdatumet är idag\n"
+"Planerad: Framtida aktiviteter."
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.crm_iap_lead_mining_request_form
+msgid "Submit"
+msgstr "Skicka in"
+
+#. module: crm_bolagsfakta
+#: model:ir.model,name:crm_bolagsfakta.model_res_kommun
+msgid "Sweden Municipality"
+msgstr "Sverige Kommun"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__tag_ids
+msgid "Tags"
+msgstr "Etiketter"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__team_id
+msgid "Team"
+msgstr "Team"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__campaign_id
+msgid ""
+"This is a name that helps you keep track of your different campaign "
+"efforts, e.g. Fall_Drive, Christmas_Special"
+msgstr ""
+"Detta är ett namn som hjälper dig att hålla reda på dina olika "
+"kampanjinsatser, t.ex. Fall_Drive, Christmas_Special"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__medium_id
+msgid "This is the method of delivery, e.g. Postcard, Email, or Banner Ad"
+msgstr "Detta är leveranssättet, t.ex. vykort, e-post eller bannerannons"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__source_id
+msgid ""
+"This is the source of the link, e.g. Search Engine, another domain, or name "
+"of email list"
+msgstr ""
+"Detta är källan till länken, t.ex. en sökmotor, en annan domän eller namnet "
+"på en e-postlista"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__turn_over
+msgid "Turnover"
+msgstr "Omsättning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__type
+msgid "Type"
+msgstr "Typ"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Typ av undantagsaktivitet som registreras."
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_lead__utdelning
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__utdelning
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__utdelning
+msgid "Utdelning"
+msgstr "Utdelning"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__website_message_ids
+msgid "Website Messages"
+msgstr "Webbplatsmeddelanden"
+
+#. module: crm_bolagsfakta
+#: model:ir.model.fields,help:crm_bolagsfakta.field_crm_bolagsfakta__website_message_ids
+msgid "Website communication history"
+msgstr "Webbplatsens kommunikationshistorik"
+
+#. module: crm_bolagsfakta
+#: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.crm_iap_lead_mining_request_form
+msgid "What do you need ?"
+msgstr "Vad behöver du?"
