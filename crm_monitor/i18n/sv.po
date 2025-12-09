@@ -5,12 +5,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server "
-"18.0-20251014\n"
+"18.0-20251205\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 "
-"09:25+0000\n"
-"PO-Revision-Date: 2025-10-20 "
-"11:43+0200\n"
+"POT-Creation-Date: 2025-12-09 "
+"10:04+0000\n"
+"PO-Revision-Date: 2025-12-09 "
+"13:47+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sv\n"
@@ -45,7 +45,7 @@ msgstr "Aktivitet"
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage__onchange_activity_type
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage_monitor__activity_type
 msgid "Activity Type"
-msgstr "Typ av aktivitet"
+msgstr "Aktivitetstyp"
 
 #. module: crm_monitor
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage__onchange_type__archive
@@ -61,12 +61,12 @@ msgstr "Uppdragets datum"
 #. module: crm_monitor
 #: model:ir.actions.server,name:crm_monitor.ir_cron_project_monitor_ir_actions_server
 msgid "CRM Monitor stage checker"
-msgstr "CRM Monitor stegkontroll"
+msgstr "CRM Monitor etappkontroll"
 
 #. module: crm_monitor
 #: model:ir.model,name:crm_monitor.model_crm_stage_monitor
 msgid "CRM Stage Monitor"
-msgstr "CRM Scenmonitor"
+msgstr "CRM etappmonitor"
 
 #. module: crm_monitor
 #: model:ir.model,name:crm_monitor.model_crm_stage
@@ -76,7 +76,7 @@ msgstr "CRM etapper"
 #. module: crm_monitor
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_date__date_closed
 msgid "Closed Date"
-msgstr "Stängt datum"
+msgstr "Stängningsdatum"
 
 #. module: crm_monitor
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage__onchange_code
@@ -89,7 +89,7 @@ msgstr "Kod"
 #. module: crm_monitor
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_date__date_conversion
 msgid "Conversion Date"
-msgstr "Datum för konvertering"
+msgstr "Konverteringsdatum"
 
 #. module: crm_monitor
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_date__create_date
@@ -113,7 +113,7 @@ msgstr "Skapad den"
 #. module: crm_monitor
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage_monitor__trigger_date
 msgid "Date"
-msgstr "Datum"
+msgstr "Registreringsdatum"
 
 #. module: crm_monitor
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage_monitor__trigger_days
@@ -134,7 +134,7 @@ msgstr "Visningsnamn"
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage__onchange_type__esc
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_type__esc
 msgid "Escalate"
-msgstr "Klättra"
+msgstr "Eskalera"
 
 #. module: crm_monitor
 #: model_terms:ir.ui.view,arch_db:crm_monitor.crm_lead_stage_search
@@ -160,7 +160,7 @@ msgstr "Sista åtgärden"
 #. module: crm_monitor
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_date__date_last_stage_update
 msgid "Last Stage Update"
-msgstr "Uppdatering av sista steget"
+msgstr "Uppdatering av sista etappen"
 
 #. module: crm_monitor
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_date__write_date
@@ -198,12 +198,12 @@ msgstr "Meddelande"
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage__onchange_new_stage_id
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage_monitor__new_stage_id
 msgid "New Stage"
-msgstr "Ny scen"
+msgstr "Ny etapp"
 
 #. module: crm_monitor
 #: model_terms:ir.ui.view,arch_db:crm_monitor.crm_stage_form
 msgid "On Change"
-msgstr "Om förändring"
+msgstr "Vid förändring"
 
 #. module: crm_monitor
 #: model_terms:ir.ui.view,arch_db:crm_monitor.crm_stage_form
@@ -213,12 +213,12 @@ msgstr "I tid"
 #. module: crm_monitor
 #: model_terms:ir.ui.view,arch_db:crm_monitor.crm_lead_stage_search
 msgid "Onchange Activity Type"
-msgstr "Onchange Aktivitetstyp"
+msgstr "Vid förändring Aktivitetstyp"
 
 #. module: crm_monitor
 #: model_terms:ir.ui.view,arch_db:crm_monitor.crm_lead_stage_search
 msgid "Onchange New Stage"
-msgstr "Onchange Ny scen"
+msgstr "Vid förändring Ny etapp"
 
 #. module: crm_monitor
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_date__remarkdate
@@ -235,7 +235,7 @@ msgstr "Ta bort"
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage__onchange_activity_user__user_id
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__activity_user__user_id
 msgid "Sale Person"
-msgstr "Salt Person"
+msgstr "Försäljningsperson"
 
 #. module: crm_monitor
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage_monitor__sequence
@@ -247,12 +247,12 @@ msgstr "Sekvens"
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage__onchange_type__stage
 #: model:ir.model.fields.selection,name:crm_monitor.selection__crm_stage_monitor__trigger_type__stage
 msgid "Stage"
-msgstr "Läge"
+msgstr "Etapp"
 
 #. module: crm_monitor
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage__stage_monitor_ids
 msgid "Stage Monitor"
-msgstr "Scenmonitor"
+msgstr "Etappmonitor"
 
 #. module: crm_monitor
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage__onchange_summary
@@ -271,7 +271,8 @@ msgstr "Teamledare"
 #. module: crm_monitor
 #: model:ir.actions.server,name:crm_monitor.server_action_project_task_monitor
 msgid "Trigger Monitor CRM-oportunities"
-msgstr "Trigger Monitor CRM-möjligheter"
+msgstr ""
+"Utlösare Monitor CRM-möjligheter"
 
 #. module: crm_monitor
 #: model:ir.model.fields,field_description:crm_monitor.field_crm_stage__onchange_type
