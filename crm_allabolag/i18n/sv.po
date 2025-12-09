@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20251014\n"
+"Project-Id-Version: Odoo Server 18.0-20251205\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 09:14+0000\n"
-"PO-Revision-Date: 2025-10-20 11:56+0200\n"
+"POT-Creation-Date: 2025-12-09 10:03+0000\n"
+"PO-Revision-Date: 2025-12-09 11:27+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: sv_SE\n"
@@ -125,12 +125,12 @@ msgstr "Aktivitet Undantag Dekoration"
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__activity_state
 msgid "Activity State"
-msgstr "Aktivitetsstatus"
+msgstr "Aktivitetsläge"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "Aktivitetstyp Ikon"
+msgstr "AktivitetstypsIkon"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__corporate_form__ab
@@ -435,7 +435,7 @@ msgstr "Skapad av"
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__create_date
 msgid "Created on"
-msgstr "Skapad"
+msgstr "Skapad den"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__company_currency
@@ -969,13 +969,13 @@ msgstr "Ideell förening"
 #. module: crm_allabolag
 #: model:ir.model.fields,help:crm_allabolag.field_crm_allabolag_mining__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "Om den är markerad kräver nya meddelanden din uppmärksamhet."
+msgstr "Om markerad, nya meddelanden kräver din uppmärksamhet."
 
 #. module: crm_allabolag
 #: model:ir.model.fields,help:crm_allabolag.field_crm_allabolag_mining__message_has_error
 #: model:ir.model.fields,help:crm_allabolag.field_crm_allabolag_mining__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "Om kryssrutan är markerad får vissa meddelanden ett leveransfel."
+msgstr "Om markerad, vissa meddelanden har ett leveransfel."
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__industry
@@ -991,17 +991,17 @@ msgstr "Industri"
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_leads_filter
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_opportunities_filter
 msgid "Industry Request Type"
-msgstr "Industri pt"
+msgstr "Industriförfråganstyp"
 
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_leads_filter
 msgid "Insustry Request Type"
-msgstr "Bransch Förfrågan Typ"
+msgstr "Industriförfråganstyp"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__message_is_follower
 msgid "Is Follower"
-msgstr "Följer"
+msgstr "Är följare"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__jokkmokk
@@ -1091,7 +1091,7 @@ msgstr "Kil"
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__kinda
 msgid "Kinda"
-msgstr "Kinda"
+msgstr "Ungefär"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__kiruna
@@ -1226,7 +1226,7 @@ msgstr "Kundämne"
 #. module: crm_allabolag
 #: model:ir.ui.menu,name:crm_allabolag.crm_menu_lead_generation
 msgid "Lead Generation"
-msgstr "Skapa kundämnen"
+msgstr "Kundämnegenerering"
 
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_allabolag_mining_request_search
@@ -1247,7 +1247,7 @@ msgstr "Prospekttyp"
 #. module: crm_allabolag
 #: model:ir.model,name:crm_allabolag.model_crm_lead
 msgid "Lead/Opportunity"
-msgstr "Leads/möjlighet"
+msgstr "Kundämne/möjlighet"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__lead_ids
@@ -1528,12 +1528,12 @@ msgstr "Ny"
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr "Nästa aktivitet i aktivitetskalendern"
+msgstr "Nästa kalenderaktivitet"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "Deadline för nästa aktivitet"
+msgstr "Tidsfrist för nästa aktivitet"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__activity_summary
@@ -1544,16 +1544,6 @@ msgstr "Nästa aktivitetsöversikt"
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__activity_type_id
 msgid "Next Activity Type"
 msgstr "Nästa aktivitetstyp"
-
-#. module: crm_allabolag
-#: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__non_conformity_ids
-msgid "Non Conformity"
-msgstr "Icke-överensstämmelse"
-
-#. module: crm_allabolag
-#: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__non_conformity_count
-msgid "Non Conformity Count"
-msgstr "Non Conformity Count"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__nora
@@ -1708,7 +1698,7 @@ msgstr "Möjlighet"
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__orsa
 msgid "Orsa"
-msgstr "Ursa"
+msgstr "Orsa"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__orust
@@ -1815,11 +1805,6 @@ msgstr "Publikt försäkringsaktiebolag"
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__ragunda
 msgid "Ragunda"
 msgstr "Ragunda"
-
-#. module: crm_allabolag
-#: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__rating_ids
-msgid "Ratings"
-msgstr "Betyg"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__recurring_plan
@@ -2186,7 +2171,7 @@ msgstr "Strömsund"
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_iap_lead_mining_request_form
 msgid "Submit"
-msgstr "Hämta"
+msgstr "Överlämna"
 
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_lead_view_form
@@ -2271,7 +2256,7 @@ msgstr "Sölvesborg"
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__tag_ids
 msgid "Tags"
-msgstr "Eriketter"
+msgstr "Etiketter"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__tanum
@@ -2649,7 +2634,7 @@ msgstr "Vad behöver du?"
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__ydre
 msgid "Ydre"
-msgstr "Ydre"
+msgstr "Yttre"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__ystad
