@@ -589,7 +589,7 @@ msgstr "Europeiska Grupperingar för Territoriellt Samarbete (EGTS)"
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__expected_revenue
 msgid "Expected Revenue"
-msgstr "Väntad intäkt"
+msgstr "Förväntad intäkt"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__fagersta
@@ -1774,12 +1774,12 @@ msgstr "Postnummer"
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__profit_from
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__profit_to
 msgid "Profit"
-msgstr "Vinst"
+msgstr "Resultat"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_lead__summary_profit_ebit
 msgid "Profit EBIT KSEK"
-msgstr "Vinst EBIT KSEK"
+msgstr "Resultat EBIT KSEK"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_lead__summary_profit_margin
