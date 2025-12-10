@@ -1434,7 +1434,7 @@ msgstr "Meddelanden"
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_iap_lead_mining_request_form
 msgid "Metadata to save on leads"
-msgstr "Metadata för att spara på leads"
+msgstr "Metadata för att spara på kundämne"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_lead__mining_id
