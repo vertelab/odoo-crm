@@ -391,7 +391,7 @@ msgstr "Kassaflöde"
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_iap_lead_mining_request_form
 msgid "Check"
-msgstr "Kontroll"
+msgstr "Testa"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__company_id
