@@ -2171,7 +2171,7 @@ msgstr "Strömsund"
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_iap_lead_mining_request_form
 msgid "Submit"
-msgstr "Överlämna"
+msgstr "Hämta"
 
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_lead_view_form
