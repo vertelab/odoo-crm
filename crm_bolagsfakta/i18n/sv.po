@@ -898,7 +898,7 @@ msgstr ""
 #. module: crm_bolagsfakta
 #: model_terms:ir.ui.view,arch_db:crm_bolagsfakta.crm_iap_lead_mining_request_form
 msgid "Submit"
-msgstr "Överlämna"
+msgstr "Hämta"
 
 #. module: crm_bolagsfakta
 #: model:ir.model,name:crm_bolagsfakta.model_res_kommun
