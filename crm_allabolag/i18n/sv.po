@@ -1768,7 +1768,7 @@ msgstr "Piteå"
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__sort_option__postnumber
 msgid "Postnr."
-msgstr "Postnummer."
+msgstr "Postnummer"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__profit_from
