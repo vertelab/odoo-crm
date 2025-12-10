@@ -662,7 +662,7 @@ msgstr "Om markerad, vissa meddelanden har ett leveransfel."
 #: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_partner__industry
 #: model:ir.model.fields,field_description:crm_bolagsfakta.field_res_users__industry
 msgid "Industry"
-msgstr "Industri"
+msgstr "Bransch"
 
 #. module: crm_bolagsfakta
 #: model:ir.model.fields,field_description:crm_bolagsfakta.field_crm_bolagsfakta__information
