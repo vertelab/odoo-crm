@@ -984,19 +984,19 @@ msgstr "Om markerad, vissa meddelanden har ett leveransfel."
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_leads_filter
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_opportunities_filter
 msgid "Industry"
-msgstr "Industri"
+msgstr "Bransch"
 
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_allabolag_mining_request_search
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_leads_filter
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_opportunities_filter
 msgid "Industry Request Type"
-msgstr "Industriförfråganstyp"
+msgstr "Branschförfråganstyp"
 
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.view_crm_case_leads_filter
 msgid "Insustry Request Type"
-msgstr "Industriförfråganstyp"
+msgstr "Branschförfråganstyp"
 
 #. module: crm_allabolag
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_allabolag_mining__message_is_follower
@@ -2309,7 +2309,7 @@ msgstr "Tierp"
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__industry_xv__xv/tillverkning_&_industri
 msgid "Tillverkning & industri"
-msgstr "Tillverkning & industri"
+msgstr "Tillverkning & bransch"
 
 #. module: crm_allabolag
 #: model:ir.model.fields.selection,name:crm_allabolag.selection__crm_allabolag_mining__kommun__timrå
@@ -2645,7 +2645,7 @@ msgstr "Ystad"
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_lead__mining_industry
 #: model:ir.model.fields,field_description:crm_allabolag.field_crm_lead__mining_industry_xv
 msgid "industry"
-msgstr "industri"
+msgstr "bransch"
 
 #. module: crm_allabolag
 #: model_terms:ir.ui.view,arch_db:crm_allabolag.crm_allabolag_mining_request_tree
