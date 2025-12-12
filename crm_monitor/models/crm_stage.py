@@ -253,7 +253,7 @@ class Stage(models.Model):
                     crm.user_id = user_id
             elif stage.onchange_type == 'archive':
                 crm.active = False
-            elif stage.onchage_type == 'unlink':
+            elif stage.onchange_type == 'unlink':
                 crm.unlink()
             elif stage.change_type == 'message':
                 crm.message_post(body=stage.onchange_message)
