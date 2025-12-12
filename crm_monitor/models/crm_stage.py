@@ -255,7 +255,7 @@ class Stage(models.Model):
                 crm.active = False
             elif stage.onchange_type == 'unlink':
                 crm.unlink()
-            elif stage.change_type == 'message':
+            elif stage.onchange_type == 'message':
                 crm.message_post(body=stage.onchange_message)
             elif stage.onchange_type == 'stage':
                 crm.stage_id = monitor.onchange_new_stage_id
