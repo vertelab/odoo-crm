@@ -41,7 +41,7 @@ class CrmLead(models.Model):
             "name": company_data.get("name"),
             "partner_name": company_data.get("name", False),
             "company_registry": company_data.get("orgnr", False),
-            "city": company_data.get("postalAddress").get("postPlace") if company_data.get("postalAddress") else False,
+            "city": company_data.get("postalAddress",{}).get("postPlace",False) if company_data.get("postalAddress") else False,
             "summary_parent_company": company_data.get("foundationYear"),
             "summary_state": company_data.get("status", {}).get("status"),
             "kpi_no_employees": employees,
@@ -53,11 +53,11 @@ class CrmLead(models.Model):
             "function": company_data.get("contactPerson", {}).get('role', ""),
             "summary_registry_year": company_data.get('registrationDate'),
             "email_from": company_data.get("email"),
-            "phone": company_data.get("phone"),
-            "mobile": company_data.get("mobile"),
-            "website": company_data.get("homePage"),
-            "street": company_data.get("postalAddress", {}).get("addressLine"),
-            "zip": company_data.get("postalAddress", {}).get("zipCode"),
+            "phone": company_data.get("phone",False),
+            "mobile": company_data.get("mobile",False),
+            "website": company_data.get("homePage",False),
+            "street": company_data.get("postalAddress", {}).get("addressLine",False) if company_data.get("postalAddress") else False, 
+            "zip": company_data.get("postalAddress", {}).get("zipCode",False) if company_data.get("postalAddress") else False,
         }
         _logger.warning(f"{res1=}")
         return res1
