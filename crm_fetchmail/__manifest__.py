@@ -6,6 +6,7 @@
     'depends': ['crm', 'mail'],
     'data': [
         'data/server_action.xml',
+        'views/crm_lead_views.xml',
     ],
     'installable': True,
     'license': 'AGPL-3',
