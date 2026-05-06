@@ -8,5 +8,5 @@ class CrmLead(models.Model):
         # Hämtar alla konfigurerade inkommande e-postservrar
         mail_servers = self.env['fetchmail.server'].search([('state', '=', 'done')])
         for server in mail_servers:
-            server.fetch_mail()
+            server.sudo().fetch_mail()
         return True
