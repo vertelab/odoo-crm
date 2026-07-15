@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_campaign_phase,crm.campaign.phase,model_crm_tracking_phase,,1,1,1,1
+access_crm_campaign_phase_type,crm.campaign.phase,model_crm_tracking_phase_type,,1,0,0,0
+access_crm_campaign_phase_type_manager,crm.campaign.phase.manager,model_crm_tracking_phase_type,,1,1,1,1

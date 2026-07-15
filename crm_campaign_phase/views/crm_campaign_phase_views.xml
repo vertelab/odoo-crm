@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="phase_type_form_view" model="ir.ui.view">
+        <field name="name">phase_type.form</field>
+        <field name="model">crm.tracking.phase.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <label for="start_days"/>
+                    <div>
+                        <field name="start_days" class="oe_inline"/>
+                        <field name="start_days_from_start" class="oe_inline"/>
+                        from start
+                    </div>
+                    <label for="end_days"/>
+                    <div>
+                        <field name="end_days" class="oe_inline"/>
+                        <field name="end_days_from_start" class="oe_inline"/>
+                        from start
+                    </div>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="crm_tracking_campaign_form" model="ir.ui.view">
+        <field name="name">crm.tracking.campaign.form.inherited.phase</field>
+        <field name="model">crm.tracking.campaign</field>
+        <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form"/>
+        <field name="arch" type="xml">
+            <field name="section_id" position="after">
+                <field name="country_ids" widget="many2many_tags"/>
+            </field>
+            <notebook position="inside">
+                <page string="Phases">
+                    <field name="phase_ids">
+                        <list default_order="sequence" editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="phase_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="pricelist_id"/>
+                            <field name="reseller_pricelist"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

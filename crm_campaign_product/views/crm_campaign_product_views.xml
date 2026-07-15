@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.common.form.inherited.campaign</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <group name="sale_condition" position="after">
+                <group string="Campaign">
+                    <field name="campaign_ids" widget="many2many_tags"/>
+                </group>
+            </group>
+        </field>
+    </record>
+
+    <record id="crm_tracking_campaign_form" model="ir.ui.view">
+        <field name="name">crm.tracking.campaign.form.inherited.product</field>
+        <field name="model">crm.tracking.campaign</field>
+        <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Products">
+                    <button name="update_campaign_product_ids" type="object"
+                            class="oe_highlight" style="margin-top: 15px;"
+                            string="Get Products"
+                            help="Create campaign products from the list of objects"/>
+                    <field name="campaign_product_ids">
+                        <list default_order="sequence" editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id"/>
+                            <field name="default_code"/>
+                            <field name="name"/>
+                            <field name="type"/>
+                            <field name="list_price"/>
+                            <field name="qty_available"/>
+                            <field name="virtual_available"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>
