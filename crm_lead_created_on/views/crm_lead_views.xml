@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        CRM: Skapad datum och tid
+        Gör kolumnen "create_date" (skapad datum + klockslag utan sekunder)
+        alltid synlig i CRM:s listvyer och på kanban-korten.
+    -->
+
+    <!-- 1. Leads-listan: alltid synlig, timmar:minuter utan sekunder -->
+    <record id="view_crm_lead_created_on_leads_tree" model="ir.ui.view">
+        <field name="name">crm.lead.list.lead.created.on</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='create_date']" position="attributes">
+                <attribute name="optional"></attribute>
+                <attribute name="options">{'show_seconds': False}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 2. Opportunities-listan: alltid synlig, timmar:minuter utan sekunder -->
+    <record id="view_crm_lead_created_on_oppor_tree" model="ir.ui.view">
+        <field name="name">crm.lead.list.oppor.created.on</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='create_date']" position="attributes">
+                <attribute name="optional"></attribute>
+                <attribute name="options">{'show_seconds': False}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 3. Leads-kanban: visa skapad datum + tid på kortet -->
+    <record id="view_crm_lead_created_on_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.created.on</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_lead_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban//footer" position="inside">
+                <div class="text-muted small mb-1">
+                    <field name="create_date" options="{'show_seconds': False}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 4. Pipeline-kanban (opportunities): visa skapad datum + tid på kortet -->
+    <record id="view_crm_lead_created_on_oppor_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.oppor.created.on</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban//footer" position="inside">
+                <div class="text-muted small mb-1">
+                    <field name="create_date" options="{'show_seconds': False}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 5. Formuläret: visa skapad datum + tid tydligt under titeln -->
+    <record id="view_crm_lead_created_on_form" model="ir.ui.view">
+        <field name="name">crm.lead.form.created.on</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form//div[hasclass('oe_title')]/h1" position="after">
+                <div class="text-muted small mb-2">
+                    <i class="fa fa-clock-o me-1" role="img"/>
+                    <span class="me-1">Skapad:</span>
+                    <field name="create_date" options="{'show_seconds': False}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
