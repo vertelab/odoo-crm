@@ -27,7 +27,7 @@
       Base module for Enrich CRM-leads records with company's website and contact details
     """,
     'sequence': '999',
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'category': 'CRM',
     'website': 'https://vertel.se/apps/odoo-crm/crm_enrich_phonemail',
     'images': ['static/description/banner.png'],  # 560x280 px.

@@ -29,7 +29,7 @@
 Adding interesting and valuable internet-data to customer information in CRM. 
 """,
     #'sequence': '1',
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_builtwith',
     'images': ['static/description/banner.png'], # 560x280 px.
     'license': 'AGPL-3',

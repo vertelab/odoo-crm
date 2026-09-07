@@ -1,5 +1,6 @@
 {
     'name': 'CRM Fetch Mail Action',
+'author': 'Vertel Sverige AB',
     'version': '1.0',
     'category': 'Sales/CRM',
     'summary': 'Adds a server-action for fetching mail',

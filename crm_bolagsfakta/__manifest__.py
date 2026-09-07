@@ -29,7 +29,7 @@
     'description': """
         Long description of module's purpose
     """,
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm',
     'repository': 'https://github.com/vertelab/odoo-crm',
     'images': ['static/description/banner.png'],  # 560x280

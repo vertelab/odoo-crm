@@ -27,7 +27,7 @@
     'description': """
         This module adds cron-jobs and triggers that looks for stale tasks and take action using rules on the opportunity
     """,
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_monitor',
     'repository': 'https://github.com/vertelab/odoo-crm',
     'license': 'AGPL-3',

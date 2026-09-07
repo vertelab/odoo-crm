@@ -29,7 +29,7 @@
       
     """,
     'sequence': '999',
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'category': 'CRM',
     'website': 'https://vertel.se/apps/odoo-crm/crm_enrich_base',
     'images': ['static/description/banner.png'], # 560x280 px.
