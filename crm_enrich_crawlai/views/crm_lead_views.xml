@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             Knappar på crm.lead-formuläret
+
+             Knapparna läggs i headern (efter sista befintliga knappen)
+             och är synliga när leaden är en lead/opportunity med ett
+             företagsnamn.
+             ═══════════════════════════════════════════════════════════ -->
+
+        <record id="crm_lead_view_form_crawlai" model="ir.ui.view">
+            <field name="name">crm.lead.form.crawlai</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/button[last()]" position="after">
+                    <button name="action_crawlai_enrich"
+                            type="object"
+                            string="Enrich with CrawlAI"
+                            class="btn-primary"
+                            invisible="not partner_name and not name"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- CrawlAI-fliken: status, resultat och genväg till sessionen -->
+        <record id="crm_lead_view_form_crawlai_page" model="ir.ui.view">
+            <field name="name">crm.lead.form.crawlai.page</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="CrawlAI" name="crawlai">
+                        <group>
+                            <group string="Status">
+                                <field name="crawlai_status" widget="badge"/>
+                                <field name="crawlai_last_run"/>
+                                <field name="linkedin" widget="url"/>
+                            </group>
+                            <group string="Actions">
+                                <button name="action_crawlai_find_website"
+                                        type="object"
+                                        string="Find website"
+                                        class="btn-secondary"/>
+                                <button name="action_crawlai_crawl_site"
+                                        type="object"
+                                        string="Crawl site (description + contact)"
+                                        class="btn-secondary"/>
+                                <button name="action_crawlai_check_linkedin"
+                                        type="object"
+                                        string="Check LinkedIn"
+                                        class="btn-secondary"/>
+                                <button name="action_crawlai_open_session"
+                                        type="object"
+                                        string="Open AI session"
+                                        invisible="not crawlai_session_id"/>
+                            </group>
+                        </group>
+                        <field name="crawlai_result" readonly="1"
+                               placeholder="No enrichment run yet."/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

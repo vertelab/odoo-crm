@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ═══════════════════════════════════════════════════════════
+             crawlai_lead_enricher — pi-agent-verktyget (executor=nats)
+
+             Verktyget körs av pi-agenten (utanför Odoo-workern) och
+             utför tre steg mot ett crm.lead:
+
+               a) hitta webbplats (namn / org.nr) om den saknas
+               b) crawla webbplatsen → beskrivning + kontaktperson
+               c) kontrollera företagets LinkedIn
+
+             risk_level=write: varje skrivning till leaden går via HITL.
+             Verktyget FÖRESLÅR värden; skrivningen sker först efter
+             godkännande per fält.
+             ═══════════════════════════════════════════════════════════ -->
+
+        <record id="tool_crawlai_lead_enricher" model="ai.tool">
+            <field name="name">crawlai_lead_enricher</field>
+            <field name="description">Enrich a CRM lead (crm.lead) with data
+found on the web, in three steps.
+
+SYFTE: fylla i och förbättra en leads företagsuppgifter — webbplats,
+företagsbeskrivning, kontaktperson och LinkedIn via webbsökning och
+crawlning.
+
+STEG:
+  a) website     — om leadens website är tom: sök på företagsnamn och
+                   organisationsnummer för att hitta företagets webbplats
+                   och lagra den på recorden.
+  b) description — crawla företagets webbplats, hämta en
+                   företagsbeskrivning, utöka leadens description/note med
+                   den, och hitta en kontaktperson (namn, roll, e-post,
+                   telefon).
+  c) linkedin    — kontrollera företagets LinkedIn-närvaro och föreslå en
+                   LinkedIn-URL.
+
+NÄR: användaren vill berika en lead som saknar webbplats, beskrivning
+eller kontaktuppgifter.
+
+NÄR INTE: för att skriva utan godkännande — varje fält godkänns separat
+via HITL. Föreslå aldrig en ändring av ett fält som redan har ett rimligt
+värde; säg det i stället.
+
+EXEMPEL: crawlai_lead_enricher(lead_id=43779,
+  domains=["website", "description", "linkedin"])
+
+OUTPUT: en rapport per steg med nuvarande värde, föreslaget värde och en
+kort motivering. Ingenting skrivs förrän användaren godkänt fältet.
+
+GUARDRAIL: risk_level=write — kräver godkännande via HITL. Berika bara
+leads som användaren uttryckligen pekat ut.</field>
+            <field name="executor">nats</field>
+            <field name="nats_subject">pi.task.do</field>
+            <field name="nats_skills">crawlai_lead_enricher</field>
+            <field name="nats_timeout" eval="180"/>
+            <field name="risk_level">write</field>
+            <field name="active" eval="True"/>
+            <field name="code" eval="''"/>
+            <field name="sys_token_cost" eval="500"/>
+            <field name="parameters">{"type": "object", "properties": {
+                "lead_id": {"type": "integer", "description": "ID för crm.lead som ska berikas"},
+                "domains": {"type": "array", "items": {"type": "string", "enum": ["website", "description", "linkedin"]}, "description": "Steg att köra. Tomt = alla tre."},
+                "company_name": {"type": "string", "description": "Företagsnamn (hjälper sökningen om leaden saknar partner_name)"},
+                "company_registry": {"type": "string", "description": "Organisationsnummer (hjälper sökningen)"},
+                "website": {"type": "string", "description": "Befintlig webbplats, om någon"},
+                "contact_name": {"type": "string", "description": "Befintlig kontaktperson, om någon"}
+            }, "required": ["lead_id"]}</field>
+            <field name="capabilities">["browser", "web_crawl", "enrichment"]</field>
+            <field name="verification_enabled" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

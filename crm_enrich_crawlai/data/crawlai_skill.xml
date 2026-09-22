@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ═══════════════════════════════════════════════════════════
+             Skill: crawlai-lead-enricher
+
+             compatibility=pi_python → skillen laddas av pi-agenten
+             (agenten hämtar den via GET /ai/v1/skills?names=...).
+             Receptet beskriver HUR de tre stegen utförs och var gränsen
+             för HITL går.
+             ═══════════════════════════════════════════════════════════ -->
+
+        <record id="skill_crawlai_lead_enricher" model="ai.skill">
+            <field name="name">crawlai-lead-enricher</field>
+            <field name="category">communication</field>
+            <field name="compatibility">pi_python</field>
+            <field name="trigger_keywords">crawlai, berika, lead, enrichment, linkedin, webbplats, website, org.nr, företagsbeskrivning</field>
+            <field name="description">Berikar ett CRM-lead (crm.lead) med webbplats, företagsbeskrivning, kontaktperson och LinkedIn via webbsökning och crawlning.</field>
+            <field name="recipe_text">När du ska berika ett CRM-lead med verktyget crawlai_lead_enricher:
+
+FÖRBEREDELSE
+1. Anropa crawlai_lead_enricher(lead_id, domains) för att läsa nuvarande
+   värden. Verktyget skriver ingenting.
+2. Läs leadens company_name, company_registry, website och contact_name
+   från anropet. Använd dem som sökord — organisationsnumret är starkast.
+
+STEG a — WEBBPLATS (endast om website är tom)
+3. Sök på företagsnamnet och, om det finns, organisationsnumret.
+   Föredra företagets egen domän framför katalogtjänster
+   (allabolag, ratsit, hitta.se, LinkedIn, Facebook).
+4. Verifiera att domänen tillhör företaget: företagsnamnet ska förekomma
+   på startsidan. Tvekar du — föreslå inget värde.
+5. Föreslå webbplatsen (https-URL, utan avslutande snedstreck).
+
+STEG b — FÖRETAGSBESKRIVNING + KONTAKTPERSON
+6. Crawla webbplatsen (max 5 sidor: start, om oss, kontakt, team,
+   tjänster/produkter).
+7. Hämta en företagsbeskrivning på 2-5 meningar, på svenska, som
+   beskriver vad företaget gör, för vem, och vad som utmärker det.
+   Skriv egen text — kopiera aldrig en hel paragraf ordagrant.
+8. Utöka leadens description/note med beskrivningen under en tydlig
+   rubrik, till exempel "## Företagsbeskrivning (källa: URL)".
+9. Hitta en kontaktperson: namn + roll, och e-post/telefon om det står
+   öppet på sajten. Föredra vd, försäljningschef eller
+   marknadsansvarig. Föreslå aldrig en privatperson utan koppling till
+   företaget.
+
+STEG c — LINKEDIN
+10. Kontrollera om företaget har en LinkedIn-sida (company page).
+    Föreslå URL:en. Skilj på företagssida (linkedin.com/company/) och
+    personprofil (linkedin.com/in/) — föreslå företagssidan här.
+11. Saknas LinkedIn helt: säg det uttryckligen i stället för att gissa.
+
+REDOVISNING OCH HITL
+12. Presentera förslagen som en tydlig lista: steg, fält, nuvarande
+    värde, föreslaget värde, motivering, källa (URL).
+13. Skriv INGENTING ännu. Varje fält godkänns separat av användaren.
+14. När ett fält godkänts: skriv DET fältet och inget annat. Upprepa per
+    godkänt fält.
+15. Om ett förslag avvisas: skriv inte fältet och försök inte igen utan
+    ny information.
+
+KÄLLKRITIK
+- Hellre ett tomt fält än en gissning. En påstådd källa som du inte
+  faktiskt läst är ett fel.
+- Ange alltid käll-URL per föreslaget värde.</field>
+        </record>
+
+    </data>
+</odoo>
