@@ -22,6 +22,11 @@ class CrmLead(models.Model):
     linkTo = fields.Char(string='Link', help="Link to Allabolag")
 
     def _enrich_lead(self):
+        if not self.company_registry:
+            _logger.warning(
+                f"Allabolag: no company_registry on lead {self.id} ({self.name}), skipping enrich"
+            )
+            return
         if company_data := Company(self.company_registry).data:
             company_vals = self._set_company_details(company_data.get("company"))
             self.write(company_vals)
