@@ -7,7 +7,7 @@
     'category': 'Marketing/Campaigns',
     'summary': 'Campaign management for CRM with objects, calendar, and Gantt',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_addons',
     'license': 'AGPL-3',
     'depends': ['crm'],
     'data': [

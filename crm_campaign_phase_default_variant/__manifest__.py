@@ -7,7 +7,7 @@
     'category': 'Marketing/Campaigns',
     'summary': 'Prefer campaign product variants as default',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_phase_default_variant',
     'license': 'AGPL-3',
     'depends': ['crm_campaign_phase'],
     'installable': True,

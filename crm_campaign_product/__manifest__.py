@@ -7,7 +7,7 @@
     'category': 'Marketing/Campaigns',
     'summary': 'Link products to CRM campaigns',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_product',
     'license': 'AGPL-3',
     'depends': ['crm_campaign_addons', 'stock'],
     'data': [

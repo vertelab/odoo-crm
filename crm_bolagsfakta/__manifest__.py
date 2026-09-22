@@ -30,7 +30,7 @@
         Long description of module's purpose
     """,
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se/apps/odoo-crm',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_bolagsfakta',
     'repository': 'https://github.com/vertelab/odoo-crm',
     'images': ['static/description/banner.png'],  # 560x280
     'license': 'AGPL-3',

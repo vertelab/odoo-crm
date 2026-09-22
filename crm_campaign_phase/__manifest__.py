@@ -7,7 +7,7 @@
     'category': 'Marketing/Campaigns',
     'summary': 'Campaign phases with pricelists and country filtering',
     'author': 'Vertel Sverige AB',
-    'website': 'https://vertel.se',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_phase',
     'license': 'AGPL-3',
     'depends': ['website_crm_campaign'],
     'data': [

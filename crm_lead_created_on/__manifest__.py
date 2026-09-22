@@ -35,7 +35,7 @@ samt på kanban-korten.
 * Visas i användarens tidszon och språkformat.
 """,
     'author': 'Vertel AB',
-    'website': 'https://vertel.se',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_lead_created_on',
     'depends': ['crm'],
     'data': [
         'views/crm_lead_views.xml',
