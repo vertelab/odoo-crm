@@ -502,6 +502,9 @@ class CrmAllabolagMining(models.Model):
         }
 
     def _get_company_details(self, org_nr):
+        if not org_nr:
+            _logger.warning("Allabolag: _get_company_details called without org_nr, skipping")
+            return {}
         if data := Company(org_nr).data:
             return data.get("company")
         return {}
