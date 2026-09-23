@@ -196,3 +196,13 @@ class TestCrmLeadOkf(common.TransactionCase):
         for domain in ('crm', 'website', 'blog', 'event', 'hr.job'):
             self.assertNotIn(domain, code_only,
                              'domänen %r finns i mixinens KOD' % domain)
+
+    def test_debug_action_is_bound(self):
+        """F5.10: OKF-valet finns i skalbaggen för crm.lead."""
+        action = self.env.ref('crm_ai.action_okf_crm_lead',
+                              raise_if_not_found=False)
+        self.assertTrue(action, 'debug-åtgärden ska finnas')
+        self.assertEqual(action.binding_model_id.model, 'crm.lead')
+        no_one = self.env.ref('base.group_no_one')
+        self.assertIn(no_one, action.groups_id,
+                      'åtgärden ska bara synas i debug-läget')
