@@ -2,7 +2,7 @@
 # Part of Vertel. See LICENSE file for full copyright and licensing details.
 {
     'name': 'CRM AI — Bridge',
-    'version': '18.0.1.0.2',
+    'version': '18.0.1.0.3',
     'summary': 'OKF-kontraktet på crm.lead — leadets anteckningar blir sökbara',
     'category': 'AI Orchestration',
     'description': """
@@ -22,7 +22,6 @@
     ],
     'data': [
         'data/crm_ai_artifact_types.xml',
-        'data/okf_debug_actions.xml',
     ],
     'installable': True,
     'auto_install': False,
