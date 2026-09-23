@@ -16,12 +16,18 @@ sammanfattning. Ingen LLM behövs för att veta det, och en deterministisk
 sammanfattning är bättre än en som varierar mellan körningar.
 """
 
-from odoo import models
+from odoo import models, fields
 
 
 class CrmLead(models.Model):
     _name = 'crm.lead'
     _inherit = ['crm.lead', 'ai.okf.mixin']
+
+    # OKF-taggar: egen relationstabell (en many2many kan inte ligga
+    # pa en abstrakt mixin — den ger samma tabell for alla arvande).
+    okf_tags = fields.Many2many(
+        'ai.okf.tag', 'crm_lead_okf_tag_rel', 'res_id', 'tag_id',
+        string='OKF Tags')
 
     # ==================================================================
     # Källor — vad mixinen läser
