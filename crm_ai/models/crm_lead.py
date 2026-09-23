@@ -27,38 +27,26 @@ class CrmLead(models.Model):
     # Källor — vad mixinen läser
     # ==================================================================
 
-    def _okf_text_source(self):
-        """Leadets hela material: titel, anteckningar, företagsnamn."""
-        self.ensure_one()
-        parts = []
-        if self.name:
-            parts.append(self.name)
-        if self.description:
-            parts.append(self.description)
-        if self.partner_name:
-            parts.append(self.partner_name)
-        return '\n\n'.join(parts)
+    # ── Källor ─────────────────────────────────────────────────────────
+    #
+    # FYND 2026-09-23: `_okf_body_source`, `_okf_tags_source` och
+    # `_okf_links_source` är nu GENERISKA i `ai.okf.mixin`:
+    #
+    #   okf_body   = alla HTML/Text-fält + name
+    #                → crm.lead: name + description  (utan egen kod)
+    #   okf_tags   = fält med 'tag' i namn eller målmodell
+    #                → crm.lead: tag_ids → crm.tag
+    #   okf_links  = relationsfält där MÅLET bär mixinen
+    #                → crm.lead: partner_id när partner_ai finns
+    #
+    # Bryggan behöver därför bara skriva det som är specifikt för CRM.
+    # Den enda överridningen är sammanfattningen: leadets titel ÄR dess
+    # sammanfattning, och en LLM behövs inte för att veta det.
 
     def _okf_summary_source(self):
         """Leadets titel är dess sammanfattning — ingen LLM behövs."""
         self.ensure_one()
         return self.name or None
-
-    def _okf_tags_source(self):
-        """Leadets taggar blir OKF-taggar."""
-        self.ensure_one()
-        return [t.name for t in self.tag_ids if t.name]
-
-    def _okf_links_source(self):
-        """Länk till partnern, när den finns."""
-        self.ensure_one()
-        if self.partner_id:
-            return [{
-                'type': 'BELONGS_TO',
-                'target': 'res.partner,%s' % self.partner_id.id,
-                'label': self.partner_id.display_name,
-            }]
-        return []
 
     # ==================================================================
     # Kontraktet — vad mixinen frågar om
