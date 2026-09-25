@@ -23,17 +23,17 @@
     'name': 'CRM: Skapad datum och tid',
     'version': '18.0.1.0.0',
     'category': 'Sales/CRM',
-    'summary': 'Visar skapad datum och tid (utan sekunder) i CRM-listor och kanban',
-    'description': """
-CRM: Skapad datum och tid
-==========================
-Visar kolumnen "Skapad den" i CRM:s listvyer (Leads och Opportunities)
-samt på kanban-korten.
+    'summary': "Shows the creation date and time (without seconds) in CRM list and kanban views.",
+    'description': '''
+Skapad datum och tid
+====================
 
-* Kolumnen är alltid synlig och kan inte döljas (ingen valbar kolumn).
-* Klockslaget visas med timmar och minuter, utan sekunder.
-* Visas i användarens tidszon och språkformat.
-""",
+    Shows the "Created on" column in CRM list views (Leads and Opportunities)
+as well as on the kanban cards.
+
+    - The column is always visible and can be sorted.
+    - Time is shown without seconds.
+    ''',
     'author': 'Vertel AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_lead_created_on',
     'depends': ['crm'],

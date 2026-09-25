@@ -21,13 +21,21 @@
 
 {
     'name': 'CRM: Allabolag',
-    'version': '1.0',
+    'version': '18.0.1.0.0',
     # Version ledger: 14.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
     'summary': 'Adding valuable internet-data to CRM contacts.',
     'category': 'CRM',
-    'description': """
-Adding interesting and valuable internet-data to customer information in CRM. 
-""",
+    'description': '''
+Allabolag
+=========
+
+    Adding interesting and valuable internet-data to customer information in CRM.
+
+    Features:
+
+        - UI Integration: Extends 4 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on crm.allabolag.mining, crm.lead, crm.tag, crm.team.
+    ''',
     #'sequence': '1',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_allabolag',

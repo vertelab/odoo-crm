@@ -21,11 +21,19 @@
 
 {
     'name': 'CRM: Enrich Phonemail',
-    'version': '1.1',
-    'summary': 'Enrich CRM-leads records with companys website',
-    'description': """
-      Base module for Enrich CRM-leads records with company's website and contact details
-    """,
+    'version': '18.0.1.1.0',
+    'summary': 'Enrich CRM-leads records with companys website.',
+    'description': '''
+Enrich Phonemail
+================
+
+    Base module for Enrich CRM-leads records with company's website and contact details
+
+    Features:
+
+        - UI Integration: Extends 1 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on crm.lead.
+    ''',
     'sequence': '999',
     'author': 'Vertel Sverige AB',
     'category': 'CRM',

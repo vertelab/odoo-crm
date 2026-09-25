@@ -5,7 +5,17 @@
     'name': 'CRM Campaign',
     'version': '18.0.1.0.0',
     'category': 'Marketing/Campaigns',
-    'summary': 'Campaign management for CRM with objects, calendar, and Gantt',
+    'summary': 'Campaign management for CRM with objects, calendar, and Gantt.',
+    'description': '''
+CRM Campaign
+============
+
+    Campaign management for CRM with objects, calendar, and Gantt.
+
+    Features:
+
+        - UI Integration: Extends 1 view(s) in the Odoo interface.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_addons',
     'license': 'AGPL-3',

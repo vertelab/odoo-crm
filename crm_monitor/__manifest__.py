@@ -21,12 +21,21 @@
 
 {
     'name': 'CRM: Lead/opportunity Monitor',
-    'version': '1.0',
-    'summary': 'Add montitor capabilities to leads and opportunity',
+    'version': '18.0.1.0.0',
+    'summary': 'Add montitor capabilities to leads and opportunity.',
     'category': 'CRM',
-    'description': """
-        This module adds cron-jobs and triggers that looks for stale tasks and take action using rules on the opportunity
-    """,
+    'description': '''
+Lead/opportunity Monitor
+========================
+
+    This module adds cron-jobs and triggers that looks for stale tasks and take action using rules on the opportunity
+
+    Features:
+
+        - Automation: Scheduled jobs: CRM Monitor stage checker, CRM Monitor stage checker.
+        - UI Integration: Extends 2 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on crm.lead, crm.stage, crm.stage.monitor, mail.activity.type.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_monitor',
     'repository': 'https://github.com/vertelab/odoo-crm',

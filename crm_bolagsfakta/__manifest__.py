@@ -23,12 +23,22 @@
 #
 {
     'name': 'CRM Bolagsfakta',
-    'version': '1.0',
-    'summary': 'Adding data to CRM contacts',
+    'version': '18.0.1.0.0',
+    'summary': 'Adding data to CRM contacts.',
     'category': 'CRM',
-    'description': """
-        Long description of module's purpose
-    """,
+    'description': '''
+CRM Bolagsfakta
+===============
+
+    Adding data to CRM contacts.
+
+    Features:
+
+        - Web integration: Exposes HTTP endpoints for external systems.
+        - Guided Wizards: Step-by-step dialogs for data entry.
+        - UI Integration: Extends 4 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on crm.bolagsfakta, crm.lead, crm_bolagsfakta_id, mail.thread.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_bolagsfakta',
     'repository': 'https://github.com/vertelab/odoo-crm',

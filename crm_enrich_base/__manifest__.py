@@ -21,13 +21,19 @@
 
 {
     'name': 'CRM: Enrich Base',
-    'version': '1.1',
-    'summary': 'Adding data ',
-    'description': """
-      Base module for Enrich CRM-leads records with updated data. This module 
-      does nothin but are a base fpr other enrichement modules
-      
-    """,
+    'version': '18.0.1.1.0',
+    'summary': 'Adding data.',
+    'description': '''
+Enrich Base
+===========
+
+    Base module for Enrich CRM-leads records with updated data. This module 
+          does nothin but are a base fpr other enrichement modules
+
+    Features:
+
+        - Extends Odoo: Builds on crm.lead.
+    ''',
     'sequence': '999',
     'author': 'Vertel Sverige AB',
     'category': 'CRM',

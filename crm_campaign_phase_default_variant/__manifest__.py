@@ -5,7 +5,17 @@
     'name': 'CRM Campaign Phase Default Variant',
     'version': '18.0.1.0.0',
     'category': 'Marketing/Campaigns',
-    'summary': 'Prefer campaign product variants as default',
+    'summary': 'Prefer campaign product variants as default.',
+    'description': '''
+CRM Campaign Phase Default Variant
+==================================
+
+    Prefer campaign product variants as default.
+
+    Features:
+
+        - Focused Fix: A small, targeted improvement to standard Odoo behaviour.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_phase_default_variant',
     'license': 'AGPL-3',

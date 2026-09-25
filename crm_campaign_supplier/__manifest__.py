@@ -5,7 +5,17 @@
     'name': 'CRM Campaign Supplier',
     'version': '18.0.1.0.0',
     'category': 'Marketing/Campaigns',
-    'summary': 'Link suppliers to CRM campaigns',
+    'summary': 'Link suppliers to CRM campaigns.',
+    'description': '''
+CRM Campaign Supplier
+=====================
+
+    Link suppliers to CRM campaigns.
+
+    Features:
+
+        - Focused Fix: A small, targeted improvement to standard Odoo behaviour.
+    ''',
     'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_campaign_supplier',
     'license': 'AGPL-3',
