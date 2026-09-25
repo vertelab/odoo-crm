@@ -55,6 +55,11 @@ leads som användaren uttryckligen pekat ut.</field>
             <field name="executor">nats</field>
             <field name="nats_subject">pi.task.do</field>
             <field name="nats_skills">crawlai_lead_enricher</field>
+            <!-- Agent-identitet (pi-agent-agent-identity): verktyget ägs av
+                 CrawlAI-agenten. Skickas som en hint i NATS-payloaden så att
+                 tool-executorn kör rätt agent — uppdragets eget agent-fält
+                 har högre prioritet. -->
+            <field name="nats_agent_id" ref="agent_crawlai_lead_enricher"/>
             <field name="nats_timeout" eval="180"/>
             <field name="risk_level">write</field>
             <field name="active" eval="True"/>
