@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Artefakttyp för crm_ai (okf-mixin).
+
+        Kärnans okf_default_artifact_types.xml får inga nya rader — kärnan
+        ska förbli domän-ren. Bryggan registrerar sin egen typ, med
+        bridge_module satt så taxonomin går att spåra tillbaka hit.
+
+        stale_policy 'source': leadets text ändras i källan (säljaren
+        redigerar anteckningarna) — konceptet blir inaktuellt när källan
+        ändras, inte efter en fast TTL.
+
+        retention_purpose 'crm_lead', 180 dagar: leadets anteckningar kan
+        bära personuppgifter om en kontaktperson. Samma policy som
+        kärnans artifact_type_email redan använder för crm_lead.
+    -->
+    <record id="artifact_type_crm_lead" model="ai.artifact.type">
+        <field name="name">crm_lead</field>
+        <field name="kind">knowledge</field>
+        <field name="bridge_module">crm_ai</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="okf_contract" eval="{'generated_by': 'process', 'stale_policy': 'source', 'stale_ttl_days': 0, 'retention_purpose': 'crm_lead', 'retention_days': 180}"/>
+    </record>
+</odoo>

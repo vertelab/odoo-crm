@@ -37,7 +37,7 @@ Allabolag
         - Extends Odoo: Builds on crm.allabolag.mining, crm.lead, crm.tag, crm.team.
     ''',
     #'sequence': '1',
-    'author': 'Vertel Sverige AB',
+    'author': 'Vertel AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_allabolag',
     'images': ['static/description/banner.png'], # 560x280 px.
     'license': 'AGPL-3',
