@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRM: Lead/opportunity Monitor &mdash; Vertel for Odoo</title>
+  <title>CRM Fetch Mail Action &mdash; Vertel for Odoo</title>
   <style>
     :root { --navy:#0F172A; --darkBg:#1E293B; --white:#F8FAFC; --gray:#94A3B8;
              --lightGray:#E2E8F0; --brand:#930a57; --brand2:#8105a7; }
@@ -43,50 +43,47 @@
 </head>
 <body>
 <div class="hero">
-  <h1>CRM: Lead/opportunity Monitor</h1>
-  <p class="subtitle">Add montitor capabilities to leads and opportunity.</p>
+  <h1>CRM Fetch Mail Action</h1>
+  <p class="subtitle">Adds a server-action for fetching mail.</p>
   <div class="meta">
     <span>Odoo 18.0</span><span>&middot;</span>
-    <span>CRM</span><span>&middot;</span>
+    <span>Sales/CRM</span><span>&middot;</span>
     <span>by Vertel Sverige AB</span>
   </div>
 </div>
 <div class="container">
   <section id="overview">
     <h2>Overview</h2>
-    <p>Add montitor capabilities to leads and opportunity.</p>
-    <p>It introduces the model(s) <code>Lead</code>, <code>CrmStageMonitor</code>, <code>Stage</code> to handle this workflow.</p>
+    <p>Adds a server-action for fetching mail.</p>
   </section>
   <section id="features">
     <h2>Key Features</h2>
     <div class="feature-grid">
-      <div class="feature-card"><h4>Dedicated data model</h4><p>Adds its own models: Lead, CrmStageMonitor, Stage.</p></div>
-      <div class="feature-card"><h4>Automation</h4><p>Scheduled jobs: CRM Monitor stage checker, CRM Monitor stage checker.</p></div>
-      <div class="feature-card"><h4>Actions</h4><p>Adds action_monitor.</p></div>
-      <div class="feature-card"><h4>UI integration</h4><p>Extends 2 view(s) in the Odoo interface.</p></div>
+      <div class="feature-card"><h4>Actions</h4><p>Adds action_force_fetch_mail.</p></div>
+      <div class="feature-card"><h4>UI integration</h4><p>Extends 1 view(s) in the Odoo interface.</p></div>
     </div>
   </section>
   <section id="screenshots">
     <h2>Module Graphics</h2>
     <div class="screenshots">
       <figure>
-        <img src="icon.png" alt="CRM: Lead/opportunity Monitor icon" width="140" height="140">
+        <img src="icon.png" alt="CRM Fetch Mail Action icon" width="140" height="140">
         <figcaption>Icon &mdash; 140 &times; 140 px</figcaption>
       </figure>
       <figure>
-        <img src="banner.png" alt="CRM: Lead/opportunity Monitor banner" width="560" height="280">
+        <img src="banner.png" alt="CRM Fetch Mail Action banner" width="560" height="280">
         <figcaption>Banner &mdash; 560 &times; 280 px</figcaption>
       </figure>
     </div>
   </section>
   <section id="dependencies">
     <h2>Dependencies</h2>
-    <ul><li><code>crm</code></li></ul>
+    <ul><li><code>crm</code></li><li><code>mail</code></li></ul>
     <p><small>Requires <strong>Odoo 18.0</strong> or later.</small></p>
   </section>
   <section id="installation">
     <h2>Installation</h2>
-    <p>Install the module <code>crm_monitor</code> from the Odoo Apps menu,
+    <p>Install the module <code>crm_fetchmail</code> from the Odoo Apps menu,
        or deploy it via the Vertel SaltStack pipeline.</p>
   </section>
   <section id="support">
@@ -96,7 +93,7 @@
   </section>
 </div>
 <footer>
-  <p><strong>CRM: Lead/opportunity Monitor</strong> &mdash; by <a href="https://vertel.se">Vertel Sverige AB</a></p>
+  <p><strong>CRM Fetch Mail Action</strong> &mdash; by <a href="https://vertel.se">Vertel Sverige AB</a></p>
   <p><a href="https://vertel.se">vertel.se</a> &middot;
      <a href="mailto:info@vertel.se">info@vertel.se</a></p>
 </footer>
