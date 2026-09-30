@@ -22,6 +22,7 @@
     ],
     'data': [
         'data/crm_ai_artifact_types.xml',
+        'data/okf_debug_actions.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -38,7 +38,7 @@ class TestCrmLeadOkf(common.TransactionCase):
 
     def test_mixin_is_inherited(self):
         """crm.lead bär mixinens fält."""
-        for f in ('okf_text', 'okf_summary', 'okf_dirty', 'okf_indexed_at'):
+        for f in ('okf_body', 'okf_summary', 'okf_dirty', 'okf_indexed_at'):
             self.assertIn(f, self.Lead._fields, f)
 
     def test_create_sets_dirty(self):
@@ -69,12 +69,18 @@ class TestCrmLeadOkf(common.TransactionCase):
     # ==================================================================
 
     def test_text_source_joins_the_parts(self):
-        """Texten är titel + anteckningar + företagsnamn."""
+        """Texten är titel + beskrivning — de generiska HTML/Text-fälten.
+
+        `partner_name` är Char och ingår MEDVETET inte: mixinens generiska
+        `_okf_body_source()` tar HTML/Text-fält + `name`. Företagsnamnet
+        finns i konceptet via `title`/`source_ref`, inte i bodyn.
+        """
         lead = self._make_lead()
-        text = lead._okf_text_source()
+        text = lead._okf_body_source()
         self.assertIn('Testaffär', text)
         self.assertIn('bokningsflöde', text)
-        self.assertIn('Testbolaget AB', text)
+        self.assertNotIn('Testbolaget AB', text,
+                         'Char-fält (partner_name) ska inte kopieras till bodyn')
 
     def test_summary_source_is_the_title(self):
         """Leadets titel ÄR dess sammanfattning — ingen LLM behövs."""
