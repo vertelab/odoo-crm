@@ -1,1 +1,1 @@
-import crm
+from . import crm

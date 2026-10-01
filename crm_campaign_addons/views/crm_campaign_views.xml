@@ -85,8 +85,8 @@
             <search string="Object Campaign">
                 <field name="campaign_id"/>
                 <group expand="1" string="Group By">
-                    <filter context="{'group_by': 'campaign_id'}" string="Campaign"/>
-                    <filter context="{'group_by': 'object_id'}" string="Object"/>
+                    <filter name="group_by_campaign" context="{'group_by': 'campaign_id'}" string="Campaign"/>
+                    <filter name="group_by_object" context="{'group_by': 'object_id'}" string="Object"/>
                 </group>
             </search>
         </field>
@@ -100,21 +100,23 @@
     </record>
 
     <!-- Campaign Views -->
+    <!-- Odoo 18: crm.tracking.campaign definieras av denna modul, så vyn är en
+         komplett list-vy (den gamla ärvde crm.crm_tracking_campaign_tree, som
+         inte finns i Odoo 18:s crm-modul). -->
     <record id="crm_tracking_campaign_tree" model="ir.ui.view">
-        <field name="name">crm.tracking.campaign.tree.inherited</field>
+        <field name="name">crm.tracking.campaign.tree</field>
         <field name="model">crm.tracking.campaign</field>
-        <field name="inherit_id" ref="crm.crm_tracking_campaign_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//list" position="attributes">
-                <attribute name="decoration-info">state == 'draft'</attribute>
-                <attribute name="decoration-danger">state in ('open')</attribute>
-                <attribute name="decoration-muted">state in ('cancel','closed')</attribute>
-            </xpath>
-            <field name="name" position="after">
+            <list string="Campaign"
+                  decoration-info="state == 'draft'"
+                  decoration-danger="state == 'open'"
+                  decoration-muted="state in ('cancel', 'closed')">
+                <field name="name"/>
                 <field name="date_start"/>
                 <field name="date_stop"/>
                 <field name="state"/>
-            </field>
+                <field name="object_count"/>
+            </list>
         </field>
     </record>
 
@@ -192,7 +194,7 @@
                 <field name="name" string="Name"
                        filter_domain="[('display_name','ilike',self)]"/>
                 <group expand="1" string="Group By">
-                    <filter context="{'group_by': 'object_ids'}" string="Object"/>
+                    <filter name="group_by_object_ids" context="{'group_by': 'object_ids'}" string="Object"/>
                 </group>
             </search>
         </field>

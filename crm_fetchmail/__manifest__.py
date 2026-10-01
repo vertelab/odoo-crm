@@ -16,7 +16,7 @@ CRM Fetch Mail Action
         - UI Integration: Extends 1 view(s) in the Odoo interface.
         - Extends Odoo: Builds on crm.lead.
     ''',
-    'depends': ['crm', 'mail'],
+    'depends': ['crm', 'mail', 'crm_iap_mine'],
     'data': [
         'data/server_action.xml',
         'views/crm_lead_views.xml',

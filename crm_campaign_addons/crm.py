@@ -8,8 +8,9 @@ _logger = logging.getLogger(__name__)
 
 class CrmTrackingCampaign(models.Model):
     _name = 'crm.tracking.campaign'
-    _inherit = ['crm.tracking.campaign', 'mail.thread']
+    _inherit = ['mail.thread']
 
+    name = fields.Char(string='Name', required=True)
     color = fields.Integer('Color Index')
     date_start = fields.Date(string='Start Date', tracking=True)
     date_stop = fields.Date(string='End Date', tracking=True)

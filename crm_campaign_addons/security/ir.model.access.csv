@@ -1,4 +1,4 @@
 id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 access_crm_campaign_object,crm.campaign.object,model_crm_campaign_object,,1,1,1,0
-access_crm_campaign_object_manager,crm.campaign.object.manager,model_crm_campaign_object,base.group_sale_manager,1,1,1,1
+access_crm_campaign_object_manager,crm.campaign.object.manager,model_crm_campaign_object,sales_team.group_sale_manager,1,1,1,1
 access_crm_tracking_campaign_public,crm_tracking_campaign public,model_crm_tracking_campaign,,1,0,0,0

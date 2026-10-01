@@ -6,11 +6,11 @@
       <field name="name">scaffold_test list</field>
       <field name="model">scaffold_test.scaffold_test</field>
       <field name="arch" type="xml">
-        <tree>
+        <list>
           <field name="name"/>
           <field name="value"/>
           <field name="value2"/>
-        </tree>
+        </list>
       </field>
     </record>
 -->
@@ -20,7 +20,7 @@
     <record model="ir.actions.act_window" id="scaffold_test.action_window">
       <field name="name">scaffold_test window</field>
       <field name="res_model">scaffold_test.scaffold_test</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">list,form</field>
     </record>
 -->
 
@@ -33,7 +33,7 @@
       <field name="code">
         action = {
           "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
+          "view_mode": "list,form",
           "res_model": model._name,
         }
       </field>

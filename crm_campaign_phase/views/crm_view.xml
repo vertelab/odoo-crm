@@ -35,14 +35,14 @@
         <notebook position="inside">
           <page string="Phases">
             <field name="phase_ids">
-              <tree default_order="sequence" editable='bottom'>
+              <list default_order="sequence" editable='bottom'>
                 <field name="sequence" widget="handle" />
                 <field name="phase_type" />
                 <field name="start_date" />
                 <field name="end_date" />
                 <field name="pricelist_id" />
                 <field name="reseller_pricelist" />
-              </tree>
+              </list>
             </field>
           </page>
         </notebook>
