@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    CRM: Skapad datum och tid
-#    Copyright (C) 2025- Vertel AB (<https://vertel.se>).
+#    Copyright (C) 2025- Vertel Sverige AB (<https://vertel.se>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ as well as on the kanban cards.
     - The column is always visible and can be sorted.
     - Time is shown without seconds.
     ''',
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'website': 'https://vertel.se/apps/odoo-crm/crm_lead_created_on',
     'depends': ['crm'],
     'data': [
