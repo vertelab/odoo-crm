@@ -214,7 +214,7 @@
     <record id="act_campaign_overview" model="ir.actions.act_window">
         <field name="name">Campaign Overview</field>
         <field name="res_model">campaign.overview</field>
-        <field name="binding_model_id" ref="crm.model_crm_tracking_campaign"/>
+        <field name="binding_model_id" ref="crm_campaign_addons.model_crm_tracking_campaign"/>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
