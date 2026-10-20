@@ -177,13 +177,10 @@
         </field>
     </record>
 
-    <record id="crm_tracking_campaign_gantt" model="ir.ui.view">
-        <field name="name">crm.tracking.campaign.gantt</field>
-        <field name="model">crm.tracking.campaign</field>
-        <field name="arch" type="xml">
-            <gantt date_start="date_start" date_stop="date_stop" string="Campaigns"/>
-        </field>
-    </record>
+    <!-- gantt-vyn togs bort 2026-10-20: Odoo 18 CE har ingen gantt-vytyp
+         (den kommer från web_gantt_ce, som modulen inte beror på). Vyn
+         refererades inte längre av någon view_mode efter att gantt strukits
+         ur crm.crm_tracking_campaign_act. -->
 
     <record id="crm_tracking_campaign_search" model="ir.ui.view">
         <field name="name">crm.tracking.campaign.search</field>
@@ -199,9 +196,13 @@
         </field>
     </record>
 
-    <!-- Override the standard campaign action to include calendar/gantt -->
+    <!-- Override the standard campaign action to include calendar.
+             gantt togs bort 2026-10-20: Odoo 18 CE har ingen gantt-vy,
+             och modulen deklarerar bara crm — inte web_gantt_ce — som
+             beroende. view_mode med gantt fällde hela installationen:
+               ParseError: while parsing crm_campaign_views.xml:203 -->
     <record id="crm.crm_tracking_campaign_act" model="ir.actions.act_window">
-        <field name="view_mode">list,form,calendar,gantt</field>
+        <field name="view_mode">list,form,calendar</field>
     </record>
 
     <!-- Campaign Overview Wizard -->
