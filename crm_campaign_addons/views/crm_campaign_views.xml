@@ -144,7 +144,6 @@
                             <span class="oe_inline"> - </span>
                             <field name="date_stop" class="oe_inline"/>
                         </div>
-                        <field name="section_id" groups="base.group_multi_salesteams"/>
                     </group>
                     <notebook>
                         <page string="Objects">
