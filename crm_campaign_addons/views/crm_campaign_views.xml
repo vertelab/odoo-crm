@@ -196,12 +196,17 @@
         </field>
     </record>
 
-    <!-- Override the standard campaign action to include calendar.
-             gantt togs bort 2026-10-20: Odoo 18 CE har ingen gantt-vy,
-             och modulen deklarerar bara crm — inte web_gantt_ce — som
-             beroende. view_mode med gantt fällde hela installationen:
-               ParseError: while parsing crm_campaign_views.xml:203 -->
-    <record id="crm.crm_tracking_campaign_act" model="ir.actions.act_window">
+    <!-- Egen action för kampanjlistan (2026-10-20).
+         Hette crm.crm_tracking_campaign_act och var tänkt att OVERRIDA en
+         action i crm-modulen. Men Odoo 18 har ingen crm_tracking_campaign_act
+         — hela crm.tracking.campaign-modellen togs bort ur core. Prefixet
+         'crm.' gjorde att Odoo behandlade posten som en extern referens
+         istället för modulens egen:
+           Exception: Cannot update missing record 'crm.crm_tracking_campaign_act'
+         Modulen skapar nu sin egen action utan prefix. -->
+    <record id="action_crm_tracking_campaign" model="ir.actions.act_window">
+        <field name="name">Campaigns</field>
+        <field name="res_model">crm.tracking.campaign</field>
         <field name="view_mode">list,form,calendar</field>
     </record>
 
