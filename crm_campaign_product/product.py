@@ -61,12 +61,13 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    campaign_ids = fields.Many2many(
-        comodel_name='crm.tracking.campaign',
-        relation="crm_campaign_product_rel",
-        column1='product_id', column2='campaign_id',
-        string='Campaigns',
-    )
+    # campaign_ids ärvs från product.template (2026-10-20).
+    # Fältet deklarerades tidigare på BÅDA modellerna med samma
+    # relation/column1/column2, vilket Odoo 18 vägrar:
+    #   TypeError: Many2many fields product.product.campaign_ids and
+    #   product.template.campaign_ids use the same table and columns
+    # product.product ärver automatiskt product.template-fält via
+    # _inherits, så ingen egen deklaration behövs.
 
 
 class CrmCampaignObject(models.Model):
