@@ -30,9 +30,12 @@
         <field name="model">crm.tracking.campaign</field>
         <field name="inherit_id" ref="crm_campaign_addons.crm_tracking_campaign_form"/>
         <field name="arch" type="xml">
-            <field name="section_id" position="after">
+            <!-- Odoo 18: crm.tracking.campaign har inget section_id-falt langre.
+     //h1 ar ett stabilt ankare som finns i bade 17 och 18.
+     Fixad 2026-11-11 (lant). -->
+                <xpath expr="//h1" position="after">
                 <field name="country_ids" widget="many2many_tags"/>
-            </field>
+            </xpath>
             <notebook position="inside">
                 <page string="Phases">
                     <field name="phase_ids">
