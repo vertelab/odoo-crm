@@ -2,3 +2,8 @@ allabolag
 builtwith
 python-whois
 dnspython
+
+# ── Saknade beroenden — inventering 2026-11-13 ──────────────────────────────
+# crm_allabolag och crm_bolagsfakta skrapar allabolag.se/bolagsfakta.se.
+# beautifulsoup4 saknades; allabolag/builtwith/python-whois/dnspython fanns.
+beautifulsoup4
