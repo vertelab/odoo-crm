@@ -174,7 +174,11 @@ def check_root(root, version, exclude_allow, preprocess, tmpdir):
     for f in files:
         name = os.path.basename(f)
         target, psuffix = pfile_split(name)
-        allowed = rel(root, f) in allow
+        relpath = rel(root, f)
+        # Vitlistan är modul-kvalificerad: "modul/models/x.py". En platt rad
+        # ("models/x.py") matchar BARA om modulnamnet inte är känt — annars
+        # skulle en rad för en modul tysta samma filnamn i en annan modul.
+        allowed = f"{os.path.basename(root)}/{relpath}" in allow
 
         if target is not None:                                  # en p-fil
             outfile = os.path.join(os.path.dirname(f), target)
@@ -259,7 +263,7 @@ def main(argv=None):
             root = entry["root"]
             for sev, kind, path, _ in entry["findings"]:
                 if kind == "UNEXPLAINED":
-                    line = path
+                    line = f"{os.path.basename(root)}/{path}"
                     if line not in seen:
                         seen.add(line)
                         print(line)

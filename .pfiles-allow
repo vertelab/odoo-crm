@@ -3,51 +3,80 @@
 # Varje rad är en fil som ÄR handskriven och medvetet inte har någon .p-källa.
 # Regeln är att nya filer skrivs som <namn>.p.<ändelse>; listan ska bara krympa.
 #
-# Skapad 2026-11-15 som utgångsläge för 18.0: 75 UNEXPLAINED fördelade på 44
-# filer (17 moduler). 2 av de 17 modulerna (crm_allabolag, crm_monitor) är
-# redan p-filerade — resten är kandidater för portning, inte för denna grind.
+# Rader är MODUL-KVALIFICERADE: "modul/sökväg". En platt rad ("models/x.py")
+# skulle tysta samma filnamn i varje modul — det var en bugg fram till
+# 2026-11-15, då två moduler med models/constants.py kolliderade.
 #
-# 2026-11-15: crm_enrich_crawlai p-filerad — 5 rader borttagna (44 -> 39).
+# Utgångsläge 18.0: 75 UNEXPLAINED i 17 moduler. Tre moduler är p-filerade
+# (crm_allabolag, crm_monitor, crm_enrich_crawlai, crm_enrich_base) — deras
+# rader är borta. Resten är kandidater för portning, inte för denna grind.
 #
 # Kontrollera med:
 #   pfiles-check --version 18.0 .
 # Ta bort en rad när filen fått en p-källa. Lägg INTE till nya rader för ny kod.
-controllers/controllers.py
-controllers/main.py
-crm.py
-crm_view.xml
-data/crm_ai_artifact_types.xml
-data/enrich_data.xml
-data/ir_action.xml
-data/okf_debug_actions.xml
-data/res.kommun.csv
-data/server_action.xml
-models/constant.py
-models/constants.py
-models/crm_bolagsfakta.py
-models/crm_lead.py
-models/res_company.py
-models/res_config.py
-models/res_kommun.py
-models/res_partner.py
-models/res_users.py
-models/utils.py
-product.py
-res_partner.py
-security/ir.model.access.csv
-static/description/index.html
-tests/test_crm_lead_okf.py
-views/crm_bolagsfakta_views.xml
-views/crm_campaign_phase_views.xml
-views/crm_campaign_product_views.xml
-views/crm_campaign_views.xml
-views/crm_lead_view.xml
-views/crm_lead_views.xml
-views/crm_view.xml
-views/res_company_view.xml
-views/res_config_view.xml
-views/res_kommun_view.xml
-views/res_partner_view.xml
-views/res_users_view.xml
-wizard/crm_create_bolagsfakta_wizard.py
-wizard/wizard_views.xml
+
+crm_ai/data/crm_ai_artifact_types.xml
+crm_ai/data/okf_debug_actions.xml
+crm_ai/models/crm_lead.py
+crm_ai/tests/test_crm_lead_okf.py
+crm_allabolag/models/constants.py
+crm_allabolag/static/description/index.html
+crm_bolagsfakta/controllers/controllers.py
+crm_bolagsfakta/data/enrich_data.xml
+crm_bolagsfakta/data/res.kommun.csv
+crm_bolagsfakta/models/constant.py
+crm_bolagsfakta/models/crm_bolagsfakta.py
+crm_bolagsfakta/models/crm_lead.py
+crm_bolagsfakta/models/res_kommun.py
+crm_bolagsfakta/models/res_partner.py
+crm_bolagsfakta/models/utils.py
+crm_bolagsfakta/security/ir.model.access.csv
+crm_bolagsfakta/static/description/index.html
+crm_bolagsfakta/views/crm_bolagsfakta_views.xml
+crm_bolagsfakta/views/crm_view.xml
+crm_bolagsfakta/views/res_kommun_view.xml
+crm_bolagsfakta/views/res_partner_view.xml
+crm_bolagsfakta/wizard/crm_create_bolagsfakta_wizard.py
+crm_bolagsfakta/wizard/wizard_views.xml
+crm_builtwith/models/crm_lead.py
+crm_builtwith/static/description/index.html
+crm_builtwith/views/crm_lead_views.xml
+crm_campaign_addons/crm.py
+crm_campaign_addons/crm_view.xml
+crm_campaign_addons/security/ir.model.access.csv
+crm_campaign_addons/static/description/index.html
+crm_campaign_addons/views/crm_campaign_views.xml
+crm_campaign_phase/crm.py
+crm_campaign_phase/security/ir.model.access.csv
+crm_campaign_phase/static/description/index.html
+crm_campaign_phase/views/crm_campaign_phase_views.xml
+crm_campaign_phase/views/crm_view.xml
+crm_campaign_phase_default_variant/crm.py
+crm_campaign_phase_default_variant/static/description/index.html
+crm_campaign_product/product.py
+crm_campaign_product/security/ir.model.access.csv
+crm_campaign_product/static/description/index.html
+crm_campaign_product/views/crm_campaign_product_views.xml
+crm_campaign_supplier/res_partner.py
+crm_campaign_supplier/static/description/index.html
+crm_enrich_base/static/description/index.html
+crm_enrich_phonemail/models/crm_lead.py
+crm_enrich_phonemail/static/description/index.html
+crm_enrich_phonemail/views/crm_lead_view.xml
+crm_fetchmail/data/server_action.xml
+crm_fetchmail/models/crm_lead.py
+crm_fetchmail/static/description/index.html
+crm_fetchmail/views/crm_lead_views.xml
+crm_lead_created_on/static/description/index.html
+crm_lead_created_on/views/crm_lead_views.xml
+crm_monitor/security/ir.model.access.csv
+crm_monitor/static/description/index.html
+crm_sni/models/crm_lead.py
+crm_sni/views/crm_lead_views.xml
+linkedin_contacts/controllers/main.py
+linkedin_contacts/models/res_company.py
+linkedin_contacts/models/res_config.py
+linkedin_contacts/models/res_users.py
+linkedin_contacts/views/res_company_view.xml
+linkedin_contacts/views/res_config_view.xml
+linkedin_contacts/views/res_users_view.xml

@@ -93,10 +93,13 @@ jobs:
 
       - name: 3b. Manifest utan Odoo-prefix
         run: |
+          # Bara ett Odoo-UTGÅVEPREFIX är fel ('18.0.1.1.0'). Ett vanligt
+          # semantiskt versionsnummer ('1.1.0') är rätt — adapt_version()
+          # lägger till prefixet. Regexen kräver därför xx.0. som prefix.
           status=0
           for m in $(git ls-files '*__manifest__.p.py'); do
-            if grep -qE "'version'[[:space:]]*:[[:space:]]*'[0-9]+\.[0-9]+\.[0-9]+" "$m"; then
-              echo "::error file=$m::version ska vara utan '18.0.'-prefix i en p-fil"
+            if grep -qE "['\"]version['\"][[:space:]]*:[[:space:]]*['\"][0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" "$m"; then
+              echo "::error file=$m::version ska vara utan Odoo-prefix (använd '1.1.0', inte '18.0.1.1.0')"
               status=1
             fi
           done
