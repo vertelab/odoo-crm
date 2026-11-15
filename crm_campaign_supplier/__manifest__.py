@@ -3,7 +3,7 @@
 
 {
     'name': 'CRM Campaign Supplier',
-    'version': '18.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Marketing/Campaigns',
     'summary': 'Link suppliers to CRM campaigns.',
     'description': '''

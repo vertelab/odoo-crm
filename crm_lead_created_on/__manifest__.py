@@ -21,7 +21,7 @@
 
 {
     'name': 'CRM: Skapad datum och tid',
-    'version': '18.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Sales/CRM',
     'summary': "Shows the creation date and time (without seconds) in CRM list and kanban views.",
     'description': '''

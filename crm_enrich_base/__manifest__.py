@@ -21,7 +21,7 @@
 
 {
     'name': 'CRM: Enrich Base',
-    'version': '18.0.1.1.0',
+    'version': '1.1.0',
     'summary': 'Adding data.',
     'description': '''
 Enrich Base

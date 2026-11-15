@@ -3,7 +3,7 @@
 
 {
     'name': 'CRM Campaign',
-    'version': '18.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Marketing/Campaigns',
     'summary': 'Campaign management for CRM with objects, calendar, and Gantt.',
     'description': '''

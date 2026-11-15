@@ -3,7 +3,7 @@
 
 {
     'name': 'CRM Campaign Phase Default Variant',
-    'version': '18.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Marketing/Campaigns',
     'summary': 'Prefer campaign product variants as default.',
     'description': '''

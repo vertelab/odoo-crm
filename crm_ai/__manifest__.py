@@ -2,7 +2,7 @@
 # Part of Vertel. See LICENSE file for full copyright and licensing details.
 {
     'name': 'CRM AI — Bridge',
-    'version': '18.0.1.0.3',
+    'version': '1.0.3',
     'summary': 'OKF-kontraktet på crm.lead — leadets anteckningar blir sökbara',
     'category': 'AI Orchestration',
     'description': """

@@ -3,7 +3,7 @@
 
 {
     'name': 'CRM Campaign Phase',
-    'version': '18.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Marketing/Campaigns',
     'summary': 'Campaign phases with pricelists and country filtering.',
     'description': '''
