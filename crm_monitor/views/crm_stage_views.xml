@@ -58,12 +58,12 @@
           </page>
           <page string="On Time" id="trigger">
             <field name="stage_monitor_ids" context="{'default_stage_id': id}">
-              <list>
+              <tree>
                 <field name="sequence" widget="handle" />
                 <field name="trigger_type" />
                 <field name="trigger_date_info"  />
                 <field name="trigger_info"  nolabel="1" />
-              </list>
+              </tree>
               <form>
                 <group>
                   <label for="trigger_days" />

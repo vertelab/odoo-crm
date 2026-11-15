@@ -96,7 +96,7 @@
         <field name="name">crm.allabolag.mining.tree</field>
         <field name="model">crm.allabolag.mining</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="date" decoration-bf="1" />
                 <field name="name" decoration-bf="1" />
                 <field name="user_id" />
@@ -110,7 +110,7 @@
                 <field name="team_id" optional="hide" />
                 <field name="tag_ids" widget="many2many_tags" optional="hide" />
                 <field name="state" readonly="1" decoration-info="state == 'draft'" decoration-success="state == 'done'" decoration-danger="state == 'error'" widget="badge" />
-            </list>
+            </tree>
         </field>
     </record>
     <record id="crm_allabolag_mining_request_search" model="ir.ui.view">
