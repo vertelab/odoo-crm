@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_crawlai_enrich_wizard_form" model="ir.ui.view">
+            <field name="name">crm.crawlai.enrich.wizard.form</field>
+            <field name="model">crm.crawlai.enrich.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Enrich with CrawlAI">
+                    <group>
+                        <group string="Lead">
+                            <field name="lead_id" invisible="1"/>
+                            <field name="lead_name" readonly="1"/>
+                            <field name="company_name" readonly="1"/>
+                            <field name="company_registry" readonly="1"/>
+                            <field name="website" readonly="1"/>
+                        </group>
+                        <group string="Steps">
+                            <field name="step_website"/>
+                            <field name="step_description"/>
+                            <field name="step_linkedin"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="action_run" type="object"
+                                string="Run enrichment" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary"
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_crawlai_enrich_wizard" model="ir.actions.act_window">
+            <field name="name">Enrich with CrawlAI</field>
+            <field name="res_model">crm.crawlai.enrich.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ═══════════════════════════════════════════════════════════
+             Agent: CrawlAI Lead Enricher (pi-python, runtime=external)
+
+             Hjärnan i berikningen. Kopplas till coworkern
+             "Allman assistent" (coworker_default_assistent) som member,
+             så att den nås både från knappen på crm.lead och från
+             chatten.
+
+             runtime=external: agent-loopen körs som en separat process
+             (pi-agent) och frigör Odoo-workern. Verktyget
+             crawlai_lead_enricher har executor=nats och exekveras av
+             pi-agenten — inte i Odoo-processen.
+             ═══════════════════════════════════════════════════════════ -->
+
+        <record id="agent_crawlai_lead_enricher" model="ai.agent">
+            <field name="name">CrawlAI Lead Enricher</field>
+            <field name="ai_role">CRM Lead Enrichment Specialist</field>
+            <field name="description">Berikar CRM-leads med webbplats,
+företagsbeskrivning, kontaktperson och LinkedIn. Söker upp företagets
+webbplats via namn och organisationsnummer, crawlar sajten och föreslår
+värden — skriver aldrig utan godkännande per fält.</field>
+            <field name="ai_goal">Föreslå korrekta, källbelagda fältvärden för
+en CRM-lead (webbplats, beskrivning, kontaktperson, LinkedIn) utan att
+skriva något ofrivilligt.</field>
+            <field name="ai_backstory">Specialist på svensk företagsdata:
+Allabolag, Bolagsverket, företagswebbplatser och LinkedIn. Källkritisk —
+hellre ett tomt fält än en gissning.</field>
+            <field name="status">active</field>
+            <field name="runtime">external</field>
+            <field name="max_rounds" eval="15"/>
+            <field name="temperature" eval="0.3"/>
+            <field name="skill_ids" eval="[(6, 0, [ref('skill_crawlai_lead_enricher')])]"/>
+            <field name="tool_ids" eval="[(6, 0, [
+                ref('tool_crawlai_lead_enricher'),
+                ref('ai_agent_core.tool_odoo_search'),
+                ref('ai_agent_core.tool_odoo_write'),
+                ref('ai_agent_core.tool_describe_model'),
+            ])]"/>
+        </record>
+
+        <!-- Koppla agenten till coworkern "Allman assistent" som member.
+             (4, id) är idempotent — länken läggs bara till om den saknas. -->
+        <record id="coworker_agent_crawlai_lead_enricher" model="ai.coworker.agent">
+            <field name="coworker_id" ref="ai_agent_core.coworker_default_assistent"/>
+            <field name="agent_id" ref="agent_crawlai_lead_enricher"/>
+            <field name="role">member</field>
+            <field name="sequence" eval="40"/>
+        </record>
+
+    </data>
+</odoo>
