@@ -1,0 +1,90 @@
+# p-filer: undantag från täckningskontrollen (pfiles-check)
+#
+# Varje rad är en fil som ÄR handskriven och medvetet inte har någon .p-källa.
+# Regeln är att nya filer skrivs som <namn>.p.<ändelse>; listan ska bara krympa.
+#
+# Rader är MODUL-KVALIFICERADE: "modul/sökväg". En platt rad ("models/x.py")
+# skulle tysta samma filnamn i varje modul.
+#
+# Utgångsläge 17.0: 75 UNEXPLAINED i 14 moduler. Två moduler är p-filerade
+# (crm_allabolag, crm_monitor). Resten är kandidater för portning.
+#
+# Kontrollera med:
+#   pfiles-check --version 17.0 .
+# Ta bort en rad när filen fått en p-källa. Lägg INTE till nya rader för ny kod.
+
+crm_allabolag/static/description/index.html
+crm_bolagsfakta/controllers/controllers.py
+crm_bolagsfakta/data/enrich_data.xml
+crm_bolagsfakta/data/res.kommun.csv
+crm_bolagsfakta/models/constant.py
+crm_bolagsfakta/models/crm_bolagsfakta.py
+crm_bolagsfakta/models/crm_lead.py
+crm_bolagsfakta/models/res_kommun.py
+crm_bolagsfakta/models/res_partner.py
+crm_bolagsfakta/models/utils.py
+crm_bolagsfakta/security/ir.model.access.csv
+crm_bolagsfakta/static/description/index.html
+crm_bolagsfakta/views/crm_bolagsfakta_views.xml
+crm_bolagsfakta/views/crm_view.xml
+crm_bolagsfakta/views/res_kommun_view.xml
+crm_bolagsfakta/views/res_partner_view.xml
+crm_bolagsfakta/wizard/crm_create_bolagsfakta_wizard.py
+crm_bolagsfakta/wizard/wizard_views.xml
+crm_builtwith/models/crm_lead.py
+crm_builtwith/static/description/index.html
+crm_builtwith/views/crm_lead_views.xml
+crm_campaign_product/models/product.py
+crm_campaign_product/security/ir.model.access.csv
+crm_campaign_product/static/description/index.html
+crm_campaign_product/views/product_view.xml
+crm_campaign_supplier/models/res_partner.py
+crm_campaign_supplier/static/description/index.html
+crm_campaign_vrtl/models/crm.py
+crm_campaign_vrtl/security/ir.model.access.csv
+crm_campaign_vrtl/views/crm_view.xml
+crm_enrich_base/data/ir_action.xml
+crm_enrich_base/models/crm_lead.py
+crm_enrich_base/static/description/index.html
+crm_linkedin/data/enrich_data.xml
+crm_linkedin/data/ir_cron.xml
+crm_linkedin/models/automation_step.py
+crm_linkedin/models/crm_lead.py
+crm_linkedin/models/crm_lead_linkedin_helpers.py
+crm_linkedin/models/hr_employee.py
+crm_linkedin/models/linkedin_crm_lead_mining_request.py
+crm_linkedin/models/res_partner.py
+crm_linkedin/models/res_users.py
+crm_linkedin/security/ir.model.access.csv
+crm_linkedin/views/crm_lead_view.xml
+crm_linkedin/views/hr_employee_view.xml
+crm_linkedin/views/linkedin_crm_lead_mining_request_views.xml
+crm_linkedin/views/res_partner_view.xml
+crm_linkedin/views/res_user_view.xml
+crm_linkedin/wizard/linkedin_employee_wizard.py
+crm_linkedin/wizard/linkedin_employee_wizard_view.xml
+crm_monitor/static/description/index.html
+crm_sni/models/crm_lead.py
+crm_sni/views/crm_lead_views.xml
+crm_stage_scoring/data/demo_data.xml
+crm_stage_scoring/models/crm_lead.py
+crm_stage_scoring/models/crm_stage.py
+crm_stage_scoring/security/ir.model.access.csv
+crm_stage_scoring/static/description/index.html
+crm_stage_scoring/views/crm_stage_views.xml
+crm_ted/models/crm_lead.py
+crm_ted/models/crm_ted.py
+crm_ted/security/ir.model.access.csv
+crm_ted/static/description/index.html
+crm_ted/views/crm_ted_views.xml
+crm_ted/views/templates.xml
+crm_website_campaign/models/campaign.py
+crm_website_campaign/models/sale_order.py
+crm_website_campaign/views/campaign_view.xml
+linkedin_contacts/controllers/main.py
+linkedin_contacts/models/res_company.py
+linkedin_contacts/models/res_config.py
+linkedin_contacts/models/res_users.py
+linkedin_contacts/views/res_company_view.xml
+linkedin_contacts/views/res_config_view.xml
+linkedin_contacts/views/res_users_view.xml
