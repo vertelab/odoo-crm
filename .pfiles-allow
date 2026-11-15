@@ -1,0 +1,53 @@
+# p-filer: undantag från täckningskontrollen (pfiles-check)
+#
+# Varje rad är en fil som ÄR handskriven och medvetet inte har någon .p-källa.
+# Regeln är att nya filer skrivs som <namn>.p.<ändelse>; listan ska bara krympa.
+#
+# Skapad 2026-11-15 som utgångsläge för 18.0: 75 UNEXPLAINED fördelade på 44
+# filer (17 moduler). 2 av de 17 modulerna (crm_allabolag, crm_monitor) är
+# redan p-filerade — resten är kandidater för portning, inte för denna grind.
+#
+# 2026-11-15: crm_enrich_crawlai p-filerad — 5 rader borttagna (44 -> 39).
+#
+# Kontrollera med:
+#   pfiles-check --version 18.0 .
+# Ta bort en rad när filen fått en p-källa. Lägg INTE till nya rader för ny kod.
+controllers/controllers.py
+controllers/main.py
+crm.py
+crm_view.xml
+data/crm_ai_artifact_types.xml
+data/enrich_data.xml
+data/ir_action.xml
+data/okf_debug_actions.xml
+data/res.kommun.csv
+data/server_action.xml
+models/constant.py
+models/constants.py
+models/crm_bolagsfakta.py
+models/crm_lead.py
+models/res_company.py
+models/res_config.py
+models/res_kommun.py
+models/res_partner.py
+models/res_users.py
+models/utils.py
+product.py
+res_partner.py
+security/ir.model.access.csv
+static/description/index.html
+tests/test_crm_lead_okf.py
+views/crm_bolagsfakta_views.xml
+views/crm_campaign_phase_views.xml
+views/crm_campaign_product_views.xml
+views/crm_campaign_views.xml
+views/crm_lead_view.xml
+views/crm_lead_views.xml
+views/crm_view.xml
+views/res_company_view.xml
+views/res_config_view.xml
+views/res_kommun_view.xml
+views/res_partner_view.xml
+views/res_users_view.xml
+wizard/crm_create_bolagsfakta_wizard.py
+wizard/wizard_views.xml
