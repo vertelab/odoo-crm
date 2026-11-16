@@ -6,9 +6,19 @@ from .constants import (
 
 
 class CRMLead(models.Model):
-    _inherit = "crm.lead"
+    # The allabolag mixin supplies summary_* and kpi_* — the fields the form
+    # view shows and the provider writes. Without it the view fails to load.
+    _name = 'crm.lead'
+    _inherit = ["crm.lead", "res.partner.allabolag.mixin"]
 
     mining_id = fields.Many2one(comodel_name="crm.allabolag.mining")
+
+    # Declared here rather than in crm_allabolag.py: these are the fields the
+    # provider writes and the view shows, and they belong next to the mining
+    # fields they sit beside.
+    company_registry = fields.Char(string='Company Registry', size=64, trim=True)
+    vat = fields.Char(string='VAT', size=64, trim=True)
+    linkTo = fields.Char(string='Link', help="Link to Allabolag")
 
     mining_corporate_form = fields.Selection(
         selection=MINING_CORPORATE_FORM,

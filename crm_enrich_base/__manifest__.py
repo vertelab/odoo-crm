@@ -21,7 +21,7 @@
 
 {
     'name': 'CRM: Enrich Base',
-    'version': '1.1.0',
+    'version': '2.0.0',
     'summary': 'Adding data.',
     'description': '''
 Enrich Base
@@ -43,7 +43,7 @@ Enrich Base
     'contributor': '',
     'maintainer': 'Vertel Sverige AB',
     'repository': 'https://github.com/vertelab/odoo-crm',
-    'depends': ['crm'],
+    'depends': ['crm', 'partner_enrich_base'],
     'data': [
         'data/ir_action.xml',
         # ~ 'views/res_partner_view.xml',
