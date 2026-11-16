@@ -169,7 +169,16 @@ if [ "${PFILES_DB_FRESH:-0}" = "1" ]; then
   # (fel roll, ingen rattighet) skulle modulen koras mot en databas dar
   # grannarna redan ar installerade — och da ar "installerad" ett falskt
   # gront, eftersom Odoo hoppar over en modul som redan star som installerad.
-  n_tables="$(psql_admin "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'" 2>/dev/null | tr -d ' ' || true)"
+  # Rak TCP-anslutning som primar vag. psql_admin valjer sudo forst, och i
+  # en runner dar sudo finns men postgres-rollen inte gor det kan det ge tom
+  # utdata — vilket gjorde att ALLA moduler rapporterades som "inte ren
+  # databas". Samma anslutningssatt som workflowens miljosteg anvander.
+  n_tables="$(PGPASSWORD="$DB_PASS" psql -h 127.0.0.1 -U "$DB_USER" -d "$DB" \
+      -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'" \
+      2>/dev/null | tr -d ' \n' || true)"
+  if [ -z "$n_tables" ]; then
+    n_tables="$(psql_admin "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'" 2>/dev/null | tr -d ' \n' || true)"
+  fi
   if [ "${n_tables:-x}" != "0" ]; then
     env_fail "databasen $DB ar inte ren (${n_tables:-okant} tabeller) — kan inte bevisa nagot om modulen (miljofel)"
   fi
