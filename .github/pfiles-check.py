@@ -450,10 +450,24 @@ def check_root(root, version, exclude_allow, preprocess, tmpdir):
             if exclude_allow:
                 continue        # p-filen rapporterar redan PARED/STALE
             try:
-                same = open(f, "rb").read() == open(source, "rb").read()
-                findings.append((OK, "PAIRED", rel(root, f), "identisk med p-filen"))
+                with open(f, "rb") as fh:
+                    generated = fh.read()
+                with open(source, "rb") as fh:
+                    origin = fh.read()
             except OSError as exc:
                 findings.append((ERR, "STALE", rel(root, f), str(exc)))
+                continue
+            # Jämförelsen måste faktiskt användas. Tidigare beräknades `same`
+            # men resultatet slängdes: filen rapporterades alltid som identisk
+            # med p-filen, även när den inte var det. I --no-expand-läget var
+            # STALE därför omöjligt att få — en tyst falsk grön.
+            if generated == origin:
+                findings.append((OK, "PAIRED", rel(root, f), "identisk med p-filen"))
+            else:
+                findings.append((ERR, "STALE", rel(root, f),
+                                 f"skiljer sig från {rel(root, source)} — "
+                                 f"kör om preprocess (eller redigera p-filen, "
+                                 f"inte utdatafilen)"))
             continue
 
         if allowed:
