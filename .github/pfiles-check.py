@@ -12,6 +12,12 @@ Kontrollerar en modulkatalog (eller ett helt repo) och rapporterar:
   ALLOWED         vitlistad — OK
   NOT_APPLICABLE  saknar stöd för preprocess — OK
 
+Utgåvespecifika säkerhetskontroller (Odoo 20 bytte form på ir.model.access):
+
+  WRONG_SECURITY_FORMAT  säkerhetsfilen har fel form för utgåvan (FEL)
+  UNLISTED_SECURITY_FILE manifestet laddar en säkerhetsfil utgåvan inte kan läsa (FEL)
+  BAD_DOMAIN_NAME        domän använder namn utanför utgåvans eval-kontext (FEL)
+
 Användning:
   ./pfiles-check.py --version 18.0 /path/till/modul [...]
   ./pfiles-check.py --version 18.0 --json /path/till/repo
@@ -25,8 +31,11 @@ Exit: 0 = inga fel, 1 = fel hittade, 2 = användningsfel.
 from __future__ import annotations
 
 import argparse
+import ast
+import csv
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -49,6 +58,62 @@ PFILE_SUFFIXES = [(".p.py", ".py"), (".p.xml", ".xml"), (".p.js", ".js"),
 OK, ERR = "OK", "ERROR"
 
 
+# ---------------------------------------------------------------------------
+# Utgåveprofiler
+#
+# Säkerhetsdatan för ir.model.access bytte form i Odoo 20.0:
+#
+#   18.0/19.0                20.0
+#   fil  ir.model.access.csv  ir.access.csv      <- FILNAMNET avgör modellen
+#   model_id:id               model_id           <- naket modellnamn
+#   group_id:id               group_id/id
+#   perm_read/write/create/unlink   operation     <- 'crud' etc.
+#   (ir.rule separat)         domain-kolumn
+#
+# Filnamnet är inte kosmetik: Odoo 20 läser modellnamnet ur filnamnets prefix
+# FÖRE innehållet (convert_csv_import). En ny-format fil som ligger i
+# ir.model.access.csv fäller alltså fortfarande med KeyError: 'ir.model.access'.
+#
+# Verifierat 2026-11-16: 18/19 har tabellen ir_model_access, 20.0 har ir_access.
+# OCB 19.0 är gammalt format (ingen ir_access.py) — bara 20.0 är nytt.
+# ---------------------------------------------------------------------------
+EDITION_PROFILES = {
+    "18.0": {
+        "security_filename": "ir.model.access.csv",
+        "security_model": "ir.model.access",
+        "security_format": "legacy",
+        "security_columns": ("id", "name", "model_id:id", "group_id:id",
+                             "perm_read", "perm_write", "perm_create", "perm_unlink"),
+    },
+    "19.0": {
+        "security_filename": "ir.model.access.csv",
+        "security_model": "ir.model.access",
+        "security_format": "legacy",
+        "security_columns": ("id", "name", "model_id:id", "group_id:id",
+                             "perm_read", "perm_write", "perm_create", "perm_unlink"),
+    },
+    "20.0": {
+        "security_filename": "ir.access.csv",
+        "security_model": "ir.access",
+        "security_format": "modern",
+        "security_columns": ("id", "name", "model_id", "group_id/id",
+                             "operation", "domain"),
+    },
+}
+
+# Filer som hör till den gamla respektive nya säkerhetsformen. Används för att
+# upptäcka en fil som ligger kvar i fel form för utgåvan.
+SECURITY_FILENAMES = {"ir.model.access.csv", "ir.access.csv"}
+
+# Domännamn som INTE finns i 20.0:s eval-kontext (_eval_context ger bara
+# user, time, company_ids, company_id). 'uid' ger NameError vid installation.
+BAD_DOMAIN_NAMES_MODERN = {"uid": "user.id"}
+
+def edition_profile(version):
+    """Profil för en utgåva. Okänd utgåva ger None (hoppa över formatkontroll)."""
+    return EDITION_PROFILES.get(version)
+
+
 def pfile_split(name):
     """a.p.py -> ('a.py', '.p.py');  a.py -> (None, None)."""
     for psuffix, suffix in PFILE_SUFFIXES:
@@ -58,10 +123,16 @@ def pfile_split(name):
 
 
 def pepfile_hint(name):
-    """a.xml -> a.xml.p.xml (preprocess-konventionen: suffixet behålls)."""
+    """a.xml -> a.p.xml, a.py -> a.p.py.
+
+    Konventionen är att '.p' sätts IN före ändelsen, inte efter hela namnet.
+    Det måste stämma med pfile_split: 'a.p.py' -> 'a.py'. Att föreslå
+    'a.py.p.py' (som en tidigare version gjorde) ger pfile_split 'a.py.py'
+    och skapar ett nytt fel i stället för att lösa det.
+    """
     for psuffix, suffix in PFILE_SUFFIXES:
         if name.lower().endswith(suffix):
-            return name + psuffix
+            return name[: -len(suffix)] + ".p" + suffix
     return name + ".p"
 
 
@@ -114,6 +185,182 @@ def load_allow(root):
 
 def rel(root, path):
     return os.path.relpath(path, root).replace(os.sep, "/")
+
+
+# ---------------------------------------------------------------------------
+# Säkerhetskontroller per utgåva (2.2, 2.3, 2.4)
+# ---------------------------------------------------------------------------
+
+def load_manifest(root):
+    """Läs modulens manifest som en dict. None om det inte går.
+
+    Föredrar __manifest__.py; faller tillbaka på __manifest__.p.py eftersom
+    p-filen är källan när den finns. literal_eval fungerar på p-manifestet:
+    villkoren ligger i kommentarer (# #if), inte i Pythonsyntax.
+    """
+    for name in ("__manifest__.py", "__manifest__.p.py"):
+        path = os.path.join(root, name)
+        if not os.path.isfile(path):
+            continue
+        try:
+            with open(path, encoding="utf-8") as fh:
+                value = ast.literal_eval(fh.read())
+        except (OSError, SyntaxError, ValueError):
+            continue
+        if isinstance(value, dict):
+            return value
+    return None
+
+
+def csv_header(path):
+    """Första raden i en CSV som en lista fält, eller None."""
+    try:
+        with open(path, encoding="utf-8-sig", newline="") as fh:
+            first = fh.readline()
+    except OSError:
+        return None
+    if not first.strip():
+        return None
+    return [c.strip() for c in next(csv.reader([first]))]
+
+
+def csv_rows(path):
+    """Alla datarader (inte header) i en CSV."""
+    try:
+        with open(path, encoding="utf-8-sig", newline="") as fh:
+            rows = list(csv.reader(fh))
+    except OSError:
+        return []
+    return [r for r in rows[1:] if r and any(c.strip() for c in r)]
+
+
+def security_findings(root, version):
+    """Kontrollera säkerhetsfilerna mot utgåvans profil.
+
+    Tre fel (alla ERROR, alla skulle fälla en installation):
+
+      WRONG_SECURITY_FORMAT  filen har fel form för utgåvan
+                             (t.ex. perm_read-kolumner i 20.0, eller
+                              operation/domain i 18.0)
+      UNLISTED_SECURITY_FILE en säkerhetsfil ligger i modulen men laddas inte
+                             av manifestets data — död vikt, och i värsta fall
+                             en tyst överraskning när någon lägger till den
+      BAD_DOMAIN_NAME        domän använder ett namn som inte finns i
+                             utgåvans eval-kontext (uid i 20.0)
+
+    Returnerar (findings, info) där info är en dict för --json.
+    """
+    profile = edition_profile(version)
+    findings = []
+    info = {"profile": None, "present": [], "listed": []}
+    if profile is None:
+        return findings, info
+    info["profile"] = profile["security_format"]
+
+    secdir = os.path.join(root, "security")
+    present = []
+    if os.path.isdir(secdir):
+        for name in sorted(os.listdir(secdir)):
+            if name in SECURITY_FILENAMES or name.endswith(".p.csv"):
+                present.append(name)
+    info["present"] = present
+
+    # 2.2 — rätt format för utgåvan, för både utdata och p-källa
+    expected = profile["security_columns"]
+    # En .p.csv vars utdata redan rapporterats ger samma fel två gånger. Vi
+    # hoppar över p-källan när dess utdatafil ligger i samma katalog — felet
+    # är detsamma och användaren ska åtgärda paret, inte två filer.
+    reported = set()
+    for name in present:
+        if name.endswith(".p.csv"):
+            out = name[: -len(".p.csv")] + ".csv"
+            if out in present:
+                reported.add(name)
+    for name in present:
+        if name in reported:
+            continue
+        path = os.path.join(secdir, name)
+        header = csv_header(path)
+        if header is None:
+            continue                     # tom/headerlös — annan kontroll fångar det
+        # En .p.csv är en källa; dess header är samma oavsett utgåva bara om
+        # villkoren styr raderna. Vi kontrollerar bara utdatafilerna, plus
+        # p-källan för att ge ett tidigt besked.
+        looks_legacy = "perm_read" in header
+        looks_modern = "operation" in header
+        if profile["security_format"] == "modern" and looks_legacy:
+            findings.append((ERR, "WRONG_SECURITY_FORMAT", rel(root, path),
+                             f"{name} har gammalt format (perm_*-kolumner) men "
+                             f"utgåvan {version} kräver {profile['security_filename']} "
+                             f"med kolumnerna {','.join(expected)}"))
+        elif profile["security_format"] == "legacy" and looks_modern:
+            findings.append((ERR, "WRONG_SECURITY_FORMAT", rel(root, path),
+                             f"{name} har nytt format (operation/domain) men "
+                             f"utgåvan {version} kräver {profile['security_filename']}"))
+        elif not looks_legacy and not looks_modern and header != list(expected):
+            findings.append((ERR, "WRONG_SECURITY_FORMAT", rel(root, path),
+                             f"{name} har oväntad header: {','.join(header)} — "
+                             f"väntade {','.join(expected)}"))
+
+        # Fel filnamn för formen: nytt format i ir.model.access.csv fäller
+        # fortfarande eftersom Odoo 20 tar modellen ur filnamnet.
+        if looks_modern and name == "ir.model.access.csv":
+            findings.append((ERR, "WRONG_SECURITY_FORMAT", rel(root, path),
+                             f"nytt format ligger i {name} — Odoo 20 tar modellen ur "
+                             f"FILNAMNET före innehållet, så filen måste heta "
+                             f"ir.access.csv"))
+
+    # 2.3 — bara den valda säkerhetsfilen får ligga i manifestets data
+    manifest = load_manifest(root)
+    if manifest is not None:
+        data = manifest.get("data") or []
+        listed = [d for d in data
+                  if isinstance(d, str) and os.path.basename(d) in SECURITY_FILENAMES]
+        info["listed"] = listed
+        want = f"security/{profile['security_filename']}"
+        manifest_name = "__manifest__.py"
+        if not os.path.isfile(os.path.join(root, manifest_name)):
+            manifest_name = "__manifest__.p.py"
+        if len(listed) > 1:
+            findings.append((ERR, "UNLISTED_SECURITY_FILE", manifest_name,
+                             f"manifestet listar flera säkerhetsfiler: "
+                             f"{', '.join(listed)} — bara {want} kan laddas"))
+        for entry in listed:
+            if os.path.basename(entry) != profile["security_filename"]:
+                findings.append((ERR, "UNLISTED_SECURITY_FILE", manifest_name,
+                                 f"manifestet laddar {entry}, men utgåvan {version} "
+                                 f"kräver {want}"))
+        # En säkerhetsfil som finns men inte listas är död vikt. I sig inte
+        # ett fel (den laddas aldrig), men den är en tyst fälla: läggs den
+        # till i data utan att byta form fäller den. Rapporteras som varning.
+
+    # 2.4 — domännamn som inte finns i utgåvans eval-kontext
+    if profile["security_format"] == "modern":
+        for name in present:
+            path = os.path.join(secdir, name)
+            header = csv_header(path)
+            if not header or "domain" not in header:
+                continue
+            idx = header.index("domain")
+            for lineno, row in enumerate(csv_rows(path), start=2):
+                if len(row) <= idx:
+                    continue
+                # Odoo skriver domänen med kommatecken UTAN citattecken
+                # ([('user_id','=',user.id)]), så csv-modulen delar upp den i
+                # flera kolumner. En naiv läsning av row[idx] ser bara första
+                # fragmentet ("[('user_id'") och missar 'uid' i svansen.
+                # Slå ihop allt från idx och framåt — det är domänen.
+                dom = ",".join(row[idx:])
+                if not dom.strip():
+                    continue
+                for bad, good in BAD_DOMAIN_NAMES_MODERN.items():
+                    if re.search(rf"\b{re.escape(bad)}\b", dom):
+                        findings.append((ERR, "BAD_DOMAIN_NAME",
+                                         f"{rel(root, path)}:{lineno}",
+                                         f"domänen använder '{bad}' som inte finns i "
+                                         f"20.0:s eval-kontext (user, time, "
+                                         f"company_ids, company_id) — använd '{good}'"))
+    return findings, info
 
 
 def expand_ok(preprocess, pfile, outfile, version, repo, tmpdir, cache):
@@ -216,7 +463,12 @@ def check_root(root, version, exclude_allow, preprocess, tmpdir):
                              f"{name} är varken p-fil eller genererad — döp till "
                              f"{pepfile_hint(name)} "
                              f"eller vitlista i .pfiles-allow"))
-    return findings, allow_src, allow
+
+    # Utgåvespecifika säkerhetskontroller (2.2, 2.3, 2.4). De läggs till efter
+    # täckningskontrollen så att de alltid körs, även med --no-expand.
+    sec_findings, sec_info = security_findings(root, version)
+    findings.extend(sec_findings)
+    return findings, allow_src, allow, sec_info
 
 
 def main(argv=None):
@@ -248,12 +500,12 @@ def main(argv=None):
 
     try:
         for root in roots:
-            findings, allow_src, allow = check_root(root, args.version, not args.no_expand,
-                                                    preprocess, tmpdir)
+            findings, allow_src, allow, sec_info = check_root(
+                root, args.version, not args.no_expand, preprocess, tmpdir)
             errs = [f for f in findings if f[0] == ERR]
             total_err += len(errs)
             all_findings.append({"root": root, "allow": allow_src, "findings": findings,
-                                 "errors": len(errs)})
+                                 "errors": len(errs), "security": sec_info})
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
 
