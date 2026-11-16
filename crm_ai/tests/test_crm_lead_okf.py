@@ -210,5 +210,5 @@ class TestCrmLeadOkf(common.TransactionCase):
         self.assertTrue(action, 'debug-åtgärden ska finnas')
         self.assertEqual(action.binding_model_id.model, 'crm.lead')
         no_one = self.env.ref('base.group_no_one')
-        self.assertIn(no_one, action.groups_id,
+        self.assertIn(no_one, action.group_ids,
                       'åtgärden ska bara synas i debug-läget')
