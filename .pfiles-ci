@@ -1,0 +1,21 @@
+# .pfiles-ci — vilka Odoo-utgåvor det här repot kontrollerar.
+#
+# Läses av .github/workflows/pfiles.yml. Ett repo som bara stödjer en utgåva
+# behöver inte röra workflowen, bara den här filen. Saknas filen antar
+# workflowen samtliga kända utgåvor (EDITION_PROFILES i pfiles-check.py).
+#
+# Format: en utgåva per rad, '#' inleder en kommentar.
+#
+#   pfiles-ci: 1
+#   editions: 18.0 19.0 20.0
+#
+# 'editions:' är en lista med blanksteg eller kommatecken som avgränsare.
+# Ordningen spelar ingen roll; workflowen sorterar.
+#
+# Utgåvor som anges här måste ha en branch med samma namn, annars rapporteras
+# det som ett konfigurationsfel (inte som en trasig modul).
+#
+# Kommentera bort en rad för att stänga av en utgåva utan att röra workflowen.
+
+pfiles-ci: 1
+editions: 18.0 19.0 20.0

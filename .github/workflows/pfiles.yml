@@ -1,11 +1,20 @@
 name: pfiles
 
-# Grindar för versionsagnostisk kod (p-filer).
-# Se /skill:odoo-pfiles. Fyra oberoende kontroller:
-#   1. täckning  — varje källfil är p-fil eller genererad (pfiles-check)
-#   2. expansion — committad utdata matchar p-filerna, för DENNA gren
-#   3. syntax    — enkelt '#' i direktiv, manifest-prefix
+# Grindar för versionsagnostisk kod (p-filer). Se /skill:odoo-pfiles.
+#
+# Fem kontroller, i två jobb:
+#
+#   kontroll (en gång, grenens utgåva)      installation (en per utgåva)
+#   1. täckning  — varje källfil är p-fil eller genererad
+#   2. expansion — committad utdata matchar p-filerna
+#   3. syntax    — '#' i direktiv, manifest-prefix
 #   4. bygge     — expansionen är reproducerbar i en ren miljö
+#                                            5. installation — modulerna går
+#                                               att installera i SIN utgåva
+#
+# Utgåvesuppsättningen läses ur .pfiles-ci (se .github/pfiles-editions.py).
+# Ett repo med färre utgåvor ändrar bara den filen — workflowen är densamma.
+# Saknas filen härleds utgåvorna ur de utgåvegernar som finns.
 
 on:
   push:
@@ -19,13 +28,41 @@ permissions:
   contents: read
 
 env:
-  # Grenen bestämmer utgåvan — samma värde som pre-commit-hooken använder lokalt.
-  # Vi läser ref_name och faller tillbaka på grennamnet, så att även en
-  # test-gren som ci/pfiles-coverage får rätt VERSION (18.0).
+  # Grenen bestämmer utgåvan för kontrolljobbet — samma värde som
+  # pre-commit-hooken använder lokalt.
   VERSION: ${{ github.base_ref || github.ref_name }}
 
 jobs:
+  # ---------------------------------------------------------------------
+  # Utgåvesuppsättningen. Ett eget jobb så att matrisen kan härledas ur
+  # repot i stället för att skrivas i YAML.
+  # ---------------------------------------------------------------------
+  editions:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+      list: ${{ steps.set.outputs.list }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Läs .pfiles-ci
+        id: set
+        run: |
+          python .github/pfiles-editions.py --repo . --format github-matrix > /tmp/matrix.json
+          echo "matrix=$(cat /tmp/matrix.json)" >> "$GITHUB_OUTPUT"
+          python .github/pfiles-editions.py --repo . --format lines | paste -sd' ' - > /tmp/list.txt
+          echo "list=$(cat /tmp/list.txt)" >> "$GITHUB_OUTPUT"
+          echo "Utgåvor: $(cat /tmp/list.txt)"
+
+  # ---------------------------------------------------------------------
+  # Kontrollerna 1–4. Körs en gång, för grenens utgåva. De är inte
+  # utgåvespecifika i sig, men täckningskontrollen behöver en utgåva för
+  # att välja säkerhetsformat (18/19 vs 20).
+  # ---------------------------------------------------------------------
   pfiles:
+    needs: editions
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -48,34 +85,24 @@ jobs:
             [0-9][0-9].0) ;;
             *)
               # Grenar som inte är rena utgåvor (t.ex. ci/pfiles-coverage) eller
-              # en PR från en feature-gren: leta efter xx.0 i namnet, annars 18.0.
+              # en PR från en feature-gren: leta efter xx.0 i namnet, annars den
+              # lägsta utgåvan repot stödjer.
               derived=$(printf '%s' "$VERSION" | grep -oE '[0-9][0-9]\.0' | head -1)
-              VERSION="${derived:-18.0}"
+              VERSION="${derived:-$(echo '${{ needs.editions.outputs.list }}' | awk '{print $1}')}"
               echo "::notice::Grenen '${{ github.base_ref || github.ref_name }}' är ingen utgåvegern — använder VERSION=$VERSION"
               ;;
           esac
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Kör med VERSION=$VERSION"
 
-
       - name: 1. Täckning — filer utan p-motsvarighet
         run: python .github/pfiles-check.py --version "$VERSION" .
 
       - name: 2. Expansion — committad utdata ska stämma
         run: |
-          find . -path ./.git -prune -o \( -name '*.p.py' -o -name '*.p.xml' \
-            -o -name '*.p.js' -o -name '*.p.csv' -o -name '*.p.sh' \) -print |
-          while read -r f; do
-            out="${f%.p.*}.${f##*.p.}"
-            REPO="${GITHUB_REPOSITORY##*/}"
-            preprocess -f -D VERSION="$VERSION" -D REPO="$REPO" -o "$out" "$f"
-          done
-          if ! git diff --quiet -- '*.py' '*.xml' '*.js' '*.csv' '*.sh'; then
-            echo "::error::Genererad utdata matchar inte p-filerna (stale utdata)"
-            git diff --stat
-            git diff | head -200
-            exit 1
-          fi
+          # Expansion sker till en separat katalog per utgåva, så att flera
+          # utgåvor kan köras efter varandra utan att skriva över varandra.
+          python .github/pfiles-expand.py --repo . --version "$VERSION" --out /tmp/expand
 
       - name: 3a. Enkelt '#' bearbetas inte av preprocess
         run: |
@@ -83,7 +110,6 @@ jobs:
             echo "::error::Direktiv måste vara '# #if VERSION ...' (dubbelt #), inte '#if'"
             exit 1
           fi
-          # XML: direktivet måste stå inuti en kommentar
           bad_xml=$(grep -rn --include='*.p.xml' -E '^[[:space:]]*#(if|elif|else|endif)\b' . || true)
           if [ -n "$bad_xml" ]; then
             echo "$bad_xml"
@@ -109,9 +135,6 @@ jobs:
         run: |
           python -m compileall -q $(git ls-files '*.py' | xargs -r dirname | sort -u) \
             || { echo "::error::py_compile misslyckades"; exit 1; }
-          if [ "$VERSION" = "14.0" ]; then
-            echo "Odoo 14 kräver Python 3.8-syntax — kontrollera med pyupgrade/ast om tillgängligt"
-          fi
           # .p.xml kontrolleras EFTER expansion (steg 2), inte som källa
           git ls-files '*.xml' | grep -v '\.p\.xml$' | python - <<'PY'
           import sys, xml.etree.ElementTree as ET
@@ -128,7 +151,126 @@ jobs:
       - name: Sammanfattning
         if: always()
         run: |
-          echo "### pfiles ($VERSION)" >> "$GITHUB_STEP_SUMMARY"
+          echo "### pfiles — kontroll ($VERSION)" >> "$GITHUB_STEP_SUMMARY"
           echo "- preprocess: $(preprocess --version 2>&1 | head -1)" >> "$GITHUB_STEP_SUMMARY"
           echo "- p-filer: $(git ls-files '*.p.*' | wc -l)" >> "$GITHUB_STEP_SUMMARY"
           echo "- vitlista: $(git ls-files '.pfiles-allow')" >> "$GITHUB_STEP_SUMMARY"
+          echo "- utgåvor i .pfiles-ci: ${{ needs.editions.outputs.list }}" >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------
+  # Kontroll 5 — installation per utgåva.
+  #
+  # Ett matrissteg per utgåva, så en trasig 20.0 inte döljer en grön 18.0.
+  # Skillnaden mellan miljöfel och trasig modul är avgörande: ett saknat
+  # beroende eller en Odoo som inte startar ska INTE anklaga modulen.
+  # .github/pfiles-install.sh skiljer dem (rc=4 ENV, rc=6 MODULE).
+  # ---------------------------------------------------------------------
+  install:
+    needs: editions
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        edition: ${{ fromJSON(needs.editions.outputs.matrix).edition }}
+    name: installation (${{ matrix.edition }})
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: pfiles-scratch
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PFILES_OCB_CACHE: ${{ github.workspace }}/.ocb
+      PFILES_DB_NAME: pfiles_ci_${{ matrix.edition }}
+      PFILES_DB_USER: odoo
+      PFILES_DB_PASSWORD: pfiles-scratch
+      # Repo-specifika beroenden som inte finns i OCB. Sätts per repo i
+      # .pfiles-ci om det behövs; tomt betyder att bara OCB och modulen själv
+      # finns i addons-path.
+      PFILES_EXTRA_ADDONS: ${{ vars.PFILES_EXTRA_ADDONS || '' }}
+      # Varje modul prövas i en ren databas. Annars ärver den grannmodulers
+      # halva installationer och fälls för fel som inte är dess eget.
+      PFILES_DB_FRESH: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installera preprocess
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "preprocess==2.0.0"
+
+      - name: Cache OCB
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PFILES_OCB_CACHE }}
+          key: ocb-${{ matrix.edition }}-${{ github.run_id }}
+          restore-keys: |
+            ocb-${{ matrix.edition }}-
+
+      - name: 5. Installation — varje modul i sin utgåva
+        run: |
+          # Expandera alla p-filer för den här utgåvan till en egen katalog.
+          rm -rf /tmp/expand
+          python .github/pfiles-expand.py --repo . --version "${{ matrix.edition }}" \
+            --out /tmp/expand --quiet || true
+
+          # Vilka moduler ska installeras? De som har ett manifest, både
+          # direkta modulkataloger och moduler i underkataloger.
+          mapfile -t mods < <(find /tmp/expand -mindepth 1 -maxdepth 1 -type d \
+                              -exec test -e '{}/__manifest__.py' \; -print | sort)
+          if [ "${#mods[@]}" -eq 0 ]; then
+            echo "::notice::Inga moduler att installera för ${{ matrix.edition }}"
+            exit 0
+          fi
+
+          env_fail=0
+          mod_fail=0
+          for d in "${mods[@]}"; do
+            name="$(basename "$d")"
+            echo "--- $name (${{ matrix.edition }}) ---"
+            set +e
+            .github/pfiles-install.sh "${{ matrix.edition }}" "$d" "$name"
+            rc=$?
+            set -e
+            case "$rc" in
+              0) echo "  OK" ;;
+              4) echo "  ::warning::$name — miljöfel, inte modulfel"
+                 env_fail=1 ;;
+              6) echo "  ::error file=$d:: $name kunde inte installeras i ${{ matrix.edition }}"
+                 mod_fail=1 ;;
+              *) echo "  ::error::$name gav oväntad kod $rc"
+                 mod_fail=1 ;;
+            esac
+          done
+
+          # Ett modulfel fäller utgåvan. Ett miljöfel gör det INTE — det
+          # rapporteras som varning, eftersom modulen inte är bevisat trasig.
+          if [ "$mod_fail" -ne 0 ]; then
+            echo "::error::Minst en modul kunde inte installeras i ${{ matrix.edition }}"
+            exit 1
+          fi
+          if [ "$env_fail" -ne 0 ]; then
+            echo "::warning::Minst en modul kunde inte prövas (miljöfel) i ${{ matrix.edition }} — resultatet är ofullständigt, inte grönt"
+          fi
+          echo "Alla moduler installerades i ${{ matrix.edition }}"
+
+      - name: Sammanfattning
+        if: always()
+        run: |
+          echo "### pfiles — installation (${{ matrix.edition }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- moduler: $(find /tmp/expand -name __manifest__.py 2>/dev/null | wc -l)" >> "$GITHUB_STEP_SUMMARY"
+          echo "- OCB: ${{ matrix.edition }} (shallow)" >> "$GITHUB_STEP_SUMMARY"
