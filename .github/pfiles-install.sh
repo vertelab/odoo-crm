@@ -56,7 +56,9 @@ OCB_SRC="${PFILES_OCB_SRC:-}"
 OCB_CACHE="${PFILES_OCB_CACHE:-/tmp/pfiles-ocb}"
 
 fresh_clone=0
+user_supplied=1
 if [ -z "$OCB_SRC" ]; then
+  user_supplied=0
   repo="$OCB_CACHE/OCB"
   if [ ! -d "$repo/.git" ]; then
     fresh_clone=1
@@ -83,8 +85,12 @@ fi
 # befintligt träd (lokal utveckling, återanvänd cache) lämnas orört: har
 # någon tagit bort länken där ska assertionen nedan FALLA, inte reparera tyst.
 # Samma princip som --fix i scripts/pfiles-ocb.sh.
-if [ "$fresh_clone" -eq 1 ] && [ -f "$OCB_SRC/odoo/init.py" ] && [ ! -e "$OCB_SRC/odoo/__init__.py" ]; then
-  log "lägger symlänk odoo/__init__.py -> init.py (PEP420-fix, ny klon)"
+# Länken läggs när trädet är VÅRT (klonat eller cachet av det här skriptet).
+# Ett träd användaren pekat ut med PFILES_OCB_SRC lämnas orört: där ska en
+# borttagen länk fällas av assertionen nedan, inte lagas tyst — annars kan
+# utvecklaren aldrig upptäcka att den egna miljön kör fel utgåva.
+if [ "$user_supplied" -eq 0 ] && [ -f "$OCB_SRC/odoo/init.py" ] && [ ! -e "$OCB_SRC/odoo/__init__.py" ]; then
+  log "lägger symlänk odoo/__init__.py -> init.py (PEP420-fix)"
   ln -sfn init.py "$OCB_SRC/odoo/__init__.py" || env_fail "kunde inte lägga PEP420-symlänken"
 fi
 
@@ -109,7 +115,14 @@ DB_PASS="${PFILES_DB_PASSWORD:-pfiles-scratch}"
 # halva installationer och fälls för fel som inte är dess eget — ett
 # modulfel som i själva verket är ett testmetodfel. Workflowen sätter
 # PFILES_DB_FRESH=1 och får då en ny databas per modul.
-if [ "${PFILES_DB_FRESH:-0}" = "1" ] && command -v psql >/dev/null; then
+if [ "${PFILES_DB_FRESH:-0}" = "1" ]; then
+  # Utan psql-klient kan vi inte garantera en ren databas. Att då köra vidare
+  # mot en databas som redan har grannmodulerna installerade ger falskt grönt:
+  # en trasig modul "installeras" utan att något laddas, eftersom Odoo hoppar
+  # över en modul som redan står som installerad. Det hände på en runner utan
+  # psql — linkedin_contacts med en trasig xpath rapporterades som OK.
+  command -v psql >/dev/null \
+    || env_fail "PFILES_DB_FRESH=1 men psql saknas — kan inte skapa en ren databas (miljöfel)"
   # Anslut som superuser över TCP. I CI är postgres en service-container där
   # rollen i POSTGRES_USER redan är superuser; lokalt krävs sudo -u postgres
   # eftersom shell-användaren saknar roll. Vi provar sudo först och faller
@@ -118,14 +131,48 @@ if [ "${PFILES_DB_FRESH:-0}" = "1" ] && command -v psql >/dev/null; then
     if sudo -n -u postgres psql -v ON_ERROR_STOP=1 -tAc "SELECT 1" >/dev/null 2>&1; then
       sudo -n -u postgres psql -v ON_ERROR_STOP=1 -tAc "$1"
     else
-      PGPASSWORD="$DB_PASS" psql -h 127.0.0.1 -U "$DB_USER" -d postgres \
-        -v ON_ERROR_STOP=1 -tAc "$1"
+      # I CI ar POSTGRES_USER redan superuser men har ett annat losenord an
+      # DB_PASS. Vi provar DB_PASS forst och faller tillbaka pa losenordet
+      # postgres-tjansten satt, annars misslyckas CREATE DATABASE tyst och
+      # varje modul blir ENV av fel anledning.
+      if PGPASSWORD="$DB_PASS" psql -h 127.0.0.1 -U "$DB_USER" -d postgres \
+           -v ON_ERROR_STOP=1 -tAc "SELECT 1" >/dev/null 2>&1; then
+        PGPASSWORD="$DB_PASS" psql -h 127.0.0.1 -U "$DB_USER" -d postgres \
+          -v ON_ERROR_STOP=1 -tAc "$1"
+      else
+        PGPASSWORD="${POSTGRES_PASSWORD:-postgres}" psql -h 127.0.0.1 -U "$DB_USER" -d postgres \
+          -v ON_ERROR_STOP=1 -tAc "$1"
+      fi
     fi
   }
+  # DROP kan misslyckas tyst om en anslutning ligger kvar. Da finns databasen
+  # kvar med grannmodulerna installerade och nasta modul "installeras" utan
+  # att nagot laddas. Vi kollar efterat att databasen verkligen ar borta och
+  # skapar den sedan — ordningen maste vara DROP -> verifiera -> CREATE.
   psql_admin "DROP DATABASE IF EXISTS \"$DB\" WITH (FORCE)" >/dev/null 2>&1 || true
-  psql_admin "CREATE DATABASE \"$DB\" OWNER \"$DB_USER\"" >/dev/null 2>&1 \
-    || env_fail "kunde inte skapa en ren databas $DB (miljöfel)"
+  still_there="$(psql_admin "SELECT 1 FROM pg_database WHERE datname='$DB'" 2>/dev/null | tr -d ' ' || true)"
+  if [ -n "$still_there" ]; then
+    psql_admin "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='$DB'" >/dev/null 2>&1 || true
+    psql_admin "DROP DATABASE IF EXISTS \"$DB\" WITH (FORCE)" >/dev/null 2>&1 || true
+    still_there="$(psql_admin "SELECT 1 FROM pg_database WHERE datname='$DB'" 2>/dev/null | tr -d ' ' || true)"
+    [ -z "$still_there" ] || env_fail "kunde inte ta bort databasen $DB (miljöfel)"
+  fi
+  if ! psql_admin "CREATE DATABASE \"$DB\" OWNER \"$DB_USER\"" >/dev/null 2>&1; then
+    # Visa VARFOR det gick fel, inte bara att det gick fel. Utan orsaken gar
+    # det inte att skilja en trasig miljo fran en trasig grind.
+    why="$(psql_admin "CREATE DATABASE \"$DB\" OWNER \"$DB_USER\"" 2>&1 | head -2 | tr '\n' ' ')"
+    env_fail "kunde inte skapa en ren databas $DB (miljöfel): $why"
+  fi
   psql_admin "ALTER ROLE \"$DB_USER\" WITH PASSWORD '$DB_PASS'" >/dev/null 2>&1 || true
+
+  # Verifiera att databasen verkligen ar NY. Om DROP/CREATE tyst misslyckades
+  # (fel roll, ingen rattighet) skulle modulen koras mot en databas dar
+  # grannarna redan ar installerade — och da ar "installerad" ett falskt
+  # gront, eftersom Odoo hoppar over en modul som redan star som installerad.
+  n_tables="$(psql_admin "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'" 2>/dev/null | tr -d ' ' || true)"
+  if [ "${n_tables:-x}" != "0" ]; then
+    env_fail "databasen $DB ar inte ren (${n_tables:-okant} tabeller) — kan inte bevisa nagot om modulen (miljofel)"
+  fi
 fi
 
 if command -v pg_isready >/dev/null; then
@@ -171,15 +218,54 @@ if [ "$rc" -eq 0 ]; then
   # rc=0 är inte nog: Odoo kan logga felet och ändå avsluta noll. Kontrollera
   # att modulen verkligen står som installerad, annars godkänner vi tyst en
   # modul som inte laddades.
+  # Las modulens state ur databasen. Vi fragar efter en MARKOR i utdata i
+  # stallet for att lita pa sista raden: odoo-bin shell skriver en banner och
+  # kan skriva varningar efter svaret, sa `tail -1` kan ge en varning som
+  # state. Det gjorde att ett falskt gront slank igenom pa en runner.
   state="$(PYTHONPATH="$OCB_SRC" python3 "$OCB_SRC/odoo-bin" shell \
       --db_host=127.0.0.1 --db_port=5432 --db_user="$DB_USER" --db_password="$DB_PASS" \
-      -d "$DB" --no-http 2>/dev/null <<PY || true
-print(env['ir.module.module'].search([('name','=','$MODNAME')]).state or 'missing')
-PY
+      -d "$DB" --no-http 2>/dev/null <<PYSTATE || true
+print("PFILES_STATE=" + (env['ir.module.module'].search([('name','=','$MODNAME')]).state or 'missing'))
+PYSTATE
 )"
-  state="$(printf '%s' "$state" | tail -1)"
+  state="$(printf '%s\n' "$state" | grep -o 'PFILES_STATE=.*' | head -1 | cut -d= -f2)"
+
+  # Tom state betyder att fragan aldrig nadde databasen — det ar ett miljofel,
+  # inte ett godkannande. Utan den kontrollen blir ett trasigt svar "OK".
+  if [ -z "$state" ]; then
+    tail -20 "$logfile" >&2
+    env_fail "kunde inte lasa modulstatus for $MODNAME i $DB (miljofel)"
+  fi
   if [ "$state" != "installed" ]; then
-    log "modulen är inte installerad (state='$state'), rc=$rc"
+    log "modulen ar inte installerad (state='$state'), rc=$rc"
+    # 'uninstallable' betyder att Odoo sjalv fann modulen oinstallerbar —
+    # nastan alltid ett beroende som inte finns. Det ar ett miljofel, inte
+    # en trasig modul, och ska inte skicka utvecklaren att leta i sin kod.
+    # Vilka beroenden som saknas star i loggen (Module <x> not found).
+    # Fraga databasen vilka beroenden modulen har och om de finns. Forst om
+    # ett beroende SAKNAS ar det ett miljofel. 'uninstallable' med alla
+    # beroenden pa plats betyder att modulen sjalv ar trasig (t.ex. en vy som
+    # inte kan laddas) och da ar MODULE ratt svar.
+    if [ "$state" = "uninstallable" ]; then
+      deps_ok="$(PYTHONPATH="$OCB_SRC" python3 "$OCB_SRC/odoo-bin" shell \
+          --db_host=127.0.0.1 --db_port=5432 --db_user="$DB_USER" --db_password="$DB_PASS" \
+          -d "$DB" --no-http 2>/dev/null <<PYDEPS || true
+m = env['ir.module.module'].search([('name','=','$MODNAME')])
+deps = m.dependencies_id.mapped('name')
+have = set(env['ir.module.module'].search([('name','in',deps)]).mapped('name'))
+missing = sorted(set(deps) - have)
+print("PFILES_MISSING=" + (",".join(missing) if missing else "NONE"))
+PYDEPS
+)"
+      deps_ok="$(printf '%s\n' "$deps_ok" | grep -o 'PFILES_MISSING=.*' | head -1 | cut -d= -f2)"
+      if [ -n "$deps_ok" ] && [ "$deps_ok" != "NONE" ]; then
+        tail -20 "$logfile" >&2
+        env_fail "$MODNAME ar oinstallerbar i $VERSION — saknade beroenden: $deps_ok (miljofel)"
+      fi
+      # Alla beroenden finns: modulen ar trasig, inte miljon.
+      tail -40 "$logfile" >&2
+      mod_fail "$MODNAME ar oinstallerbar i $VERSION trots att beroendena finns — modulen kan inte laddas"
+    fi
     tail -40 "$logfile" >&2
     mod_fail "$MODNAME installerades inte i $VERSION (state='$state')"
   fi

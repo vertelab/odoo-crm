@@ -213,13 +213,44 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install "preprocess==2.0.0"
 
-      - name: Cache OCB
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.PFILES_OCB_CACHE }}
-          key: ocb-${{ matrix.edition }}-${{ github.run_id }}
-          restore-keys: |
-            ocb-${{ matrix.edition }}-
+      # Ingen cache for OCB. En aterstalld cache kan innehalla ett trad som
+      # ser ratt ut men inte ar det (t.ex. utan PEP420-symlank eller med en
+      # annan commit), och da provas modulerna mot fel Odoo utan att nagon
+      # ser det. En shallow klon tar nagra minuter och ar alltid ratt.
+      # Snabbhet ar inte vart att grinden sager fel sak.
+
+      - name: 5a. Verifiera testmiljön
+        run: |
+          # Bevisa att miljön kan göra det jobbet kräver. Utan det här steget
+          # ser en trasig miljö ut som en godkänd modul.
+          echo "psql: $(command -v psql || echo SAKNAS)"
+          # Skriv ut vilken Odoo som faktiskt kommer att användas. Utan det
+          # gar det inte att skilja "modulen ar frisk" fran "fel Odoo kordes".
+          echo "PFILES_OCB_CACHE=$PFILES_OCB_CACHE"
+          if [ -x "$PFILES_OCB_CACHE/OCB/odoo-bin" ]; then
+            PYTHONPATH="$PFILES_OCB_CACHE/OCB" python3 "$PFILES_OCB_CACHE/OCB/odoo-bin" --version | head -1
+            ls "$PFILES_OCB_CACHE/OCB/odoo/__init__.py" 2>/dev/null || echo "VARNING: odoo/__init__.py saknas (PEP420)"
+            ls -d "$PFILES_OCB_CACHE/OCB/addons/crm" 2>/dev/null || echo "VARNING: addons/crm saknas i OCB"
+          else
+            echo "OCB inte klonad an (klonas i installationssteget)"
+          fi
+          PGPASSWORD="$PFILES_DB_PASSWORD" psql -h 127.0.0.1 -U "$PFILES_DB_USER" -d postgres -tAc "SELECT version()" | head -1
+          PGPASSWORD="$PFILES_DB_PASSWORD" psql -h 127.0.0.1 -U "$PFILES_DB_USER" -d postgres -tAc "SELECT rolcreatedb OR rolsuper FROM pg_roles WHERE rolname=current_user"
+          if ! command -v psql >/dev/null; then
+            echo "::error::psql saknas — installationsgrinden kan inte skapa en ren databas"
+            exit 1
+          fi
+          # Bevisa att grinden KAN skapa en ren databas. Det ar exakt det
+          # pfiles-install.sh gor, sa om det har steget faller ar det miljon
+          # och inte modulerna — och da ska jobbet falla har, med besked.
+          PGPASSWORD="$PFILES_DB_PASSWORD" psql -h 127.0.0.1 -U "$PFILES_DB_USER" -d postgres \
+            -v ON_ERROR_STOP=1 -tAc "DROP DATABASE IF EXISTS \"$PFILES_DB_NAME\" WITH (FORCE)" >/dev/null
+          PGPASSWORD="$PFILES_DB_PASSWORD" psql -h 127.0.0.1 -U "$PFILES_DB_USER" -d postgres \
+            -v ON_ERROR_STOP=1 -tAc "CREATE DATABASE \"$PFILES_DB_NAME\" OWNER \"$PFILES_DB_USER\"" >/dev/null
+          n="$(PGPASSWORD="$PFILES_DB_PASSWORD" psql -h 127.0.0.1 -U "$PFILES_DB_USER" -d "$PFILES_DB_NAME" \
+                -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'" | tr -d ' ')"
+          echo "ren databas $PFILES_DB_NAME: $n tabeller"
+          [ "$n" = "0" ] || { echo "::error::kunde inte skapa en ren databas ($n tabeller)"; exit 1; }
 
       - name: 5. Installation — varje modul i sin utgåva
         run: |
@@ -230,8 +261,18 @@ jobs:
 
           # Vilka moduler ska installeras? De som har ett manifest, både
           # direkta modulkataloger och moduler i underkataloger.
-          mapfile -t mods < <(find /tmp/expand -mindepth 1 -maxdepth 1 -type d \
-                              -exec test -e '{}/__manifest__.py' \; -print | sort)
+          # Las modullistan med en enkel loop. `find ... -exec test \; -print`
+          # fungerade inte i Actions skal: listan blev tom, steget skrev
+          # "Inga moduler" och gick gront -- en grind som granskar noll
+          # moduler ser ut som en grind som godkanner allt.
+          mods=()
+          for dir in /tmp/expand/*/; do
+            [ -d "$dir" ] || continue
+            dir="${dir%/}"
+            if [ -e "$dir/__manifest__.py" ] || [ -e "$dir/__manifest__.p.py" ]; then
+              mods+=("$dir")
+            fi
+          done
           if [ "${#mods[@]}" -eq 0 ]; then
             echo "::notice::Inga moduler att installera för ${{ matrix.edition }}"
             exit 0
@@ -239,16 +280,32 @@ jobs:
 
           env_fail=0
           mod_fail=0
+          ok_count=0
+          env_list=""
           for d in "${mods[@]}"; do
             name="$(basename "$d")"
             echo "--- $name (${{ matrix.edition }}) ---"
+            if [ ! -e "$d/__manifest__.py" ] && [ ! -e "$d/__manifest__.p.py" ]; then
+              echo "  ::error file=$d:: $name har inget manifest efter expansion for ${{ matrix.edition }}"
+              mod_fail=1
+              continue
+            fi
             set +e
-            .github/pfiles-install.sh "${{ matrix.edition }}" "$d" "$name"
+            .github/pfiles-install.sh "${{ matrix.edition }}" "$d" "$name" > /tmp/mod.log 2>&1
             rc=$?
             set -e
+            # Diagnos som annotation. Annotationer kan lasas utan token, sa
+            # har gar det att se VAD grinden sag utan att ha loggarna.
+            echo "::notice::$name (${{ matrix.edition }}) rc=$rc mods=${#mods[@]} tables=$(psql -h 127.0.0.1 -U "$PFILES_DB_USER" -d "$PFILES_DB_NAME" -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'" 2>/dev/null | tr -d ' ' || echo '?') deps=$(grep -oE "'depends':[^]]*]" "$d/__manifest__.py" 2>/dev/null | head -1 | cut -c1-60)"
             case "$rc" in
-              0) echo "  OK" ;;
+              0) echo "  OK"
+                 ok_count=$((ok_count + 1)) ;;
+              1) # pfiles-expand kunde inte skriva utdata for modulen.
+                 # Da finns inget att installera och OK vore en ljugen gronska.
+                 echo "  ::error file=$d:: $name kunde inte expanderas for ${{ matrix.edition }}"
+                 mod_fail=1 ;;
               4) echo "  ::warning::$name — miljöfel, inte modulfel"
+                 env_list="$env_list $name"
                  env_fail=1 ;;
               6) echo "  ::error file=$d:: $name kunde inte installeras i ${{ matrix.edition }}"
                  mod_fail=1 ;;
@@ -263,10 +320,39 @@ jobs:
             echo "::error::Minst en modul kunde inte installeras i ${{ matrix.edition }}"
             exit 1
           fi
+          # Redovisa hur många som faktiskt prövades. En grind som säger
+          # "grönt" när 9 av 17 moduler aldrig kom fram är inte ärlig — den
+          # döljer att täckningen är ofullständig.
+          total=${#mods[@]}
+          echo "### pfiles — ${{ matrix.edition }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- moduler: $total" >> "$GITHUB_STEP_SUMMARY"
+          echo "- installerade: $ok_count" >> "$GITHUB_STEP_SUMMARY"
+          echo "- ej prövade (miljöfel): $((total - ok_count - mod_fail))" >> "$GITHUB_STEP_SUMMARY"
           if [ "$env_fail" -ne 0 ]; then
-            echo "::warning::Minst en modul kunde inte prövas (miljöfel) i ${{ matrix.edition }} — resultatet är ofullständigt, inte grönt"
+            echo "::warning::$ok_count av $total moduler installerades. Ej prövade (miljöfel):$env_list — täckningen är ofullständig, inte grönt"
           fi
-          echo "Alla moduler installerades i ${{ matrix.edition }}"
+          # FAIL-CLOSED. Utgangslaget ar att grinden inte far godkanna nagot
+          # den inte bevisat. En modul som inte kunde provas (ENV) raknas inte
+          # som godkand, och en utgaVa dar ingen modul bevisades ar INTE grön.
+          #
+          # Det har ar en medveten trade-off: sa lange CI-miljon inte kan
+          # reproducera den lokala bedomningen (7 av 17 installerar pa 18.0,
+          # 0 av 17 pa 20.0 eftersom crm kraver licens) satts ribban sa att
+          # grinden hellre faller an ljuger. Nar miljon ar utredd kan ENV
+          # slappas igenom som varning -- men forst da.
+          if [ "$env_fail" -ne 0 ]; then
+            echo "::error::$ok_count av $total moduler bevisades i ${{ matrix.edition }}; $((total - ok_count - mod_fail)) kunde inte provas (miljofel):$env_list"
+            exit 1
+          fi
+          if [ "$mod_fail" -eq 0 ]; then
+            echo "$ok_count av $total moduler installerades i ${{ matrix.edition }}"
+          fi
+
+          # Skriv ut vilka moduler som faktiskt godkändes. Utan listan gar det
+          # inte att se skillnad pa "modulen ar frisk" och "modulen provades
+          # aldrig" — och en grind som inte gar att granska ar inte en grind.
+          echo "Godkanda moduler (${ok_count}):" >> "$GITHUB_STEP_SUMMARY"
+          for d in "${mods[@]}"; do echo "- $(basename "$d")" >> "$GITHUB_STEP_SUMMARY"; done
 
       - name: Sammanfattning
         if: always()
