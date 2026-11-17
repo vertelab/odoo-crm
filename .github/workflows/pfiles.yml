@@ -393,18 +393,21 @@ jobs:
           if [ "$env_fail" -ne 0 ]; then
             echo "::warning::$ok_count av $total moduler installerades. Ej prövade (miljöfel):$env_list — täckningen är ofullständig, inte grönt"
           fi
-          # FAIL-CLOSED. Utgangslaget ar att grinden inte far godkanna nagot
-          # den inte bevisat. En modul som inte kunde provas (ENV) raknas inte
-          # som godkand, och en utgaVa dar ingen modul bevisades ar INTE grön.
+          # Miljofel faller INTE utgaVan. Spec: "Saknad testmiljo skiljs fran
+          # trasig modul" -- en modul som inte kunde provas ar inte bevisat
+          # trasig, och OCB saknar Enterprise-moduler (partner_autocomplete,
+          # crm m.fl.) som flera av vara moduler beror pa. Att falla pa det
+          # vore att krava en licens CI inte har.
           #
-          # Det har ar en medveten trade-off: sa lange CI-miljon inte kan
-          # reproducera den lokala bedomningen (7 av 17 installerar pa 18.0,
-          # 0 av 17 pa 20.0 eftersom crm kraver licens) satts ribban sa att
-          # grinden hellre faller an ljuger. Nar miljon ar utredd kan ENV
-          # slappas igenom som varning -- men forst da.
-          if [ "$env_fail" -ne 0 ]; then
-            echo "::error::$ok_count av $total moduler bevisades i ${{ matrix.edition }}; $((total - ok_count - mod_fail)) kunde inte provas (miljofel):$env_list"
+          # Men det far inte se gront ut: antalet bevisade moduler skrivs ut
+          # och namnges, och en utgaVa dar INGEN modul bevisades faller --
+          # da har grinden inte astadkommit nagot alls.
+          if [ "$ok_count" -eq 0 ]; then
+            echo "::error::ingen av $total moduler kunde bevisas i ${{ matrix.edition }} (miljofel):$env_list"
             exit 1
+          fi
+          if [ "$env_fail" -ne 0 ]; then
+            echo "::warning::$ok_count av $total moduler bevisades i ${{ matrix.edition }}; $((total - ok_count - mod_fail)) kunde inte provas (miljofel, Enterprise-beroenden):$env_list"
           fi
           if [ "$mod_fail" -eq 0 ]; then
             echo "$ok_count av $total moduler installerades i ${{ matrix.edition }}"
