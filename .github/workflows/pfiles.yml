@@ -240,6 +240,24 @@ jobs:
             echo "::error::psql saknas — installationsgrinden kan inte skapa en ren databas"
             exit 1
           fi
+
+          # OCB:s Python-beroenden maste finnas, annars kraschar `odoo-bin
+          # --version` pa t.ex. babel och versionen blir "okant" — vilket
+          # falde VARJE modul som ENV av fel anledning. Det var det som gjorde
+          # att CI gav 0 av 17 medan lokalt 6 av 17 installerade.
+          repo="$PFILES_OCB_CACHE/OCB"
+          if [ ! -d "$repo/.git" ]; then
+            mkdir -p "$PFILES_OCB_CACHE"
+            git clone --quiet --depth 1 --branch "${{ matrix.edition }}" \
+              https://github.com/OCA/OCB.git "$repo"
+          fi
+          if [ -f "$repo/requirements.txt" ]; then
+            python -m pip install --quiet -r "$repo/requirements.txt" || {
+              echo "::error::kunde inte installera OCB:s Python-beroenden"; exit 1; }
+          fi
+          # PEP420: OCB 19/20 skeppar odoo/init.py men ingen odoo/__init__.py.
+          [ -f "$repo/odoo/init.py" ] && [ ! -e "$repo/odoo/__init__.py" ] && ln -sfn init.py "$repo/odoo/__init__.py"
+          echo "Odoo: $(PYTHONPATH="$repo" python3 "$repo/odoo-bin" --version | head -1)"
           # Bevisa att grinden KAN skapa en ren databas. Det ar exakt det
           # pfiles-install.sh gor, sa om det har steget faller ar det miljon
           # och inte modulerna — och da ska jobbet falla har, med besked.
