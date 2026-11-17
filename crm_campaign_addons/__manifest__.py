@@ -21,7 +21,7 @@ CRM Campaign
     'license': 'AGPL-3',
     'depends': ['crm'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/crm_campaign_views.xml',
     ],
     'installable': True,

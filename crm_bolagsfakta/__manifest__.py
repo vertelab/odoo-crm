@@ -46,7 +46,7 @@ CRM Bolagsfakta
     'license': 'AGPL-3',
     'depends': ["crm"],
     'data': [
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "views/crm_bolagsfakta_views.xml",
         "views/crm_view.xml",
         "views/res_partner_view.xml",

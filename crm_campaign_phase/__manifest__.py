@@ -21,7 +21,7 @@ CRM Campaign Phase
     'license': 'AGPL-3',
     'depends': ['website_crm_campaign'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/crm_campaign_phase_views.xml',
     ],
     'installable': True,

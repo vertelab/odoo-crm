@@ -1,22 +1,5 @@
-# p-filer: undantag från täckningskontrollen (pfiles-check)
-#
-# Varje rad är en fil som ÄR handskriven och medvetet inte har någon .p-källa.
-# Regeln är att nya filer skrivs som <namn>.p.<ändelse>; listan ska bara krympa.
-#
-# Rader är MODUL-KVALIFICERADE: "modul/sökväg". En platt rad ("models/x.py")
-# skulle tysta samma filnamn i varje modul.
-#
-# Utgångsläge 20.0: 66 UNEXPLAINED i 15 moduler. Två moduler är p-filerade
-# (crm_allabolag, crm_monitor). Resten är kandidater för portning.
-#
-# Kontrollera med:
-#   pfiles-check --version 20.0 .
-# Ta bort en rad när filen fått en p-källa. Lägg INTE till nya rader för ny kod.
-
 crm_ai/data/crm_ai_artifact_types.xml
-crm_ai/data/okf_debug_actions.xml
 crm_ai/models/crm_lead.py
-crm_ai/tests/test_crm_lead_okf.py
 crm_allabolag/models/constants.py
 crm_allabolag/static/description/index.html
 crm_bolagsfakta/controllers/controllers.py
@@ -28,6 +11,7 @@ crm_bolagsfakta/models/crm_lead.py
 crm_bolagsfakta/models/res_kommun.py
 crm_bolagsfakta/models/res_partner.py
 crm_bolagsfakta/models/utils.py
+crm_bolagsfakta/security/ir.access.csv
 crm_bolagsfakta/security/ir.model.access.csv
 crm_bolagsfakta/static/description/index.html
 crm_bolagsfakta/views/crm_bolagsfakta_views.xml
@@ -41,10 +25,12 @@ crm_builtwith/static/description/index.html
 crm_builtwith/views/crm_lead_views.xml
 crm_campaign_addons/crm.py
 crm_campaign_addons/crm_view.xml
+crm_campaign_addons/security/ir.access.csv
 crm_campaign_addons/security/ir.model.access.csv
 crm_campaign_addons/static/description/index.html
 crm_campaign_addons/views/crm_campaign_views.xml
 crm_campaign_phase/crm.py
+crm_campaign_phase/security/ir.access.csv
 crm_campaign_phase/security/ir.model.access.csv
 crm_campaign_phase/static/description/index.html
 crm_campaign_phase/views/crm_campaign_phase_views.xml
@@ -52,6 +38,7 @@ crm_campaign_phase/views/crm_view.xml
 crm_campaign_phase_default_variant/crm.py
 crm_campaign_phase_default_variant/static/description/index.html
 crm_campaign_product/product.py
+crm_campaign_product/security/ir.access.csv
 crm_campaign_product/security/ir.model.access.csv
 crm_campaign_product/static/description/index.html
 crm_campaign_product/views/crm_campaign_product_views.xml
@@ -64,6 +51,7 @@ crm_enrich_crawlai/data/crawlai_agent.xml
 crm_enrich_crawlai/data/crawlai_skill.xml
 crm_enrich_crawlai/data/crawlai_tool.xml
 crm_enrich_crawlai/models/crm_lead.py
+crm_enrich_crawlai/security/ir.access.csv
 crm_enrich_crawlai/security/ir.model.access.csv
 crm_enrich_crawlai/views/crm_lead_views.xml
 crm_enrich_crawlai/wizard/crawlai_enrich_wizard.py

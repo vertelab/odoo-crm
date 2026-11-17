@@ -1,0 +1,4 @@
+id,name,model_id,group_id/id,operation,domain
+access_crm_campaign_phase,crm.campaign.phase,crm.tracking.phase,,crud,
+access_crm_campaign_phase_type,crm.campaign.phase,crm.tracking.phase.type,,r,
+access_crm_campaign_phase_type_manager,crm.campaign.phase.manager,crm.tracking.phase.type,,crud,
