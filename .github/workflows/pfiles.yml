@@ -63,6 +63,35 @@ jobs:
           echo "Beroenden: $(cat /tmp/deps.txt)"
 
   # ---------------------------------------------------------------------
+  # Synk: samma p-filer ska finnas på alla utgåvegrenar.
+  #
+  # En p-fil är källan för alla utgåvor, så den ska finnas på varje gren och
+  # ha samma innehåll — utgåveskillnaderna uttrycks med '# #if VERSION' inne
+  # i filen. Driver grenarna isär fäller det här jobbet och säger vilka
+  # filer som saknas eller skiljer sig.
+  #
+  # Att åtgärda driften är ett mänskligt beslut (vilken gren som har rätt
+  # innehåll), så jobbet kopierar aldrig automatiskt i CI. Kör lokalt:
+  #   .github/pfiles-sync.py --repo . --apply --from <gren> --push
+  # ---------------------------------------------------------------------
+  sync:
+    needs: editions
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: p-filer ska vara identiska på alla utgåvor
+        run: |
+          python .github/pfiles-sync.py --repo . --check \
+            --editions "$(echo '${{ needs.editions.outputs.list }}' | tr ' ' ',')"
+
+  # ---------------------------------------------------------------------
   # Kontrollerna 1–4. Körs en gång, för grenens utgåva. De är inte
   # utgåvespecifika i sig, men täckningskontrollen behöver en utgåva för
   # att välja säkerhetsformat (18/19 vs 20).
