@@ -66,7 +66,12 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form//div[hasclass('oe_title')]/h1" position="after">
+            <!-- Ankra i faltet name, inte i en css-klass. h1-elementet har
+                 olika klass i varje utgaVa (18.0: ingen, 19.0:
+                 "flex-grow-1", 20.0: "o_outlined"), och
+                 hasclass('oe_title') matchar bara nar klassen star forst i
+                 listan. <field name="name"> ar detsamma i alla tre. -->
+            <xpath expr="//form//h1/field[@name='name']" position="after">
                 <div class="text-muted small mb-2">
                     <i class="fa fa-clock-o me-1" role="img"/>
                     <span class="me-1">Skapad:</span>

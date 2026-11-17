@@ -2,7 +2,7 @@
     'name': 'CRM Fetch Mail Action',
 'author': 'Vertel Sverige AB',
 'website': 'https://vertel.se/apps/odoo-crm/crm_fetchmail',
-    'version': '18.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Sales/CRM',
     'summary': 'Adds a server-action for fetching mail.',
     'description': '''

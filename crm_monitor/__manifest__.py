@@ -33,7 +33,10 @@
     'license': 'AGPL-3',
     'contributor': '',
     'maintainer': 'Vertel Sverige AB',
-    'depends': ['crm'],
+    # project.task.type används i crm_stage.p.py (new_stage_id) men modulen
+    # deklarerade bara 'crm'. Det gick så länge något annat råkade dra in
+    # project; installerad ensam faller den på okänt comodel_name.
+    'depends': ['crm', 'project'],
     'data': [
         'data/cron.xml',
         'data/server_action.xml',

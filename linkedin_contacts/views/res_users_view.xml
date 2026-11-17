@@ -5,7 +5,10 @@
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='references']" position="after">
+                <!-- Odoo 18:s res.users-formulär har ingen sida som heter
+                     'references'. Ankra i 'access_rights' i stället — den
+                     finns i 14-20. -->
+                <xpath expr="//page[@name='access_rights']" position="after">
                     <page string="LinkedIn Access" name="linkedin_info">
                         <button name="authorize_linkedin" type="object" string="Authorize LinkedIn" class="oe_highlight"/>
                         <button name="get_linkedin_connection" type="object" string="Get LinkedIn Profile" class="oe_highlight"/>
