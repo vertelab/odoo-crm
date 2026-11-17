@@ -205,9 +205,12 @@ addons_path="$addons"
 if [ -n "${PFILES_EXTRA_ADDONS:-}" ]; then
   IFS=':' read -r -a extra <<< "$PFILES_EXTRA_ADDONS"
   for d in "${extra[@]}"; do
-    [ -d "$d" ] || env_fail "extra addons-katalog saknas: $d"
+    # Hoppa over kataloger som inte finns i stallet for att falla. Listan
+    # kommer fran en sokning i .deps och kan innehalla t.ex. docs/ som inte
+    # ar en addons-katalog; att falla pa en sadan gor att HELA sokvagen
+    # forkastas och modulen rapporteras sakna ett beroende den hade.
+    [ -d "$d" ] || continue
     addons_path="$addons_path,$d"
-    log "extra addons: $d"
   done
 fi
 addons_path="$addons_path,$OCB_SRC/addons,$OCB_SRC/odoo/addons"
