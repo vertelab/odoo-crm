@@ -1,0 +1,61 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) {year} {company} (<{mail}>)
+#    All Rights Reserved
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as published
+#    by the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+#
+# https://www.odoo.com/documentation/14.0/reference/module.html
+#
+{
+    'name': 'CRM Bolagsfakta',
+    'version': '1.0.0',
+    'summary': 'Adding data to CRM contacts.',
+    'category': 'CRM',
+    'description': '''
+CRM Bolagsfakta
+===============
+
+    Adding data to CRM contacts.
+
+    Features:
+
+        - Web integration: Exposes HTTP endpoints for external systems.
+        - Guided Wizards: Step-by-step dialogs for data entry.
+        - UI Integration: Extends 4 view(s) in the Odoo interface.
+        - Extends Odoo: Builds on crm.bolagsfakta, crm.lead, crm_bolagsfakta_id, mail.thread.
+    ''',
+    'author': 'Vertel Sverige AB',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_bolagsfakta',
+    'repository': 'https://github.com/vertelab/odoo-crm',
+    'images': ['static/description/banner.png'],  # 560x280
+    'license': 'AGPL-3',
+    'depends': ["crm"],
+    'data': [
+        "security/ir.model.access.csv",
+        "views/crm_bolagsfakta_views.xml",
+        "views/crm_view.xml",
+        "views/res_partner_view.xml",
+        "views/res_kommun_view.xml",
+        "data/enrich_data.xml",
+        "data/res.kommun.csv",
+    ],
+    'demo': [],
+    'application': False,
+    'installable': True,    
+    'auto_install': False,
+}
