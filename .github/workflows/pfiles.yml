@@ -256,7 +256,7 @@ jobs:
           fetch_dep odoo-base "${{ matrix.edition }}"
           fetch_dep odoo-website "${{ matrix.edition }}"
           fetch_dep odoo-ai "${{ matrix.edition }}"
-          echo "deps: $(ls .deps 2>/dev/null | tr '\n' ' ')"
+          echo "::notice::deps: $(ls .deps 2>/dev/null | tr '\n' ' ' | cut -c1-200)"
 
           # OCB:s Python-beroenden maste finnas, annars kraschar `odoo-bin
           # --version` pa t.ex. babel och versionen blir "okant" — vilket
