@@ -12,7 +12,10 @@ class CrmEnrichCase(TransactionCase):
         super().setUpClass()
         cls.lead_model = cls.env['crm.lead']
         cls.params = cls.env['ir.config_parameter'].sudo()
-        cls.params.set_param('partner_enrich.provider_order', 'foretagssok,allabolag')
+        # Odoo 20 ersatte set_param med typade set_str/set_int/set_bool m.fl.
+        # Den gamla metoden finns kvar som get_param men inte som set_param.
+        setter = getattr(cls.params, 'set_str', None) or cls.params.set_param
+        setter('partner_enrich.provider_order', 'foretagssok,allabolag')
 
     def setUp(self):
         super().setUp()
@@ -109,7 +112,8 @@ class TestLeadEnrichment(CrmEnrichCase):
         self.assertEqual(self.lead.city, 'Göteborg')
 
     def test_manual_policy_blocks_write(self):
-        self.params.set_param('partner_enrich.policy.identity', 'manual')
+        setter = getattr(self.params, 'set_str', None) or self.params.set_param
+        setter('partner_enrich.policy.identity', 'manual')
         self._install_provider(
             lambda key, ctx: {'name': 'Annat namn AB'},
         )
