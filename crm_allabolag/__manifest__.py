@@ -1,0 +1,51 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Odoo SA, Open Source Management Solution, third party addon
+#    Copyright (C) 2024- Vertel Sverige AB (<https://vertel.se>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
+{
+    'name': 'CRM: Allabolag',
+    'version': '2.0.0',
+    # Version ledger: 14.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
+    'summary': 'Adding valuable internet-data to CRM contacts.',
+    'category': 'CRM',
+    'description': """
+Adding interesting and valuable internet-data to customer information in CRM. 
+""",
+    #'sequence': '1',
+    'author': 'Vertel Sverige AB',
+    'website': 'https://vertel.se/apps/odoo-crm/crm_allabolag',
+    'images': ['static/description/banner.png'], # 560x280 px.
+    'license': 'AGPL-3',
+    'contributor': '',
+    'maintainer': 'Vertel Sverige AB',
+    'repository': 'https://github.com/vertelab/odoo-crm',
+    'depends': ['crm_enrich_base', 'partner_allabolag' , 'utm'],
+    'data': [
+        'views/crm_lead_views.xml',
+        'views/crm_allabolag_mining_views.xml',
+        # Odoo 20 bytte form pa ir.model.access: filnamnet bestammer modellen
+        # (ir.access.csv, inte ir.model.access.csv), model_id ar ett bart
+        # modellnamn, och perm_* ersatts av operation + domain. Bada filerna
+        # ligger i security/; manifestet valjer. Att lista den andras fil ar
+        # ett fel, inte bara overflodigt.
+        'security/ir.model.access.csv',
+    ],
+    'application': False,
+}
