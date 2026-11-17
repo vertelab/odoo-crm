@@ -296,7 +296,14 @@ jobs:
             set -e
             # Diagnos som annotation. Annotationer kan lasas utan token, sa
             # har gar det att se VAD grinden sag utan att ha loggarna.
-            echo "::notice::$name (${{ matrix.edition }}) rc=$rc mods=${#mods[@]} tables=$(psql -h 127.0.0.1 -U "$PFILES_DB_USER" -d "$PFILES_DB_NAME" -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public'" 2>/dev/null | tr -d ' ' || echo '?') deps=$(grep -oE "'depends':[^]]*]" "$d/__manifest__.py" 2>/dev/null | head -1 | cut -c1-60)"
+            # Det VERKLIGA skalet, inte en gissning. Annotationen ar den enda
+            # kanal som gar att lasa utan token, sa den maste bara det som
+            # behovs for att avgora miljo- eller modulfel: vilken Odoo som
+            # kordes, vilket addons-path, vilken databas, och de sista
+            # relevanta loggraderna.
+            reason="$(grep -E "pfiles-install: (ENV|MODULE)" /tmp/mod.log 2>/dev/null | head -1 | cut -c1-150)"
+            [ -n "$reason" ] || reason="$(grep -E "ERROR|CRITICAL|Traceback|not found|cannot be located" /tmp/mod.log 2>/dev/null | head -1 | cut -c1-150)"
+            echo "::notice::$name (${{ matrix.edition }}) rc=$rc :: ${reason:-ingen orsak i loggen}"
             case "$rc" in
               0) echo "  OK"
                  ok_count=$((ok_count + 1)) ;;
