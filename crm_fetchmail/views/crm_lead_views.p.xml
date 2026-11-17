@@ -1,0 +1,51 @@
+<odoo>
+
+<!-- Kanban-vyn. Tva skillnader mellan utgaVorna, och bada sitter i attribut
+     (inherit_id, display), sa de kraver hela block i stallet for en rad.
+     Direktiven far inte nastlas, darfor tva separata block. -->
+
+<!-- #if VERSION >= "20.0" -->
+<record id="view_crm_lead_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.fetch.mail.kanban</field>
+        <field name="model">crm.lead</field>
+        <!-- Vyn flyttade fran crm_iap_mine till crm i Odoo 20. -->
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <!-- 20.0:s kanban-vy har inga knappar att ankra i; lagg knappen
+                 forst i vyn. -->
+            <kanban position="inside">
+                   <!-- display="always" togs bort i Odoo 20. -->
+                   <button name="action_force_fetch_mail" type="object" string="Fetch Mail" invisible="context.get('active_model', 'crm.lead') != 'crm.lead'"/>
+            </kanban>
+        </field>
+</record>
+<!-- #else -->
+<record id="view_crm_lead_kanban" model="ir.ui.view">
+        <field name="name">crm.lead.fetch.mail.kanban</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm_iap_mine.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <button name="action_generate_leads" position="after">
+                   <button name="action_force_fetch_mail" type="object" string="Fetch Mail" display="always" invisible="context.get('active_model', 'crm.lead') != 'crm.lead'"/>
+            </button>
+        </field>
+</record>
+<!-- #endif -->
+
+<!-- Listvyn. Bara display-attributet skiljer. -->
+<record id="crm_case_tree_view_oppor" model="ir.ui.view">
+        <field name="name">crm.lead.fetch.mail.list.opportunity</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <header position="inside">
+                   <!-- #if VERSION >= "20.0" -->
+                   <button name="action_force_fetch_mail" type="object" string="Fetch Mail" />
+                   <!-- #else -->
+                   <button name="action_force_fetch_mail" type="object" string="Fetch Mail" display="always" />
+                   <!-- #endif -->
+            </header>
+        </field>
+</record>
+
+</odoo>
