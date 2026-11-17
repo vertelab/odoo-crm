@@ -40,6 +40,11 @@ Adding interesting and valuable internet-data to customer information in CRM.
     'data': [
         'views/crm_lead_views.xml',
         'views/crm_allabolag_mining_views.xml',
+        # Odoo 20 bytte form pa ir.model.access: filnamnet bestammer modellen
+        # (ir.access.csv, inte ir.model.access.csv), model_id ar ett bart
+        # modellnamn, och perm_* ersatts av operation + domain. Bada filerna
+        # ligger i security/; manifestet valjer. Att lista den andras fil ar
+        # ett fel, inte bara overflodigt.
         'security/ir.model.access.csv',
     ],
     'application': False,

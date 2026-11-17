@@ -38,7 +38,11 @@
         'data/cron.xml',
         'data/server_action.xml',
         'views/crm_stage_views.xml',
+        # #if VERSION >= "20.0"
+        'security/ir.access.csv',
+        # #else
         'security/ir.model.access.csv',
+        # #endif
     ],
     'application': True,
 }

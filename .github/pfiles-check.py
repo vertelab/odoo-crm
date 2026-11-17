@@ -265,6 +265,18 @@ def security_findings(root, version):
                 present.append(name)
     info["present"] = present
 
+    # Vilka säkerhetsfiler manifestet faktiskt laddar. Bara de kan falla en
+    # installation — en fil som ligger i security/ men inte listas laddas
+    # aldrig, och ska därför inte bedömas (spec: "Fil för annan utgåva finns
+    # men laddas inte"). Det är själva poängen med D1: bada filerna ligger
+    # sida vid sida och manifestet valjer.
+    manifest = load_manifest(root) or {}
+    listed_secs = set()
+    for entry in manifest.get("data", []) or []:
+        if os.path.basename(entry).endswith(".csv") and \
+           os.path.basename(entry) in SECURITY_FILENAMES:
+            listed_secs.add(entry)
+
     # 2.2 — rätt format för utgåvan, för både utdata och p-källa
     expected = profile["security_columns"]
     # En .p.csv vars utdata redan rapporterats ger samma fel två gånger. Vi
@@ -280,6 +292,10 @@ def security_findings(root, version):
         if name in reported:
             continue
         path = os.path.join(secdir, name)
+        # Bara den fil manifestet laddar bedöms. Den andra utgåvans fil är
+        # harmlös och ska inte ge ett fel — annars kan D1 aldrig användas.
+        if ("security/" + name) not in listed_secs:
+            continue
         header = csv_header(path)
         if header is None:
             continue                     # tom/headerlös — annan kontroll fångar det
