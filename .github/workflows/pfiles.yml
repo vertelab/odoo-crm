@@ -361,7 +361,9 @@ jobs:
             # beror pa varandra (crm_campaign_product -> crm_campaign_addons),
             # och en modul vars granne inte syns ar "oinstallerbar" av ett sken-
             # skal. /tmp/expand ar darfor alltid en del av sokvagen.
-            PFILES_EXTRA_ADDONS="/tmp/expand:$(find "$PWD/.deps" -mindepth 2 -maxdepth 3 -type d ! -name .git 2>/dev/null | paste -sd: -)${PFILES_EXTRA_ADDONS:+:$PFILES_EXTRA_ADDONS}" \
+            ADDONS_EXTRA="/tmp/expand:$(find "$PWD/.deps" -mindepth 2 -maxdepth 3 -type d ! -name .git 2>/dev/null | paste -sd: -)${PFILES_EXTRA_ADDONS:+:$PFILES_EXTRA_ADDONS}"
+            echo "::notice::addons-path har $(echo "$ADDONS_EXTRA" | tr ':' '\n' | wc -l) kataloger; dms=$(echo "$ADDONS_EXTRA" | tr ':' '\n' | grep -c '/dms$')"
+            PFILES_EXTRA_ADDONS="$ADDONS_EXTRA" \
             .github/pfiles-install.sh "${{ matrix.edition }}" "$d" "$name" > /tmp/mod.log 2>&1
             rc=$?
             set -e
