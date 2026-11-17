@@ -324,6 +324,11 @@ jobs:
               continue
             fi
             set +e
+            # Alla expanderade moduler maste ligga i addons-path: modulerna
+            # beror pa varandra (crm_campaign_product -> crm_campaign_addons),
+            # och en modul vars granne inte syns ar "oinstallerbar" av ett sken-
+            # skal. /tmp/expand ar darfor alltid en del av sokvagen.
+            PFILES_EXTRA_ADDONS="/tmp/expand${PFILES_EXTRA_ADDONS:+:$PFILES_EXTRA_ADDONS}" \
             .github/pfiles-install.sh "${{ matrix.edition }}" "$d" "$name" > /tmp/mod.log 2>&1
             rc=$?
             set -e
