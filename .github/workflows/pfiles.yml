@@ -241,6 +241,23 @@ jobs:
             exit 1
           fi
 
+          # Vertel-beroenden som inte bor i det har repot. Utan dem ar en
+          # modul "oinstallerbar" av ett sken-skal: dess granne finns helt
+          # enkelt inte i sokvagen. Vi hamtar dem till .deps/<namn> och
+          # lacker in dem via PFILES_EXTRA_ADDONS langre ned.
+          mkdir -p .deps
+          fetch_dep() {
+            local repo="$1" branch="$2"
+            [ -d ".deps/$repo" ] && return 0
+            git clone --quiet --depth 1 --branch "$branch" \
+              "https://github.com/vertelab/$repo.git" ".deps/$repo" 2>/dev/null \
+              || { echo "::warning::kunde inte hamta $repo ($branch)"; return 0; }
+          }
+          fetch_dep odoo-base "${{ matrix.edition }}"
+          fetch_dep odoo-website "${{ matrix.edition }}"
+          fetch_dep odoo-ai "${{ matrix.edition }}"
+          echo "deps: $(ls .deps 2>/dev/null | tr '\n' ' ')"
+
           # OCB:s Python-beroenden maste finnas, annars kraschar `odoo-bin
           # --version` pa t.ex. babel och versionen blir "okant" — vilket
           # falde VARJE modul som ENV av fel anledning. Det var det som gjorde
@@ -328,7 +345,7 @@ jobs:
             # beror pa varandra (crm_campaign_product -> crm_campaign_addons),
             # och en modul vars granne inte syns ar "oinstallerbar" av ett sken-
             # skal. /tmp/expand ar darfor alltid en del av sokvagen.
-            PFILES_EXTRA_ADDONS="/tmp/expand${PFILES_EXTRA_ADDONS:+:$PFILES_EXTRA_ADDONS}" \
+            PFILES_EXTRA_ADDONS="/tmp/expand:$(find .deps -mindepth 2 -maxdepth 2 -type d 2>/dev/null | paste -sd: -)${PFILES_EXTRA_ADDONS:+:$PFILES_EXTRA_ADDONS}" \
             .github/pfiles-install.sh "${{ matrix.edition }}" "$d" "$name" > /tmp/mod.log 2>&1
             rc=$?
             set -e
