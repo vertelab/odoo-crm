@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <!-- Sokvyn skiljer sig sa mycket mellan 18.0 och 19/20 att tva hela
+       block ar enklare an villkor inuti: 18.0 har team_id och <group>,
+       19/20 har team_ids och inget <group>. Sokvyn i 19/20 tar dessutom
+       bara <filter>, inte <field>, som barn. -->
   <record id="crm_lead_stage_search" model="ir.ui.view">
     <field name="name">Stage - Search</field>
     <field name="model">crm.stage</field>
     <field name="inherit_id" ref="crm.crm_lead_stage_search" />
     <field name="arch" type="xml">
-      <field name="team_id" position="after">
-        <!-- Onchange Fields -->
-        <field name="onchange_activity_type" />
-        <field name="onchange_code" />
-        <field name="onchange_esc_user" />
-        <field name="onchange_message" />
-        <field name="onchange_new_stage_id" />
-        <field name="onchange_type" />
-        <!-- Group By Section -->
-        <separator />
-        <group expand="0" string="Group By">
-          <filter name="group_by_onchange_activity_type" string="Onchange Activity Type" context="{'group_by': 'onchange_activity_type'}" />
-          <filter name="group_by_onchange_new_stage_id" string="Onchange New Stage" context="{'group_by': 'onchange_new_stage_id'}" />
-        </group>
-      </field>
+      <!-- Sokvyn i 19/20 tar bara <filter>; lagg vara direkt i <search>. -->
+      <search position="inside">
+        <filter name="group_by_onchange_activity_type" string="Onchange Activity Type" context="{'group_by': 'onchange_activity_type'}" />
+        <filter name="group_by_onchange_new_stage_id" string="Onchange New Stage" context="{'group_by': 'onchange_new_stage_id'}" />
+      </search>
     </field>
   </record>
   <!-- STAGES LIST VIEW + MUTI_EDIT -->
@@ -28,7 +22,8 @@
     <field name="model">crm.stage</field>
     <field name="inherit_id" ref="crm.crm_stage_tree" />
     <field name="arch" type="xml">
-      <field name="team_id" position="after">
+      <!-- team_id byttes mot team_ids i Odoo 19. Ankra i det som finns. -->
+      <field name="team_ids" position="after">
         <field name="onchange_activity_type" optional="hide" />
         <field name="onchange_code" optional="hide" />
         <field name="onchange_esc_user" optional="hide" />
