@@ -1,14 +1,19 @@
 name: pfiles
 
-# Grinden är central: vertelab/pfiles-ci. Se dess README.
-# Här ligger bara det som är repo-specifikt: .pfiles-ci och .pfiles-allow.
-# Pinnad till v1 — flytta taggen i pfiles-ci för att nå alla repon.
+# The gate is central: vertelab/pfiles-ci. See its README.
+# Only what is genuinely repo-specific stays here: .pfiles-ci and .pfiles-allow.
+# Pinned to v1 -- move the tag in pfiles-ci to reach every repo.
 
 on:
   push:
     branches: ['*.0', 'ci/**', 'pfiles/**']
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   pfiles:
     uses: vertelab/pfiles-ci/.github/workflows/pfiles.yml@v1
+    permissions:
+      contents: read
