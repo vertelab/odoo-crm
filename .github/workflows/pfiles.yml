@@ -267,7 +267,8 @@ jobs:
             "MarkupSafe" "num2words" "ofxparse" "Pillow" "psutil" \
             "pydot" "pyparsing" "PyPDF2" "pyserial" "python-stdnum" \
             "qrcode" "reportlab" "requests-oauthlib" "rjsmin" "vobject" \
-            "zeep" "chardet" "cbor2" "openpyxl" "lxml_html_clean" \
+            "zeep" "chardet" "cbor2" "openpyxl" "lxml_html_clean" "jinja2" \
+            "pyyaml" "js2py" "vobject" "webencodings" "phonenumbers" \
             || echo "::warning::nagot paket installerades inte — miljosteget nedan provar om Odoo startar"
           # PEP420: OCB 19/20 skeppar odoo/init.py men ingen odoo/__init__.py.
           [ -f "$repo/odoo/init.py" ] && [ ! -e "$repo/odoo/__init__.py" ] && ln -sfn init.py "$repo/odoo/__init__.py"
