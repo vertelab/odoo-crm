@@ -130,6 +130,7 @@
                 <filter name="type_is_lead" string="Leads" domain="[('type', '=', 'lead')]" />
                 <filter name="type_is_opportunity" string="Opportunities" domain="[('type', '=', 'opportunity')]" />
                 <filter string="My Requests" name="assigned_to_me" domain="[('user_id', '=', uid)]" help="Requests that are assigned to me" />
+                <separator />
                 <group expand="0" string="Group By">
                     <filter string="Type" name="groupby_lead_type" domain="[]" context="{'group_by':'type'}" />
                     <filter string="Sales Team" name="groupby_team_id" domain="[]" context="{'group_by':'team_id'}" />

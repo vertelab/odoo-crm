@@ -156,14 +156,23 @@
                 <filter name="type_is_lead" string="Leads" domain="[('type', '=', 'lead')]" />
                 <filter name="type_is_opportunity" string="Opportunities" domain="[('type', '=', 'opportunity')]" />
                 <filter string="My Requests" name="assigned_to_me" domain="[('user_id', '=', uid)]" help="Requests that are assigned to me" />
+                <separator />
+                <!-- #if VERSION >= "20.0" -->
+                <!-- Odoo 20:s RelaxNG-schema for search-vyer har ingen
+                     <group>-element; group by-filtren star direkt under
+                     <search>, avdelade med <separator/>. -->
+                <!-- #else -->
                 <group expand="0" string="Group By">
+                <!-- #endif -->
                     <filter string="Type" name="groupby_lead_type" domain="[]" context="{'group_by':'type'}" />
                     <filter string="Sales Team" name="groupby_team_id" domain="[]" context="{'group_by':'team_id'}" />
                     <filter string="Salesperson" name="groupby_user_id" domain="[]" context="{'group_by':'user_id'}" />
                     <filter string="Campaign" name="groupby_campaign_id" domain="[]" context="{'group_by':'campaign_id'}" />
                     <filter string="Industry" name="groupby_industry" domain="[]" context="{'group_by':'industry'}" />
                     <filter string="Industry Request Type" name="groupby_industry_xv" domain="[]" context="{'group_by':'industry_xv'}" />
+                <!-- #if VERSION <= "19.0" -->
                 </group>
+                <!-- #endif -->
             </search>
         </field>
     </record>

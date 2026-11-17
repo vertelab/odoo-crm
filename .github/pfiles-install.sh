@@ -47,6 +47,7 @@ MODDIR="$(cd "$MODDIR" && pwd)"
 MODNAME="${MODNAME:-$(basename "$MODDIR")}"
 
 log()  { echo "pfiles-install: $*" >&2; }
+
 env_fail() { echo "pfiles-install: ENV: $*" >&2; exit 4; }
 mod_fail() { echo "pfiles-install: MODULE: $*" >&2; exit 6; }
 
@@ -77,6 +78,11 @@ fi
 
 [ -x "$OCB_SRC/odoo-bin" ] || env_fail "odoo-bin saknas i $OCB_SRC"
 
+# Behåll en ärvd PYTHONPATH. Att sätta PYTHONPATH="$OCB_SRC" ensamt ERSÄTTER
+# den, och då tappar Odoo de paket som ligger i site-packages (babel, jinja2).
+# Felet ser ut som "fel utgåva skulle köras" eftersom --version kraschar.
+ODOO_PYPATH="$OCB_SRC${PYTHONPATH:+:$PYTHONPATH}"
+
 # PEP420: OCB 19/20 skeppar odoo/init.py men ingen odoo/__init__.py. Utan
 # symlänken importeras den systeminstallerade Odoo i stället — tyst, och
 # felen man ser pekar på fel sak.
@@ -96,7 +102,7 @@ fi
 
 # --- hård versionsassertion ----------------------------------------------
 # Utan denna kan hela steget köra 18.0 och rapportera 20.0-fel som aldrig fanns.
-actual="$(PYTHONPATH="$OCB_SRC" python3 "$OCB_SRC/odoo-bin" --version 2>&1 | tail -1 || true)"
+actual="$(PYTHONPATH="$ODOO_PYPATH" python3 "$OCB_SRC/odoo-bin" --version 2>&1 | tail -1 || true)"
 series="$(printf '%s' "$actual" | grep -oE '[0-9]{2}\.0' | head -1 || true)"
 if [ "$series" != "$VERSION" ]; then
   env_fail "fel utgåva skulle köras: begärde $VERSION, fick '${series:-okänt}' ($actual)"
@@ -217,7 +223,7 @@ addons_path="$addons_path,$OCB_SRC/addons,$OCB_SRC/odoo/addons"
 
 logfile="$work/odoo.log"
 set +e
-PYTHONPATH="$OCB_SRC" python3 "$OCB_SRC/odoo-bin" \
+PYTHONPATH="$ODOO_PYPATH" python3 "$OCB_SRC/odoo-bin" \
   --addons-path="$addons_path" \
   --db_host=127.0.0.1 --db_port=5432 \
   --db_user="$DB_USER" --db_password="$DB_PASS" \
@@ -234,7 +240,7 @@ if [ "$rc" -eq 0 ]; then
   # stallet for att lita pa sista raden: odoo-bin shell skriver en banner och
   # kan skriva varningar efter svaret, sa `tail -1` kan ge en varning som
   # state. Det gjorde att ett falskt gront slank igenom pa en runner.
-  state="$(PYTHONPATH="$OCB_SRC" python3 "$OCB_SRC/odoo-bin" shell \
+  state="$(PYTHONPATH="$ODOO_PYPATH" python3 "$OCB_SRC/odoo-bin" shell \
       --db_host=127.0.0.1 --db_port=5432 --db_user="$DB_USER" --db_password="$DB_PASS" \
       -d "$DB" --no-http 2>/dev/null <<PYSTATE || true
 print("PFILES_STATE=" + (env['ir.module.module'].search([('name','=','$MODNAME')]).state or 'missing'))
@@ -259,7 +265,7 @@ PYSTATE
     # beroenden pa plats betyder att modulen sjalv ar trasig (t.ex. en vy som
     # inte kan laddas) och da ar MODULE ratt svar.
     if [ "$state" = "uninstallable" ]; then
-      deps_ok="$(PYTHONPATH="$OCB_SRC" python3 "$OCB_SRC/odoo-bin" shell \
+      deps_ok="$(PYTHONPATH="$ODOO_PYPATH" python3 "$OCB_SRC/odoo-bin" shell \
           --db_host=127.0.0.1 --db_port=5432 --db_user="$DB_USER" --db_password="$DB_PASS" \
           -d "$DB" --no-http 2>/dev/null <<PYDEPS || true
 m = env['ir.module.module'].search([('name','=','$MODNAME')])
