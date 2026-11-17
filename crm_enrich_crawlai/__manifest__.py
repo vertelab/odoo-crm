@@ -62,7 +62,7 @@ Design notes
         "ai_agent_core",
     ],
     "data": [
-        "security/ir.access.csv",
+        "security/ir.model.access.csv",
         "data/crawlai_tool.xml",
         "data/crawlai_skill.xml",
         "data/crawlai_agent.xml",

@@ -21,7 +21,7 @@
 
 {
     'name': 'CRM: Allabolag',
-    'version': '1.0',
+    'version': '2.0.0',
     # Version ledger: 14.0 = Odoo version. 1 = Major. Non regressionable code. 2 = Minor. New features that are regressionable. 3 = Bug fixes
     'summary': 'Adding valuable internet-data to CRM contacts.',
     'category': 'CRM',
@@ -40,6 +40,11 @@ Adding interesting and valuable internet-data to customer information in CRM.
     'data': [
         'views/crm_lead_views.xml',
         'views/crm_allabolag_mining_views.xml',
+        # Odoo 20 bytte form pa ir.model.access: filnamnet bestammer modellen
+        # (ir.access.csv, inte ir.model.access.csv), model_id ar ett bart
+        # modellnamn, och perm_* ersatts av operation + domain. Bada filerna
+        # ligger i security/; manifestet valjer. Att lista den andras fil ar
+        # ett fel, inte bara overflodigt.
         'security/ir.access.csv',
     ],
     'application': False,

@@ -62,11 +62,7 @@ Design notes
         "ai_agent_core",
     ],
     "data": [
-        # #if VERSION >= "20.0"
-        "security/ir.access.csv",
-        # #else
         "security/ir.model.access.csv",
-        # #endif
         "data/crawlai_tool.xml",
         "data/crawlai_skill.xml",
         "data/crawlai_agent.xml",
