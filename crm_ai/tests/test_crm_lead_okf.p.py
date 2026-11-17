@@ -210,9 +210,13 @@ class TestCrmLeadOkf(common.TransactionCase):
         self.assertTrue(action, 'debug-åtgärden ska finnas')
         self.assertEqual(action.binding_model_id.model, 'crm.lead')
         no_one = self.env.ref('base.group_no_one')
+        # Varje gren måste vara ett komplett uttryck. Att lägga direktiven
+        # inuti ett anrop gör att ingen av grenarna blir syntaktiskt hel —
+        # den genererade filen kompilerar då inte alls.
         # #if VERSION >= "19.0"
         self.assertIn(no_one, action.group_ids,
+                      'åtgärden ska bara synas i debug-läget')
         # #else
         self.assertIn(no_one, action.groups_id,
-        # #endif
                       'åtgärden ska bara synas i debug-läget')
+        # #endif
