@@ -42,6 +42,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set.outputs.matrix }}
       list: ${{ steps.set.outputs.list }}
+      deps: ${{ steps.set.outputs.deps }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,6 +56,11 @@ jobs:
           python .github/pfiles-editions.py --repo . --format lines | paste -sd' ' - > /tmp/list.txt
           echo "list=$(cat /tmp/list.txt)" >> "$GITHUB_OUTPUT"
           echo "Utgåvor: $(cat /tmp/list.txt)"
+          # Repon som modulerna beror på. Tomt är normalt.
+          python .github/pfiles-editions.py --repo . \
+            | python -c "import json,sys; print(' '.join(json.load(sys.stdin).get('deps') or []))" > /tmp/deps.txt
+          echo "deps=$(cat /tmp/deps.txt)" >> "$GITHUB_OUTPUT"
+          echo "Beroenden: $(cat /tmp/deps.txt)"
 
   # ---------------------------------------------------------------------
   # Kontrollerna 1–4. Körs en gång, för grenens utgåva. De är inte
@@ -253,9 +259,11 @@ jobs:
               "https://github.com/vertelab/$repo.git" ".deps/$repo" 2>/dev/null \
               || { echo "::warning::kunde inte hamta $repo ($branch)"; return 0; }
           }
+          # Standardberoenden plus det repot själv deklarerar i .pfiles-ci.
           fetch_dep odoo-base "${{ matrix.edition }}"
-          fetch_dep odoo-website "${{ matrix.edition }}"
-          fetch_dep odoo-ai "${{ matrix.edition }}"
+          for r in ${{ needs.editions.outputs.deps }}; do
+            fetch_dep "$r" "${{ matrix.edition }}"
+          done
           echo "::notice::deps: $(ls .deps 2>/dev/null | tr '\n' ' ' | cut -c1-200)"
 
           # OCB:s Python-beroenden maste finnas, annars kraschar `odoo-bin

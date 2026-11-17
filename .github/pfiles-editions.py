@@ -40,6 +40,10 @@ import sys
 KNOWN_EDITIONS = ["18.0", "19.0", "20.0"]
 
 DEFAULT_SOURCE = ".pfiles-ci"
+
+# Repon som modulerna beror på, från 'deps:' i .pfiles-ci. Fylls av
+# parse_config() och skrivs ut i JSON-utdata så workflowen kan hämta dem.
+DEPENDENCIES = []
 EDITION_RE = re.compile(r"^\d{2}\.0$")
 
 
@@ -53,6 +57,7 @@ def parse_config(path):
     if not os.path.exists(path):
         return None
     editions = []
+    deps = []
     with open(path, encoding="utf-8") as fh:
         for lineno, raw in enumerate(fh, 1):
             line = raw.split("#", 1)[0].strip()
@@ -62,6 +67,12 @@ def parse_config(path):
                 fail("%s:%d: förväntade 'nyckel: värde', fick %r" % (path, lineno, line))
             key, value = line.split(":", 1)
             key, value = key.strip(), value.strip()
+            if key == "deps":
+                # Repon som modulerna beror på. Hämtas av workflowen innan
+                # modulerna prövas — annars är de "oinstallerbara" av ett
+                # skenskal, eftersom grannen helt enkelt inte finns i sokvagen.
+                deps.extend(p for p in re.split(r"[\s,]+", value) if p)
+                continue
             if key != "editions":
                 # pfiles-ci: 1 är en versionsmarkör, inte en utgåva.
                 continue
@@ -77,6 +88,7 @@ def parse_config(path):
                 editions.append(part)
     if not editions:
         fail("%s: ingen 'editions:'-rad hittades" % path)
+    DEPENDENCIES[:] = deps
     # Behåll ordning men ta bort dubbletter.
     seen, unique = set(), []
     for e in editions:
@@ -145,7 +157,8 @@ def main():
 
     missing = [e for e in configured if e not in have]
 
-    result = {"editions": configured, "missing_branches": missing, "source": source}
+    result = {"editions": configured, "missing_branches": missing,
+              "deps": DEPENDENCIES, "source": source}
 
     if args.format == "github-matrix":
         print(json.dumps({"edition": configured}))
