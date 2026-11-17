@@ -12,9 +12,6 @@
                 <field name="tag_ids" position="after">
                     <field name="linkTo" widget="url" />
                 </field>
-                <xpath expr="//group[@name='lead_priority']/field[@name='tag_ids']" position="after">
-                    <field name="linkTo" widget="url"/>
-                </xpath>
                 <notebook position="inside">
                     <page name="financial_information" string="Financial Information">
                         <group name="container_row_2">

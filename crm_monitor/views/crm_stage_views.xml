@@ -14,10 +14,10 @@
         <field name="onchange_new_stage_id" />
         <field name="onchange_type" />
         <!-- Group By Section -->
-        <group expand="0" string="Group By">
+        <separator />
+        <!-- Odoo 20:s RelaxNG-schema for search-vyer har ingen <group>. -->
           <filter name="group_by_onchange_activity_type" string="Onchange Activity Type" context="{'group_by': 'onchange_activity_type'}" />
           <filter name="group_by_onchange_new_stage_id" string="Onchange New Stage" context="{'group_by': 'onchange_new_stage_id'}" />
-        </group>
       </field>
     </field>
   </record>

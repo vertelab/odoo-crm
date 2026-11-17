@@ -38,7 +38,7 @@
         'data/cron.xml',
         'data/server_action.xml',
         'views/crm_stage_views.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
     ],
     'application': True,
 }

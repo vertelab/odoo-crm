@@ -1,87 +1,131 @@
-from odoo import models, fields, api, _
-from datetime import date
-import logging
-from odoo.exceptions import ValidationError
-import re
+# -*- coding: utf-8 -*-
+# Copyright (C) 2026 Vertel Sverige AB (<https://vertel.se>).
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from allabolag import Company
-from allabolag.liquidated_companies import iter_liquidated_companies
-from allabolag.list import iter_list
-from copy import deepcopy
-from datetime import datetime
+"""Allabolag as a provider for ``crm.lead``.
+
+The old ``_set_company_details()`` had a bug that is worth naming: it wrote
+
+    "name": company_data.get("name"),
+
+on a ``crm.lead``. ``name`` is the *opportunity title* — the salesperson's own
+words. Enriching a lead therefore renamed the opportunity to the company name,
+and if Allabolag returned no name, it set the title to ``None``. On top of
+that it wrote ``None`` for a dozen optional fields, which is exactly what the
+canonical contract's ``empty()`` exists to prevent.
+
+It is now a provider: it returns canonical dicts, and the base module decides
+what to write. ``name`` maps to ``partner_name`` through ``LEAD_FIELD_MAP``.
+"""
+
+import logging
+
+from odoo import api, models
+
+from odoo.addons.partner_enrich_base.models.enrich_format import empty, pick
 
 _logger = logging.getLogger(__name__)
 
-##Dokumentera snikod,bolagsform,valuta
+#: The key this provider registers under in ``partner_enrich.provider_order``.
+PROVIDER_KEY = 'allabolag'
+
+
 class CrmLead(models.Model):
-    _name = 'crm.lead'
-    _inherit = ['crm.lead', "res.partner.allabolag.mixin"]
+    _inherit = 'crm.lead'
 
-    company_registry = fields.Char(string='Company Registry', size=64, trim=True, )
-    vat = fields.Char(string='VAT', size=64, trim=True, )
-    linkTo = fields.Char(string='Link', help="Link to Allabolag")
+    # ---------------------------------------------------------------------
+    # Provider contract
+    # ---------------------------------------------------------------------
 
-    def _enrich_lead(self):
-        if not self.company_registry:
-            _logger.warning(
-                f"Allabolag: no company_registry on lead {self.id} ({self.name}), skipping enrich"
+    @api.model
+    def _crm_enrich_from_provider(self, provider_key, ctx):
+        """Answer the base module's provider call for ``allabolag``."""
+        if provider_key != PROVIDER_KEY:
+            return super()._crm_enrich_from_provider(provider_key, ctx)
+        mode = ctx.get('mode') or 'enrich'
+        try:
+            if mode == 'search':
+                return self._allabolag_lead_search(ctx)
+            return self._allabolag_lead_fetch(ctx)
+        except ImportError:
+            _logger.info(
+                "The 'allabolag' Python package is not installed — the "
+                "allabolag provider is disabled for leads.",
             )
-            return
-        if company_data := Company(self.company_registry).data:
-            company_vals = self._set_company_details(company_data.get("company"))
-            self.write(company_vals)
+            return [] if mode == 'search' else {}
+        except Exception:  # noqa: BLE001 - a scrape failure is not fatal
+            _logger.warning(
+                "Allabolag lead lookup failed (mode=%s).", mode, exc_info=True,
+            )
+            return [] if mode == 'search' else {}
 
-    def _set_company_details(self, company_data):
-        revenue = int(company_data.get('revenue', 0))
-        employees = int(company_data.get("employees", 0))
+    @api.model
+    def _allabolag_lead_search(self, ctx):
+        """One scrape by organisation number or name."""
+        registry = ctx.get('registry')
+        if empty(registry):
+            name = ctx.get('name')
+            if empty(name):
+                return []
+            registry, _item = self.env['res.partner'].name2orgno(name)
+        if empty(registry):
+            return []
+        canonical = self._allabolag_lead_fetch({'registry': registry})
+        return [canonical] if canonical else []
 
-        # Estimate employees if missing but has revenue
-        if employees == 0 and revenue > 0:
-            employees = max(1, revenue // 200_000)
+    @api.model
+    def _allabolag_lead_fetch(self, ctx):
+        """Fetch one company and map it to the canonical format.
 
-        # Calculate revenue per employee safely
-        revenue_per_employee = round(revenue / employees, 2) if employees > 0 else 0
+        Delegates the mapping to ``partner_allabolag``: the company object is
+        the same regardless of whether it is being attached to a partner or a
+        lead, and two mappings of the same data is how the two sides drift.
+        """
+        from allabolag import Company
+        from allabolag.company import NoSuchCompany
 
-        res1 = {
-            "name": company_data.get("name"),
-            "partner_name": company_data.get("name", False),
-            "company_registry": company_data.get("orgnr", False),
-            "city": company_data.get("postalAddress",{}).get("postPlace",False) if company_data.get("postalAddress") else False,
-            "summary_parent_company": company_data.get("foundationYear"),
-            "summary_state": company_data.get("status", {}).get("status") if company_data.get("status") else False,
-            "kpi_no_employees": employees,
-            "summary_revenue": revenue,
-            "kpi_revenue_employees": revenue_per_employee,
-            "summary_purpose": company_data.get('purpose', ""),
-            "summary_profit_ebit": company_data.get("profit", 0),
-            "contact_name": company_data.get("contactPerson", {}).get('name', "") if company_data.get("contactPerson") else False,
-            "function": company_data.get("contactPerson", {}).get('role', "") if company_data.get("contactPerson") else False,
-            "summary_registry_year": company_data.get('registrationDate'),
-            "email_from": company_data.get("email"),
-            "phone": company_data.get("phone",False),
-            "mobile": company_data.get("mobile",False),
-            "website": company_data.get("homePage",False),
-            "street": company_data.get("postalAddress", {}).get("addressLine",False) if company_data.get("postalAddress") else False, 
-            "zip": company_data.get("postalAddress", {}).get("zipCode",False) if company_data.get("postalAddress") else False,
-        }
-        _logger.warning(f"{res1=}")
-        return res1
+        registry = ctx.get('registry')
+        if empty(registry):
+            return {}
+        digits = ''.join(ch for ch in str(registry) if ch.isdigit())
+        if len(digits) != 10:
+            _logger.info("Allabolag: %r is not an organisation number.", registry)
+            return {}
+        try:
+            company = Company('%s-%s' % (digits[:6], digits[6:]))
+            data = company.data
+        except NoSuchCompany:
+            _logger.info("Allabolag has no company %s.", digits)
+            return {}
+        if not data:
+            return {}
+        return self.env['res.partner']._allabolag_map_company(data)
 
-        
-        
+    # ---------------------------------------------------------------------
+    # Provider-specific lead fields
+    # ---------------------------------------------------------------------
 
+    def _crm_enrich_apply_extra(self, resolved, collected):
+        """Store the raw Allabolag payload and the link.
 
-    # def enrich_allabolag(self):
-    #     for crm in self:
-    #         _logger.warning('%s' % crm._fields['summary_revenue'])
-    #         if not crm.company_registry:
-    #             crm.company_registry, item=self.env['res.partner'].name2orgno(crm.partner_name or crm.name)
-    #
-    #         record = crm.env['res.partner'].partner_enrich_allabolag(crm.company_registry)
-    #         crm.write(record)
+        ``mining_id`` is deliberately **not** set: ``crm.allabolag.mining`` is
+        a *search request* (SNI, county, revenue range, how many leads you
+        want), not a company record. Attaching a company to it would be
+        attaching a result to a query. The ``mining_*`` related fields stay
+        empty on an enriched lead, which is correct — they describe a search,
+        not this company.
+        """
+        vals = super()._crm_enrich_apply_extra(resolved, collected)
+        if not any(pkey == PROVIDER_KEY for _v, pkey in resolved.values()):
+            return vals
+        canonical = dict(collected).get(PROVIDER_KEY) or {}
+        company = canonical.get('payload') or {}
+        if not company:
+            return vals
 
-    def crm_enrich(self):
-        for crm in self:
-            crm._enrich_lead()
-            # crm.enrich_allabolag()
-        super(CrmLead, self).crm_enrich()
+        # The raw company object, kept for troubleshooting and re-apply.
+        vals['allabolag_json_data'] = str(company)
+        link = pick(company, 'linkTo', 'url')
+        if link:
+            vals['linkTo'] = link
+        return vals

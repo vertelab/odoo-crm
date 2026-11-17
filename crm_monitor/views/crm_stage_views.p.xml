@@ -14,10 +14,17 @@
         <field name="onchange_new_stage_id" />
         <field name="onchange_type" />
         <!-- Group By Section -->
+        <separator />
+        <!-- #if VERSION >= "20.0" -->
+        <!-- Odoo 20:s RelaxNG-schema for search-vyer har ingen <group>. -->
+        <!-- #else -->
         <group expand="0" string="Group By">
+        <!-- #endif -->
           <filter name="group_by_onchange_activity_type" string="Onchange Activity Type" context="{'group_by': 'onchange_activity_type'}" />
           <filter name="group_by_onchange_new_stage_id" string="Onchange New Stage" context="{'group_by': 'onchange_new_stage_id'}" />
+        <!-- #if VERSION <= "19.0" -->
         </group>
+        <!-- #endif -->
       </field>
     </field>
   </record>

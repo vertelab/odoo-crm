@@ -141,6 +141,14 @@ class CrmAllabolagMining(models.Model):
         readonly=False,
         store=True,
     )
+    # Används i sökvyn (filter och group by) och i _prepare_lead_vals, men
+    # saknades som fält. Odoo 18 tolererade det; Odoo 20 validerar sökvyns
+    # fält och fäller installationen med "Invalid view".
+    campaign_id = fields.Many2one(
+        comodel_name="utm.campaign",
+        string="Campaign",
+        index=True,
+    )
     user_id = fields.Many2one(
         "res.users",
         string="Salesperson",
