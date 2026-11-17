@@ -252,12 +252,20 @@ jobs:
           # enkelt inte i sokvagen. Vi hamtar dem till .deps/<namn> och
           # lacker in dem via PFILES_EXTRA_ADDONS langre ned.
           mkdir -p .deps
+          # Ett beroende kan bo i en annan organisation an vertelab (t.ex.
+          # ligger dms i OCA/dms, inte i odoo-document). Skriv da
+          # 'org/repo' i deps: -- allt utan '/' antas hora till vertelab.
           fetch_dep() {
-            local repo="$1" branch="$2"
-            [ -d ".deps/$repo" ] && return 0
+            local repo="$1" branch="$2" slug dir
+            case "$repo" in
+              */*) slug="$repo" ;;
+              *)   slug="vertelab/$repo" ;;
+            esac
+            dir="${repo##*/}"
+            [ -d ".deps/$dir" ] && return 0
             git clone --quiet --depth 1 --branch "$branch" \
-              "https://github.com/vertelab/$repo.git" ".deps/$repo" 2>/dev/null \
-              || { echo "::warning::kunde inte hamta $repo ($branch)"; return 0; }
+              "https://github.com/$slug.git" ".deps/$dir" 2>/dev/null \
+              || { echo "::warning::kunde inte hamta $slug ($branch)"; return 0; }
           }
           # Standardberoenden plus det repot själv deklarerar i .pfiles-ci.
           fetch_dep odoo-base "${{ matrix.edition }}"
