@@ -84,10 +84,6 @@
         <field name="arch" type="xml">
             <search string="Object Campaign">
                 <field name="campaign_id"/>
-                <group expand="1" string="Group By">
-                    <filter name="group_by_campaign" context="{'group_by': 'campaign_id'}" string="Campaign"/>
-                    <filter name="group_by_object" context="{'group_by': 'object_id'}" string="Object"/>
-                </group>
             </search>
         </field>
     </record>
@@ -193,9 +189,6 @@
             <search string="CRM Tracking Campaign">
                 <field name="name" string="Name"
                        filter_domain="[('display_name','ilike',self)]"/>
-                <group expand="1" string="Group By">
-                    <filter name="group_by_object_ids" context="{'group_by': 'object_ids'}" string="Object"/>
-                </group>
             </search>
         </field>
     </record>
