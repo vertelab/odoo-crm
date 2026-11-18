@@ -140,7 +140,6 @@
                             <span class="oe_inline"> - </span>
                             <field name="date_stop" class="oe_inline"/>
                         </div>
-                        <field name="section_id" groups="base.group_multi_salesteams"/>
                     </group>
                     <notebook>
                         <page string="Objects">
@@ -193,16 +192,17 @@
         </field>
     </record>
 
-    <!-- Override the standard campaign action to include calendar/gantt -->
-    <record id="crm.crm_tracking_campaign_act" model="ir.actions.act_window">
-        <field name="view_mode">list,form,calendar,gantt</field>
-    </record>
+    <!-- The 18.0 branch removed this override on 2026-10-20: crm core has no
+         crm_tracking_campaign_act (the whole crm.tracking.campaign model was
+         dropped from core), the 'crm.' prefix made Odoo treat it as an external
+         reference, and 'gantt' is not a view type in CE. The 20.0 branch was
+         generated before that fix and still carried it. -->
 
     <!-- Campaign Overview Wizard -->
     <record id="act_campaign_overview" model="ir.actions.act_window">
         <field name="name">Campaign Overview</field>
         <field name="res_model">campaign.overview</field>
-        <field name="binding_model_id" ref="crm.model_crm_tracking_campaign"/>
+        <field name="binding_model_id" ref="crm_campaign_addons.model_crm_tracking_campaign"/>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>

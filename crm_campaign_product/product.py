@@ -61,12 +61,11 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-    campaign_ids = fields.Many2many(
-        comodel_name='crm.tracking.campaign',
-        relation="crm_campaign_product_rel",
-        column1='product_id', column2='campaign_id',
-        string='Campaigns',
-    )
+    # product.product inherits product.template, so the field is already there.
+    # Redeclaring it with the same relation and columns is rejected outright:
+    # "Many2many fields product.product.campaign_ids and
+    #  product.template.campaign_ids use the same table and columns".
+    campaign_ids = fields.Many2many(related='product_tmpl_id.campaign_ids')
 
 
 class CrmCampaignObject(models.Model):
