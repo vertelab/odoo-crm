@@ -25,6 +25,6 @@
         'data/okf_debug_actions.xml',
     ],
     'installable': True,
-    'auto_install': False,
+    'auto_install': True,
     'application': False,
 }
